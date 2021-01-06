@@ -9,7 +9,7 @@
         <!--Transport View Controller-->
         <scene sceneID="Fea-tP-1xP">
             <objects>
-                <viewController storyboardIdentifier="Transport" id="Ca0-NX-Etk" customClass="TransportViewController" customModule="AudioEngine" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Transport" id="Ca0-NX-Etk" customClass="TransportViewController" customModule="Sequencer" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="vcr-EL-Otd"/>
                         <viewControllerLayoutGuide type="bottom" id="58g-BR-77C"/>

@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import MoonKit
 import Common
-import AudioEngine
+import Sequencer
 import Documents
 import NodePlayer
 

@@ -8,7 +8,7 @@
 import UIKit
 import MoonKit
 import MIDI
-import AudioEngine
+import Sequencer
 
 /// A `UIDocument` subclass for presenting a document interface usable by the application.
 public final class Document: UIDocument, Named, NotificationDispatching {

@@ -114,11 +114,11 @@
 		C2F43BEA25A376F1002DA417 /* Documents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43BD525A376F1002DA417 /* Documents.framework */; };
 		C2F43BEB25A376F1002DA417 /* Documents.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43BD525A376F1002DA417 /* Documents.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C2F43C1725A37746002DA417 /* Documents.h in Headers */ = {isa = PBXBuildFile; fileRef = C2F43BD725A376F1002DA417 /* Documents.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		C2F43C3C25A377EF002DA417 /* AudioEngine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43C3325A377EF002DA417 /* AudioEngine.framework */; };
-		C2F43C4325A377EF002DA417 /* AudioEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F43C4225A377EF002DA417 /* AudioEngineTests.swift */; };
-		C2F43C4825A377EF002DA417 /* AudioEngine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43C3325A377EF002DA417 /* AudioEngine.framework */; };
-		C2F43C4925A377EF002DA417 /* AudioEngine.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43C3325A377EF002DA417 /* AudioEngine.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		C2F43C7B25A37837002DA417 /* AudioEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = C2F43C3525A377EF002DA417 /* AudioEngine.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C2F43C3C25A377EF002DA417 /* Sequencer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43C3325A377EF002DA417 /* Sequencer.framework */; };
+		C2F43C4325A377EF002DA417 /* SequencerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F43C4225A377EF002DA417 /* SequencerTests.swift */; };
+		C2F43C4825A377EF002DA417 /* Sequencer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43C3325A377EF002DA417 /* Sequencer.framework */; };
+		C2F43C4925A377EF002DA417 /* Sequencer.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43C3325A377EF002DA417 /* Sequencer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C2F43C7B25A37837002DA417 /* Sequencer.h in Headers */ = {isa = PBXBuildFile; fileRef = C2F43C3525A377EF002DA417 /* Sequencer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C2F43CA325A378A3002DA417 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43B6425A2ADFE002DA417 /* MoonKit.framework */; };
 		C2F43CA625A378B4002DA417 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43B6425A2ADFE002DA417 /* MoonKit.framework */; };
 		C2F43CA925A378BD002DA417 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43B6425A2ADFE002DA417 /* MoonKit.framework */; };
@@ -315,7 +315,7 @@
 				C2F43B9725A37658002DA417 /* NodePlayer.framework in Embed Frameworks */,
 				C2F43B0625A2ACE1002DA417 /* Common.framework in Embed Frameworks */,
 				C2AF20A7259B9FE200EC084A /* MoonKit.framework in Embed Frameworks */,
-				C2F43C4925A377EF002DA417 /* AudioEngine.framework in Embed Frameworks */,
+				C2F43C4925A377EF002DA417 /* Sequencer.framework in Embed Frameworks */,
 				C252C876259D2E73000A0BA2 /* SoundFont.framework in Embed Frameworks */,
 				C2F43BEB25A376F1002DA417 /* Documents.framework in Embed Frameworks */,
 			);
@@ -525,11 +525,11 @@
 		C2F43BDD25A376F1002DA417 /* DocumentsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DocumentsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2F43BE425A376F1002DA417 /* DocumentsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentsTests.swift; sourceTree = "<group>"; };
 		C2F43BE625A376F1002DA417 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C2F43C3325A377EF002DA417 /* AudioEngine.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AudioEngine.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C2F43C3525A377EF002DA417 /* AudioEngine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioEngine.h; sourceTree = "<group>"; };
+		C2F43C3325A377EF002DA417 /* Sequencer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Sequencer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2F43C3525A377EF002DA417 /* Sequencer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sequencer.h; sourceTree = "<group>"; };
 		C2F43C3625A377EF002DA417 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C2F43C3B25A377EF002DA417 /* AudioEngineTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AudioEngineTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		C2F43C4225A377EF002DA417 /* AudioEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngineTests.swift; sourceTree = "<group>"; };
+		C2F43C3B25A377EF002DA417 /* SequencerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SequencerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2F43C4225A377EF002DA417 /* SequencerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequencerTests.swift; sourceTree = "<group>"; };
 		C2F43C4425A377EF002DA417 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C2F589F81BAC688F009166D5 /* BarBeatTimeLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarBeatTimeLabel.swift; sourceTree = "<group>"; };
 		C2FAAC7D1D99C7620089D1B0 /* SoundFontFileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundFontFileTests.swift; sourceTree = "<group>"; };
@@ -569,7 +569,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C2AF20A6259B9FE200EC084A /* MoonKit.framework in Frameworks */,
-				C2F43C4825A377EF002DA417 /* AudioEngine.framework in Frameworks */,
+				C2F43C4825A377EF002DA417 /* Sequencer.framework in Frameworks */,
 				C2E98C3125A1087300FE1560 /* MIDI.framework in Frameworks */,
 				C2F43B0525A2ACE1002DA417 /* Common.framework in Frameworks */,
 				C2F43BEA25A376F1002DA417 /* Documents.framework in Frameworks */,
@@ -655,7 +655,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C2F43C3C25A377EF002DA417 /* AudioEngine.framework in Frameworks */,
+				C2F43C3C25A377EF002DA417 /* Sequencer.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -778,7 +778,7 @@
 			path = Common;
 			sourceTree = "<group>";
 		};
-		C26A27ED1B93C0AE00BD1698 /* AudioEngine */ = {
+		C26A27ED1B93C0AE00BD1698 /* Sequencer */ = {
 			isa = PBXGroup;
 			children = (
 				C2873A9025A4E70900870EE0 /* Supporting Files */,
@@ -787,7 +787,7 @@
 				C2873A8025A4E64E00870EE0 /* Time */,
 				C2873A7E25A4E60800870EE0 /* Sequencer */,
 			);
-			path = AudioEngine;
+			path = Sequencer;
 			sourceTree = "<group>";
 		};
 		C2776C191B9DF50D002FE5A8 /* Emax Collection */ = {
@@ -858,7 +858,7 @@
 			isa = PBXGroup;
 			children = (
 				C2F43C3625A377EF002DA417 /* Info.plist */,
-				C2F43C3525A377EF002DA417 /* AudioEngine.h */,
+				C2F43C3525A377EF002DA417 /* Sequencer.h */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -993,7 +993,7 @@
 		C2BA05AC25A0D415009EAA19 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				C2F43C4125A377EF002DA417 /* AudioEngineTests */,
+				C2F43C4125A377EF002DA417 /* SequencerTests */,
 				C2F43BE325A376F1002DA417 /* DocumentsTests */,
 				C2F43B8F25A37658002DA417 /* NodePlayerTests */,
 				C2F43AFE25A2ACE1002DA417 /* CommonTests */,
@@ -1008,7 +1008,7 @@
 			isa = PBXGroup;
 			children = (
 				C255A72B25A2ABB70012AD69 /* Common */,
-				C26A27ED1B93C0AE00BD1698 /* AudioEngine */,
+				C26A27ED1B93C0AE00BD1698 /* Sequencer */,
 				C239EC481DB269AC004A580A /* NodePlayer */,
 				C2AD26101DAC47A400B9BA75 /* Documents */,
 				C2E98C1D25A1087300FE1560 /* MIDI */,
@@ -1050,8 +1050,8 @@
 				C2F43B8925A37658002DA417 /* NodePlayerTests.xctest */,
 				C2F43BD525A376F1002DA417 /* Documents.framework */,
 				C2F43BDD25A376F1002DA417 /* DocumentsTests.xctest */,
-				C2F43C3325A377EF002DA417 /* AudioEngine.framework */,
-				C2F43C3B25A377EF002DA417 /* AudioEngineTests.xctest */,
+				C2F43C3325A377EF002DA417 /* Sequencer.framework */,
+				C2F43C3B25A377EF002DA417 /* SequencerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1140,13 +1140,13 @@
 			path = DocumentsTests;
 			sourceTree = "<group>";
 		};
-		C2F43C4125A377EF002DA417 /* AudioEngineTests */ = {
+		C2F43C4125A377EF002DA417 /* SequencerTests */ = {
 			isa = PBXGroup;
 			children = (
-				C2F43C4225A377EF002DA417 /* AudioEngineTests.swift */,
+				C2F43C4225A377EF002DA417 /* SequencerTests.swift */,
 				C2F43C4425A377EF002DA417 /* Info.plist */,
 			);
-			path = AudioEngineTests;
+			path = SequencerTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1196,7 +1196,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C2F43C7B25A37837002DA417 /* AudioEngine.h in Headers */,
+				C2F43C7B25A37837002DA417 /* Sequencer.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1430,9 +1430,9 @@
 			productReference = C2F43BDD25A376F1002DA417 /* DocumentsTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		C2F43C3225A377EF002DA417 /* AudioEngine */ = {
+		C2F43C3225A377EF002DA417 /* Sequencer */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C2F43C4A25A377EF002DA417 /* Build configuration list for PBXNativeTarget "AudioEngine" */;
+			buildConfigurationList = C2F43C4A25A377EF002DA417 /* Build configuration list for PBXNativeTarget "Sequencer" */;
 			buildPhases = (
 				C2F43C2E25A377EF002DA417 /* Headers */,
 				C2F43C2F25A377EF002DA417 /* Sources */,
@@ -1443,14 +1443,14 @@
 			);
 			dependencies = (
 			);
-			name = AudioEngine;
+			name = Sequencer;
 			productName = AudioEngine;
-			productReference = C2F43C3325A377EF002DA417 /* AudioEngine.framework */;
+			productReference = C2F43C3325A377EF002DA417 /* Sequencer.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		C2F43C3A25A377EF002DA417 /* AudioEngineTests */ = {
+		C2F43C3A25A377EF002DA417 /* SequencerTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C2F43C4F25A377EF002DA417 /* Build configuration list for PBXNativeTarget "AudioEngineTests" */;
+			buildConfigurationList = C2F43C4F25A377EF002DA417 /* Build configuration list for PBXNativeTarget "SequencerTests" */;
 			buildPhases = (
 				C2F43C3725A377EF002DA417 /* Sources */,
 				C2F43C3825A377EF002DA417 /* Frameworks */,
@@ -1462,9 +1462,9 @@
 				C2F43C3E25A377EF002DA417 /* PBXTargetDependency */,
 				C2F43C4025A377EF002DA417 /* PBXTargetDependency */,
 			);
-			name = AudioEngineTests;
+			name = SequencerTests;
 			productName = AudioEngineTests;
-			productReference = C2F43C3B25A377EF002DA417 /* AudioEngineTests.xctest */;
+			productReference = C2F43C3B25A377EF002DA417 /* SequencerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -1570,8 +1570,8 @@
 				C2F43B8825A37658002DA417 /* NodePlayerTests */,
 				C2F43BD425A376F1002DA417 /* Documents */,
 				C2F43BDC25A376F1002DA417 /* DocumentsTests */,
-				C2F43C3225A377EF002DA417 /* AudioEngine */,
-				C2F43C3A25A377EF002DA417 /* AudioEngineTests */,
+				C2F43C3225A377EF002DA417 /* Sequencer */,
+				C2F43C3A25A377EF002DA417 /* SequencerTests */,
 			);
 		};
 /* End PBXProject section */
@@ -1896,7 +1896,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C2F43C4325A377EF002DA417 /* AudioEngineTests.swift in Sources */,
+				C2F43C4325A377EF002DA417 /* SequencerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1987,7 +1987,7 @@
 		};
 		C2F43C3E25A377EF002DA417 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C2F43C3225A377EF002DA417 /* AudioEngine */;
+			target = C2F43C3225A377EF002DA417 /* Sequencer */;
 			targetProxy = C2F43C3D25A377EF002DA417 /* PBXContainerItemProxy */;
 		};
 		C2F43C4025A377EF002DA417 /* PBXTargetDependency */ = {
@@ -1997,7 +1997,7 @@
 		};
 		C2F43C4725A377EF002DA417 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C2F43C3225A377EF002DA417 /* AudioEngine */;
+			target = C2F43C3225A377EF002DA417 /* Sequencer */;
 			targetProxy = C2F43C4625A377EF002DA417 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -3846,7 +3846,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "Source/Subcomponents/AudioEngine/Supporting Files/Info.plist";
+				INFOPLIST_FILE = "Source/Subcomponents/Sequencer/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3856,7 +3856,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.AudioEngine;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Sequencer;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
@@ -3886,7 +3886,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "Source/Subcomponents/AudioEngine/Supporting Files/Info.plist";
+				INFOPLIST_FILE = "Source/Subcomponents/Sequencer/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3896,7 +3896,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.AudioEngine;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Sequencer;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
@@ -3926,7 +3926,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "Source/Subcomponents/AudioEngine/Supporting Files/Info.plist";
+				INFOPLIST_FILE = "Source/Subcomponents/Sequencer/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3935,7 +3935,7 @@
 				);
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.AudioEngine;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Sequencer;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -3964,7 +3964,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "Source/Subcomponents/AudioEngine/Supporting Files/Info.plist";
+				INFOPLIST_FILE = "Source/Subcomponents/Sequencer/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3973,7 +3973,7 @@
 				);
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.AudioEngine;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Sequencer;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -3996,7 +3996,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = JT6STF4SHA;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Tests/AudioEngineTests/Info.plist;
+				INFOPLIST_FILE = Tests/SequencerTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -4004,7 +4004,7 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.AudioEngineTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.SequencerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_VERSION = 5.0;
@@ -4026,7 +4026,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = JT6STF4SHA;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Tests/AudioEngineTests/Info.plist;
+				INFOPLIST_FILE = Tests/SequencerTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -4034,7 +4034,7 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.AudioEngineTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.SequencerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_VERSION = 5.0;
@@ -4056,14 +4056,14 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = JT6STF4SHA;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Tests/AudioEngineTests/Info.plist;
+				INFOPLIST_FILE = Tests/SequencerTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.AudioEngineTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.SequencerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -4084,14 +4084,14 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = JT6STF4SHA;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Tests/AudioEngineTests/Info.plist;
+				INFOPLIST_FILE = Tests/SequencerTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.AudioEngineTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.SequencerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -4245,7 +4245,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C2F43C4A25A377EF002DA417 /* Build configuration list for PBXNativeTarget "AudioEngine" */ = {
+		C2F43C4A25A377EF002DA417 /* Build configuration list for PBXNativeTarget "Sequencer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C2F43C4B25A377EF002DA417 /* Debug */,
@@ -4256,7 +4256,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C2F43C4F25A377EF002DA417 /* Build configuration list for PBXNativeTarget "AudioEngineTests" */ = {
+		C2F43C4F25A377EF002DA417 /* Build configuration list for PBXNativeTarget "SequencerTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C2F43C5025A377EF002DA417 /* Debug */,

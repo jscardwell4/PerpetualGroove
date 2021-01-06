@@ -142,8 +142,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "C2F43C3A25A377EF002DA417"
-               BuildableName = "AudioEngineTests.xctest"
-               BlueprintName = "AudioEngineTests"
+               BuildableName = "SequencerTests.xctest"
+               BlueprintName = "SequencerTests"
                ReferencedContainer = "container:PerpetualGroove.xcodeproj">
             </BuildableReference>
          </TestableReference>

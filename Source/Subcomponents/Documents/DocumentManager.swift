@@ -8,7 +8,7 @@
 import Foundation
 import MoonKit
 import Common
-import AudioEngine
+import Sequencer
 
 /// A Singleton whose job is to coordinate all file/document operations within the application.
 public final class DocumentManager: NotificationDispatching {

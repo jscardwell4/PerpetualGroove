@@ -9,7 +9,7 @@
         <!--Tempo-->
         <scene sceneID="6dR-FB-x8d">
             <objects>
-                <viewController storyboardIdentifier="Time" id="s2G-da-Id7" userLabel="Tempo" customClass="TempoViewController" customModule="AudioEngine" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Time" id="s2G-da-Id7" userLabel="Tempo" customClass="TempoViewController" customModule="Sequencer" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Bp2-VP-D2W"/>
                         <viewControllerLayoutGuide type="bottom" id="atr-jl-S63"/>

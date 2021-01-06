@@ -8,7 +8,7 @@
 import Foundation
 import MoonKit
 import MIDI
-import AudioEngine
+import Sequencer
 import Common
 import NodePlayer
 

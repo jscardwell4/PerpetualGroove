@@ -14,7 +14,7 @@
         <!--Instrument-->
         <scene sceneID="xO8-Dp-ogl">
             <objects>
-                <viewController storyboardIdentifier="Instrument" id="alc-VG-vzJ" userLabel="Instrument" customClass="InstrumentViewController" customModule="AudioEngine" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Instrument" id="alc-VG-vzJ" userLabel="Instrument" customClass="InstrumentViewController" customModule="Sequencer" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="vsb-xD-YZv"/>
                         <viewControllerLayoutGuide type="bottom" id="OC8-AH-rwD"/>
@@ -32,7 +32,7 @@
                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="SoundSetLabel"/>
                                 </userDefinedRuntimeAttributes>
                             </label>
-                            <view opaque="NO" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="En4-Eg-iPG" customClass="SoundFontSelector" customModule="Groove">
+                            <view opaque="NO" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="En4-Eg-iPG" customClass="SoundFontSelector" customModule="NodePlayer">
                                 <rect key="frame" x="108" y="8" width="196" height="36"/>
                                 <connections>
                                     <action selector="didSelectSoundFont" destination="alc-VG-vzJ" eventType="valueChanged" id="SB4-xG-d0g"/>
@@ -47,7 +47,7 @@
                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="ProgramLabel"/>
                                 </userDefinedRuntimeAttributes>
                             </label>
-                            <view opaque="NO" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MI8-nb-zBV" customClass="ProgramSelector" customModule="Groove">
+                            <view opaque="NO" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MI8-nb-zBV" customClass="ProgramSelector" customModule="NodePlayer">
                                 <rect key="frame" x="108" y="52" width="196" height="36"/>
                                 <connections>
                                     <action selector="didSelectProgram" destination="alc-VG-vzJ" eventType="valueChanged" id="93w-cO-0ee"/>

@@ -17,7 +17,7 @@
         <!--Mixer Container-->
         <scene sceneID="wQo-RF-yqm">
             <objects>
-                <viewController id="ANH-iZ-FUo" customClass="MixerContainer" customModule="AudioEngine" sceneMemberID="viewController">
+                <viewController id="ANH-iZ-FUo" customClass="MixerContainer" customModule="Sequencer" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="MSX-be-vq5"/>
                         <viewControllerLayoutGuide type="bottom" id="ANJ-Gd-RJH"/>
