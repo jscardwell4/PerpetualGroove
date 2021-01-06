@@ -35,13 +35,13 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
   }
 
   /// Sets the `viewController` property and initializes `SettingsManager`, `AudioManager`, `Sequencer`,
-  /// `MIDINodePlayer`, and `DocumentManager`.
+  /// `NodePlayer`, and `DocumentManager`.
   func application(_ application: UIApplication,
                    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
   {
     
     _ = Sequencer.shared
-    MIDINodePlayer.initialize()
+    Player.initialize()
     DocumentManager.initialize()
 
     viewController = window?.rootViewController as? RootViewController

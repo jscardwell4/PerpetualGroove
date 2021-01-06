@@ -14,10 +14,10 @@
             </objects>
             <point key="canvasLocation" x="658" y="591"/>
         </scene>
-        <!--Node Player Container-->
+        <!--Container-->
         <scene sceneID="th2-7M-uWS">
             <objects>
-                <viewController id="pGy-FY-X8Y" customClass="MIDINodePlayerContainer" customModule="NodePlayer" sceneMemberID="viewController">
+                <viewController id="pGy-FY-X8Y" customClass="Container" customModule="NodePlayer" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="zNj-XQ-VlV"/>
                         <viewControllerLayoutGuide type="bottom" id="Zyg-Zx-L8U"/>
@@ -29,7 +29,7 @@
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Kk4-LH-wbv">
                                 <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                                 <connections>
-                                    <segue destination="DN1-fg-RLZ" kind="embed" identifier="MIDINodePlayer" id="BRW-ZN-JTo"/>
+                                    <segue destination="DN1-fg-RLZ" kind="embed" identifier="NodePlayer" id="BRW-ZN-JTo"/>
                                 </connections>
                             </containerView>
                         </subviews>

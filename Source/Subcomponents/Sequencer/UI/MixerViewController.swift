@@ -34,7 +34,7 @@ public final class MixerViewController: UICollectionViewController, SecondaryCon
   }
 
   /// The source of the track data displayed by the collection.
-  fileprivate weak var sequence: Sequence? {
+  fileprivate weak var sequence: Sequencer.Sequence? {
     didSet {
       guard oldValue !== sequence else { return }
 
@@ -388,7 +388,7 @@ public final class MixerViewController: UICollectionViewController, SecondaryCon
 
     switch notification.name {
 
-      case Notification.Name(Sequence.NotificationName.didAddTrack.rawValue):
+      case Notification.Name(Sequencer.Sequence.NotificationName.didAddTrack.rawValue):
         // Updated `addedTrackIndex` if the track at `added` is pending.
         // Insert a cell for the added track and update the size of the collection.
 
@@ -398,14 +398,14 @@ public final class MixerViewController: UICollectionViewController, SecondaryCon
         collectionView.insertItems(at: [addedIndexPath])
         updateSize()
 
-      case Notification.Name(Sequence.NotificationName.didRemoveTrack.rawValue):
+      case Notification.Name(Sequencer.Sequence.NotificationName.didRemoveTrack.rawValue):
         // Delete the cell for the removed track and update the size of the collection.
 
         guard let removed = notification.removedTrackIndex else { break }
         collectionView.deleteItems(at: [Section.tracks[removed]])
         updateSize()
 
-      case Notification.Name(Sequence.NotificationName.didChangeTrack.rawValue):
+      case Notification.Name(Sequencer.Sequence.NotificationName.didChangeTrack.rawValue):
         // Select the new track.
 
         selectTrack(at: sequence?.currentTrackIndex, animated: true)

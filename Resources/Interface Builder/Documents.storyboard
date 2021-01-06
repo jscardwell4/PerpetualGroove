@@ -14,7 +14,7 @@
         <!--Documents-->
         <scene sceneID="PRi-3n-XlO">
             <objects>
-                <collectionViewController storyboardIdentifier="Documents" id="O6i-Zp-3qE" userLabel="Documents" customClass="DocumentsViewController" customModule="Documents" sceneMemberID="viewController">
+                <collectionViewController storyboardIdentifier="Documents" id="O6i-Zp-3qE" userLabel="Documents" customClass="ViewController" customModule="MetalWaterfall" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="0IQ-bl-889" userLabel="DocumentsCollection">
                         <rect key="frame" x="0.0" y="0.0" width="250" height="120"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BV1-FR-VrT">
-    <device id="ipad9_7" orientation="landscape">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BV1-FR-VrT">
+    <device id="ipad9_7" orientation="landscape" layout="fullscreen" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
-        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -364,7 +358,7 @@
                         <outlet property="contentStack" destination="KR6-ig-M7J" id="pxB-lb-19Q"/>
                         <outlet property="documentsButton" destination="gJq-1L-zk3" id="z0d-NV-cbd"/>
                         <outlet property="documentsPopoverView" destination="L5k-qi-Yb6" id="ib7-VB-2Y5"/>
-                        <outlet property="midiNodePlayerContainer" destination="cDh-C7-9la" id="52L-qm-joj"/>
+                        <outlet property="midiContainer" destination="cDh-C7-9la" id="52L-qm-joj"/>
                         <outlet property="mixerContainer" destination="Xii-MX-zKn" id="66b-hf-2hE"/>
                         <outlet property="tempoContainer" destination="O9D-bO-M36" id="g8E-Gk-9Iw"/>
                         <outlet property="topStack" destination="NZR-ya-29p" id="TEF-H3-XKm"/>

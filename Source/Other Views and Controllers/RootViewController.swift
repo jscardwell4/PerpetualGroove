@@ -38,7 +38,7 @@ final class RootViewController: UIViewController {
   @IBOutlet var mixerContainer: UIView!
 
   /// The view within which the midi node player is embedded.
-  @IBOutlet var midiNodePlayerContainer: UIView!
+  @IBOutlet var midiContainer: UIView!
 
   /// The view within which the transport is embedded.
   @IBOutlet var transportContainer: UIView!
@@ -124,7 +124,7 @@ final class RootViewController: UIViewController {
       case let controller as TempoViewController:
         tempoViewController = controller
 
-      case let controller as MIDINodePlayerViewController:
+      case let controller as NodePlayer.Container.ViewController:
         playerViewController = controller
 
       case let controller as TransportViewController:
@@ -184,7 +184,7 @@ final class RootViewController: UIViewController {
 
   /// The view controller responsible for presenting the midi player within which new midi nodes can be
   /// added and existing midi nodes can be modified or removed.
-  private(set) weak var playerViewController: MIDINodePlayerViewController!
+  private(set) weak var playerViewController: NodePlayer.Container.ViewController!
 
   /// The view controller responsible for presenting an interface for the current transport allowing 
   /// playback to be started, paused, stopped, scrubbed, recorded, and reset.

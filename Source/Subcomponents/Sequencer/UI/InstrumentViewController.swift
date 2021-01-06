@@ -63,7 +63,7 @@ public final class InstrumentViewController: UIViewController, SecondaryContent 
       programSelector.soundFont = soundFont
 
       // Play a note through the instrument to allow the user a chance to hear the current configuration.
-      instrument.playNote(AnyMIDIGenerator())
+      instrument.playNote(AnyGenerator())
 
     } catch {
 
@@ -93,7 +93,7 @@ public final class InstrumentViewController: UIViewController, SecondaryContent 
       try instrument.load(preset: preset)
 
       // Play a note through the instrument to allow the user a chance to hear the current configuration.
-      instrument.playNote(AnyMIDIGenerator())
+      instrument.playNote(AnyGenerator())
 
     } catch {
 

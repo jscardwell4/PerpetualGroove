@@ -1,6 +1,6 @@
 //
-//  MIDINodePathTests.swift
-//  MIDINodePathTests
+//  NodePathTests.swift
+//  NodePathTests
 //
 //  Created by Jason Cardwell on 1/15/16.
 //  Copyright © 2016 Moondeer Studios. All rights reserved.
@@ -12,9 +12,9 @@ import Nimble
 @testable import MIDI
 @testable import NodePlayer
 
-final class MIDINodePathTests: XCTestCase {
+final class NodePathTests: XCTestCase {
 
-  typealias Trajectory = MIDINode.Trajectory
+  typealias Trajectory = Node.Trajectory
 
   let startTime: BarBeatTime = 3∶3.54
   let initialPoint = CGPoint(x: 206.8070373535156, y: 143.28111267089841)
@@ -44,7 +44,7 @@ final class MIDINodePathTests: XCTestCase {
 
 
   func testSegment() {
-    let path = MIDINode.Path(trajectory: initialTrajectory, playerSize: playerSize, time: startTime)
+    let path = Node.Path(trajectory: initialTrajectory, playerSize: playerSize, time: startTime)
     let segment = path.initialSegment
 //    expect(segment.endLocation.x).to(equalWithAccuracy(CGFloat(286.156655407142), 0.0001))
     expect(segment.endLocation.y) == 21
@@ -52,7 +52,7 @@ final class MIDINodePathTests: XCTestCase {
   }
 
   func testCreation() {
-    let path = MIDINode.Path(trajectory: initialTrajectory, playerSize: playerSize, time: startTime)
+    let path = Node.Path(trajectory: initialTrajectory, playerSize: playerSize, time: startTime)
 //    expect(path.min) == CGPoint(x: 21, y: 21)
 //    expect(path.max) == CGPoint(x: 426, y: 426)
     expect(path.startTime) == startTime
@@ -60,7 +60,7 @@ final class MIDINodePathTests: XCTestCase {
   }
 
   func testSegmentForTime() {
-    let path = MIDINode.Path(trajectory: initialTrajectory, playerSize: playerSize, time: startTime)
+    let path = Node.Path(trajectory: initialTrajectory, playerSize: playerSize, time: startTime)
     let time1: BarBeatTime = 10∶1.250
     let segment1 = path.segmentIndex(for: time1)
     expect(segment1).toNot(beNil())
@@ -78,7 +78,7 @@ final class MIDINodePathTests: XCTestCase {
   }
 
 //  func testLocationForTime() {
-//    let path = MIDINode.Path(trajectory: initialTrajectory, playerSize: playerSize, time: startTime)
+//    let path = Node.Path(trajectory: initialTrajectory, playerSize: playerSize, time: startTime)
 //    let segmentIndex = path.segmentIndex(for: 11∶1.116)
 //    expect(segmentIndex).toNot(beNil())
 //    let segment = path[segmentIndex!]
@@ -87,7 +87,7 @@ final class MIDINodePathTests: XCTestCase {
 //  }
 
 //  func testSegmentGenerationPerformance() {
-//    let path = MIDINode.Path(trajectory: initialTrajectory, playerSize: playerSize, time: startTime)
+//    let path = Node.Path(trajectory: initialTrajectory, playerSize: playerSize, time: startTime)
 //    let time: BarBeatTime = 581∶1.116
 //    measure {
 //      let segmentIndex = path.segmentIndex(for: time)

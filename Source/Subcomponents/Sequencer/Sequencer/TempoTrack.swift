@@ -10,7 +10,7 @@ import MIDI
 import MoonKit
 
 /// A subclass of `Track` for containing only tempo-related MIDI events.
-public final class TempoTrack: Track {
+public final class TempoTrack: Sequencer.Track {
   // MARK: Stored Properties
 
   /// Flag indicating whether changes to `tempo` or `timeSignature` should be persisted
@@ -105,7 +105,7 @@ public final class TempoTrack: Track {
   /// - Parameter trackEvent: The MIDI event to test.
   /// - Returns: `true` if `trackEvent` is containable by an instance of `TempoTrack` and
   ///            `false` otherwise.
-  public static func isTempoTrackEvent(_ trackEvent: MIDIEvent) -> Bool {
+  public static func isTempoTrackEvent(_ trackEvent: Event) -> Bool {
     // Get the meta event wrapped by the MIDI event.
     guard case .meta(let metaEvent) = trackEvent else { return false }
 
@@ -132,7 +132,7 @@ public final class TempoTrack: Track {
     }
   }
 
-  // MARK: MIDIEvent Dispatch
+  // MARK: Event Dispatch
 
   /// Handles the specified event. If `event` does not wrap a tempo or time signature event
   /// then this method does nothing. If `event` wraps a tempo event then the track's `tempo`
@@ -141,7 +141,7 @@ public final class TempoTrack: Track {
   /// the track's `timeSignature` value is updated using the data contained by `event`.
   ///
   /// - Parameter event: The MIDI event to be dispatched by the tempo track.
-  override public func dispatch(event: MIDIEvent) {
+  override public func dispatch(event: Event) {
     // Get the meta event wrapped by `event`.
     guard case .meta(let metaEvent) = event else { return }
 
@@ -175,7 +175,7 @@ public final class TempoTrack: Track {
   /// new track.
   ///
   /// - Parameter sequence: The `Sequence` owning the new tempo track.
-  override public init(sequence: Sequence) {
+  override public init(sequence: Sequencer.Sequence) {
     // Initialize with the sequence.
     super.init(sequence: sequence)
 
@@ -195,7 +195,7 @@ public final class TempoTrack: Track {
   /// - Parameters:
   ///   - sequence: The `Sequence` owning the tempo track.
   ///   - trackChunk: The `TrackChunk` containing the tempo track's MIDI events.
-  public init(sequence: Sequence, trackChunk: TrackChunk) {
+  public init(sequence: Sequencer.Sequence, trackChunk: TrackChunk) {
     // Initialize with the specified sequence.
     super.init(sequence: sequence)
 

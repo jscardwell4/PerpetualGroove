@@ -4,11 +4,6 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>AudioEngine.xcscheme_^#shared#^_</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>26</integer>
-		</dict>
 		<key>Common.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
@@ -32,7 +27,12 @@
 		<key>NodePlayer.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>25</integer>
+			<integer>28</integer>
+		</dict>
+		<key>Sequencer.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>27</integer>
 		</dict>
 		<key>SoundFont.xcscheme_^#shared#^_</key>
 		<dict>
@@ -158,11 +158,6 @@
 			<true/>
 		</dict>
 		<key>C2F43BDC25A376F1002DA417</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>C2F43C3225A377EF002DA417</key>
 		<dict>
 			<key>primary</key>
 			<true/>

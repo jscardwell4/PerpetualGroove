@@ -111,7 +111,7 @@ public final class Instrument {
   /// Sends a 'note on' event through `outPort` to `endPoint` using `generator`. Waits the duration
   /// specified by `generator` and then sends a 'note off' event through `outPort` to `endPoint`.
   /// - Parameter generator: Responsible for creating and sending the MIDI packets.
-  public func playNote(_ generator: AnyMIDIGenerator) {
+  public func playNote(_ generator: AnyGenerator) {
     do {
       // Use the generator to send a 'note on' event.
       try generator.sendNoteOn(outPort: outPort, endPoint: endPoint, ticks: Sequencer.shared.time.ticks)
@@ -226,25 +226,25 @@ public final class Instrument {
   /// - Parameters:
   ///   - instrument: The `MetaEvent` with the instrument name.
   ///   - program: The `ChannelEvent` with the program and channel information.
-  /// - Throws: `Error.InvalidMIDIEvent` or `Error.AttachNodeFailed`
+  /// - Throws: `Error.InvalidEvent` or `Error.AttachNodeFailed`
   public convenience init(instrument: MetaEvent, program: ChannelEvent) throws {
     // Get the instrument name from the event or throw.
     guard case .text(var name) = instrument.data,
           name.hasPrefix("instrument:"),
-          program.status.kind == .programChange else { throw Error.InvalidMIDIEvent }
+          program.status.kind == .programChange else { throw Error.InvalidEvent }
 
     // Drop the first 11 characters.
     name = String(name.dropFirst(11))
 
     // Retrieve the URL.
     guard let url = Bundle.main.url(forResource: name, withExtension: nil) else {
-      throw Error.InvalidMIDIEvent
+      throw Error.InvalidEvent
     }
 
     guard let soundFont: SoundFont2 =
       ((try? EmaxSoundFont(url: url)) ?? (try? AnySoundFont(url: url)))
     else {
-      throw Error.InvalidMIDIEvent
+      throw Error.InvalidEvent
     }
 
     let channel = program.status.channel
@@ -256,7 +256,7 @@ public final class Instrument {
     logw("\(#function) not yet fully implemented. The bank value needs handling")
 
     guard let header = soundFont[program: program, bank: bank] else {
-      throw Error.InvalidMIDIEvent
+      throw Error.InvalidEvent
     }
 
     // Create a preset using the derived values.
@@ -362,7 +362,7 @@ public extension Instrument {
   /// An enumeration of the possible errors thrown by `Instrument`.
   enum Error: String, Swift.Error {
     case AttachNodeFailed = "Failed to attach sampler node to audio engine"
-    case InvalidMIDIEvent = "Invalid MIDI event provided"
+    case InvalidEvent = "Invalid MIDI event provided"
   }
 }
 
