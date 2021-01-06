@@ -40,7 +40,7 @@ public final class Loop: MIDINodeDispatch {
   public let identifier: UUID
 
   /// Manages MIDI nodes dispatched by the loop.
-  public private(set) var nodeManager: MIDINodeManager!
+  public private(set) lazy var nodeManager = MIDINodeManager(owner: self)
 
   /// The set of dispatched nodes.
   public var nodes: OrderedSet<HashableTuple<BarBeatTime, MIDINodeRef>> = []
@@ -138,9 +138,6 @@ public final class Loop: MIDINodeDispatch {
 
     // Initialize `eventContainer` with an empty container.
     eventContainer = MIDIEventContainer()
-
-    // Initialize `nodeManager` with a new instance owned by the loop.
-    nodeManager = MIDINodeManager(owner: self)
   }
 
   // MARK: Initializing
@@ -167,7 +164,6 @@ public final class Loop: MIDINodeDispatch {
     self.repeatDelay = repeatDelay
     self.start = start
     eventContainer = MIDIEventContainer(events: events)
-    nodeManager = MIDINodeManager(owner: self)
   }
 }
 

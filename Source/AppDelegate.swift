@@ -40,19 +40,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
                    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
   {
     
-    do {
-
-//      _ = SettingsManager.shared
-      try AudioEngine.initialize()
-      _ = Sequencer.shared
-      MIDINodePlayer.initialize()
-      DocumentManager.initialize()
-
-    } catch {
-
-      loge("\(error)")
-
-    }
+    _ = Sequencer.shared
+    MIDINodePlayer.initialize()
+    DocumentManager.initialize()
 
     viewController = window?.rootViewController as? RootViewController
 

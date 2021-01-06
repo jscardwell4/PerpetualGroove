@@ -22,7 +22,7 @@ public final class InstrumentTrack: Track, MIDINodeDispatch {
   // MARK: Stored Properties
 
   /// A manager for the MIDI nodes dispatched by the track.
-  public private(set) var nodeManager: MIDINodeManager!
+  public private(set) lazy var nodeManager = MIDINodeManager(owner: self)
 
   /// The MIDI event that specifies the instrument used by the track.
   private var instrumentEvent: MetaEvent!
@@ -37,7 +37,7 @@ public final class InstrumentTrack: Track, MIDINodeDispatch {
   private let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
 
   /// The instrument used by the track.
-  public private(set) var instrument: Instrument! {
+  public private(set) var instrument: Instrument {
     didSet {
       $volume = instrument
       $pan = instrument
@@ -150,10 +150,10 @@ public final class InstrumentTrack: Track, MIDINodeDispatch {
   public var index: Int { unwrapOrDie { sequence.instrumentTracks.firstIndex(of: self) } }
 
   /// Derived property wrapping `instrument.volume`.
-  @PassThrough(\Instrument.volume) public var volume: Float
+  @WritablePassThrough(\Instrument.volume) public var volume: Float
 
   /// Derived property wrapping `instrument.pan`.
-  @PassThrough(\Instrument.pan) public var pan: Float
+  @WritablePassThrough(\Instrument.pan) public var pan: Float
 
   /// Flag indicating whether new events should be persisted. This is `true` iff the
   /// sequencer is in it's default mode and the track is the current dispatch for the
@@ -174,7 +174,7 @@ public final class InstrumentTrack: Track, MIDINodeDispatch {
   ///    name for the instrument's current preset.
   /// 3. Return the empty string.
   public var displayName: String {
-    name.isEmpty ? instrument?.preset.programName ?? "" : name
+    name.isEmpty ? instrument.preset.programName : name
   }
 
   override public var description: String {
@@ -242,7 +242,7 @@ public final class InstrumentTrack: Track, MIDINodeDispatch {
 
     // Update `programEvent` with a new program change channel event that uses
     // the instrument's channel and program values.
-    programEvent = try! ChannelEvent(type: .programChange,
+    programEvent = try! ChannelEvent(kind: .programChange,
                                      channel: instrument.channel,
                                      data1: instrument.program)
 
@@ -355,7 +355,7 @@ public final class InstrumentTrack: Track, MIDINodeDispatch {
           // The packet contains a 'note on' event.
 
           // Initialize `event` with the corresponding channel event.
-          event = .channel(try! ChannelEvent(type: .noteOn,
+          event = .channel(try! ChannelEvent(kind: .noteOn,
                                              channel: packet.channel,
                                              data1: packet.note,
                                              data2: packet.velocity,
@@ -364,7 +364,7 @@ public final class InstrumentTrack: Track, MIDINodeDispatch {
           // The packet contains a 'note off' event.
 
           // Initialize `event` with the corresponding channel event.
-          event = .channel(try! ChannelEvent(type: .noteOff,
+          event = .channel(try! ChannelEvent(kind: .noteOff,
                                              channel: packet.channel,
                                              data1: packet.note,
                                              data2: packet.velocity,
@@ -490,24 +490,18 @@ public final class InstrumentTrack: Track, MIDINodeDispatch {
   ///   - instrument: The `Instrument` to couple with the created track.
   /// - Throws: Any error encountered creating the MIDI client or MIDI ports for the track.
   public init(sequence: Sequence, instrument: Instrument) throws {
-    // Initialize using the specified sequence.
-    super.init(sequence: sequence)
-
-    // Create a new node manager for the track.
-    nodeManager = MIDINodeManager(owner: self)
-
     // Initialize `instrument` using the specified instrument.
     self.instrument = instrument
 
-    // Assign the track to the instrument.
-    instrument.track = self
+    // Initialize using the specified sequence.
+    super.init(sequence: sequence)
 
     // Initialize `instrumentEvent` using file name of the instrument's sound font.
     let instrumentText = "instrument:\(instrument.soundFont.url.lastPathComponent)"
     instrumentEvent = MetaEvent(data: .text(text: instrumentText))
 
     // Initialize `programEvent` with the instrument's channel and program values.
-    programEvent = try! ChannelEvent(type: .programChange,
+    programEvent = try! ChannelEvent(kind: .programChange,
                                      channel: instrument.channel,
                                      data1: instrument.program)
 
@@ -527,12 +521,11 @@ public final class InstrumentTrack: Track, MIDINodeDispatch {
               name: String,
               events: [MIDIEvent]) throws
   {
+    let preset = preset ?? Sequencer.shared.auditionInstrument.preset
+    instrument = try Instrument(preset: preset)
     super.init(sequence: sequence)
-    nodeManager = MIDINodeManager(owner: self)
     self.color = color
     self.name = name
-    let preset = preset ?? Sequencer.shared.auditionInstrument.preset
-    instrument = try Instrument(track: self, preset: preset)
     add(events: events)
     try setup()
   }
@@ -549,89 +542,36 @@ public final class InstrumentTrack: Track, MIDINodeDispatch {
   ///         instrument, a bank change event should be queried rather than assuming a
   ///         bank value of `0`.
   public init(sequence: Sequence, trackChunk: TrackChunk) throws {
+    // Look for MIDI events relating to the instrument.
+    if let instrumentIndex = trackChunk.events.firstIndex(where: {
+      guard case .meta(let metaEvent) = $0,
+            case .text(let text) = metaEvent.data,
+            text.hasPrefix("instrument:")
+      else { return false }
+      return true
+    }),
+      let programIndex = trackChunk.events.firstIndex(where: {
+        guard case .channel(let channelEvent) = $0,
+              channelEvent.status.kind == .programChange
+        else { return false }
+        return true
+      }),
+      case .meta(let instrument) = trackChunk.events[instrumentIndex],
+      case .channel(let program) = trackChunk.events[programIndex]
+    {
+      self.instrument = try Instrument(instrument: instrument, program: program)
+    } else {
+      instrument = try Instrument(preset: Sequencer.shared.auditionInstrument.preset)
+    }
+
     // Initialize with the specified sequence.
     super.init(sequence: sequence)
-
-    // Create a node manager for the track.
-    nodeManager = MIDINodeManager(owner: self)
 
     // Add the MIDI events provided by the chunk to the track.
     add(events: trackChunk.events)
 
-    // Helper function that attempts to create a new `Instrument` using the MIDI events
-    // provided by the chunk.
-    func createInstrumentUsingMIDIEvents() -> Instrument? {
-      // Check that a suitable instrument event was provided by the track chunk and extract
-      // the name of the instrument from the event's data.
-      guard let instrumentEvent = instrumentEvent,
-            case .text(var instrumentName) = instrumentEvent.data
-      else {
-        return nil
-      }
-
-      // Get an index for the first character in the actual instrument name.
-      let index = instrumentName.index(instrumentName.startIndex, offsetBy: 11)
-
-      // Trim the leading 'instrument:' from the extracted text.
-      instrumentName = String(instrumentName[index...])
-
-      // Locate the matching sound font file within the application's main bundle.
-      guard let url = Bundle.main.url(forResource: instrumentName,
-                                      withExtension: nil)
-      else {
-        return nil
-      }
-
-      // Create a sound font using the bundle resource url.
-      guard let soundFont: SoundFont2 = (try? EmaxSoundFont(url: url))
-        ?? (try? AnySoundFont(url: url))
-      else {
-        return nil
-      }
-
-      // Check that a program change event was provided by the track chunk.
-      guard let programEvent = programEvent else {
-        return nil
-      }
-
-      // Get the channel and program values from the program event.
-      let channel = programEvent.status.channel, program = programEvent.data1
-
-      // Incorrectly, just assume a bank value of `0`.
-      let bank: UInt8 = 0
-
-      logw("\(#function) not yet fully implemented. The bank value needs handling")
-
-      // Retrieve the preset header from the sound font for (`program`, `bank`).
-      guard let presetHeader = soundFont[program: program, bank: bank] else {
-        return nil
-      }
-
-      // Create a preset using the derived values.
-      let preset = Instrument.Preset(soundFont: soundFont,
-                                     presetHeader: presetHeader,
-                                     channel: channel)
-
-      // Return an instrument initialized with the track and the preset.
-      return try? Instrument(track: self, preset: preset)
-    }
-
-    // Try generating an instrument from the MIDI events provided by the track chunk.
-    if let instrument = createInstrumentUsingMIDIEvents() {
-      // Initialize `instrument` with the generated instrument.
-      self.instrument = instrument
-    }
-
-    // Otherwise, try initializing `instrument` with a new instrument copied from the
-    // sequencer's audition instrument.
-    else {
-      instrument = try Instrument(track: self,
-                                  preset: Sequencer.shared.auditionInstrument.preset)
-    }
-
     // Initialize `color` with the next available track color.
-    color =
-      TrackColor.nextColor(currentColors: Set(sequence.instrumentTracks.map(\.color)))
+    color = .nextColor(currentColors: Set(sequence.instrumentTracks.map(\.color)))
 
     // Register for notifications and create MIDI client/ports. Must be called after
     // instrument initialization because notification registration requires the track's

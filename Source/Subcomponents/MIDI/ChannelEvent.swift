@@ -121,7 +121,7 @@ public struct ChannelEvent: _MIDIEvent, Hashable {
   /// a bar-beat time.
   ///
   /// - Parameters:
-  ///   - type: The `Status.Kind` value to use when initializing the new channel event's
+  ///   - kind: The `Status.Kind` value to use when initializing the new channel event's
   ///            `status` property.
   ///   - channel: The channel value to use when initializing the new channel event's
   ///              `status` property.
@@ -131,21 +131,21 @@ public struct ChannelEvent: _MIDIEvent, Hashable {
   ///   - time: The tick offset represented as a bar-beat time. The default is `zero`.
   /// - Throws: `MIDIFile.Error.unsupportedEvent` when the `nil` status of `data2` does
   ///           not match the expected `nil` status as determined by the value of `type`.
-  public init(type: Status.Kind,
-       channel: UInt8,
-       data1: UInt8,
-       data2: UInt8? = nil,
-       time: BarBeatTime = BarBeatTime.zero) throws
+  public init(kind: Status.Kind,
+              channel: UInt8,
+              data1: UInt8,
+              data2: UInt8? = nil,
+              time: BarBeatTime = BarBeatTime.zero) throws
   {
 
     // Consider the expected bytes for specified type.
-    switch type.byteCount {
+    switch kind.byteCount {
 
       case 3 where data2 == nil:
         // A second data byte is expected but not provided.
 
         // Create an error message.
-        let message = "\(type) expects a second data byte but `data2` is `nil`."
+        let message = "\(kind) expects a second data byte but `data2` is `nil`."
 
         // Throw an `unsupportedEvent` error.
         throw Error.unsupportedEvent(message)
@@ -154,7 +154,7 @@ public struct ChannelEvent: _MIDIEvent, Hashable {
         // A second data byte is provided but not expected.
 
         // Create an error message.
-        let message = "\(type) expects a single data byte but `data2` is not `nil`."
+        let message = "\(kind) expects a single data byte but `data2` is not `nil`."
 
         // Throw an `unsupportedEvent` error.
         throw Error.unsupportedEvent(message)
@@ -167,7 +167,7 @@ public struct ChannelEvent: _MIDIEvent, Hashable {
     }
 
     // Initialize `status` using the specified kind and channel.
-    status = Status(kind: type, channel: channel)
+    status = Status(kind: kind, channel: channel)
 
     // Initialize `data1` with the specified byte.
     self.data1 = data1
@@ -248,7 +248,7 @@ public struct ChannelEvent: _MIDIEvent, Hashable {
       // Return a `UInt8` value whose four most significant bits are obtained from the
       // raw value for `kind` and whose four least significant bits are obtained from
       // the value of `channel`.
-      return (kind.rawValue << 4) | channel
+      (kind.rawValue << 4) | channel
 
     }
 
@@ -304,9 +304,7 @@ public struct ChannelEvent: _MIDIEvent, Hashable {
     }
 
     /// Returns `true` iff the `value` values of the two status values are equal.
-    public static func ==(lhs: Status, rhs: Status) -> Bool {
-      return lhs.value == rhs.value
-    }
+    public static func ==(lhs: Status, rhs: Status) -> Bool { lhs.value == rhs.value }
 
     /// An enumeration of the seven MIDI channel voice messages where the raw value of a
     /// case is equal to the four bit number stored in the four most significant bits of
@@ -340,7 +338,7 @@ public struct ChannelEvent: _MIDIEvent, Hashable {
       /// The total number of bytes in a channel event whose status byte's four most
       /// significant bits are equal to the kind's raw value. The value of this property
       /// will be `3` when a second data byte is expected and `2` otherwise.
-      var byteCount: Int {
+      public var byteCount: Int {
 
         // Consider the kind.
         switch self {

@@ -9,6 +9,7 @@ import Foundation
 import MIDI
 import MoonKit
 import SoundFont
+import class AVFoundation.AVAudioUnitSampler
 
 // MARK: - Sequencer
 
@@ -22,6 +23,12 @@ public final class Sequencer {
   /// An instrument made availabe by the sequencer intended for use as a means of
   /// providing auditory feedback while configuring a separate `Instrument` instance.
   public private(set) var auditionInstrument: Instrument
+
+  /// A metronome made available by the sequencer.
+  public private(set) var metronome: Metronome
+
+  /// The sequencer's audio engine.
+  public let audioEngine: AudioEngine
 
   /// The primary transport used by the sequencer.
   public let primaryTransport = Transport(name: "primary")
@@ -104,6 +111,9 @@ public final class Sequencer {
 
   /// The private initializer for the singleton.
   private init() {
+    // Initialize the audio engine.
+    audioEngine = tryOrDie { try AudioEngine() }
+
     // Get the first sound font.
     let soundFont = soundFonts[0]
 
@@ -119,6 +129,15 @@ public final class Sequencer {
     auditionInstrument = tryOrDie { try Instrument(preset: preset) }
 
     transport = primaryTransport
+
+    // Create a sampler for the metronome.
+    metronome = Metronome(sampler: AVAudioUnitSampler())
+
+    audioEngine.attach(node: metronome.sampler)
+
+    // Start the audio engine.
+    tryOrDie { try audioEngine.start() }
+
   }
 
   // MARK: Computed Properties

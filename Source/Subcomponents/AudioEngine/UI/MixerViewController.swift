@@ -587,15 +587,15 @@ public final class MasterCell: MixerCell {
 
   /// Updates the knob and slider with current values retrieved from `AudioManager`.
   public func refresh() {
-    volume = AudioEngine.mixer.volume
-    pan = AudioEngine.mixer.pan
+    volume = Sequencer.shared.audioEngine.mixer.volume
+    pan = Sequencer.shared.audioEngine.mixer.pan
   }
 
   /// Updates `AudioManager.mixer.volume`.
-  @IBAction public func volumeDidChange() { AudioEngine.mixer.volume = volume }
+  @IBAction public func volumeDidChange() { Sequencer.shared.audioEngine.mixer.volume = volume }
 
   /// Updates `AudioManager.mixer.pan`.
-  @IBAction public  func panDidChange() { AudioEngine.mixer.pan = pan }
+  @IBAction public  func panDidChange() { Sequencer.shared.audioEngine.mixer.pan = pan }
 
 }
 

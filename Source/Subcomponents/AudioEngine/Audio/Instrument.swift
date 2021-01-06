@@ -5,104 +5,20 @@
 //  Created by Jason Cardwell on 8/8/15.
 //  Copyright © 2015 Moondeer Studios. All rights reserved.
 //
+import AVFoundation
 import Foundation
+import MIDI
 import MoonKit
 import SoundFont
-import AVFoundation
-import MIDI
+
+// MARK: - Instrument
 
 /// A class for generating audio output via a sampler loaded with a preset from a sound font file.
-public final class Instrument: Equatable, CustomStringConvertible, NotificationDispatching {
-
-  /// The sound font preset loaded into the instrument's sampler. Changes to the value of this
-  /// property trigger the posting of sound font and program change notifications.
-  public var preset: Preset {
-
-    didSet {
-
-      // Check that the sound font containing the preset has changed.
-      if !preset.soundFont.isEqualTo(oldValue.soundFont) {
-
-        // Post notification that the instrument's sound font has changed.
-        postNotification(name: .soundFontDidChange,
-                         object: self,
-                         userInfo: ["oldSoundFont": oldValue.soundFontName,
-                                    "newSoundFont": preset.soundFontName])
-
-      }
-
-      // Check that the preset's header has changed.
-      if preset.presetHeader != oldValue.presetHeader {
-
-        // Post notification the instrument's program has changed.
-        postNotification(name: .programDidChange,
-                         object: self,
-                         userInfo: ["oldProgramName": oldValue.programName,
-                                    "newProgramName": preset.programName])
-
-      }
-
-    }
-
-  }
-
-  /// The sound font utitlized by `preset`.
-  public var soundFont: SoundFont2 { return preset.soundFont }
-
-  /// The MIDI channel used by the instrument. Wrapper for the `channel` property of `preset`.
-  public var channel: UInt8 {
-    get { return preset.channel }
-    set { preset.channel = newValue }
-  }
-
-  /// The MIDI bank containing the MIDI program loaded by the instrument.
-  public var bank: UInt8 { return preset.bank }
-
-  /// The MIDI program loaded by the instrument.
-  public var program: UInt8 { return preset.program }
-
-  /// A weak reference to the instrument track to which the instrument has been assigned.
-  public weak var track: InstrumentTrack?
-
-  /// The sampler audio unit attached to the audio engine and connected to the mixer's output.
-  private let sampler = AVAudioUnitSampler()
-
-  /// The mixer input bus to which the instrument is connected.
-  public var bus: AVAudioNodeBus {
-    return sampler.destination(forMixer: AudioEngine.mixer, bus: 0)?.connectionPoint.bus ?? -1
-  }
-
-  /// The output level for the mixer input bus to which the instrument is connected.
-  /// The value of this property is ≥ `0` and ≤ `1`.
-  public var volume: Float {
-    get { return sampler.volume }
-    set { sampler.volume = (0 ... 1).clampValue(newValue)  }
-  }
-
-  /// The position in the stereo field for the mixer input bus to which the instrument is connected.
-  /// The value of this property is ≥ `-1` and ≤ `1` which corresponds to full left and full right.
-  public var pan: Float {
-    get { return sampler.pan }
-    set { sampler.pan = (-1 ... 1).clampValue(newValue) }
-  }
-
-  /// The gain in decibels of all notes played by the audio unit used by the instrument to generate
-  /// audio output. The value of this property is ≥ `-90` and ≤ `12`. The default value is 0.
-  public var masterGain: Float {
-    get { return sampler.masterGain }
-    set { sampler.masterGain = (-90 ... 12).clampValue(newValue) }
-  }
-
-  /// The position in the stereo field for the audio unit used by the instrument to generate audio
-  /// output. The value of this property is ≥ `-1` and ≤ `1` which corresponds to full left and 
-  /// full right.
-  public var stereoPan: Float {
-    get { return sampler.stereoPan }
-    set { sampler.stereoPan = newValue }
-  }
+public final class Instrument {
+  // MARK: Stored Properties
 
   /// The instrument's MIDI client.
-  private var client   = MIDIClientRef()
+  private var client = MIDIClientRef()
 
   /// The MIDI out port for the instrument.
   public private(set) var outPort = MIDIPortRef()
@@ -110,13 +26,93 @@ public final class Instrument: Equatable, CustomStringConvertible, NotificationD
   /// The MIDI endpoint for the instrument.
   public private(set) var endPoint = MIDIEndpointRef()
 
+  /// The sound font preset loaded into the instrument's sampler. Changes to the value of this
+  /// property trigger the posting of sound font and program change notifications.
+  public var preset: Preset {
+    didSet {
+      $soundFont = preset
+      $channel = preset
+
+      // Check that the sound font containing the preset has changed.
+      if !preset.soundFont.isEqualTo(oldValue.soundFont) {
+        // Post notification that the instrument's sound font has changed.
+        postNotification(name: .soundFontDidChange,
+                         object: self,
+                         userInfo: ["oldSoundFont": oldValue.soundFontName,
+                                    "newSoundFont": preset.soundFontName])
+      }
+
+      // Check that the preset's header has changed.
+      if preset.presetHeader != oldValue.presetHeader {
+        // Post notification the instrument's program has changed.
+        postNotification(name: .programDidChange,
+                         object: self,
+                         userInfo: ["oldProgramName": oldValue.programName,
+                                    "newProgramName": preset.programName])
+      }
+    }
+  }
+
+  // MARK: Computed Properties
+
+  /// The sound font utitlized by `preset`.
+  @PassThrough(\Instrument.Preset.soundFont) public var soundFont: SoundFont2
+
+  /// The MIDI channel used by the instrument. Wrapper for the `channel` property of `preset`.
+  @WritablePassThrough(\Instrument.Preset.channel) public var channel: UInt8
+
+  /// The MIDI bank containing the MIDI program loaded by the instrument.
+  @PassThrough(\Instrument.Preset.bank) public var bank: UInt8
+
+  /// The MIDI program loaded by the instrument.
+  @PassThrough(\Instrument.Preset.program) public var program: UInt8
+
+  /// The sampler audio unit attached to the audio engine and connected to the mixer's output.
+  private let sampler = AVAudioUnitSampler()
+
+  /// The mixer input bus to which the instrument is connected.
+  public var bus: AVAudioNodeBus {
+    sampler.destination(forMixer: Sequencer.shared.audioEngine.mixer, bus: 0)?.connectionPoint.bus ?? -1
+  }
+
+  /// The output level for the mixer input bus to which the instrument is connected.
+  /// The value of this property is ≥ `0` and ≤ `1`.
+  @ClampingWritablePassThrough(\AVAudioUnitSampler.volume, 0...1) public var volume: Float
+//  {
+//    get { sampler.volume }
+//    set { sampler.volume = (0 ... 1).clampValue(newValue)  }
+//  }
+
+  /// The position in the stereo field for the mixer input bus to which the instrument is connected.
+  /// The value of this property is ≥ `-1` and ≤ `1` which corresponds to full left and full right.
+  @ClampingWritablePassThrough(\AVAudioUnitSampler.pan, -1...1) public var pan: Float
+//  {
+//    get { sampler.pan }
+//    set { sampler.pan = (-1 ... 1).clampValue(newValue) }
+//  }
+
+  /// The gain in decibels of all notes played by the audio unit used by the instrument to generate
+  /// audio output. The value of this property is ≥ `-90` and ≤ `12`. The default value is 0.
+  @ClampingWritablePassThrough(\AVAudioUnitSampler.masterGain, -90...12) public var masterGain: Float
+//  {
+//    get { sampler.masterGain }
+//    set { sampler.masterGain = (-90 ... 12).clampValue(newValue) }
+//  }
+
+  /// The position in the stereo field for the audio unit used by the instrument to generate audio
+  /// output. The value of this property is ≥ `-1` and ≤ `1` which corresponds to full left and
+  /// full right.
+  @ClampingWritablePassThrough(\AVAudioUnitSampler.stereoPan, -1...1) public var stereoPan: Float
+//  {
+//    get { sampler.stereoPan }
+//    set { sampler.stereoPan = newValue }
+//  }
+
   /// Sends a 'note on' event through `outPort` to `endPoint` using `generator`. Waits the duration
   /// specified by `generator` and then sends a 'note off' event through `outPort` to `endPoint`.
   /// - Parameter generator: Responsible for creating and sending the MIDI packets.
   public func playNote(_ generator: AnyMIDIGenerator) {
-
     do {
-
       // Use the generator to send a 'note on' event.
       try generator.sendNoteOn(outPort: outPort, endPoint: endPoint, ticks: Sequencer.shared.time.ticks)
 
@@ -131,29 +127,22 @@ public final class Instrument: Equatable, CustomStringConvertible, NotificationD
         [outPort = outPort, endPoint = endPoint] in
 
         do {
-
           // Use the generator to send a 'note off' event.
           try generator.sendNoteOff(outPort: outPort, endPoint: endPoint, ticks: Sequencer.shared.time.ticks)
 
         } catch {
-
           // Just log the error.
           loge("\(error)")
-
         }
-
       }
 
       // Dispatch the closure for delayed execution.
       DispatchQueue.main.asyncAfter(deadline: deadline, execute: sendNoteOff)
 
     } catch {
-
       // Just log the error.
       loge("\(error)")
-
     }
-
   }
 
   /// Handler for MIDI packets received through `endPoint`. This method simply iterates through
@@ -163,24 +152,20 @@ public final class Instrument: Equatable, CustomStringConvertible, NotificationD
   {
     // Iterate the packets in the packet list.
     for packet in packetList.pointee {
-
       // Send the packet to the sampler.
       sampler.sendMIDIEvent(packet.data.0, data1: packet.data.1, data2: packet.data.2)
-
     }
-
   }
 
   /// Loads `preset` into the instrument's sampler. This method does nothing if `preset` has
   /// already been loaded into the sampler as determined by the instrument's `preset` property.
   /// - Note: This is the only place, aside from the initializer, where a preset is loaded
   ///         into the sampler. Both here and in the intializer, the `preset` property is set
-  ///         to the preset loaded into the sampler. In this way, the instrument's `preset` 
+  ///         to the preset loaded into the sampler. In this way, the instrument's `preset`
   ///         property value stays synchronized with the loaded sampler.
   /// - Parameter preset: Holds the sound font, program, and bank data for loading.
   /// - Throws: Any error encountered performing the sampler's load operation.
   public func load(preset: Preset) throws {
-
     // Check that the preset has not already been loaded.
     guard self.preset != preset else { return }
 
@@ -192,36 +177,37 @@ public final class Instrument: Equatable, CustomStringConvertible, NotificationD
 
     // Update the `preset` property.
     self.preset = preset
-
   }
 
   /// Initializing with a preset and an optional track.
   /// - Parameters:
-  ///   - track: The instrument track to which the instrument should be assigned or `nil`.
   ///   - preset: The preset to be loaded into the intrument's sampler.
-  /// - Throws: 
+  /// - Throws:
   ///   * `Error.AttachNodeFailed` when attaching the instrument's sampler to the audio engine fails.
   ///   * Any error encountered loading the specified preset into the instrument's sampler.
   ///   * Any error encountered creating the instrument's MIDI client.
   ///   * Any error encountered creating the out port for the instrument's MIDI client.
   ///   * Any error encountered creating the destination for the instrument's MIDI client.
-  public init(track: InstrumentTrack? = nil, preset: Preset) throws {
-
+  public init(preset: Preset) throws {
     // Initialize the property values using the parameter values.
-    self.track = track
     self.preset = preset
 
+    $volume = sampler
+    $pan = sampler
+    $masterGain = sampler
+    $stereoPan = sampler
+
     // Use the audio manager to attach instrument's sampler to the audio engine.
-    AudioEngine.attach(node: sampler, for: self)
+    Sequencer.shared.audioEngine.attach(node: sampler/*, for: self*/)
 
     // Check that the sampler has been attached to the audio engine.
     guard sampler.engine != nil else { throw Error.AttachNodeFailed }
 
     // Load the preset into the sampler.
     try sampler.loadSoundBankInstrument(at: preset.soundFont.url,
-                                     program: preset.program,
-                                     bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB),
-                                     bankLSB: preset.bank)
+                                        program: preset.program,
+                                        bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB),
+                                        bankLSB: preset.bank)
 
     // Create a name for the instrument's MIDI client.
     let name = withUnsafePointer(to: self) { "Instrument \(UInt(bitPattern: $0))" as CFString }
@@ -234,19 +220,72 @@ public final class Instrument: Equatable, CustomStringConvertible, NotificationD
 
     // Create the MIDI client's destination.
     try MIDIDestinationCreateWithBlock(client, name, &endPoint, read) ➤ "Failed to create endpoint"
-
   }
 
+  /// Initializing with MIDI event data.
+  /// - Parameters:
+  ///   - instrument: The `MetaEvent` with the instrument name.
+  ///   - program: The `ChannelEvent` with the program and channel information.
+  /// - Throws: `Error.InvalidMIDIEvent` or `Error.AttachNodeFailed`
+  public convenience init(instrument: MetaEvent, program: ChannelEvent) throws {
+    // Get the instrument name from the event or throw.
+    guard case .text(var name) = instrument.data,
+          name.hasPrefix("instrument:"),
+          program.status.kind == .programChange else { throw Error.InvalidMIDIEvent }
+
+    // Drop the first 11 characters.
+    name = String(name.dropFirst(11))
+
+    // Retrieve the URL.
+    guard let url = Bundle.main.url(forResource: name, withExtension: nil) else {
+      throw Error.InvalidMIDIEvent
+    }
+
+    guard let soundFont: SoundFont2 =
+      ((try? EmaxSoundFont(url: url)) ?? (try? AnySoundFont(url: url)))
+    else {
+      throw Error.InvalidMIDIEvent
+    }
+
+    let channel = program.status.channel
+    let program = program.data1
+
+    // Incorrectly, just assume a bank value of `0`.
+    let bank: UInt8 = 0
+
+    logw("\(#function) not yet fully implemented. The bank value needs handling")
+
+    guard let header = soundFont[program: program, bank: bank] else {
+      throw Error.InvalidMIDIEvent
+    }
+
+    // Create a preset using the derived values.
+    let preset = Preset(soundFont: soundFont, presetHeader: header, channel: channel)
+
+    try self.init(preset: preset)
+  }
+}
+
+// MARK: Equatable
+
+extension Instrument: Equatable {
   /// Returns `true` iff both instruments use the same sampler.
-  public static func ==(lhs: Instrument, rhs: Instrument) -> Bool { return lhs.sampler === rhs.sampler }
+  public static func ==(lhs: Instrument, rhs: Instrument) -> Bool { lhs.sampler === rhs.sampler }
+}
 
+// MARK: CustomStringConvertible
+
+extension Instrument: CustomStringConvertible {
   public var description: String {
-    return "Instrument { track: \(track?.name ?? "nil"); preset: \(preset)}"
+    "Instrument {preset: \(preset)}"
   }
+}
 
+// MARK: - Preset
+
+public extension Instrument {
   /// A struct for coupling a sound font, a preset header within the sound font, and a MIDI channel.
-  public struct Preset: Equatable, LosslessJSONValueConvertible {
-
+  struct Preset: Equatable, LosslessJSONValueConvertible {
     /// The sound font providing the source data for the preset.
     public let soundFont: SoundFont2
 
@@ -279,34 +318,33 @@ public final class Instrument: Equatable, CustomStringConvertible, NotificationD
       self.channel = channel
     }
 
-    /// Returns `true` iff the `soundFont`, `presetHeader`, and `channel` values of `lhs` and `rhs`
-    /// are equal.
+    /// Returns `true` iff the `soundFont`, `presetHeader`, and `channel` values of
+    /// `lhs` and `rhs` are equal.
     public static func ==(lhs: Preset, rhs: Preset) -> Bool {
-      return lhs.soundFont.isEqualTo(rhs.soundFont)
-          && lhs.presetHeader == rhs.presetHeader
-          && lhs.channel == rhs.channel
+      lhs.soundFont.isEqualTo(rhs.soundFont)
+        && lhs.presetHeader == rhs.presetHeader
+        && lhs.channel == rhs.channel
     }
 
     /// A JSON object with entries for the preset's `soundFont`, `presetHeader`, and `channel`
     /// properties.
     public var jsonValue: JSONValue {
-      return ["soundFont": soundFont, "presetHeader": presetHeader, "channel": channel]
+      ["soundFont": soundFont, "presetHeader": presetHeader, "channel": channel]
     }
 
     /// Initializing with a JSON value.
-    /// - Parameter jsonValue: To be successful `jsonValue` must be a JSON object with 'soundFont',
-    ///                        'presetHeader', and 'channel' entries whose values may be converted
-    ///                        as appropriate for assigning to the preset's properties.
+    /// - Parameter jsonValue: To be successful `jsonValue` must be a JSON object with
+    ///                        'soundFont', 'presetHeader', and 'channel' entries whose
+    ///                        values may be converted as appropriate for assigning to
+    ///                        the preset's properties.
     public init?(_ jsonValue: JSONValue?) {
-
       // Extract the property values from the JSON value.
       guard let dict = ObjectJSONValue(jsonValue),
             let soundFont: SoundFont2 = EmaxSoundFont(dict["soundFont"])
-                                       ?? AnySoundFont(dict["soundFont"]),
+            ?? AnySoundFont(dict["soundFont"]),
             let presetHeader = PresetHeader(dict["presetHeader"]),
             let channel = UInt8(dict["channel"])
-        else
-      {
+      else {
         return nil
       }
 
@@ -314,41 +352,43 @@ public final class Instrument: Equatable, CustomStringConvertible, NotificationD
       self.soundFont = soundFont
       self.presetHeader = presetHeader
       self.channel = channel
-
     }
-
   }
+}
 
+// MARK: - Error
+
+public extension Instrument {
   /// An enumeration of the possible errors thrown by `Instrument`.
-  public enum Error: String, Swift.Error {
+  enum Error: String, Swift.Error {
     case AttachNodeFailed = "Failed to attach sampler node to audio engine"
+    case InvalidMIDIEvent = "Invalid MIDI event provided"
   }
+}
 
+// MARK: NotificationDispatching
+
+extension Instrument: NotificationDispatching {
   /// An enumeration of names for notification posted by `Instrument`.
   public enum NotificationName: String, LosslessStringConvertible {
-
     case programDidChange, soundFontDidChange
 
     public var description: String { return rawValue }
 
     public init?(_ description: String) { self.init(rawValue: description) }
-
   }
-
 }
 
-extension Notification {
-
+public extension Notification {
   /// The name of the program unloaded by the instrument that posted the notification.
-  public var oldProgramName: String? { return userInfo?["oldProgram"] as? String }
+  var oldProgramName: String? { userInfo?["oldProgram"] as? String }
 
   /// The name of the program loaded by the instrument that posted the notification.
-  public var newProgramName: String? { return userInfo?["newProgram"] as? String }
+  var newProgramName: String? { userInfo?["newProgram"] as? String }
 
   /// The name of the sound font unloaded by the instrument that posted the notification.
-  public var oldSoundFontName: String? { return userInfo?["oldSoundFont"] as? String }
+  var oldSoundFontName: String? { userInfo?["oldSoundFont"] as? String }
 
   /// The name of the sound font loaded by the instrument that posted the notification.
-  public var newSoundFontName: String? { return userInfo?["newSoundFont"] as? String }
-
+  var newSoundFontName: String? { userInfo?["newSoundFont"] as? String }
 }

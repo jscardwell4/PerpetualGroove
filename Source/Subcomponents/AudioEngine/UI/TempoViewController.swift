@@ -27,7 +27,7 @@ public final class TempoViewController: UIViewController {
 
   /// Handles presses of the `metronomeButton` by toggling `AudioManager.metronome.isOn`.
   @IBAction
-  private func toggleMetronome() { AudioEngine.metronome.isOn.toggle()}
+  private func toggleMetronome() { Sequencer.shared.metronome.isOn.toggle()}
 
   /// Overridden to update `tempoSlider.value` and `metronomeButton.isSelected` with current values.
   public override func viewDidLoad() {
@@ -38,7 +38,7 @@ public final class TempoViewController: UIViewController {
     tempoSlider.value = Float(Sequencer.shared.tempo)
 
     // Set the selected state of the button to match whether the metronome is on.
-    metronomeButton.isSelected = AudioEngine.metronome?.isOn ?? false
+    metronomeButton.isSelected = Sequencer.shared.metronome.isOn
 
   }
 

@@ -14,7 +14,7 @@ import MIDI
 public final class Metronome {
 
   /// The instrument used to produce the metronome's sound.
-  private let sampler: AVAudioUnitSampler
+  let sampler: AVAudioUnitSampler
 
   /// The MIDI channel over which the metronome's note events are sent.
   public var channel: UInt8 = 0
@@ -45,18 +45,18 @@ public final class Metronome {
 
   /// Initializing with an audio unit.
   /// - Throws: Any error encountered while attempting to load the metronome's audio file.
-  public init(sampler: AVAudioUnitSampler) throws {
+  public init(sampler: AVAudioUnitSampler) {
 
     /// Initialize the metronome's sampler.
     self.sampler = sampler
 
     /// Get the url for file to load into the sampler.
-    guard let url = Bundle.main.url(forResource: "Woodblock", withExtension: "wav") else {
-      fatalError("Failed to get url for 'Woodblock.wav'")
-    }
+    let url = unwrapOrDie(message: "Failed to get url for 'Woodblock.wav'",
+                          Bundle.main.url(forResource: "Woodblock", withExtension: "wav"))
+
 
     /// Load the file into the sampler.
-    try sampler.loadAudioFiles(at: [url])
+    tryOrDie { try sampler.loadAudioFiles(at: [url]) }
 
   }
 

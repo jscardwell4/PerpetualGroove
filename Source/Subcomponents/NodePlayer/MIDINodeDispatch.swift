@@ -24,7 +24,7 @@ public protocol MIDINodeDispatch: MIDIEventDispatch, Named {
   var color: TrackColor { get }
 
   /// The node manager for the dispatching instance.
-  var nodeManager: MIDINodeManager! { get }
+  var nodeManager: MIDINodeManager { get }
 
   /// Makes the necessary connections for the dispatching `node`.
   /// - Throws: `MIDINodeDispatchError.nodeAlreadyConnected` or any error encountered 
