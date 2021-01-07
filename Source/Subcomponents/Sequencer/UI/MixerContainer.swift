@@ -10,20 +10,20 @@ import UIKit
 import MoonKit
 import Common
 
-/// A view controller that contains an instance of `MixerViewController` as its primary content
+/// A view controller that contains an instance of `MixerContainer.ViewController` as its primary content
 /// and within which secondary content, such as an instance of `InstrumentViewController`, may 
 /// be presented.
 public final class MixerContainer: SecondaryControllerContainer {
 
   /// The view controller responsible for the primary content.
-  public private(set) weak var mixerViewController: MixerViewController!
+  public private(set) weak var mixerViewController: ViewController!
 
   /// Overridden to assign the segue's destination to `mixerViewController`.
   public override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 
     super.prepare(for: segue, sender: sender)
 
-    guard let controller = segue.destination as? MixerViewController else { return }
+    guard let controller = segue.destination as? ViewController else { return }
 
     mixerViewController = controller
 

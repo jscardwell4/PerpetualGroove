@@ -115,7 +115,7 @@ final class RootViewController: UIViewController {
     // Assign the destination controller to a property determined by the destination controller's type.
     switch segue.destination {
 
-      case let controller as MixerViewController:
+      case let controller as MixerContainer.ViewController:
         mixerViewController = controller
 
       case let controller as DocumentsViewController:
@@ -176,7 +176,7 @@ final class RootViewController: UIViewController {
   /// The view controller responsible for presenting an interface to the mixer with controls for the
   /// tracks in the currently loaded sequence as well as for adding and removing tracks to/from the currently
   /// loaded sequence.
-  private(set) var mixerViewController: MixerViewController!
+  private(set) var mixerViewController: MixerContainer.ViewController!
 
   /// The view controller responsible for presenting a control for adjusting the sequencer's tempo and 
   /// for toggling the metronome on and off.

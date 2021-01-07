@@ -124,7 +124,7 @@
 		C2F43CAC25A378C5002DA417 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43B6425A2ADFE002DA417 /* MoonKit.framework */; };
 		C2F43CAF25A378CB002DA417 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43B6425A2ADFE002DA417 /* MoonKit.framework */; };
 		C2F43D6A25A37A80002DA417 /* NodeSelectionTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B3B2EA1C55A9110001152F /* NodeSelectionTool.swift */; };
-		C2F43D6B25A37A81002DA417 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F35DB81BB4507800ECB045 /* View.swift */; };
+		C2F43D6B25A37A81002DA417 /* Container.ViewController.View.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F35DB81BB4507800ECB045 /* Container.ViewController.View.swift */; };
 		C2F43D6C25A37A81002DA417 /* RotateTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2807DDF1C74C6270061A001 /* RotateTool.swift */; };
 		C2F43D6D25A37A81002DA417 /* PlayerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26FC1701B7BAC7F00E271A3 /* PlayerNode.swift */; };
 		C2F43D6E25A37A81002DA417 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2576E0C1C13343E00F9A192 /* Player.swift */; };
@@ -139,7 +139,7 @@
 		C2F43D7725A37A81002DA417 /* ThrottleTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2807DDD1C74C61D0061A001 /* ThrottleTool.swift */; };
 		C2F43D7825A37A81002DA417 /* NodeDispatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2670CCF1C4704A2000F76F9 /* NodeDispatch.swift */; };
 		C2F43D7925A37A81002DA417 /* Tool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C282911C1C1DFFD600F9975C /* Tool.swift */; };
-		C2F43D7A25A37A81002DA417 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E0433A1B72F4DC005F0675 /* ViewController.swift */; };
+		C2F43D7A25A37A81002DA417 /* Container.ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E0433A1B72F4DC005F0675 /* Container.ViewController.swift */; };
 		C2F43D9525A37B6C002DA417 /* TransportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2516B2C1C08F1B50060710B /* TransportViewController.swift */; };
 		C2F43D9625A37B6C002DA417 /* Instrument.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BC7AD41B76C85E001729BA /* Instrument.swift */; };
 		C2F43D9725A37B6C002DA417 /* MixerContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24E83971C3EE0A300B4A16A /* MixerContainer.swift */; };
@@ -151,16 +151,16 @@
 		C2F43D9E25A37B6C002DA417 /* TempoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AC3A961BA9D4CD00692EBB /* TempoViewController.swift */; };
 		C2F43D9F25A37B6C002DA417 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = C207458E1B8DF6D5000A06D4 /* Time.swift */; };
 		C2F43DA125A37B6C002DA417 /* Loop.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2981BA71C2468FD007FC51F /* Loop.swift */; };
-		C2F43DA325A37B6C002DA417 /* MixerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26EEB2D1B7FDA8F00EC6979 /* MixerViewController.swift */; };
+		C2F43DA325A37B6C002DA417 /* MixerContainer.ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26EEB2D1B7FDA8F00EC6979 /* MixerContainer.ViewController.swift */; };
 		C2F43DA425A37B6C002DA417 /* InstrumentTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CF38CC1B7EBED30085B3D5 /* InstrumentTrack.swift */; };
 		C2F43DA525A37B6C002DA417 /* AudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21E44C41B76546C00574BD2 /* AudioEngine.swift */; };
 		C2F43DA625A37B6C002DA417 /* InstrumentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BC71B84B04200A0B08D /* InstrumentViewController.swift */; };
 		C2F43DA725A37B6C002DA417 /* Sequencer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BCA1B84FB2100A0B08D /* Sequencer.swift */; };
 		C2F43DA825A37B6C002DA417 /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B12D961BDC531500A6C719 /* Track.swift */; };
 		C2F43DC325A37B7E002DA417 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24DCE371C3438A800AD98BE /* File.swift */; };
-		C2F43DC425A37B7E002DA417 /* DocumentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D406731BB9FDC700681DEF /* DocumentManager.swift */; };
+		C2F43DC425A37B7E002DA417 /* Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D406731BB9FDC700681DEF /* Manager.swift */; };
 		C2F43DC525A37B7E002DA417 /* NSMetadataItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2729ADE1BEE6B7C004FA34F /* NSMetadataItem.swift */; };
-		C2F43DC625A37B7E002DA417 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A27EE1B948E4E00BD1698 /* ViewController.swift */; };
+		C2F43DC625A37B7E002DA417 /* DocumentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A27EE1B948E4E00BD1698 /* DocumentsViewController.swift */; };
 		C2F43DC725A37B7E002DA417 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EA30521BB9DF3300020958 /* Document.swift */; };
 		C2F43DC825A37B7E002DA417 /* DocumentItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C283B69D1BC0495A007A4A36 /* DocumentItem.swift */; };
 		C2F43DC925A37B7E002DA417 /* LocalDocumentItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2729ADC1BEE6B3D004FA34F /* LocalDocumentItem.swift */; };
@@ -458,8 +458,8 @@
 		C2670CCD1C46FEF6000F76F9 /* Generator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Generator.swift; sourceTree = "<group>"; };
 		C2670CCF1C4704A2000F76F9 /* NodeDispatch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NodeDispatch.swift; sourceTree = "<group>"; };
 		C269D1D61BD7FA190084A7EE /* LogManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogManager.swift; sourceTree = "<group>"; };
-		C26A27EE1B948E4E00BD1698 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		C26EEB2D1B7FDA8F00EC6979 /* MixerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MixerViewController.swift; sourceTree = "<group>"; };
+		C26A27EE1B948E4E00BD1698 /* DocumentsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsViewController.swift; sourceTree = "<group>"; };
+		C26EEB2D1B7FDA8F00EC6979 /* MixerContainer.ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MixerContainer.ViewController.swift; sourceTree = "<group>"; };
 		C26FC16E1B7BA63300E271A3 /* Node.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
 		C26FC1701B7BAC7F00E271A3 /* PlayerNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerNode.swift; sourceTree = "<group>"; };
 		C26FC1721B7BAEBD00E271A3 /* AddTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddTool.swift; sourceTree = "<group>"; };
@@ -547,12 +547,12 @@
 		C2CD18E01B7E681A00705922 /* StatusError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusError.swift; sourceTree = "<group>"; };
 		C2CF38CC1B7EBED30085B3D5 /* InstrumentTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentTrack.swift; sourceTree = "<group>"; };
 		C2D2EAB21DC10FD400DAC5EC /* Picker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Picker.swift; sourceTree = "<group>"; };
-		C2D406731BB9FDC700681DEF /* DocumentManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentManager.swift; sourceTree = "<group>"; };
+		C2D406731BB9FDC700681DEF /* Manager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Manager.swift; sourceTree = "<group>"; };
 		C2DFBE791B8AA5AB00898C2A /* Sequence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
 		C2E043311B72F4DC005F0675 /* Groove.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Groove.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2E043341B72F4DC005F0675 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C2E043381B72F4DC005F0675 /* Scene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scene.swift; sourceTree = "<group>"; };
-		C2E0433A1B72F4DC005F0675 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		C2E0433A1B72F4DC005F0675 /* Container.ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Container.ViewController.swift; sourceTree = "<group>"; };
 		C2E0433F1B72F4DC005F0675 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C2E043441B72F4DC005F0675 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C2E542381BD56E00005B452F /* SoundFont2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundFont2.swift; sourceTree = "<group>"; };
@@ -576,7 +576,7 @@
 		C2F2ADC11B90EBD300FF4836 /* Woodblock.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Woodblock.wav; sourceTree = "<group>"; };
 		C2F2ADC31B91098A00FF4836 /* NoteGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteGenerator.swift; sourceTree = "<group>"; };
 		C2F2ADC51B91203700FF4836 /* Metronome.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Metronome.swift; sourceTree = "<group>"; };
-		C2F35DB81BB4507800ECB045 /* View.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
+		C2F35DB81BB4507800ECB045 /* Container.ViewController.View.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Container.ViewController.View.swift; sourceTree = "<group>"; };
 		C2F43AF025A2ACE0002DA417 /* Common.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Common.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2F43AF225A2ACE0002DA417 /* Common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Common.h; sourceTree = "<group>"; };
 		C2F43AF325A2ACE0002DA417 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -815,10 +815,9 @@
 		C255A72B25A2ABB70012AD69 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				C2F43AF225A2ACE0002DA417 /* Common.h */,
+				C2937E1925A6598B0061BD92 /* Supporting Files */,
 				C22FA58C1BC830D600162DB4 /* SettingsManager.swift */,
 				C2B2B03E1BCDCE5F007AF9DC /* TrackColor.swift */,
-				C2F43AF325A2ACE0002DA417 /* Info.plist */,
 				C24E83951C3EDFD800B4A16A /* SecondaryControllerContainer.swift */,
 				C29A337B1DAE7E4800728E4B /* Colors.swift */,
 				C29A337D1DAE7E8800728E4B /* Fonts.swift */,
@@ -955,8 +954,8 @@
 			isa = PBXGroup;
 			children = (
 				C24E83991C3EE0D100B4A16A /* Container.swift */,
-				C2F35DB81BB4507800ECB045 /* View.swift */,
-				C2E0433A1B72F4DC005F0675 /* ViewController.swift */,
+				C2F35DB81BB4507800ECB045 /* Container.ViewController.View.swift */,
+				C2E0433A1B72F4DC005F0675 /* Container.ViewController.swift */,
 				C2D2EAB21DC10FD400DAC5EC /* Picker.swift */,
 			);
 			path = UI;
@@ -995,7 +994,7 @@
 		C285084725A638A70063049A /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				C26A27EE1B948E4E00BD1698 /* ViewController.swift */,
+				C26A27EE1B948E4E00BD1698 /* DocumentsViewController.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -1062,7 +1061,7 @@
 				C2516B2C1C08F1B50060710B /* TransportViewController.swift */,
 				C2AA2BC71B84B04200A0B08D /* InstrumentViewController.swift */,
 				C24E83971C3EE0A300B4A16A /* MixerContainer.swift */,
-				C26EEB2D1B7FDA8F00EC6979 /* MixerViewController.swift */,
+				C26EEB2D1B7FDA8F00EC6979 /* MixerContainer.ViewController.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -1100,6 +1099,15 @@
 			path = Chunks;
 			sourceTree = "<group>";
 		};
+		C2937E1925A6598B0061BD92 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				C2F43AF325A2ACE0002DA417 /* Info.plist */,
+				C2F43AF225A2ACE0002DA417 /* Common.h */,
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		C2AD26101DAC47A400B9BA75 /* Documents */ = {
 			isa = PBXGroup;
 			children = (
@@ -1107,7 +1115,7 @@
 				C285087D25A639830063049A /* Document */,
 				C285086225A638AF0063049A /* File */,
 				C285084725A638A70063049A /* UI */,
-				C2D406731BB9FDC700681DEF /* DocumentManager.swift */,
+				C2D406731BB9FDC700681DEF /* Manager.swift */,
 			);
 			path = Documents;
 			sourceTree = "<group>";
@@ -2018,9 +2026,9 @@
 				C2F43D7325A37A81002DA417 /* Scene.swift in Sources */,
 				C2F43D6C25A37A81002DA417 /* RotateTool.swift in Sources */,
 				C287399F25A3A9B600870EE0 /* Picker.swift in Sources */,
-				C2F43D6B25A37A81002DA417 /* View.swift in Sources */,
+				C2F43D6B25A37A81002DA417 /* Container.ViewController.View.swift in Sources */,
 				C2F43D7925A37A81002DA417 /* Tool.swift in Sources */,
-				C2F43D7A25A37A81002DA417 /* ViewController.swift in Sources */,
+				C2F43D7A25A37A81002DA417 /* Container.ViewController.swift in Sources */,
 				C2F43D7425A37A81002DA417 /* RemoveTool.swift in Sources */,
 				C2F43D6A25A37A80002DA417 /* NodeSelectionTool.swift in Sources */,
 				C2F43D7725A37A81002DA417 /* ThrottleTool.swift in Sources */,
@@ -2049,9 +2057,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C2F43DC425A37B7E002DA417 /* DocumentManager.swift in Sources */,
+				C2F43DC425A37B7E002DA417 /* Manager.swift in Sources */,
 				C285089025A63A620063049A /* Track.swift in Sources */,
-				C2F43DC625A37B7E002DA417 /* ViewController.swift in Sources */,
+				C2F43DC625A37B7E002DA417 /* DocumentsViewController.swift in Sources */,
 				C2F43DC325A37B7E002DA417 /* File.swift in Sources */,
 				C285088E25A63A620063049A /* Node.swift in Sources */,
 				C2F43DC525A37B7E002DA417 /* NSMetadataItem.swift in Sources */,
@@ -2077,7 +2085,7 @@
 				C2F43D9925A37B6C002DA417 /* Metronome.swift in Sources */,
 				C2F43D9A25A37B6C002DA417 /* Transport.swift in Sources */,
 				C2F43D9F25A37B6C002DA417 /* Time.swift in Sources */,
-				C2F43DA325A37B6C002DA417 /* MixerViewController.swift in Sources */,
+				C2F43DA325A37B6C002DA417 /* MixerContainer.ViewController.swift in Sources */,
 				C2F43D9C25A37B6C002DA417 /* Sequence.swift in Sources */,
 				C2F43D9625A37B6C002DA417 /* Instrument.swift in Sources */,
 				C2F43DA525A37B6C002DA417 /* AudioEngine.swift in Sources */,
@@ -3282,7 +3290,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Source/Subcomponents/Common/Info.plist;
+				INFOPLIST_FILE = "Source/Subcomponents/Common/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3322,7 +3330,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Source/Subcomponents/Common/Info.plist;
+				INFOPLIST_FILE = "Source/Subcomponents/Common/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3362,7 +3370,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Source/Subcomponents/Common/Info.plist;
+				INFOPLIST_FILE = "Source/Subcomponents/Common/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3400,7 +3408,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Source/Subcomponents/Common/Info.plist;
+				INFOPLIST_FILE = "Source/Subcomponents/Common/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

@@ -5,13 +5,14 @@
 //  Created by Jason Cardwell on 01/06/21.
 //  Copyright © 2021 Moondeer Studios. All rights reserved.
 //
-import MoonKit
 import MIDI
+import MoonKit
 import NodePlayer
 
-extension File {
+public extension File
+{
   /// A type for encapsulating all the necessary data for adding and removing a `Node`.
-  public struct Node: LosslessJSONValueConvertible
+  struct Node: LosslessJSONValueConvertible
   {
     /// Use the identifier type utilized by midi node events.
     public typealias Identifier = NodeEvent.Identifier
@@ -74,8 +75,11 @@ extension File {
     public init?(event: Event)
     {
       // Extract the identifier, trajectory and generator from the event's data.
-      guard case let .add(identifier, trajectory, generator) = event.data else {
-        return nil }
+      guard case let .add(identifier, trajectory, generator) = event.data
+      else
+      {
+        return nil
+      }
 
       // Initialize the node's properties.
       addTime = event.time
@@ -144,5 +148,4 @@ extension File {
       }
     }
   }
-
 }

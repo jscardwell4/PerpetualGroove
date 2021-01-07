@@ -102,7 +102,7 @@ final class LogManager {
   /// Sets the default log context for a multitude of types.
   static private func setDefaultLogContexts() {
 
-    Log.Context.set(context: MIDIFileContext, forType: DocumentManager.self)
+    Log.Context.set(context: MIDIFileContext, forType: Manager.self)
     Log.Context.set(context: MIDIFileContext ∪ .console, forType: Document.self)
     Log.Context.set(context: MIDIFileContext, forType: MIDIFile.self)
     Log.Context.set(context: MIDIFileContext, forType: Documents.File.self)
@@ -143,7 +143,7 @@ final class LogManager {
     Log.Context.set(context: UIContext ∪ .console, forType: DocumentCell.self)
     Log.Context.set(context: UIContext ∪ .console, forType: DocumentItem.self)
     Log.Context.set(context: UIContext, forType: MixerCell.self)
-    Log.Context.set(context: UIContext, forType: MixerViewController.self)
+    Log.Context.set(context: UIContext, forType: MixerContainer.ViewController.self)
     Log.Context.set(context: UIContext, forType: RootViewController.self)
     Log.Context.set(context: UIContext, forType: TransportViewController.self)
 

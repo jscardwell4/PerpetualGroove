@@ -95,7 +95,8 @@ public extension File
             switch event.data
             {
               case .add:
-                // The event adds a node, create a new `Node` instance and append to the track.
+                // The event adds a node, create a new `Node` instance and append to
+                // the track.
 
                 // Generate the new node.
                 guard let node = Node(event: event) else { continue }
@@ -137,13 +138,14 @@ public extension File
       }
     }
 
-    public var description: String { return jsonValue.prettyRawValue }
+    public var description: String { jsonValue.prettyRawValue }
 
-    /// A JSON object containing the track's `name`, `color`, and `instrument` values keyed by property
-    /// name. The object also contains value arrays for the `nodes` and loops` properties.
+    /// A JSON object containing the track's `name`, `color`, and `instrument` values
+    /// keyed by property name. The object also contains value arrays for the `nodes`
+    /// and loops` properties.
     public var jsonValue: JSONValue
     {
-      return [
+      [
         "name": name,
         "color": color,
         "instrument": instrument,
@@ -175,11 +177,15 @@ public extension File
       self.instrument = instrument
       self.color = color
 
-      // Initialize `nodes` by converting the array of JSON values into `Node` instances and mapping.
-      self.nodes = Dictionary(nodes.flatMap(Node.init).map { (key: $0.identifier, value: $0) })
+      // Initialize `nodes` by converting the array of JSON values into `Node`
+      // instances and mapping.
+      self.nodes = Dictionary(nodes.flatMap(Node.init)
+                                .map { (key: $0.identifier, value: $0) })
 
-      // Initialize `loops` by converting the array of JSON values into `Loop` instances and mapping.
-      self.loops = Dictionary(loops.flatMap(Loop.init).map { (key: $0.identifier, value: $0) })
+      // Initialize `loops` by converting the array of JSON values into `Loop`
+      // instances and mapping.
+      self.loops = Dictionary(loops.flatMap(Loop.init)
+                                .map { (key: $0.identifier, value: $0) })
     }
   }
 }

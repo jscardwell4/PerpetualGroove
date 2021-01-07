@@ -130,9 +130,9 @@ public extension Container
     private func setup()
     {
 //    fatalError("\(#function) not yet implemented.")
-//    receptionist.observe(name: .didChangeDocument, from: DocumentManager.self,
+//    receptionist.observe(name: .didChangeDocument, from: Manager.self,
 //                         callback: weakCapture(of: self, block:ViewController.didChangeDocument))
-//    receptionist.observe(name: .willOpenDocument, from: DocumentManager.self,
+//    receptionist.observe(name: .willOpenDocument, from: Manager.self,
 //                         callback: weakCapture(of: self, block:ViewController.willOpenDocument))
 //    receptionist.observe(name: .didSelectTool, from: NodePlayer.self,
 //                         callback: weakCapture(of: self, block:ViewController.didSelectTool))
@@ -199,7 +199,7 @@ public extension Container
     private func didChangeDocument(_: Notification)
     {
       fatalError("\(#function) not yet implemented.")
-//    documentName.text = DocumentManager.currentDocument?.localizedName
+//    documentName.text = Manager.currentDocument?.localizedName
 //
 //    guard spinner.isHidden == false else { return }
 //
@@ -238,7 +238,7 @@ public extension Container
     public func textFieldShouldBeginEditing(_: UITextField) -> Bool
     {
       fatalError("\(#function) not yet implemented.")
-//    return DocumentManager.currentDocument != nil
+//    return Manager.currentDocument != nil
     }
 
     /// Resigns first responder and returns `false`.
@@ -254,9 +254,9 @@ public extension Container
       fatalError("\(#function) not yet implemented.")
 //    guard let text = textField.text else { return false }
 //
-//    let fileName = DocumentManager.noncollidingFileName(for: text)
+//    let fileName = Manager.noncollidingFileName(for: text)
 //
-//    if let currentDocument = DocumentManager.currentDocument,
+//    if let currentDocument = Manager.currentDocument,
 //      ![fileName, currentDocument.localizedName].contains(text)
 //    {
 //      textField.text = fileName
@@ -270,13 +270,13 @@ public extension Container
     {
       fatalError("\(#function) not yet implemented.")
 //    guard let text = textField.text,
-//          DocumentManager.currentDocument?.localizedName != text
+//          Manager.currentDocument?.localizedName != text
 //      else
 //    {
 //      return
 //    }
 //
-//    DocumentManager.currentDocument?.rename(to: text)
+//    Manager.currentDocument?.rename(to: text)
     }
   }
 }

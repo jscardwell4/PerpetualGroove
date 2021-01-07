@@ -51,7 +51,7 @@ public extension File
       // text contained in the event's data.
       guard case let .marker(text) = event.data,
             let captures = (~/"^start\\(([^)]+)\\):([0-9]+):([0-9]+)$")
-            .firstMatch(in: text)?.captures
+              .firstMatch(in: text)?.captures
 
       else
       {
@@ -70,7 +70,8 @@ public extension File
         return nil
       }
 
-      // Intialize `identifier`, `repetitions` and `repeatDelay` using the extracted values.
+      // Intialize `identifier`, `repetitions` and `repeatDelay` using the
+      // extracted values.
       self.identifier = identifier
       self.repetitions = repetitions
       self.repeatDelay = repeatDelay
@@ -85,7 +86,7 @@ public extension File
     /// object also contains a value array for the `nodes` property.
     public var jsonValue: JSONValue
     {
-      return .object([
+      .object([
         "identifier": .string(identifier.uuidString),
         "repetitions": .number(repetitions as NSNumber),
         "repeatDelay": .number(repeatDelay as NSNumber),
@@ -128,9 +129,9 @@ public extension File
       // Initialize `nodes` by converting the array of JSON values into `Node`
       // instances and mapping.
       self.nodes = Dictionary(nodes.flatMap(Node.init)
-        .map { (key: $0.identifier, value: $0) })
+                                .map { (key: $0.identifier, value: $0) })
     }
 
-    public var description: String { return jsonValue.prettyRawValue }
+    public var description: String { jsonValue.prettyRawValue }
   }
 }

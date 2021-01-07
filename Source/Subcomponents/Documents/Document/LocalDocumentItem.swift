@@ -8,8 +8,12 @@
 import Foundation
 import MoonKit
 
+// MARK: - LocalDocumentItem
+
 /// A class for wrapping a document whose file is located on the local disk.
-public final class LocalDocumentItem: NSObject {
+public final class LocalDocumentItem: NSObject
+{
+  // MARK: Stored Properties
 
   /// The document's file url.
   public let url: URL
@@ -17,61 +21,80 @@ public final class LocalDocumentItem: NSObject {
   /// Wrapper for the document's file.
   private let wrapper: FileWrapper
 
+  // MARK: Computed Properties
+
   /// The name of the document shown in the user interface.
-  public var displayName: String { return wrapper.preferredFilename! }
+  public var displayName: String { wrapper.preferredFilename! }
 
   /// The size of the document's file on disk or `0` if no such file exists.
-  public var size: UInt64 {
-    return wrapper.fileAttributes[FileAttributeKey.size.rawValue] as? UInt64 ?? 0
+  public var size: UInt64
+  {
+    wrapper.fileAttributes[FileAttributeKey.size.rawValue] as? UInt64 ?? 0
   }
 
   /// The date the document's file was last modified.
-  public var modificationDate: Date? {
-    return wrapper.fileAttributes[FileAttributeKey.modificationDate.rawValue] as? Date
+  public var modificationDate: Date?
+  {
+    wrapper.fileAttributes[FileAttributeKey.modificationDate.rawValue] as? Date
   }
 
   /// The date the  document's file was created.
-  public var creationDate: Date? {
-    return wrapper.fileAttributes[FileAttributeKey.creationDate.rawValue] as? Date
+  public var creationDate: Date?
+  {
+    wrapper.fileAttributes[FileAttributeKey.creationDate.rawValue] as? Date
   }
 
+  // MARK: Initializing
+
   /// Default initializer for `LocalDocumentItem`.
+  ///
   /// - Parameter url: The document's file url.
   /// - Throws: Any error encountered by `FileWrapper` intializing with `url`.
-  public init(url: URL) throws {
+  public init(url: URL) throws
+  {
     self.url = url
     wrapper = try FileWrapper(url: url, options: .withoutMapping)
     super.init()
   }
 
   /// Initialize from an existing file wrapper.
+  ///
   /// - Parameter fileWrapper: The wrapper for the document's file.
-  /// - Requires: `fileWrapper.preferredFilename != nil` and the wrapped file is located in the local
-  ///             documents directory
-  /// - Throws: `Error.invalidFileWrapper` or any error thrown by `LocalDocumentItem.init(url:)`.
-  public convenience init(_ fileWrapper: FileWrapper) throws {
-
-    guard let baseURL = DocumentManager.StorageLocation.local.root else {
+  /// - Requires: `fileWrapper.preferredFilename != nil` and the wrapped file
+  ///             is located in the local documents directory
+  /// - Throws: `Error.invalidFileWrapper` or any error thrown
+  ///           by `LocalDocumentItem.init(url:)`.
+  public convenience init(_ fileWrapper: FileWrapper) throws
+  {
+    guard let baseURL = Manager.StorageLocation.local.root
+    else
+    {
       fatalError("Failed to get root directory for local document storage")
     }
 
-    guard let preferredFileName = fileWrapper.preferredFilename else {
+    guard let preferredFileName = fileWrapper.preferredFilename
+    else
+    {
       throw Error.invalidFileWrapper
     }
 
     let url = baseURL + preferredFileName
 
-    guard fileWrapper.matchesContents(of: url) else {
+    guard fileWrapper.matchesContents(of: url)
+    else
+    {
       throw Error.invalidFileWrapper
     }
 
     try self.init(url: url)
-
   }
+}
 
+public extension LocalDocumentItem
+{
   /// Enumeration of the possible errors thrown by `LocalDocumentItem`.
-  public enum Error: String, Swift.Error {
+  enum Error: String, Swift.Error
+  {
     case invalidFileWrapper
   }
-
 }
