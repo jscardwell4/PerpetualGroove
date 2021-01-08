@@ -56,68 +56,65 @@ public final class Instrument {
   // MARK: Computed Properties
 
   /// The sound font utitlized by `preset`.
-  @PassThrough(\Instrument.Preset.soundFont) public var soundFont: SoundFont2
+  @PassThrough(\Instrument.Preset.soundFont)
+  public var soundFont: SoundFont2
 
   /// The MIDI channel used by the instrument. Wrapper for the `channel` property of `preset`.
-  @WritablePassThrough(\Instrument.Preset.channel) public var channel: UInt8
+  @WritablePassThrough(\Instrument.Preset.channel)
+  public var channel: UInt8
 
   /// The MIDI bank containing the MIDI program loaded by the instrument.
-  @PassThrough(\Instrument.Preset.bank) public var bank: UInt8
+  @PassThrough(\Instrument.Preset.bank)
+  public var bank: UInt8
 
   /// The MIDI program loaded by the instrument.
-  @PassThrough(\Instrument.Preset.program) public var program: UInt8
+  @PassThrough(\Instrument.Preset.program)
+  public var program: UInt8
 
   /// The sampler audio unit attached to the audio engine and connected to the mixer's output.
   private let sampler = AVAudioUnitSampler()
 
   /// The mixer input bus to which the instrument is connected.
   public var bus: AVAudioNodeBus {
-    sampler.destination(forMixer: Controller.shared.audioEngine.mixer, bus: 0)?.connectionPoint.bus ?? -1
+    sampler.destination(forMixer: audioEngine.mixer, bus: 0)?.connectionPoint.bus ?? -1
   }
 
   /// The output level for the mixer input bus to which the instrument is connected.
   /// The value of this property is ≥ `0` and ≤ `1`.
-  @ClampingWritablePassThrough(\AVAudioUnitSampler.volume, 0...1) public var volume: Float
-//  {
-//    get { sampler.volume }
-//    set { sampler.volume = (0 ... 1).clampValue(newValue)  }
-//  }
+  @ClampingWritablePassThrough(\AVAudioUnitSampler.volume, 0...1)
+  public var volume: Float
 
-  /// The position in the stereo field for the mixer input bus to which the instrument is connected.
-  /// The value of this property is ≥ `-1` and ≤ `1` which corresponds to full left and full right.
-  @ClampingWritablePassThrough(\AVAudioUnitSampler.pan, -1...1) public var pan: Float
-//  {
-//    get { sampler.pan }
-//    set { sampler.pan = (-1 ... 1).clampValue(newValue) }
-//  }
+  /// The position in the stereo field for the mixer input bus to which the
+  /// instrument is connected. The value of this property is ≥ `-1` and ≤ `1`
+  /// which corresponds to full left and full right.
+  @ClampingWritablePassThrough(\AVAudioUnitSampler.pan, -1...1)
+  public var pan: Float
 
-  /// The gain in decibels of all notes played by the audio unit used by the instrument to generate
-  /// audio output. The value of this property is ≥ `-90` and ≤ `12`. The default value is 0.
-  @ClampingWritablePassThrough(\AVAudioUnitSampler.masterGain, -90...12) public var masterGain: Float
-//  {
-//    get { sampler.masterGain }
-//    set { sampler.masterGain = (-90 ... 12).clampValue(newValue) }
-//  }
+  /// The gain in decibels of all notes played by the audio unit used by the
+  /// instrument to generate audio output. The value of this property is ≥ `-90`
+  /// and ≤ `12`. The default value is 0.
+  @ClampingWritablePassThrough(\AVAudioUnitSampler.masterGain, -90...12)
+  public var masterGain: Float
 
-  /// The position in the stereo field for the audio unit used by the instrument to generate audio
-  /// output. The value of this property is ≥ `-1` and ≤ `1` which corresponds to full left and
-  /// full right.
-  @ClampingWritablePassThrough(\AVAudioUnitSampler.stereoPan, -1...1) public var stereoPan: Float
-//  {
-//    get { sampler.stereoPan }
-//    set { sampler.stereoPan = newValue }
-//  }
+  /// The position in the stereo field for the audio unit used by the instrument
+  /// to generate audio output. The value of this property is ≥ `-1` and ≤ `1`
+  /// which corresponds to full left and full right.
+  @ClampingWritablePassThrough(\AVAudioUnitSampler.stereoPan, -1...1)
+  public var stereoPan: Float
 
-  /// Sends a 'note on' event through `outPort` to `endPoint` using `generator`. Waits the duration
-  /// specified by `generator` and then sends a 'note off' event through `outPort` to `endPoint`.
+  /// Sends a 'note on' event through `outPort` to `endPoint` using `generator`.
+  /// Waits the duration specified by `generator` and then sends a 'note off'
+  /// event through `outPort` to `endPoint`.
+  ///
   /// - Parameter generator: Responsible for creating and sending the MIDI packets.
   public func playNote(_ generator: AnyGenerator) {
     do {
       // Use the generator to send a 'note on' event.
-      try generator.sendNoteOn(outPort: outPort, endPoint: endPoint, ticks: Controller.shared.time.ticks)
+      try generator.sendNoteOn(outPort: outPort, endPoint: endPoint, ticks: time.ticks)
 
       // Translate the generator's duration into nanoseconds.
-      let nanoseconds = UInt64(generator.duration.seconds(withBPM: Controller.shared.tempo) * Double(NSEC_PER_SEC))
+      let nanoseconds = UInt64(generator.duration.seconds(withBPM: controller.tempo)
+                                * Double(NSEC_PER_SEC))
 
       // Convert the nanosecond value into a dispatch time.
       let deadline = DispatchTime(uptimeNanoseconds: nanoseconds)
@@ -128,7 +125,7 @@ public final class Instrument {
 
         do {
           // Use the generator to send a 'note off' event.
-          try generator.sendNoteOff(outPort: outPort, endPoint: endPoint, ticks: Controller.shared.time.ticks)
+          try generator.sendNoteOff(outPort: outPort, endPoint: endPoint, ticks: time.ticks)
 
         } catch {
           // Just log the error.
@@ -141,7 +138,7 @@ public final class Instrument {
 
     } catch {
       // Just log the error.
-      loge("\(error)")
+      log.error("\(error as NSObject)")
     }
   }
 
@@ -210,16 +207,20 @@ public final class Instrument {
                                         bankLSB: preset.bank)
 
     // Create a name for the instrument's MIDI client.
-    let name = withUnsafePointer(to: self) { "Instrument \(UInt(bitPattern: $0))" as CFString }
+    let name = withUnsafePointer(to: self) {
+      "Instrument \(UInt(bitPattern: $0))" as CFString
+    }
 
     // Create the instrument's MIDI client.
-    try MIDIClientCreateWithBlock(name, &client, nil) ➤ "Failed to create MIDI client"
-
+    try require(MIDIClientCreateWithBlock(name, &client, nil),
+                "Failed to create MIDI client")
     // Create the MIDI client's out port.
-    try MIDIOutputPortCreate(client, "Output" as CFString, &outPort) ➤ "Failed to create out port"
+    try require(MIDIOutputPortCreate(client, "Output" as CFString, &outPort),
+                "Failed tocreate out port")
 
     // Create the MIDI client's destination.
-    try MIDIDestinationCreateWithBlock(client, name, &endPoint, read) ➤ "Failed to create endpoint"
+    try require(MIDIDestinationCreateWithBlock(client, name, &endPoint, read),
+                "Failed tocreate endpoint")
   }
 
   /// Initializing with MIDI event data.
@@ -270,21 +271,22 @@ public final class Instrument {
 
 extension Instrument: Equatable {
   /// Returns `true` iff both instruments use the same sampler.
-  public static func ==(lhs: Instrument, rhs: Instrument) -> Bool { lhs.sampler === rhs.sampler }
+  public static func ==(lhs: Instrument, rhs: Instrument) -> Bool {
+    lhs.sampler === rhs.sampler
+  }
 }
 
 // MARK: CustomStringConvertible
 
 extension Instrument: CustomStringConvertible {
-  public var description: String {
-    "Instrument {preset: \(preset)}"
-  }
+  public var description: String { "Instrument {preset: \(preset)}" }
 }
 
 // MARK: - Preset
 
 public extension Instrument {
-  /// A struct for coupling a sound font, a preset header within the sound font, and a MIDI channel.
+  /// A struct for coupling a sound font, a preset header within the sound font,
+  /// and a MIDI channel.
   struct Preset: Equatable, LosslessJSONValueConvertible {
     /// The sound font providing the source data for the preset.
     public let soundFont: SoundFont2
@@ -296,16 +298,16 @@ public extension Instrument {
     public var channel: UInt8
 
     /// The display name of the sound font.
-    public var soundFontName: String { return soundFont.displayName }
+    public var soundFontName: String { soundFont.displayName }
 
     /// The program name from the preset header.
-    public var programName: String { return presetHeader.name }
+    public var programName: String { presetHeader.name }
 
     /// The MIDI program value from the preset header.
-    public var program: UInt8 { return presetHeader.program }
+    public var program: UInt8 { presetHeader.program }
 
     /// The MIDI bank value from the preset header.
-    public var bank: UInt8 { return presetHeader.bank }
+    public var bank: UInt8 { presetHeader.bank }
 
     /// Initializing with a sound font, preset header, and MIDI channel.
     /// - Parameters:
@@ -378,6 +380,16 @@ extension Instrument: NotificationDispatching {
     public init?(_ description: String) { self.init(rawValue: description) }
   }
 }
+
+public extension Notification.Name {
+  static var instrumentProgramDidChange: Notification.Name {
+    Notification.Name(rawValue: Instrument.NotificationName.programDidChange.rawValue)
+  }
+  static var instrumentSoundFontDidChange: Notification.Name {
+    Notification.Name(rawValue: Instrument.NotificationName.soundFontDidChange.rawValue)
+  }
+}
+
 
 public extension Notification {
   /// The name of the program unloaded by the instrument that posted the notification.

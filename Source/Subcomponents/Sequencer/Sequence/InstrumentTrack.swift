@@ -52,7 +52,7 @@ public final class InstrumentTrack: Track, NodeDispatch {
   /// `true`, the current value of `volume` is cached and `volume` is set to `0`. When set
   /// to `false`, the cached value is restored. The default value of this property is
   /// `false`.
-  public private(set) var isMuted = false {
+  @Published public private(set) var isMuted = false {
     didSet {
       // Check that the value has actually changed.
       guard isMuted != oldValue else { return }
@@ -69,7 +69,7 @@ public final class InstrumentTrack: Track, NodeDispatch {
   /// tracks in the sequence are soloing. Changing the value of this property triggers the
   /// track to post a `forceMuteStatusDidChange` notification and to update the value of
   /// it's `isMuted` flag. The default value of this property is `false`.
-  public var forceMute = false {
+  @Published public var forceMute = false {
     didSet {
       // Check that the value has actually changed.
       guard forceMute != oldValue else { return }
@@ -85,7 +85,7 @@ public final class InstrumentTrack: Track, NodeDispatch {
   /// Flag indicating whether the track has been muted through user request. Changing the
   /// value of this property causes the track to update it's `isMuted` flag. The default
   /// value of this property is `false`.
-  public var mute = false {
+  @Published public var mute = false {
     didSet {
       // Check that the value has actually changed.
       guard mute != oldValue else { return }
@@ -106,7 +106,7 @@ public final class InstrumentTrack: Track, NodeDispatch {
   /// Changes to the value of this property trigger the track to post a
   /// `soloStatusDidChange` notification and to update it's `isMuted` flag. The default
   /// value of this property is `false`.
-  public var solo = false {
+  @Published public var solo = false {
     didSet {
       // Check that the value has actually changed.
       guard solo != oldValue else { return }

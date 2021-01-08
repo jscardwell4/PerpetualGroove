@@ -124,7 +124,7 @@ public struct Setting<Value> {
 }
 
 /// Extend `UserDefaults` to make the settings KVO compliant.
-extension UserDefaults {
+public extension UserDefaults {
   @objc dynamic var	iCloudStorage: Bool {
     bool(forKey: Setting<Bool>.Key.iCloudStorage.rawValue)
   }

@@ -11,4 +11,5 @@ public var controller: Controller { .shared }
 public var player: Player { controller.player }
 public var time: Time { controller.time }
 public var sequence: Sequence? { controller.sequence }
-public var transport: Transport { controller.transport } 
+public var transport: Transport { controller.transport }
+public var audioEngine: AudioEngine { controller.audioEngine }

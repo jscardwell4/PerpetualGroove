@@ -296,6 +296,33 @@ extension Transport: NotificationDispatching {
   }
 }
 
+public extension Notification.Name {
+  static var transportDidStart: Notification.Name {
+    Notification.Name(rawValue: Transport.NotificationName.didStart.rawValue)
+  }
+  static var transportDidPause: Notification.Name {
+    Notification.Name(rawValue: Transport.NotificationName.didPause.rawValue)
+  }
+  static var transportDidStop: Notification.Name {
+    Notification.Name(rawValue: Transport.NotificationName.didStop.rawValue)
+  }
+  static var transportDidReset: Notification.Name {
+    Notification.Name(rawValue: Transport.NotificationName.didReset.rawValue)
+  }
+  static var transportDidToggleRecording: Notification.Name {
+    Notification.Name(rawValue: Transport.NotificationName.didToggleRecording.rawValue)
+  }
+  static var transportDidBeginJogging: Notification.Name {
+    Notification.Name(rawValue: Transport.NotificationName.didBeginJogging.rawValue)
+  }
+  static var transportDidEndJogging: Notification.Name {
+    Notification.Name(rawValue: Transport.NotificationName.didEndJogging.rawValue)
+  }
+  static var transportDidJog: Notification.Name {
+    Notification.Name(rawValue: Transport.NotificationName.didJog.rawValue)
+  }
+}
+
 public extension Notification {
   /// The bar beat time to which a transport has been jogged.
   var jogTime: BarBeatTime? { return userInfo?["jogTime"] as? BarBeatTime }

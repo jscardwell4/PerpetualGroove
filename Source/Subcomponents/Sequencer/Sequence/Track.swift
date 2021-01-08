@@ -207,3 +207,21 @@ extension Track: NotificationDispatching {
     public init?(_ description: String) { self.init(rawValue: description) }
   }
 }
+
+public extension Notification.Name {
+  static var trackDidUpdate: Notification.Name {
+    Notification.Name(rawValue: Track.NotificationName.didUpdate.rawValue)
+  }
+  static var trackDidChangeName: Notification.Name {
+    Notification.Name(rawValue: Track.NotificationName.didChangeName.rawValue)
+  }
+  static var trackForceMuteStatusDidChange: Notification.Name {
+    Notification.Name(rawValue: Track.NotificationName.forceMuteStatusDidChange.rawValue)
+  }
+  static var trackMuteStatusDidChange: Notification.Name {
+    Notification.Name(rawValue: Track.NotificationName.muteStatusDidChange.rawValue)
+  }
+  static var trackSoloStatusDidChange: Notification.Name {
+    Notification.Name(rawValue: Track.NotificationName.soloStatusDidChange.rawValue)
+  }
+}

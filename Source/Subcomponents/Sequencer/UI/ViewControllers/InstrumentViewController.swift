@@ -13,7 +13,8 @@ import UIKit
 
 /// A `UIViewController` subclass for presenting an interface with controls for
 /// selecting a sound font, a program within the selected sound font, and a MIDI channel.
-public final class InstrumentViewController: UIViewController, SecondaryContent {
+public final class InstrumentViewController: UIViewController, SecondaryContent
+{
   /// The control for selecting a sound font.
   @IBOutlet public var soundFontSelector: SoundFontSelector!
 
@@ -23,22 +24,10 @@ public final class InstrumentViewController: UIViewController, SecondaryContent 
   /// The control for selecting a MIDI channel.
   @IBOutlet public var channelStepper: LabeledStepper!
 
-  /// Handles registration and reception of the `didUpdateAvailableSoundFonts`
-  /// posted by `Sequencer`.
-  private let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
-
-  /// Refreshes the list of selectable items displayed by the sound font selector.
-  private func updateSoundFonts() {
-    soundFontSelector.refreshItems()
-
-    // TODO: Shouldn' we do more here?
-  }
-
-  /// Callback invoked when a sound font is selected. This method updates the
-  /// program selector and plays a note through `instrument` to demonstrate the
-  /// current configuration.
-  @IBAction
-  public func didSelectSoundFont() {
+  /// Action invoked by `soundFontSelector`. This method updates the program selector
+  /// and plays a note through `instrument` to demonstrate the current configuration.
+  @IBAction public func didSelectSoundFont()
+  {
     // Check that there is an instrument to update.
     guard let instrument = instrument else { return }
 
@@ -50,7 +39,8 @@ public final class InstrumentViewController: UIViewController, SecondaryContent 
                                    presetHeader: soundFont[0],
                                    channel: 0)
 
-    do {
+    do
+    {
       // Load the preset into the instrument.
       try instrument.load(preset: preset)
 
@@ -64,17 +54,18 @@ public final class InstrumentViewController: UIViewController, SecondaryContent 
       // Play a note through the instrument to allow the user a chance to hear
       // the current configuration.
       instrument.playNote(AnyGenerator())
-
-    } catch {
+    }
+    catch
+    {
       // Just log the error.
-      loge("\(error)")
+      log.error("\(error as NSObject)")
     }
   }
 
   /// Callback invoked when a program is selected. Plays a note through
   /// `instrument` to demonstrate the current configuration.
-  @IBAction
-  public func didSelectProgram() {
+  @IBAction public func didSelectProgram()
+  {
     // Check that there is an instrument.
     guard let instrument = instrument else { return }
 
@@ -85,37 +76,44 @@ public final class InstrumentViewController: UIViewController, SecondaryContent 
       channel: UInt8(channelStepper.value)
     )
 
-    do {
+    do
+    {
       // Load `preset` into the instrument.
       try instrument.load(preset: preset)
 
       // Play a note through the instrument to allow the user a chance to hear the
       // current configuration.
       instrument.playNote(AnyGenerator())
-
-    } catch {
+    }
+    catch
+    {
       // Just log the error.
-      loge("\(error)")
+      log.error("\(error as NSObject)")
     }
   }
 
   /// Callback invoked when a channel is selected. Updates the MIDI channel used
   /// by `instrument`.
-  @IBAction
-  public func didChangeChannel() {
+  @IBAction public func didChangeChannel()
+  {
     // Set instrument's channel using the stepper's value.
     instrument?.channel = UInt8(channelStepper.value)
   }
 
   /// Returns `instrument` to its initial state by reloading the preset it began with.
-  func rollBackInstrument() {
+  func rollBackInstrument()
+  {
     // Check the instrument and the intial preset.
-    guard let instrument = instrument, let initialPreset = initialPreset else {
+    guard let instrument = instrument,
+          let initialPreset = initialPreset
+    else
+    {
       return
     }
 
     // Load the initial preset into the to instrument.
-    do { try instrument.load(preset: initialPreset) } catch { loge("\(error)") }
+    do { try instrument.load(preset: initialPreset) }
+    catch { log.error("\(error as NSObject)") }
   }
 
   /// The preset property value of `instrument` at the time `instrument` was set.
@@ -127,17 +125,20 @@ public final class InstrumentViewController: UIViewController, SecondaryContent 
   /// the sound font selector to select the preset's sound font, the program
   /// selector to select the preset's program, and the channel stepper to update
   /// with the new instrument's MIDI channel.
-  public weak var instrument: Instrument? {
-    didSet {
+  public weak var instrument: Instrument?
+  {
+    didSet
+    {
       // Check that there is an instrument, that the view is loaded, and that indexes
       // may be retrieved for the sound font and the program.
       guard let instrument = instrument,
             let soundFontIndex = SoundFont.bundledFonts
-            .firstIndex(where: { instrument.soundFont.isEqualTo($0) }),
+              .firstIndex(where: { instrument.soundFont.isEqualTo($0) }),
             let programIndex = instrument.soundFont.presetHeaders
-            .firstIndex(of: instrument.preset.presetHeader),
+              .firstIndex(of: instrument.preset.presetHeader),
             isViewLoaded
-      else {
+      else
+      {
         return
       }
 
@@ -159,10 +160,11 @@ public final class InstrumentViewController: UIViewController, SecondaryContent 
   }
 
   /// Overridden to update the interface unless `Sequencer` has not initialized.
-  override public func viewDidLoad() {
+  override public func viewDidLoad()
+  {
     super.viewDidLoad()
 
     // Update the interface.
-    updateSoundFonts()
+    soundFontSelector.refreshItems()
   }
 }
