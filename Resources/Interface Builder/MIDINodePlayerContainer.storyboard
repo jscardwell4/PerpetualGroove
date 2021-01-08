@@ -14,10 +14,10 @@
             </objects>
             <point key="canvasLocation" x="658" y="591"/>
         </scene>
-        <!--Container-->
+        <!--Player Container-->
         <scene sceneID="th2-7M-uWS">
             <objects>
-                <viewController id="pGy-FY-X8Y" customClass="Container" customModule="NodePlayer" sceneMemberID="viewController">
+                <viewController id="pGy-FY-X8Y" customClass="PlayerContainer" customModule="Sequencer" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="zNj-XQ-VlV"/>
                         <viewControllerLayoutGuide type="bottom" id="Zyg-Zx-L8U"/>

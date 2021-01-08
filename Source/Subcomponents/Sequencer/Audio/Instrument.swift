@@ -72,7 +72,7 @@ public final class Instrument {
 
   /// The mixer input bus to which the instrument is connected.
   public var bus: AVAudioNodeBus {
-    sampler.destination(forMixer: Sequencer.shared.audioEngine.mixer, bus: 0)?.connectionPoint.bus ?? -1
+    sampler.destination(forMixer: Controller.shared.audioEngine.mixer, bus: 0)?.connectionPoint.bus ?? -1
   }
 
   /// The output level for the mixer input bus to which the instrument is connected.
@@ -114,10 +114,10 @@ public final class Instrument {
   public func playNote(_ generator: AnyGenerator) {
     do {
       // Use the generator to send a 'note on' event.
-      try generator.sendNoteOn(outPort: outPort, endPoint: endPoint, ticks: Sequencer.shared.time.ticks)
+      try generator.sendNoteOn(outPort: outPort, endPoint: endPoint, ticks: Controller.shared.time.ticks)
 
       // Translate the generator's duration into nanoseconds.
-      let nanoseconds = UInt64(generator.duration.seconds(withBPM: Sequencer.shared.tempo) * Double(NSEC_PER_SEC))
+      let nanoseconds = UInt64(generator.duration.seconds(withBPM: Controller.shared.tempo) * Double(NSEC_PER_SEC))
 
       // Convert the nanosecond value into a dispatch time.
       let deadline = DispatchTime(uptimeNanoseconds: nanoseconds)
@@ -128,7 +128,7 @@ public final class Instrument {
 
         do {
           // Use the generator to send a 'note off' event.
-          try generator.sendNoteOff(outPort: outPort, endPoint: endPoint, ticks: Sequencer.shared.time.ticks)
+          try generator.sendNoteOff(outPort: outPort, endPoint: endPoint, ticks: Controller.shared.time.ticks)
 
         } catch {
           // Just log the error.
@@ -198,7 +198,7 @@ public final class Instrument {
     $stereoPan = sampler
 
     // Use the audio manager to attach instrument's sampler to the audio engine.
-    Sequencer.shared.audioEngine.attach(node: sampler/*, for: self*/)
+    Controller.shared.audioEngine.attach(node: sampler/*, for: self*/)
 
     // Check that the sampler has been attached to the audio engine.
     guard sampler.engine != nil else { throw Error.AttachNodeFailed }

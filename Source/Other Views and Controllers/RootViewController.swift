@@ -11,13 +11,12 @@ import MoonKit
 import Common
 import Sequencer
 import Documents
-import NodePlayer
 
 /// The root view controller for the application's window.
 final class RootViewController: UIViewController {
 
   /// The current instance of `RootViewController` displayed by the application's window.
-  static var currentInstance: RootViewController { return AppDelegate.currentInstance.viewController }
+  static var currentInstance: RootViewController { AppDelegate.currentInstance.viewController }
 
   /// The stack containing the top and bottom stacks of content.
   @IBOutlet var contentStack: UIStackView!
@@ -124,7 +123,7 @@ final class RootViewController: UIViewController {
       case let controller as TempoViewController:
         tempoViewController = controller
 
-      case let controller as NodePlayer.Container.ViewController:
+      case let controller as PlayerContainer.ViewController:
         playerViewController = controller
 
       case let controller as TransportViewController:
@@ -184,7 +183,7 @@ final class RootViewController: UIViewController {
 
   /// The view controller responsible for presenting the midi player within which new midi nodes can be
   /// added and existing midi nodes can be modified or removed.
-  private(set) weak var playerViewController: NodePlayer.Container.ViewController!
+  private(set) weak var playerViewController: PlayerContainer.ViewController!
 
   /// The view controller responsible for presenting an interface for the current transport allowing 
   /// playback to be started, paused, stopped, scrubbed, recorded, and reset.

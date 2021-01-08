@@ -27,17 +27,14 @@ private let _largeControlSelectedFont = UIFont(name: "EvelethRegular", size: 22)
   ?? UIFont.systemFont(ofSize: 22, weight: UIFont.Weight.regular)
 
 /// Extend `UIFont` with class derived properties for fonts used within the application.
-extension UIFont {
-
-  public static var labelFont:                    UIFont { _labelFont                    }
-  public static var largeDisplayFont:             UIFont { _largeDisplayFont             }
-  public static var controlFont:                  UIFont { _controlFont                  }
-  public static var largeControlFont:             UIFont { _largeControlFont             }
-  public static var compressedControlFont:        UIFont { _compressedControlFont        }
-  public static var compressedControlFontEditing: UIFont { _compressedControlFontEditing }
-  public static var controlSelectedFont:          UIFont { _controlSelectedFont          }
-  public static var largeControlSelectedFont:     UIFont { _largeControlSelectedFont     }
-
+public extension UIFont
+{
+  static var labelFont: UIFont { _labelFont }
+  static var largeDisplayFont: UIFont { _largeDisplayFont }
+  static var controlFont: UIFont { _controlFont }
+  static var largeControlFont: UIFont { _largeControlFont }
+  static var compressedControlFont: UIFont { _compressedControlFont }
+  static var compressedControlFontEditing: UIFont { _compressedControlFontEditing }
+  static var controlSelectedFont: UIFont { _controlSelectedFont }
+  static var largeControlSelectedFont: UIFont { _largeControlSelectedFont }
 }
-
-

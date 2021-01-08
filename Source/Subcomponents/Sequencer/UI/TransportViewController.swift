@@ -73,7 +73,7 @@ public final class TransportViewController: UIViewController {
 
     super.viewDidLoad()
 
-    transport = Sequencer.shared.transport
+    transport = Controller.shared.transport
 
   }
 

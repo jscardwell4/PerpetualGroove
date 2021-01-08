@@ -13,7 +13,7 @@ import Foundation
 /// - Parameter condition: The closure to evaluate.
 /// - Throws: `Error.StructurallyUnsound` when `condition` evaluates to `false`.
 internal func _require(_ condition: @autoclosure () throws -> Bool) throws {
-  guard try condition() else { throw Error.StructurallyUnsound }
+  guard try condition() else { throw File.Error.StructurallyUnsound }
 }
 
 /// Parses a character code from the specified data and throws an error if it
@@ -27,7 +27,7 @@ internal func _require(_ condition: @autoclosure () throws -> Bool) throws {
 @discardableResult
 internal func _require(code: CharacterCode, data: Data) throws -> CharacterCode {
   let parsedCode = try CharacterCode(bytes: data)
-  guard parsedCode == code else { throw Error.StructurallyUnsound }
+  guard parsedCode == code else { throw File.Error.StructurallyUnsound }
   return parsedCode
 }
 

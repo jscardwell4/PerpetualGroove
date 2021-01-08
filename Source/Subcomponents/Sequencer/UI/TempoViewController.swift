@@ -21,13 +21,13 @@ public final class TempoViewController: UIViewController {
   @IBAction
   private func tempoSliderValueDidChange() {
 
-    Sequencer.shared.tempo = Double(tempoSlider.value)
+    Controller.shared.tempo = Double(tempoSlider.value)
 
   }
 
   /// Handles presses of the `metronomeButton` by toggling `AudioManager.metronome.isOn`.
   @IBAction
-  private func toggleMetronome() { Sequencer.shared.metronome.isOn.toggle()}
+  private func toggleMetronome() { Controller.shared.metronome.isOn.toggle()}
 
   /// Overridden to update `tempoSlider.value` and `metronomeButton.isSelected` with current values.
   public override func viewDidLoad() {
@@ -35,10 +35,10 @@ public final class TempoViewController: UIViewController {
     super.viewDidLoad()
 
     // Set the slider's value to the current tempo.
-    tempoSlider.value = Float(Sequencer.shared.tempo)
+    tempoSlider.value = Float(Controller.shared.tempo)
 
     // Set the selected state of the button to match whether the metronome is on.
-    metronomeButton.isSelected = Sequencer.shared.metronome.isOn
+    metronomeButton.isSelected = Controller.shared.metronome.isOn
 
   }
 

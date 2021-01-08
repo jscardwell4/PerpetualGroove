@@ -83,7 +83,7 @@ public extension MixerContainer
       {
         pendingTrackIndex = Section.tracks.itemCount
 
-        try sequence?.insertTrack(instrument: try Instrument(preset: Sequencer.shared.auditionInstrument.preset))
+        try sequence?.insertTrack(instrument: try Instrument(preset: Controller.shared.auditionInstrument.preset))
       }
       catch
       {
@@ -363,14 +363,14 @@ public extension MixerContainer
     {
       super.awakeFromNib()
 
-      subscription = Sequencer.shared.$sequence.sink(receiveValue: { self.sequence = $0 })
+      subscription = Controller.shared.$sequence.sink(receiveValue: { self.sequence = $0 })
     }
 
     /// Overridden to keep `sequence` current as well as the volume and pan values for the master cell.
     override public func viewWillAppear(_ animated: Bool)
     {
       super.viewWillAppear(animated)
-      sequence = Sequencer.shared.sequence
+      sequence = Controller.shared.sequence
       (collectionView?.cellForItem(at: Section.master[0]) as? MasterCell)?.refresh()
     }
 
@@ -517,7 +517,7 @@ public extension MixerContainer
       }
 
       /// Returns the number of items for the section.
-      var itemCount: Int { self == .tracks ? Sequencer.shared.sequence?.instrumentTracks.count ?? 0 : 1 }
+      var itemCount: Int { self == .tracks ? Controller.shared.sequence?.instrumentTracks.count ?? 0 : 1 }
 
       /// An array of all the index paths that are valid for the section.
       var indexPaths: [IndexPath] { (0 ..< itemCount).map { IndexPath(item: $0, section: rawValue) } }
@@ -592,15 +592,15 @@ public extension MixerContainer
     /// Updates the knob and slider with current values retrieved from `AudioManager`.
     public func refresh()
     {
-      volume = Sequencer.shared.audioEngine.mixer.volume
-      pan = Sequencer.shared.audioEngine.mixer.pan
+      volume = Controller.shared.audioEngine.mixer.volume
+      pan = Controller.shared.audioEngine.mixer.pan
     }
 
     /// Updates `AudioManager.mixer.volume`.
-    @IBAction public func volumeDidChange() { Sequencer.shared.audioEngine.mixer.volume = volume }
+    @IBAction public func volumeDidChange() { Controller.shared.audioEngine.mixer.volume = volume }
 
     /// Updates `AudioManager.mixer.pan`.
-    @IBAction public func panDidChange() { Sequencer.shared.audioEngine.mixer.pan = pan }
+    @IBAction public func panDidChange() { Controller.shared.audioEngine.mixer.pan = pan }
   }
 
   // MARK: - TrackCell

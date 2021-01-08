@@ -216,7 +216,7 @@ public final class Transport {
     }
 
     // Convert the change in revolutions to a change in bar beat time.
-    let 𝝙time = BarBeatTime(totalBeats: Double(Sequencer.shared.beatsPerBar) * revolutions)
+    let 𝝙time = BarBeatTime(totalBeats: Double(Controller.shared.beatsPerBar) * revolutions)
 
     // Calculate the new jog time with a lower bound of zero.
     let newJogTime = max(previousJogTime + 𝝙time, BarBeatTime.zero)

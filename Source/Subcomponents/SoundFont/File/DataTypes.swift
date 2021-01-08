@@ -62,7 +62,7 @@ public struct Size: ChunkData, Equatable {
   /// - Parameter bytes: The collection of bytes from which to initialize.
   /// - Throws: `Error.StructurallyUnsound` if `bytes` doesn't have enough bytes.
   public init(bytes: Data) throws {
-    guard bytes.count > 3 else { throw Error.StructurallyUnsound }
+    guard bytes.count > 3 else { throw File.Error.StructurallyUnsound }
     let byte1 = UInt32(bytes[bytes.startIndex].byteSwapped)
     let byte2 = UInt32(bytes[bytes.index(bytes.startIndex, offsetBy: 1)].byteSwapped)
     let byte3 = UInt32(bytes[bytes.index(bytes.startIndex, offsetBy: 2)].byteSwapped)
@@ -95,7 +95,7 @@ public struct Version: ChunkData, Equatable {
   /// - Parameter bytes: The collection of bytes from which to initialize.
   /// - Throws: `Error.StructurallyUnsound` if `bigEndian` doesn't have enough bytes.
   public init(bytes: Data) throws {
-    guard bytes.count > 3 else { throw Error.StructurallyUnsound }
+    guard bytes.count > 3 else { throw File.Error.StructurallyUnsound }
 
     let byte1 = UInt16(bytes[bytes.startIndex].byteSwapped)
     let byte2 = UInt16(bytes[bytes.index(bytes.startIndex, offsetBy: 1)].byteSwapped)
@@ -196,12 +196,15 @@ public struct PresetHeader {
     name = String(bytes: data[..<(data.firstIndex(of: UInt8(0)) ?? data.startIndex + 20)])
 
     // Decode the program
-    program = UInt8(UInt16(bytes: data[data.startIndex + 20 ... data.startIndex + 21]).bigEndian)
+    program = UInt8(UInt16(bytes: data[data.startIndex + 20 ... data.startIndex + 21])
+                      .bigEndian)
 
     // Decode the bank.
-    bank = UInt8(UInt16(bytes: data[data.startIndex + 22 ... data.startIndex + 23]).bigEndian)
+    bank = UInt8(UInt16(bytes: data[data.startIndex + 22 ... data.startIndex + 23])
+                  .bigEndian)
 
-    // Check that the name is valid and that it is not the end marker for a list of presets.
+    // Check that the name is valid and that it is not the end marker for a list of
+    // presets.
     guard name != "EOP", !name.isEmpty else { return nil }
   }
 }

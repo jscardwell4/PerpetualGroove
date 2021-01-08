@@ -14,7 +14,7 @@
         <!--View Controller-->
         <scene sceneID="Klf-hv-dkY">
             <objects>
-                <viewController storyboardIdentifier="MIDIPlayer" id="6xH-va-xT7" customClass="ViewController" customModule="NodePlayer.Container" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MIDIPlayer" id="6xH-va-xT7" customClass="ViewController" customModule="Sequencer.PlayerContainer" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="3bO-nI-SWz"/>
                         <viewControllerLayoutGuide type="bottom" id="MgW-0J-CjH"/>
@@ -36,7 +36,7 @@
                                     <outlet property="delegate" destination="6xH-va-xT7" id="7cP-70-k1G"/>
                                 </connections>
                             </textField>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JSz-xf-acH" userLabel="MIDI Player" customClass="View" customModule="NodePlayer">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JSz-xf-acH" userLabel="MIDI Player" customClass="View" customModule="Sequencer.PlayerContainer.ViewController">
                                 <rect key="frame" x="20" y="78" width="447" height="447"/>
                                 <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <accessibility key="accessibilityConfiguration" identifier="MIDIPlayer"/>

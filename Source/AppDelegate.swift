@@ -9,7 +9,6 @@ import UIKit
 import MoonKit
 import Common
 import Sequencer
-import NodePlayer
 import Documents
 
 // TODO: Implement or remove the empty delegate methods.
@@ -40,8 +39,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
                    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
   {
     
-    _ = Sequencer.shared
-    Player.initialize()
+    _ = Controller.shared
     _ = Manager.shared
 
     viewController = window?.rootViewController as? RootViewController

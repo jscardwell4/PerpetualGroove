@@ -51,20 +51,11 @@ public final class Manager: NotificationDispatching
   }
 
   /// Holds subscription to published `fileURL` changes of `_currentDocument`.
-  private var subscription: Cancellable?
-
-  /// Used as lock for synchronized access to `_currentDocument`
-  private let currentDocumentLock = NSObject()
+  private var fileURLSubscription: Cancellable?
 
   /// The document to which the active sequence belongs.
-  @Synchronizing(NSObject(), nil) public var currentDocument: Document?
+  @Published public var currentDocument: Document?
   {
-    willSet
-    {
-      guard currentDocument != newValue else { return }
-      postNotification(name: .willChangeDocument, object: self)
-    }
-
     didSet
     {
       guard oldValue != currentDocument else { return }
@@ -78,13 +69,13 @@ public final class Manager: NotificationDispatching
         {
           log.info("closing document '\(oldValue.localizedName)'")
           oldValue.close(completionHandler: nil)
-          subscription = nil
+          fileURLSubscription = nil
         }
 
         if let currentDocument = currentDocument
         {
           // Observe the new document and update the bookmark data in settings.
-          subscription = currentDocument.publisher(for: \.fileURL)
+          fileURLSubscription = currentDocument.publisher(for: \.fileURL)
             .sink
             {
               [weak currentDocument] (_: URL) in
@@ -95,7 +86,6 @@ public final class Manager: NotificationDispatching
           currentDocument.storageLocation.currentDocument = currentDocument
         }
 
-        postNotification(name: .didChangeDocument, object: self)
       }
     }
   }

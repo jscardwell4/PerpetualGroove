@@ -9,7 +9,6 @@ import Common
 import Foundation
 import MIDI
 import MoonKit
-import NodePlayer
 import Sequencer
 
 // MARK: - File

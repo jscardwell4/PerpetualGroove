@@ -7,7 +7,7 @@
 //
 import MIDI
 import MoonKit
-import NodePlayer
+import Sequencer
 
 public extension File
 {
@@ -18,7 +18,7 @@ public extension File
     public typealias Identifier = NodeEvent.Identifier
 
     /// The type for encapsulating initial angle and velocity data.
-    public typealias Trajectory = NodePlayer.Node.Trajectory
+    public typealias Trajectory = Sequencer.Node.Trajectory
 
     /// Typealias for the midi event kind utilized by `Node`.
     public typealias Event = NodeEvent

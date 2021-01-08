@@ -174,7 +174,7 @@ public final class Document: UIDocument, Named, NotificationDispatching
   }
 
   /// Attempts to coordinate the renaming of the document to `newName`.
-  func rename(to newName: String)
+  public func rename(to newName: String)
   {
     Manager.shared.queue.async
     {

@@ -31,11 +31,11 @@ public final class Metronome {
       switch isOn {
 
         case true:
-          Sequencer.shared.time.register(callback:weakCapture(of: self, block:Metronome.click),
+          Controller.shared.time.register(callback:weakCapture(of: self, block:Metronome.click),
                                 predicate: Metronome.isAudibleTick,
                                 identifier: callbackIdentifier)
         case false:
-          Sequencer.shared.time.removePredicatedCallback(with: callbackIdentifier)
+          Controller.shared.time.removePredicatedCallback(with: callbackIdentifier)
 
       }
 
@@ -70,7 +70,7 @@ public final class Metronome {
   private func click(_ time: BarBeatTime) {
 
     // Check that the transport is playing.
-    guard Sequencer.shared.transport.isPlaying else { return }
+    guard Controller.shared.transport.isPlaying else { return }
 
     // Play a C4 or G3 over `channel` according to whether this is the first beat of the bar.
     sampler.startNote(time.beat == 1 ? 0x3C : 0x37, withVelocity: 64, onChannel: channel)

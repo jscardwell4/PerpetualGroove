@@ -11,8 +11,8 @@ import MoonKit
 // MARK: - File
 
 /// Structure for parsing and storing the data from a sound font file.
-public struct File {
-
+public struct File
+{
   /// The RIFF chunk identifier.
   public let identifier: CharacterCode
 
@@ -29,7 +29,8 @@ public struct File {
   ///
   /// - Parameter url: The `URL` for the file.
   /// - Throws: `Error.StructurallyUnsound` if invalid data is detected.
-  public init(fileURL url: URL) throws {
+  public init(fileURL url: URL) throws
+  {
     try self.init(data: try Data(contentsOf: url,
                                  options: [.uncached, .alwaysMapped]))
   }
@@ -37,8 +38,8 @@ public struct File {
   /// Initializing with raw data.
   /// - Parameter data: The raw data for the sound font file.
   /// - Throws: `Error.StructurallyUnsound` if invalid data is detected.
-  public init(data: Data) throws {
-
+  public init(data: Data) throws
+  {
     // Parse the identifier.
     let identifier = try CharacterCode(bytes: data)
     try _require(identifier == "riff")
@@ -61,15 +62,19 @@ public struct File {
 
     // Store the slice of raw data.
     self.data = remainingData
-
   }
 
-  /// Returns the collection of preset headers decoded from the data representation of a sound font file.
-  /// This method should only be used when one's only interest in a sound font file is the presets contained
-  /// within.
+  /// Returns the collection of preset headers decoded from the data representation
+  /// of a sound font file. This method should only be used when one's only interest
+  /// in a sound font file is the presets contained within.
+  ///
+  /// - Parameter data: The raw bytes of the sound font file.
+  /// - Returns: The headers parsed from `data`.
   /// - Throws: `Error.StructurallyUnsound` if invalid data is encountered while decoding.
-  public static func presetHeaders(from data: Data) throws -> [PresetHeader] {
-    // Get the range of the characters within `data` denoting the start of the phdr subchunk.
+  public static func presetHeaders(from data: Data) throws -> [PresetHeader]
+  {
+    // Get the range of the characters within `data` denoting the start of the
+    // phdr subchunk.
     guard let range = data.range(of: Data("pdtaphdr".bytes)) else { return [] }
 
     // Get the size of the phdr subchunk.
@@ -90,9 +95,14 @@ public struct File {
     var presetHeaders: [PresetHeader] = []
 
     // Iterate the bytes of data in 38 byte chunks.
-    for index in stride(from: dataʹ.startIndex, to: dataʹ.endIndex, by: 38) {
+    for index in stride(from: dataʹ.startIndex, to: dataʹ.endIndex, by: 38)
+    {
       // Decode the chunk that starts at `index`.
-      guard let presetHeader = try PresetHeader(data: dataʹ[index +--> 38]) else { continue }
+      guard let presetHeader = try PresetHeader(data: dataʹ[index +--> 38])
+      else
+      {
+        continue
+      }
 
       // Append the decoded preset header.
       presetHeaders.append(presetHeader)
@@ -103,5 +113,13 @@ public struct File {
 
     return presetHeaders
   }
+}
 
+public extension File
+{
+  /// Enumeration of the possible errors thrown by `SoundFont` types.
+  enum Error: String, Swift.Error, CustomStringConvertible
+  {
+    case StructurallyUnsound = "Invalid chunk detected"
+  }
 }
