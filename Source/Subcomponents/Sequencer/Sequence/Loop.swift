@@ -54,7 +54,7 @@ public final class Loop: NodeDispatch {
   public var eventQueue: DispatchQueue { track.eventQueue }
 
   /// The color associated with the loop. This property returns the track's color.
-  public var color: TrackColor { track.color }
+  public var color: Track.Color { track.color }
 
   public var isRecording: Bool {
     Controller.shared.mode == .loop && Controller.shared.player.currentDispatch === self

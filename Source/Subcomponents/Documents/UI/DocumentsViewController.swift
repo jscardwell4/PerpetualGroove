@@ -9,6 +9,7 @@ import Common
 import Foundation
 import MoonKit
 import UIKit
+import Combine
 
 // MARK: - DocumentsViewController
 
@@ -45,7 +46,7 @@ public final class DocumentsViewController: UICollectionViewController
 
     let indexPath = IndexPath(item: index, section: 1)
 
-    if SettingsManager.shared.confirmDeleteDocument
+    if Settings.shared.confirmDeleteDocument
     {
       log.warning("delete confirmation not yet implemented")
     }
@@ -73,7 +74,7 @@ public final class DocumentsViewController: UICollectionViewController
   private let itemManager = ItemManager()
 
   /// The current number of items in the collection.
-  fileprivate var itemCount: Int { return itemManager.count }
+  fileprivate var itemCount: Int { itemManager.count }
 
   /// The currently selected document item; should always represent
   /// `Manager.shared.currentDocument`.
@@ -279,10 +280,60 @@ public final class DocumentsViewController: UICollectionViewController
     return cell
   }
 
+  /// Returns `true` unless the cell is showing its delete button
+  override public func collectionView(_ collectionView: UICollectionView,
+                                      shouldHighlightItemAt indexPath: IndexPath) -> Bool
+  {
+    // Get the cell for `indexPath` and make sure it has revealed its delete control.
+    // If the delete control is not showing, return `true` to allow highlighting the cell.
+    guard let cell = collectionView.cellForItem(at: indexPath) as? DocumentCell,
+          cell.isShowingDelete
+    else
+    {
+      return true
+    }
+
+    // Hide the cell's delete control.
+    cell.hideDelete()
+
+    // Return `false` to prevent highlighting the cell.
+    return false
+  }
+
+  /// Creates a new document when section == 0; opens the document otherwise
+  override public func collectionView(_: UICollectionView,
+                                      didSelectItemAt indexPath: IndexPath)
+  {
+    // Handle according to the item's section.
+    switch indexPath.section
+    {
+      case 0:
+        // The index path points to the document creation section. Create a new document.
+
+        documentManager.createNewDocument()
+
+      case 1:
+        // The index path points to the document section. Open the document specified
+        // by the item.
+
+        documentManager.open(document: Document(fileURL: itemManager[indexPath.row].url))
+
+      default:
+        // The index path points to a non-existent section.
+
+        fatalError("Invalid section.")
+    }
+
+    // Dismiss the controller.
+    dismiss?()
+  }
+}
+
+extension DocumentsViewController {
   /// A type for managing the items in the collection. `ItemManager` conforms to
   /// the `Collection` protocol via indirection by wrapping calls to its collection
   /// of items.
-  private final class ItemManager: Collection
+  final class ItemManager: Collection
   {
     typealias Index = OrderedSet<DocumentItem>.Index
     typealias SubSequence = OrderedSet<DocumentItem>.SubSequence
@@ -333,10 +384,7 @@ public final class DocumentsViewController: UICollectionViewController
     func append(_ newElement: DocumentItem) { items.append(newElement) }
 
     /// The controller for which items are being managed.
-    weak var controller: Documents.DocumentsViewController?
-
-    /// Receptionist for observing notifications from `Manager`
-    private let receptionist: NotificationReceptionist
+    weak var controller: DocumentsViewController?
 
     /// Set of document items used to populate the collection.
     var items: OrderedSet<DocumentItem> = Manager.shared.items
@@ -367,26 +415,27 @@ public final class DocumentsViewController: UICollectionViewController
       }
     }
 
+    private var managerDidUpdateItemsSubscription: Cancellable?
+    private var managerWillChangeDocumentSubscription: Cancellable?
+    private var managerDidChangeDocumentSubscription: Cancellable?
+    private var documentDidRenameDocumentSubscription: Cancellable?
+
     /// Default initializer, registers for item-related notifications.
     init()
     {
-      receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
-
-      receptionist.observe(name: .didUpdateItems, from: Manager.shared.self,
-                           callback: weakCapture(of: self,
-                                                 block: ItemManager.didUpdateItems))
-
-      receptionist.observe(name: .willChangeDocument, from: Manager.shared.self,
-                           callback: weakCapture(of: self,
-                                                 block: ItemManager.willChangeDocument))
-
-      receptionist.observe(name: .didChangeDocument, from: Manager.shared.self,
-                           callback: weakCapture(of: self,
-                                                 block: ItemManager.didChangeDocument))
+      managerDidUpdateItemsSubscription = NotificationCenter.default
+        .publisher(for: .managerDidUpdateItems, object: documentManager)
+        .sink { self.didUpdateItems(notification: $0)}
+      managerWillChangeDocumentSubscription = NotificationCenter.default
+        .publisher(for: .managerWillChangeDocument, object: documentManager)
+        .sink { self.willChangeDocument(notification: $0)}
+      managerDidChangeDocumentSubscription = NotificationCenter.default
+        .publisher(for: .managerDidChangeDocument, object: documentManager)
+        .sink { self.didChangeDocument(notification: $0)}
     }
 
     /// Adds and/or removes items according to the contents of `notification`.
-    private func didUpdateItems(_ notification: Notification)
+    private func didUpdateItems(notification: Notification)
     {
       // Store the current item count.
       let currentItemCount = items.count
@@ -461,33 +510,29 @@ public final class DocumentsViewController: UICollectionViewController
     }
 
     /// Unregisters for name-change observations from the outgoing document.
-    private func willChangeDocument(_: Notification)
+    private func willChangeDocument(notification: Notification)
     {
-      // Check that there is a document to stop observing.
-      guard let document = Manager.shared.currentDocument else { return }
-
-      // Stop observing the outgoing document.
-      receptionist.stopObserving(name: .didRenameDocument, from: document)
+      documentDidRenameDocumentSubscription?.cancel()
     }
 
     /// Registers for name-change observations from the incoming document and refreshes
     /// the selection.
-    private func didChangeDocument(_: Notification)
+    private func didChangeDocument(notification: Notification)
     {
       // Check that there is a document to start observing.
-      guard let document = Manager.shared.currentDocument else { return }
+      guard let document = documentManager.currentDocument else { return }
 
-      // Start observing the incoming document.
-      receptionist.observe(name: .didRenameDocument, from: document,
-                           callback: weakCapture(of: self,
-                                                 block: ItemManager.documentDidChangeName))
+      // Subscribe to name change notifications from the new document.
+      documentDidRenameDocumentSubscription = NotificationCenter.default
+        .publisher(for: .documentDidRenameDocument, object: document)
+        .sink { self.documentDidChangeName(notification: $0) }
 
       // Refresh the controller's selection.
       controller?.refreshSelection()
     }
 
     /// Updates the corresponding cell with the document's new name
-    private func documentDidChangeName(_ notification: Notification)
+    private func documentDidChangeName(notification: Notification)
     {
       log.info("userInfo: \(String(describing: notification.userInfo))")
 
@@ -540,53 +585,7 @@ public final class DocumentsViewController: UICollectionViewController
     }
   }
 
-  /// Returns `true` unless the cell is showing its delete button
-  override public func collectionView(_ collectionView: UICollectionView,
-                                      shouldHighlightItemAt indexPath: IndexPath) -> Bool
-  {
-    // Get the cell for `indexPath` and make sure it has revealed its delete control.
-    // If the delete control is not showing, return `true` to allow highlighting the cell.
-    guard let cell = collectionView.cellForItem(at: indexPath) as? DocumentCell,
-          cell.isShowingDelete
-    else
-    {
-      return true
-    }
 
-    // Hide the cell's delete control.
-    cell.hideDelete()
-
-    // Return `false` to prevent highlighting the cell.
-    return false
-  }
-
-  /// Creates a new document when section == 0; opens the document otherwise
-  override public func collectionView(_: UICollectionView,
-                                      didSelectItemAt indexPath: IndexPath)
-  {
-    // Handle according to the item's section.
-    switch indexPath.section
-    {
-      case 0:
-        // The index path points to the document creation section. Create a new document.
-
-        Manager.shared.createNewDocument()
-
-      case 1:
-        // The index path points to the document section. Open the document specified
-        // by the item.
-
-        Manager.shared.open(document: Document(fileURL: itemManager[indexPath.row].url))
-
-      default:
-        // The index path points to a non-existent section.
-
-        fatalError("Invalid section.")
-    }
-
-    // Dismiss the controller.
-    dismiss?()
-  }
 }
 
 // MARK: - DocumentsViewLayout

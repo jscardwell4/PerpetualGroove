@@ -12,13 +12,14 @@ import MoonKit
 import os
 import Sequencer
 
+/// A logger for internal use by the `Documents` framework.
 internal let log = os.Logger(subsystem: "com.moondeerstudios.groove.documents",
                              category: "Documents")
 
 // MARK: - Manager
 
 /// A Singleton whose job is to coordinate all file/document operations.
-public final class Manager: NotificationDispatching
+public final class Manager
 {
   // MARK: Stored Properties
 
@@ -39,13 +40,15 @@ public final class Manager: NotificationDispatching
   {
     didSet
     {
-      log.info("\(oldValue) ➞ \(self.state)")
+      log.info("\(String(describing: oldValue)) ➞ \(String(describing: self.state))")
 
       // Check that the `openingDocument` flag has changed.
       guard state ∆ oldValue ∋ .openingDocument else { return }
 
       // Post an appopriate notification.
-      postNotification(name: isOpeningDocument ? .willOpenDocument : .didOpenDocument,
+      postNotification(name: isOpeningDocument
+                        ? .managerWillOpenDocument
+                        : .managerDidOpenDocument,
                        object: self)
     }
   }
@@ -85,7 +88,6 @@ public final class Manager: NotificationDispatching
 
           currentDocument.storageLocation.currentDocument = currentDocument
         }
-
       }
     }
   }
@@ -98,7 +100,7 @@ public final class Manager: NotificationDispatching
       switch activeStorageLocation
       {
         case .iCloud
-              where state ∌ .gatheringMetadataItems && directoryMonitor.isMonitoring:
+        where state ∌ .gatheringMetadataItems && directoryMonitor.isMonitoring:
           directoryMonitor.stopMonitoring()
           fallthrough
 
@@ -107,7 +109,8 @@ public final class Manager: NotificationDispatching
           state ∪= .gatheringMetadataItems
           metadataQuery.operationQueue?.addOperation { [self] in metadataQuery.start() }
 
-        case .local where state ∋ .gatheringMetadataItems && !directoryMonitor.isMonitoring:
+        case .local
+        where state ∋ .gatheringMetadataItems && !directoryMonitor.isMonitoring:
           metadataQuery.operationQueue?.addOperation { [self] in metadataQuery.stop() }
           fallthrough
 
@@ -142,9 +145,6 @@ public final class Manager: NotificationDispatching
 
   /// Collection of `DocumentItem` instances for available local documents
   public private(set) var localItems: OrderedSet<DocumentItem> = []
-
-  /// Receptionist for receiving settings and metadata query related updates.
-  private let receptionist: NotificationReceptionist
 
   /// Document name to use when a name has not been specified.
   private static let defaultDocumentName = "AwesomeSauce"
@@ -184,12 +184,8 @@ public final class Manager: NotificationDispatching
       fatalError("Failed to initialize monitor for local directory.")
     }
 
-    receptionist = NotificationReceptionist(callbackQueue: operationQueue)
-
     let query = NSMetadataQuery()
-
     query.notificationBatchingInterval = 1
-
     query.searchScopes = [NSMetadataQueryUbiquitousDocumentsScope,
                           NSMetadataQueryAccessibleUbiquitousExternalDocumentsScope]
 
@@ -200,7 +196,7 @@ public final class Manager: NotificationDispatching
 
     metadataQuery = query
 
-    //      receptionist.observe(name: .iCloudStorageChanged, from: SettingsManager.self,
+    //      receptionist.observe(name: .iCloudStorageChanged, from: Settings.self,
     //                           callback: Manager.didChangeStorage)
     //
     //      receptionist.observe(name: .didFinishGathering, from: metadataQuery,
@@ -224,7 +220,7 @@ public final class Manager: NotificationDispatching
   /// The location to use as specified in user preferences.
   public var preferredStorageLocation: StorageLocation
   {
-    SettingsManager.shared.iCloudStorage ? .iCloud : .local
+    settings.iCloudStorage ? .iCloud : .local
   }
 
   /// Accessor for the current collection of document items: `metadataItems`
@@ -256,14 +252,10 @@ public final class Manager: NotificationDispatching
 
         guard success else { return }
 
-        dispatchToMain
-        { [self] in
-          postNotification(name: .didCreateDocument,
-                           object: self,
-                           userInfo: ["filePath": fileURL.path])
-
-          open(document: document)
-        }
+        postNotification(name: .managerDidCreateDocument,
+                         object: self,
+                         userInfo: ["filePath": fileURL.path])
+        dispatchToMain { self.open(document: document) }
       }
     }
   }
@@ -287,7 +279,7 @@ public final class Manager: NotificationDispatching
     // until a non-colliding name is found.
     var i = 2
     while (try? (directoryURL + "\(baseName)\(i).\(ext)")
-            .checkPromisedItemIsReachable()) == true
+      .checkPromisedItemIsReachable()) == true
     {
       i += 1
     }
@@ -474,12 +466,13 @@ public final class Manager: NotificationDispatching
   /// Overwrites `localItems` content with items derived from the local directory's current contents.
   private func refreshLocalItems()
   {
-    localItems = OrderedSet((directoryMonitor.directoryWrapper.fileWrappers ?? [:]).values.compactMap
-    {
-      [directory = directoryMonitor.directoryURL] in
-      guard let name = $0.preferredFilename else { return nil }
-      return try? LocalDocumentItem(url: directory + name)
-    }.map(DocumentItem.local))
+    localItems = OrderedSet((directoryMonitor.directoryWrapper.fileWrappers ?? [:]).values
+      .compactMap
+      {
+        [directory = directoryMonitor.directoryURL] in
+        guard let name = $0.preferredFilename else { return nil }
+        return try? LocalDocumentItem(url: directory + name)
+      }.map(DocumentItem.local))
   }
 
   /// Handler for callbacks invoked by `directoryMonitor`.
@@ -535,10 +528,9 @@ public final class Manager: NotificationDispatching
     let added = items ∖ updateNotificationItems
 
     log.info("""
-      \(!removed.isEmpty ? "removed: \(removed)" : "")\
-      \(!added.isEmpty ? (!removed.isEmpty ? "\nadded: \(added)" : "added: \(added)") : "")
-      """
-    )
+    \(!removed.isEmpty ? "removed: \(removed)" : "")\
+    \(!added.isEmpty ? (!removed.isEmpty ? "\nadded: \(added)" : "added: \(added)") : "")
+    """)
 
     var userInfo: [String: Any] = [:]
 
@@ -550,61 +542,55 @@ public final class Manager: NotificationDispatching
 
     log.info("posting 'didUpdateItems'")
 
-    dispatchToMain
-    { [self] in
-      postNotification(name: .didUpdateItems, object: self, userInfo: userInfo)
-    }
+    postNotification(name: .managerDidUpdateItems,
+                     object: self,
+                     userInfo: userInfo)
   }
+}
 
+// MARK: - Manager.State
+
+public extension Manager
+{
   /// Structure for storing `Manager` state.
-  private struct State: OptionSet, CustomStringConvertible
+  struct State: OptionSet
   {
-    let rawValue: Int
+    public let rawValue: Int
+    public init(rawValue: Int) { self.rawValue = rawValue }
 
-    static let openingDocument = State(rawValue: 0b0010)
-    static let gatheringMetadataItems = State(rawValue: 0b0100)
+    /// Set while the manager is opening a document.
+    public static let openingDocument = State(rawValue: 0b0010)
 
-    var description: String
-    {
-      var result = "["
-
-      var flagStrings: [String] = []
-
-      if contains(.openingDocument)
-      {
-        flagStrings.append("openingDocument")
-      }
-      if contains(.gatheringMetadataItems)
-      {
-        flagStrings.append("gatheringMetadataItems")
-      }
-
-      result += ", ".join(flagStrings)
-      result += "]"
-
-      return result
-    }
+    /// Set while the manager is querying for iCloud documents.
+    public static let gatheringMetadataItems = State(rawValue: 0b0100)
   }
+}
 
-  /// Type for specifying whether files are retrieved/saved from/to local disk or iCloud.
-  public enum StorageLocation
+// MARK: - Manager.StorageLocation
+
+public extension Manager
+{
+  /// An enumeration for working with local and cloud-based document storage locations.
+  enum StorageLocation
   {
-    case iCloud, local
+    /// The document is cloud-based.
+    case iCloud
 
-    /// Initialize by deriving the value according to the ubiquity of the item at `url`.
+    /// The document is located on the local disk.
+    case local
+
+    /// Initialize according to the ubiquity of the item at a specified location.
+    ///
+    /// - Parameter url: The storage location.
     public init(url: URL)
     {
       self = FileManager.default.isUbiquitousItem(at: url) ? .iCloud : .local
     }
 
-    /// Current document setting associated with the storage location.
+    /// Accessor for the bookmark data associated with the storage location.
     public var bookmarkData: Data?
     {
-      switch self
-      {
-        case .iCloud: return SettingsManager.shared.currentDocumentiCloud
-        case .local: return SettingsManager.shared.currentDocumentLocal
-      }
+      self == .iCloud ? settings.currentDocumentiCloud : settings.currentDocumentLocal
     }
 
     /// The root directory for stored document files.
@@ -636,9 +622,9 @@ public final class Manager: NotificationDispatching
             switch self
             {
               case .iCloud:
-                SettingsManager.shared.currentDocumentiCloud = document.bookmarkData
+                settings.currentDocumentiCloud = document.bookmarkData
               case .local:
-                SettingsManager.shared.currentDocumentLocal = document.bookmarkData
+                settings.currentDocumentLocal = document.bookmarkData
             }
           }
 
@@ -650,9 +636,9 @@ public final class Manager: NotificationDispatching
           switch self
           {
             case .iCloud:
-              SettingsManager.shared.currentDocumentiCloud = nil
+              settings.currentDocumentiCloud = nil
             case .local:
-              SettingsManager.shared.currentDocumentLocal = nil
+              settings.currentDocumentLocal = nil
           }
 
           return nil
@@ -664,76 +650,105 @@ public final class Manager: NotificationDispatching
         switch self
         {
           case .iCloud:
-            SettingsManager.shared.currentDocumentiCloud = newValue?.bookmarkData
+            settings.currentDocumentiCloud = newValue?.bookmarkData
           case .local:
-            SettingsManager.shared.currentDocumentLocal = newValue?.bookmarkData
+            settings.currentDocumentLocal = newValue?.bookmarkData
         }
       }
     }
   }
+}
 
+// MARK: - Manager.Error
+
+public extension Manager
+{
   /// Enumeration of the possible errors thrown by `Manager`.
-  public enum Error: String, Swift.Error
+  enum Error: String, Swift.Error
   {
-    case iCloudUnavailable, invalidBookmarkData
+    /// Thrown when attempting to use iCloud but it is unavailable.
+    case iCloudUnavailable
+
+    /// Thrown when provided with invalid bookmark data.
+    case invalidBookmarkData
   }
+}
 
-  /// Enumeration for the names of notifications posted by `Manager`.
-  public enum NotificationName: String, LosslessStringConvertible
-  {
-    case didUpdateItems
-    case didCreateDocument
-    case willChangeDocument, didChangeDocument
-    case willOpenDocument, didOpenDocument
+// MARK: NotificationDispatching
 
-    public var description: String { rawValue }
+extension Manager: NotificationDispatching
+{
+  public static let didUpdateItemsNotification =
+    Notification.Name("didUpdateItems")
 
-    public init?(_ description: String) { self.init(rawValue: description) }
-  }
+  public static let didCreateDocumentNotification =
+    Notification.Name("didCreateDocument")
+
+  public static let willChangeDocumentNotification =
+    Notification.Name("willChangeDocument")
+
+  public static let didChangeDocumentNotification =
+    Notification.Name("didChangeDocument")
+
+  public static let willOpenDocumentNotification =
+    Notification.Name("willOpenDocument")
+
+  public static let didOpenDocumentNotification =
+    Notification.Name("didOpenDocument")
+
+}
+
+public extension Notification.Name {
+  static let managerDidUpdateItems = Manager.didUpdateItemsNotification
+  static let managerDidCreateDocument = Manager.didCreateDocumentNotification
+  static let managerWillChangeDocument = Manager.willChangeDocumentNotification
+  static let managerDidChangeDocument = Manager.didChangeDocumentNotification
+  static let managerWillOpenDocument = Manager.willOpenDocumentNotification
+  static let managerDidOpenDocument = Manager.didOpenDocumentNotification
 }
 
 // MARK: - NSMetadataQuery + NotificationDispatching
 
-extension NSMetadataQuery: NotificationDispatching
-{
-  /// Enumeration shadowing the metadata query related values of type `NSNotification.Name`.
-  public enum NotificationName: LosslessStringConvertible
-  {
-    case didStartGathering, gatheringProgress, didFinishGathering, didUpdate
+/* extension NSMetadataQuery: NotificationDispatching
+ {
+   /// Enumeration shadowing the metadata query related values of type `NSNotification.Name`.
+   public enum NotificationName: LosslessStringConvertible
+   {
+     case didStartGathering, gatheringProgress, didFinishGathering, didUpdate
 
-    public init?(_ description: String)
-    {
-      switch description
-      {
-        case NSNotification.Name.NSMetadataQueryDidStartGathering.rawValue:
-          self = .didStartGathering
-        case NSNotification.Name.NSMetadataQueryGatheringProgress.rawValue:
-          self = .gatheringProgress
-        case NSNotification.Name.NSMetadataQueryDidFinishGathering.rawValue:
-          self = .didFinishGathering
-        case NSNotification.Name.NSMetadataQueryDidUpdate.rawValue:
-          self = .didUpdate
-        default:
-          return nil
-      }
-    }
+     public init?(_ description: String)
+     {
+       switch description
+       {
+         case NSNotification.Name.NSMetadataQueryDidStartGathering.rawValue:
+           self = .didStartGathering
+         case NSNotification.Name.NSMetadataQueryGatheringProgress.rawValue:
+           self = .gatheringProgress
+         case NSNotification.Name.NSMetadataQueryDidFinishGathering.rawValue:
+           self = .didFinishGathering
+         case NSNotification.Name.NSMetadataQueryDidUpdate.rawValue:
+           self = .didUpdate
+         default:
+           return nil
+       }
+     }
 
-    public var description: String
-    {
-      switch self
-      {
-        case .didStartGathering:
-          return NSNotification.Name.NSMetadataQueryDidStartGathering.rawValue
-        case .gatheringProgress:
-          return NSNotification.Name.NSMetadataQueryGatheringProgress.rawValue
-        case .didFinishGathering:
-          return NSNotification.Name.NSMetadataQueryDidFinishGathering.rawValue
-        case .didUpdate:
-          return NSNotification.Name.NSMetadataQueryDidUpdate.rawValue
-      }
-    }
-  }
-}
+     public var description: String
+     {
+       switch self
+       {
+         case .didStartGathering:
+           return NSNotification.Name.NSMetadataQueryDidStartGathering.rawValue
+         case .gatheringProgress:
+           return NSNotification.Name.NSMetadataQueryGatheringProgress.rawValue
+         case .didFinishGathering:
+           return NSNotification.Name.NSMetadataQueryDidFinishGathering.rawValue
+         case .didUpdate:
+           return NSNotification.Name.NSMetadataQueryDidUpdate.rawValue
+       }
+     }
+   }
+ } */
 
 public extension Notification
 {

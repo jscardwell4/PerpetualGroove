@@ -93,7 +93,7 @@ extension DocumentItem: Named
 
 extension DocumentItem: CustomStringConvertible
 {
-  public var description: String { "\(name)" }
+  public var description: String { name }
 }
 
 // MARK: CustomDebugStringConvertible
@@ -102,10 +102,14 @@ extension DocumentItem: CustomDebugStringConvertible
 {
   public var debugDescription: String
   {
-    var dict: [String: Any] = ["displayName": name, "size": size, "isUbiquitous": isUbiquitous]
-    if let date = modificationDate { dict["modificationDate"] = date }
-    if let date = creationDate { dict["creationDate"] = date }
-    return "DocumentItem {\n\(dict.formattedDescription().indented(by: 4))\n}"
+    """
+    DocumentItem {
+      displayName: \(name)
+      size: \(size)
+      modificationDate: \(String(describing: modificationDate ?? nil))
+      creationDate: \(String(describing: creationDate ?? nil))
+    }
+    """
   }
 }
 

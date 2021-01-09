@@ -21,7 +21,7 @@ public protocol NodeDispatch: EventDispatch, Named {
   var nextNodeName: String { get }
 
   /// The color associated with the dispatching instance.
-  var color: TrackColor { get }
+  var color: Track.Color { get }
 
   /// The node manager for the dispatching instance.
   var nodeManager: NodeManager { get }

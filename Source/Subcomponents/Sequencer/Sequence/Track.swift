@@ -8,11 +8,13 @@
 import Foundation
 import MIDI
 import MoonKit
+import class UIKit.UIColor
 
 // MARK: - Track
 
 /// A class for representing a MIDI track belonging to a `Sequence`.
-public class Track: Named, EventDispatch, CustomStringConvertible {
+public class Track: Named, EventDispatch, CustomStringConvertible
+{
   // MARK: Stored Properties
 
   /// The sequence to which the track belongs.
@@ -28,18 +30,20 @@ public class Track: Named, EventDispatch, CustomStringConvertible {
   /// The name assigned to the track. The default value for this property is the empty
   /// string. When the value of this property is changed. `didUpdate` and `didChangeName`
   /// notifications are posted for the track.
-  @Published public var name: String = "" {
-    didSet {
+  @Published public var name: String = ""
+  {
+    didSet
+    {
       // Check that the value has actually changed.
       guard name != oldValue else { return }
 
       logi("'\(oldValue)' ➞ '\(name)'")
 
       // Post notification that the track has been updated.
-      postNotification(name: .didUpdate, object: self)
+      postNotification(name: .trackDidUpdate, object: self)
 
       // Post notification that the track's name has been changed.
-      postNotification(name: .didChangeName, object: self)
+      postNotification(name: .trackDidChangeName, object: self)
     }
   }
 
@@ -50,7 +54,8 @@ public class Track: Named, EventDispatch, CustomStringConvertible {
   /// the number of tracks in `sequence` to 'Track'.
   ///
   /// - Parameter sequence: The sequence to which the intialized track belongs.
-  public init(sequence: Sequence) {
+  public init(sequence: Sequence)
+  {
     // Initialize `sequence` using the specified sequence.
     self.sequence = sequence
 
@@ -67,12 +72,14 @@ public class Track: Named, EventDispatch, CustomStringConvertible {
   public var endOfTrack: BarBeatTime { eventContainer.maxTime ?? BarBeatTime.zero }
 
   /// The position of the track's MIDI file chunk within all track chunks for `sequence`.
-  public var chunkIndex: Int {
+  public var chunkIndex: Int
+  {
     unwrapOrDie { sequence.tracks.firstIndex(where: { $0 === self }) }
   }
 
   /// A comprehensive description of the track.
-  public var description: String {
+  public var description: String
+  {
     // Return the track's name followed by all the track's events.
     return [
       "name: \(name)",
@@ -98,7 +105,8 @@ public class Track: Named, EventDispatch, CustomStringConvertible {
   /// A track chunk composed of the track's MIDI events. The track's MIDI events are
   /// assembled from `headEvents`, the events from `eventContainer` post validation, and
   /// `tailEvents`.
-  public var chunk: TrackChunk {
+  public var chunk: TrackChunk
+  {
     // Validate the events held by `eventContainer` to allow subclasses to perform type-
     // specific checks and/or additions.
     validate(events: &eventContainer)
@@ -115,7 +123,8 @@ public class Track: Named, EventDispatch, CustomStringConvertible {
   /// provides an array containing a single event specifying the track's name. If `name`
   /// is equal to the empty string, the generic 'Track' is combined with the position of
   /// the track within the sequence to generate a name for the MIDI event.
-  public var headEvents: [Event] {
+  public var headEvents: [Event]
+  {
     // Determine the name to specify in the track name event.
     let trackName = name.isEmpty ? "Track\(chunkIndex)" : name
 
@@ -132,7 +141,8 @@ public class Track: Named, EventDispatch, CustomStringConvertible {
   /// An array containing the MIDI events that should succeed all others when representing
   /// the track in a MIDI file. The abstract `Track` implementation of this property
   /// provides an array containing a single event specifying the end of the track.
-  public var tailEvents: [Event] {
+  public var tailEvents: [Event]
+  {
     // Create the end of track meta event using `endOfTrack`.
     let endOfTrackMetaEvent = MetaEvent(data: .endOfTrack, time: endOfTrack)
 
@@ -147,7 +157,8 @@ public class Track: Named, EventDispatch, CustomStringConvertible {
 
   /// Adds events to `eventContainer` and register's the event times with the clock.
   /// - Parameter events: The MIDI events to add to the sequence.
-  public func add<S: Swift.Sequence>(events: S) where S.Element == Event {
+  public func add<S: Swift.Sequence>(events: S) where S.Element == Event
+  {
     eventContainer.append(contentsOf: events)
     Controller.shared.time.register(
       callback: weakCapture(of: self, block: type(of: self).dispatchEvents),
@@ -171,7 +182,8 @@ public class Track: Named, EventDispatch, CustomStringConvertible {
          event.data == .endOfTrack { return true }
       else { return false }
     })
-    else {
+    else
+    {
       return []
     }
 
@@ -184,44 +196,147 @@ public class Track: Named, EventDispatch, CustomStringConvertible {
 
 // MARK: NotificationDispatching
 
-extension Track: NotificationDispatching {
-  /// An enumeration of the notification names posted by `Track`.
-  public enum NotificationName: String, LosslessStringConvertible {
-    /// Posted when a track's content has been modified.
-    case didUpdate
+extension Track: NotificationDispatching
+{
+  public static var didUpdateNotification =
+    Notification.Name("didUpdate")
 
-    /// Posted by a track when it's name has changed.
-    case didChangeName
+  public static var didChangeNameNotification =
+    Notification.Name("didChangeName")
 
-    /// Posted by a track when the value of it's `forceMute` flag has changed.
-    case forceMuteStatusDidChange
+  public static var forceMuteStatusDidChangeNotification =
+    Notification.Name("forceMuteStatusDidChange")
 
-    /// Posted by a track when the value of it's `mute` flag has changed.
-    case muteStatusDidChange
+  public static var muteStatusDidChangeNotification =
+    Notification.Name("muteStatusDidChange")
 
-    /// Posted by a track when the value of it's `solo` flag has changed.
-    case soloStatusDidChange
+  public static var soloStatusDidChangeNotification =
+    Notification.Name("soloStatusDidChange")
+}
 
-    public var description: String { rawValue }
+public extension Notification.Name
+{
+  static let trackDidUpdate = Track.didUpdateNotification
+  static let trackDidChangeName = Track.didChangeNameNotification
+  static let trackForceMuteStatusDidChange = Track.forceMuteStatusDidChangeNotification
+  static let trackMuteStatusDidChange = Track.muteStatusDidChangeNotification
+  static let trackSoloStatusDidChange = Track.soloStatusDidChangeNotification
+}
 
-    public init?(_ description: String) { self.init(rawValue: description) }
+public extension Track
+{
+  /// Enumeration for specifying the color of a MIDI node dispatching instance whose raw
+  /// value is an unsigned 32-bit integer representing a hexadecimal RGB value.
+  enum Color: UInt32
+  {
+    case muddyWaters = 0xBD_7651
+    case steelBlue = 0x48_75A8
+    case celery = 0x9F_B44D
+    case chestnut = 0xBA_5055
+    case crayonPurple = 0x80_48A8
+    case verdigris = 0x48_A4A8
+    case twine = 0xBD_8F51
+    case tapestry = 0xAB_4A8D
+    case vegasGold = 0xBD_BA51
+    case richBlue = 0x50_48A8
+    case fruitSalad = 0x53_A949
+    case husk = 0xBD_A451
+    case mahogany = 0xC2_4100
+    case mediumElectricBlue = 0x00_499B
+    case appleGreen = 0x8E_B200
+    case venetianRed = 0xBC_000A
+    case indigo = 0x5B_009B
+    case easternBlue = 0x00_959B
+    case indochine = 0xC2_6E00
+    case flirt = 0xA2_006F
+    case ultramarine = 0x0C_009B
+    case laRioja = 0xC2_BC00
+    case forestGreen = 0x11_9E00
+    case pizza = 0xC2_9500
+
+    /// The `UIColor` derived from `rawValue`.
+    public var value: UIColor { UIColor(rgbHex: rawValue) }
+
+    public static func nextColor(after color: Color) -> Color
+    {
+      colors[(colors.firstIndex(of: color)! + 1) % colors.count]
+    }
+
+    public static func nextColor(currentColors: Set<Color>) -> Color
+    {
+      colors.first { currentColors ∌ $0 } ?? colors[0]
+    }
+
+    /// All possible `TrackColor` values.
+    public static let colors: [Color] = [
+      .muddyWaters, .steelBlue, .celery, .chestnut, .crayonPurple, .verdigris, .twine,
+      .tapestry, .vegasGold, .richBlue, .fruitSalad, .husk, .mahogany, .mediumElectricBlue,
+      .appleGreen, .venetianRed, .indigo, .easternBlue, .indochine, .flirt, .ultramarine,
+      .laRioja, .forestGreen, .pizza,
+    ]
   }
 }
 
-public extension Notification.Name {
-  static var trackDidUpdate: Notification.Name {
-    Notification.Name(rawValue: Track.NotificationName.didUpdate.rawValue)
+// MARK: - Track.Color + CustomStringConvertible
+
+extension Track.Color: CustomStringConvertible
+{
+  /// The color's name.
+  public var description: String
+  {
+    switch self
+    {
+      case .muddyWaters: return "muddyWaters"
+      case .steelBlue: return "steelBlue"
+      case .celery: return "celery"
+      case .chestnut: return "chestnut"
+      case .crayonPurple: return "crayonPurple"
+      case .verdigris: return "verdigris"
+      case .twine: return "twine"
+      case .tapestry: return "tapestry"
+      case .vegasGold: return "vegasGold"
+      case .richBlue: return "richBlue"
+      case .fruitSalad: return "fruitSalad"
+      case .husk: return "husk"
+      case .mahogany: return "mahogany"
+      case .mediumElectricBlue: return "mediumElectricBlue"
+      case .appleGreen: return "appleGreen"
+      case .venetianRed: return "venetianRed"
+      case .indigo: return "indigo"
+      case .easternBlue: return "easternBlue"
+      case .indochine: return "indochine"
+      case .flirt: return "flirt"
+      case .ultramarine: return "ultramarine"
+      case .laRioja: return "larioja"
+      case .forestGreen: return "forestGreen"
+      case .pizza: return "pizza"
+    }
   }
-  static var trackDidChangeName: Notification.Name {
-    Notification.Name(rawValue: Track.NotificationName.didChangeName.rawValue)
-  }
-  static var trackForceMuteStatusDidChange: Notification.Name {
-    Notification.Name(rawValue: Track.NotificationName.forceMuteStatusDidChange.rawValue)
-  }
-  static var trackMuteStatusDidChange: Notification.Name {
-    Notification.Name(rawValue: Track.NotificationName.muteStatusDidChange.rawValue)
-  }
-  static var trackSoloStatusDidChange: Notification.Name {
-    Notification.Name(rawValue: Track.NotificationName.soloStatusDidChange.rawValue)
+}
+
+// MARK: - Track.Color + LosslessJSONValueConvertible
+
+extension Track.Color: LosslessJSONValueConvertible
+{
+  /// A string with the pound-prefixed hexadecimal representation of `rawValue`.
+  public var jsonValue: JSONValue { "#\(String(rawValue, radix: 16))".jsonValue }
+
+  /// Initializing with a JSON value.
+  /// - Parameter jsonValue: To be successful, `jsonValue` must be a string that
+  ///                        begins with '#' and whose remaining characters form
+  ///                        a string convertible to `UInt32`.
+  public init?(_ jsonValue: JSONValue?)
+  {
+    // Check that the JSON value is a string and get convert it to a hexadecimal value.
+    guard let string = String(jsonValue),
+          string.hasPrefix("#"),
+          let hex = UInt32(String(string.dropFirst()), radix: 16)
+    else
+    {
+      return nil
+    }
+
+    // Initialize with the hexadecimal value.
+    self.init(rawValue: hex)
   }
 }

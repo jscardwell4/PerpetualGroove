@@ -15,7 +15,8 @@ import UIKit
 // MARK: - Player
 
 /// Coordinates `Node` and `PlayerNode` operations.
-public final class Player {
+public final class Player
+{
   // MARK: Stored Properties
 
   /// The manager for undoing `Node` operations.
@@ -29,8 +30,10 @@ public final class Player {
 
   /// Reference to the player node in the player scene. Setting this property to
   /// a non-nil value triggers the creation of the player's tools.
-  public internal(set) weak var playerNode: PlayerNode? {
-    didSet {
+  public internal(set) weak var playerNode: PlayerNode?
+  {
+    didSet
+    {
       guard let node = playerNode else { return }
       addTool = AddTool(playerNode: node)
       removeTool = RemoveTool(playerNode: node, delete: false)
@@ -61,8 +64,10 @@ public final class Player {
   public private(set) var rotateTool: RotateTool?
 
   /// Tool currently handling user touches.
-  @Published public var currentTool: AnyTool = .none {
-    willSet {
+  @Published public var currentTool: AnyTool = .none
+  {
+    willSet
+    {
       // Check that the current tool has not simply been reassigned.
       guard currentTool != newValue else { return }
 
@@ -76,7 +81,8 @@ public final class Player {
       playerContainer?.dismiss(completion: { _ in })
     }
 
-    didSet {
+    didSet
+    {
       // Check that the previous tool was not simply reassigned.
       guard currentTool != oldValue else { return }
 
@@ -97,7 +103,8 @@ public final class Player {
   /// Invokes `undoManager.undo()` when `undoManager.canUndo`.
   /// Returns `true` iff `undo()` was invoked.
   @discardableResult
-  public func rollBack() -> Bool {
+  public func rollBack() -> Bool
+  {
     guard undoManager.canUndo else { return false }
     if undoManager.groupingLevel > 0 { undoManager.endUndoGrouping() }
     undoManager.undo()
@@ -105,7 +112,8 @@ public final class Player {
   }
 
   /// Initializes the player by registering for various notifications.
-  public init() {
+  public init()
+  {
     undoManager.groupsByEvent = false
   }
 
@@ -116,15 +124,18 @@ public final class Player {
                        generator: AnyGenerator,
                        identifier: UUID = UUID())
   {
-    dispatchToMain { [self] in
-
+    dispatchToMain
+    { [self] in
       // Check that there is a player node to which a node may be added.
-      guard let playerNode = playerNode else {
+      guard let playerNode = playerNode
+      else
+      {
         log.warning("cannot place a node without a player node")
         return
       }
 
-      do {
+      do
+      {
         // Generate a name for the node composed of the current sequencer mode
         // and the name provided by target.
         let name = "<\(controller.mode.rawValue)> \(target.nextNodeName)"
@@ -142,27 +153,30 @@ public final class Player {
         try target.nodeManager.add(node: node)
 
         // Initiate playback if the transport is not currently playing.
-        if !controller.transport.isPlaying {
+        if !controller.transport.isPlaying
+        {
           controller.transport.isPlaying = true
         }
 
         // Post notification that the node has been added.
-        postNotification(name: .didAddNode,
+        postNotification(name: .playerDidAddNode,
                          object: self,
                          userInfo: ["addedNode": node, "addedNodeDispatch": target])
 
         log.info("added node \(name)")
-
-      } catch {
+      }
+      catch
+      {
         log.error("\(error as NSObject)")
       }
     }
   }
 
   /// Removes `node` from the player node.
-  public func remove(node: Node) {
-    dispatchToMain { [self] in
-
+  public func remove(node: Node)
+  {
+    dispatchToMain
+    { [self] in
       // Check that `node` is a child of `playerNode`.
       guard node.parent === playerNode else { return }
 
@@ -170,36 +184,31 @@ public final class Player {
       node.fadeOut(remove: true)
 
       // Post notification that a node has been removed.
-      postNotification(name: .didRemoveNode, object: self)
+      postNotification(name: .playerDidRemoveNode, object: self)
     }
   }
 }
 
 // MARK: NotificationDispatching
 
-extension Player: NotificationDispatching {
-  /// Enumeration of the notification names used in notifications posted by `NodePlayer`.
-  public enum NotificationName: String, LosslessStringConvertible {
-    case didAddNode, didRemoveNode
-    public var description: String { rawValue }
-    public init?(_ description: String) { self.init(rawValue: description) }
-  }
+extension Player: NotificationDispatching
+{
+  static let didAddNodeNotification = Notification.Name(rawValue: "didAddNode")
+  static let didRemoveNodeNotification = Notification.Name(rawValue: "didRemoveNode")
 }
 
-public extension Notification.Name {
-  static var playerDidAddNode: Notification.Name {
-    Notification.Name(rawValue: Player.NotificationName.didAddNode.rawValue)
-  }
-
-  static var playerDidRemoveNode: Notification.Name {
-    Notification.Name(rawValue: Player.NotificationName.didRemoveNode.rawValue)
-  }
+public extension Notification.Name
+{
+  static let playerDidAddNode = Player.didAddNodeNotification
+  static let playerDidRemoveNode = Player.didRemoveNodeNotification
 }
 
-public extension Notification {
+public extension Notification
+{
   var addedNode: Node? { userInfo?["addedNode"] as? Node }
 
-  var addedNodeDispatch: NodeDispatch? {
+  var addedNodeDispatch: NodeDispatch?
+  {
     userInfo?["addedNodeDispatch"] as? NodeDispatch
   }
 }

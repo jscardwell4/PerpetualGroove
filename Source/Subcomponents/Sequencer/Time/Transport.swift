@@ -37,7 +37,7 @@ public final class Transport {
       guard isPlaying, !oldValue else { return }
 
       // Post notification that the transport has started playing.
-      postNotification(name: .didStart,
+      postNotification(name: .transportDidStart,
                        object: self,
                        userInfo: ["time": time.barBeatTime])
 
@@ -74,7 +74,7 @@ public final class Transport {
       isPlaying = false
 
       // Post notification that the transport has been paused.
-      postNotification(name: .didPause,
+      postNotification(name: .transportDidPause,
                        object: self,
                        userInfo: ["time": time.barBeatTime])
     }
@@ -107,7 +107,7 @@ public final class Transport {
           previousJogTime = time.barBeatTime
 
           // Post notification that the transport has begun jogging.
-          postNotification(name: .didBeginJogging,
+          postNotification(name: .transportDidBeginJogging,
                            object: self,
                            userInfo: ["time": previousJogTime])
 
@@ -122,7 +122,7 @@ public final class Transport {
           previousJogTime = .zero
 
           // Post notification that the transport is no longer jogging.
-          postNotification(name: .didEndJogging,
+          postNotification(name: .transportDidEndJogging,
                            object: self,
                            userInfo: ["time": time.barBeatTime.rawValue])
 
@@ -157,7 +157,7 @@ public final class Transport {
     isPaused = false
 
     // Post notification that the transport has stopped.
-    postNotification(name: .didStop, object: self, userInfo: ["time": time.barBeatTime])
+    postNotification(name: .transportDidStop, object: self, userInfo: ["time": time.barBeatTime])
 
     // Reset the clock.
     clock.reset()
@@ -170,7 +170,7 @@ public final class Transport {
       guard let weakself = self else { return }
 
       // Post notification that the transport has been reset.
-      weakself.postNotification(name: .didReset,
+      weakself.postNotification(name: .transportDidReset,
                                 object: weakself,
                                 userInfo: ["time": weakself.time.barBeatTime])
     }
@@ -228,7 +228,7 @@ public final class Transport {
     previousJogTime = newJogTime
 
     // Post notification that the transport has jogged.
-    postNotification(name: .didJog,
+    postNotification(name: .transportDidJog,
                      object: self,
                      userInfo: ["time": time.barBeatTime, "jogTime": previousJogTime])
   }
@@ -249,7 +249,7 @@ public final class Transport {
     time.barBeatTime = newTime
 
     // Post notification that the transport has jogged.
-    postNotification(name: .didJog,
+    postNotification(name: .transportDidJog,
                      object: self,
                      userInfo: ["time": currentTime, "jogTime": newTime])
 
@@ -283,44 +283,41 @@ public extension Transport {
 // MARK: NotificationDispatching
 
 extension Transport: NotificationDispatching {
-  /// An enumeration of the notification names used by notifications posted by
-  /// an instance of `Transport`.
-  public enum NotificationName: String, LosslessStringConvertible {
-    case didStart, didPause, didStop, didReset
-    case didToggleRecording
-    case didBeginJogging, didEndJogging
-    case didJog
 
-    public var description: String { return rawValue }
-    public init?(_ description: String) { self.init(rawValue: description) }
-  }
+  public static let didStartNotification =
+    Notification.Name("didStart")
+
+  public static let didPauseNotification =
+    Notification.Name("didPause")
+
+  public static let didStopNotification =
+    Notification.Name("didStop")
+
+  public static let didResetNotification =
+    Notification.Name("didReset")
+
+  public static let didToggleRecordingNotification =
+    Notification.Name("didToggleRecording")
+
+  public static let didBeginJoggingNotification =
+    Notification.Name("didBeginJogging")
+
+  public static let didEndJoggingNotification =
+    Notification.Name("didEndJogging")
+
+  public static let didJogNotification =
+    Notification.Name("didJog")
 }
 
 public extension Notification.Name {
-  static var transportDidStart: Notification.Name {
-    Notification.Name(rawValue: Transport.NotificationName.didStart.rawValue)
-  }
-  static var transportDidPause: Notification.Name {
-    Notification.Name(rawValue: Transport.NotificationName.didPause.rawValue)
-  }
-  static var transportDidStop: Notification.Name {
-    Notification.Name(rawValue: Transport.NotificationName.didStop.rawValue)
-  }
-  static var transportDidReset: Notification.Name {
-    Notification.Name(rawValue: Transport.NotificationName.didReset.rawValue)
-  }
-  static var transportDidToggleRecording: Notification.Name {
-    Notification.Name(rawValue: Transport.NotificationName.didToggleRecording.rawValue)
-  }
-  static var transportDidBeginJogging: Notification.Name {
-    Notification.Name(rawValue: Transport.NotificationName.didBeginJogging.rawValue)
-  }
-  static var transportDidEndJogging: Notification.Name {
-    Notification.Name(rawValue: Transport.NotificationName.didEndJogging.rawValue)
-  }
-  static var transportDidJog: Notification.Name {
-    Notification.Name(rawValue: Transport.NotificationName.didJog.rawValue)
-  }
+  static let transportDidStart = Transport.didStartNotification
+  static let transportDidPause = Transport.didPauseNotification
+  static let transportDidStop = Transport.didStopNotification
+  static let transportDidReset = Transport.didResetNotification
+  static let transportDidToggleRecording = Transport.didToggleRecordingNotification
+  static let transportDidBeginJogging = Transport.didBeginJoggingNotification
+  static let transportDidEndJogging = Transport.didEndJoggingNotification
+  static let transportDidJog = Transport.didJogNotification
 }
 
 public extension Notification {

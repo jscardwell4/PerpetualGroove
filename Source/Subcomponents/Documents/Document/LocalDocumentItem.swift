@@ -24,7 +24,7 @@ public final class LocalDocumentItem: NSObject
   // MARK: Computed Properties
 
   /// The name of the document shown in the user interface.
-  public var displayName: String { wrapper.preferredFilename! }
+  public var displayName: String { wrapper.preferredFilename ?? "Local Document" }
 
   /// The size of the document's file on disk or `0` if no such file exists.
   public var size: UInt64
@@ -60,10 +60,12 @@ public final class LocalDocumentItem: NSObject
   /// Initialize from an existing file wrapper.
   ///
   /// - Parameter fileWrapper: The wrapper for the document's file.
+  ///
   /// - Requires: `fileWrapper.preferredFilename != nil` and the wrapped file
   ///             is located in the local documents directory
+  ///
   /// - Throws: `Error.invalidFileWrapper` or any error thrown
-  ///           by `LocalDocumentItem.init(url:)`.
+  ///            by `LocalDocumentItem.init(url:)`.
   public convenience init(_ fileWrapper: FileWrapper) throws
   {
     guard let baseURL = Manager.StorageLocation.local.root

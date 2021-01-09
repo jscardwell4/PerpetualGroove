@@ -10,10 +10,12 @@ import MIDI
 import MoonKit
 import SpriteKit
 import UIKit
+import Combine
 
 // MARK: - Node
 
-public final class Node: SKSpriteNode {
+public final class Node: SKSpriteNode
+{
   public typealias Trajectory = NodeEvent.Trajectory
 
   /// Whether the node is moving along `path`.
@@ -23,7 +25,8 @@ public final class Node: SKSpriteNode {
   public private(set) var isJogging: Bool
 
   /// Whether the node is slated to be removed.
-  public private(set) var isPendingRemoval: Bool = false {
+  public private(set) var isPendingRemoval: Bool = false
+  {
     didSet { isHidden = isPendingRemoval }
   }
 
@@ -47,8 +50,10 @@ public final class Node: SKSpriteNode {
 
   /// The generator used to produce the midi data played each time the node
   /// touches a boundary.
-  public var generator: AnyGenerator {
-    didSet {
+  public var generator: AnyGenerator
+  {
+    didSet
+    {
       guard generator != oldValue else { return }
       playAction = Action(key: .play, node: self)
     }
@@ -77,7 +82,8 @@ public final class Node: SKSpriteNode {
   private lazy var moveAction = Action(key: .move, node: self)
 
   /// Updates the node's position from `pendingPosition` when `pendingPosition != nil`.
-  public func updatePosition() {
+  public func updatePosition()
+  {
     guard let pending = pendingPosition else { return }
     position = pending
     pendingPosition = nil
@@ -85,7 +91,8 @@ public final class Node: SKSpriteNode {
 
   /// Causes node to fade out of the scene. If `remove == true` then the node
   /// is also removed.
-  public func fadeOut(remove: Bool = false) {
+  public func fadeOut(remove: Bool = false)
+  {
     (remove ? fadeOutAndRemoveAction : fadeOutAction).run()
   }
 
@@ -96,34 +103,41 @@ public final class Node: SKSpriteNode {
   private lazy var senderID = UInt(bitPattern: ObjectIdentifier(self))
 
   /// Pushes a new 'note on' event through `generator` and sets `isPlaying` to `true`.
-  private func sendNoteOn() {
-    do {
+  private func sendNoteOn()
+  {
+    do
+    {
       try generator.receiveNoteOn(endPoint: endPoint,
                                   identifier: senderID,
                                   ticks: time.ticks)
       isPlaying = true
-
-    } catch {
+    }
+    catch
+    {
       log.error("\(error as NSObject)")
     }
   }
 
   /// Pushes a new 'note off' event through `generator` and sets `isPlaying` to `false`.
-  private func sendNoteOff() {
-    do {
+  private func sendNoteOff()
+  {
+    do
+    {
       try generator.receiveNoteOff(endPoint: endPoint,
                                    identifier: senderID,
                                    ticks: time.ticks)
       isPlaying = false
-
-    } catch {
+    }
+    catch
+    {
       log.error("\(error as NSObject)")
       fatalError("Failed to send the 'note off' event through `generator`.")
     }
   }
 
   /// Overridden to ensure `sendNoteOff` is invoked when the play action is removed.
-  override public func removeAction(forKey key: String) {
+  override public func removeAction(forKey key: String)
+  {
     if action(forKey: key) != nil, Action.Key.play.rawValue == key { sendNoteOff() }
     super.removeAction(forKey: key)
   }
@@ -131,15 +145,14 @@ public final class Node: SKSpriteNode {
   /// The object responsible for handling the node's midi connections and management.
   /// Setting this property to `nil` will remove it from it's parent node when such
   /// a node exists.
-  private(set) weak var dispatch: NodeDispatch? {
+  private(set) weak var dispatch: NodeDispatch?
+  {
     didSet { if dispatch == nil, parent != nil { removeFromParent() } }
   }
 
-  /// Handles notification registration and reception.
-  private let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
-
   /// Handler for notifications indicating the node should begin jogging.
-  private func didBeginJogging(_: Notification) {
+  private func didBeginJogging()
+  {
     precondition(!isJogging)
 
     log.info("position: \(self.position); path: \(self.path)")
@@ -149,16 +162,20 @@ public final class Node: SKSpriteNode {
   }
 
   /// Handler for notifications indicating the node has jogged to a new location.
-  private func didJog(_ notification: Notification) {
+  private func didJog(notification: Notification)
+  {
     precondition(isJogging)
 
-    guard let time = notification.jogTime else {
+    guard let time = notification.jogTime
+    else
+    {
       fatalError("notification does not contain ticks")
     }
 
     log.info("time: \(time)")
 
-    switch time {
+    switch time
+    {
       case <--initTime where !isPendingRemoval:
         // Time has moved backward past the point of the node's initial start.
         // Hide and flag for removal.
@@ -176,7 +193,9 @@ public final class Node: SKSpriteNode {
       case initTime|->:
         // Time has moved forward, update the pending position.
 
-        guard let index = path.segmentIndex(for: time) else {
+        guard let index = path.segmentIndex(for: time)
+        else
+        {
           pendingPosition = nil
           break
         }
@@ -192,15 +211,20 @@ public final class Node: SKSpriteNode {
   }
 
   /// Handler for notifications indicating the node has stopped jogging.
-  private func didEndJogging(_: Notification) {
-    guard isJogging else {
+  private func didEndJogging()
+  {
+    guard isJogging
+    else
+    {
       log.warning("Internal inconsistency, should have jogging flag set."); return
     }
 
     isJogging = false
 
     // Check whether the node should be removed.
-    guard !isPendingRemoval else {
+    guard !isPendingRemoval
+    else
+    {
       removeFromParent()
       return
     }
@@ -209,7 +233,9 @@ public final class Node: SKSpriteNode {
     guard !isStationary else { return }
 
     // Update the current segment and resume movement of the node.
-    guard let nextSegment = path.segmentIndex(for: time.barBeatTime) else {
+    guard let nextSegment = path.segmentIndex(for: time.barBeatTime)
+    else
+    {
       fatalError("Failed to get the index for the next segment")
     }
 
@@ -219,7 +245,8 @@ public final class Node: SKSpriteNode {
   }
 
   /// Hander for notifications indicating that the sequencer's transport has begun playback.
-  private func didStart(_: Notification) {
+  private func didStart()
+  {
     // Check that the node is paused; otherwise, it should already be moving.
     guard isStationary else { return }
 
@@ -229,7 +256,8 @@ public final class Node: SKSpriteNode {
   }
 
   /// Handler for notifications indicating that the sequencer's transport has paused playback.
-  private func didPause(_: Notification) {
+  private func didPause()
+  {
     // Check that the node is not already paused.
     guard !isStationary else { return }
 
@@ -239,7 +267,8 @@ public final class Node: SKSpriteNode {
   }
 
   /// Handler for notifications indicating that the sequencer's transport has reset.
-  private func didReset(_: Notification) {
+  private func didReset()
+  {
     // Fade out and remove.
     fadeOut(remove: true)
   }
@@ -256,11 +285,31 @@ public final class Node: SKSpriteNode {
   /// The size of a node when it has at least one active note.
   public static let playingSize: CGSize = Node.texture.size()
 
+  /// Subscription for `.transportDidBeginJogging` notifications.
+  private var transportDidBeginJoggingSubscription: Cancellable?
+
+  /// Subscription for `.transportDidJog` notifications.
+  private var transportDidJogSubscription: Cancellable?
+
+  /// Subscription for `.transportDidEndJogging` notifications.
+  private var transportDidEndJoggingSubscription: Cancellable?
+
+  /// Subscription for `.transportDidStart` notifications.
+  private var transportDidStartSubscription: Cancellable?
+
+  /// Subscription for `.transportDidPause` notifications.
+  private var transportDidPauseSubscription: Cancellable?
+
+  /// Subscription for `.transportDidReset` notifications.
+  private var transportDidResetSubscription: Cancellable?
+
   /// Default initializer for creating an instance of `Node`.
-  /// - Parameter trajectory: The initial trajectory for the node.
-  /// - Parameter name: The unique name for the node.
-  /// - Parameter dispatch: The object responsible for the node.
-  /// - Parameter identifier: A `UUID` used to uniquely identify this node across application invocations.
+  ///
+  /// - Parameters:
+  ///   - trajectory: The initial trajectory for the node.
+  ///   - name: The unique name for the node.
+  ///   - dispatch: The object responsible for the node.
+  ///   - identifier: A `UUID` used to uniquely identify this node across invocations.
   public init(trajectory: Trajectory,
               name: String,
               dispatch: NodeDispatch,
@@ -276,7 +325,9 @@ public final class Node: SKSpriteNode {
     self.identifier = identifier
 
     // Get the size of the player which is needed for calculating trajectories
-    guard let playerSize = player.playerNode?.size else {
+    guard let playerSize = player.playerNode?.size
+    else
+    {
       fatalError("creating node with nil value for `player.playerNode`")
     }
 
@@ -288,19 +339,25 @@ public final class Node: SKSpriteNode {
                color: dispatch.color.value,
                size: Node.texture.size() * 0.75)
 
-    // Register receptionist for transport notifications.
-    receptionist.observe(name: .didBeginJogging, from: controller.transport,
-                         callback: weakCapture(of: self, block: Node.didBeginJogging))
-    receptionist.observe(name: .didJog, from: controller.transport,
-                         callback: weakCapture(of: self, block: Node.didJog))
-    receptionist.observe(name: .didEndJogging, from: controller.transport,
-                         callback: weakCapture(of: self, block: Node.didEndJogging))
-    receptionist.observe(name: .didStart, from: controller.transport,
-                         callback: weakCapture(of: self, block: Node.didStart))
-    receptionist.observe(name: .didPause, from: controller.transport,
-                         callback: weakCapture(of: self, block: Node.didPause))
-    receptionist.observe(name: .didReset, from: controller.transport,
-                         callback: weakCapture(of: self, block: Node.didReset))
+    // Subscribe to transport notifications from the currently assigned transport.
+    transportDidBeginJoggingSubscription = NotificationCenter.default
+      .publisher(for: .transportDidBeginJogging, object: controller.transport)
+      .sink { _ in self.didBeginJogging() }
+    transportDidJogSubscription = NotificationCenter.default
+      .publisher(for: .transportDidJog, object: controller.transport)
+      .sink { self.didJog(notification: $0) }
+    transportDidEndJoggingSubscription = NotificationCenter.default
+      .publisher(for: .transportDidEndJogging, object: controller.transport)
+      .sink { _ in self.didEndJogging()}
+    transportDidStartSubscription = NotificationCenter.default
+      .publisher(for: .transportDidStart, object: controller.transport)
+      .sink { _ in self.didStart() }
+    transportDidPauseSubscription = NotificationCenter.default
+      .publisher(for: .transportDidPause, object: controller.transport)
+      .sink { _ in self.didPause() }
+    transportDidResetSubscription = NotificationCenter.default
+      .publisher(for: .transportDidReset, object: controller.transport)
+      .sink { _ in self.didReset() }
 
     // Create midi client and source.
     try require(MIDIClientCreateWithBlock(name as CFString, &client, nil),
@@ -325,30 +382,37 @@ public final class Node: SKSpriteNode {
   private var currentSegment: Int = 0
 
   /// Initializing from a coder is not supported.
-  @available(*, unavailable) public required init?(coder _: NSCoder) {
+  @available(*, unavailable) public required init?(coder _: NSCoder)
+  {
     fatalError("\(#function) has not been implemented")
   }
 
   /// Sends 'note off' event if needed and disposed of midi resources.
-  deinit {
+  deinit
+  {
     if isPlaying { sendNoteOff() }
 
-    do {
+    do
+    {
       log.info("disposing of MIDI client and end point")
       try require(MIDIEndpointDispose(endPoint), "Failed to dispose of end point")
       try require(MIDIClientDispose(client), "Failed to dispose of midi client")
-
-    } catch {
+    }
+    catch
+    {
       log.error("\(error as NSObject)")
     }
   }
 }
 
-extension Node {
+extension Node
+{
   /// Type for representing MIDI-related node actions
-  private struct Action {
+  private struct Action
+  {
     /// Enumeration of the available actions.
-    enum Key: String {
+    enum Key: String
+    {
       /// Move the node along its current segment to that segment's end location,
       /// at which point the node runs `play`, the node's segment is updated and
       /// the action is repeated.
@@ -376,14 +440,17 @@ extension Node {
     unowned let node: Node
 
     /// The `SKAction` object generator for the action.
-    var action: SKAction {
-      switch key {
+    var action: SKAction
+    {
+      switch key
+      {
         case .move:
 
           // Get the current segment on the path.
           let segment = node.path[node.currentSegment]
 
-          // Get the duration, which is the time it will take to travel the current segment.
+          // Get the duration, which is the time it will take to travel the
+          // current segment.
           let duration = segment.trajectory.time(from: node.position,
                                                  to: segment.endLocation)
 
@@ -394,7 +461,8 @@ extension Node {
           let play = node.playAction.action
 
           // Create the action that updates the current segment and continues movement.
-          let updateAndRepeat = SKAction.run {
+          let updateAndRepeat = SKAction.run
+          {
             [unowned node] in
 
             node.currentSegment = node.currentSegment &+ 1
@@ -441,7 +509,8 @@ extension Node {
           let fade = SKAction.fadeOut(withDuration: 0.25)
 
           // Send 'note off' event and pause the node.
-          let pause = SKAction.run {
+          let pause = SKAction.run
+          {
             [unowned node] in node.sendNoteOff(); node.isPaused = true
           }
 
@@ -477,9 +546,11 @@ extension Node {
   }
 }
 
-public extension Node {
+public extension Node
+{
   /// Type for generating consecutive line segments.
-  final class Path: CustomStringConvertible, CustomDebugStringConvertible {
+  final class Path: CustomStringConvertible, CustomDebugStringConvertible
+  {
     /// Bounding box for the path's segments.
     private let bounds: CGRect
 
@@ -502,7 +573,8 @@ public extension Node {
     /// - Parameter trajectory: The path's initial trajectory.
     /// - Parameter playerSize: The size of the rectangle bounding the path.
     /// - Parameter time: The start time for the path. Default is `BarBeatTime.zero`.
-    public init(trajectory: Trajectory, playerSize: CGSize, time: BarBeatTime = .zero) {
+    public init(trajectory: Trajectory, playerSize: CGSize, time: BarBeatTime = .zero)
+    {
       // Calculate bounds by insetting a rect with origin zero and a size of `playerSize`.
       bounds = UIEdgeInsets(*(Node.texture.size() * 0.375))
         .inset(CGRect(size: playerSize))
@@ -516,28 +588,35 @@ public extension Node {
     /// segment is found for `time` it's index will be returned; otherwise, new
     /// segments will be created successively until a segment is created that contains
     /// `time` and its index is returned.
-    public func segmentIndex(for time: BarBeatTime) -> Int? {
+    public func segmentIndex(for time: BarBeatTime) -> Int?
+    {
       // Check that the time does not predate the path's start time.
       guard time >= startTime else { return nil }
 
-      if let index = segments.firstIndex(where: { $0.timeInterval.contains(time) }) {
+      if let index = segments.firstIndex(where: { $0.timeInterval.contains(time) })
+      {
         return index
       }
 
       var segment = segments[segments.index(before: segments.endIndex)]
 
-      guard segment.endTime <= time else {
+      guard segment.endTime <= time
+      else
+      {
         fatalError("segment's end time ≰ to time but matching segment not found")
       }
 
       // Iteratively create segments until one is created whose `timeInterval`
       // contains `time`.
-      while !segment.timeInterval.contains(time) {
+      while !segment.timeInterval.contains(time)
+      {
         segment = advance(segment: segment)
         segments.append(segment)
       }
 
-      guard segment.timeInterval.contains(time) else {
+      guard segment.timeInterval.contains(time)
+      else
+      {
         fatalError("segment to return does not contain time specified")
       }
 
@@ -546,11 +625,13 @@ public extension Node {
 
     /// Returns a new segment that continues the path by connecting to the end
     /// location of `segment`.
-    private func advance(segment: Segment) -> Segment {
+    private func advance(segment: Segment) -> Segment
+    {
       // Redirect trajectory according to which boundary edge the new location touches
       var velocity = segment.trajectory.velocity
 
-      switch segment.endLocation.unpack {
+      switch segment.endLocation.unpack
+      {
         case (bounds.minX, _),
              (bounds.maxX, _):
           // Touched a horizontal boundary.
@@ -580,12 +661,14 @@ public extension Node {
     }
 
     /// Returns a brief description of the path.
-    public var description: String {
+    public var description: String
+    {
       "Node.Path { startTime: \(startTime); segments: \(segments.count) }"
     }
 
     /// Returns an exhaustive description of the path.
-    public var debugDescription: String {
+    public var debugDescription: String
+    {
       var result = "Node.Path {\n\t"
 
       result += [
@@ -607,9 +690,11 @@ public extension Node {
   }
 }
 
-public extension Node.Path {
+public extension Node.Path
+{
   /// A struct representing a line segment within a path.
-  struct Segment: Comparable, CustomStringConvertible {
+  struct Segment: Comparable, CustomStringConvertible
+  {
     /// The position, angle and velocity describing the segment.
     public let trajectory: Node.Trajectory
 
@@ -635,7 +720,10 @@ public extension Node.Path {
     public var endTicks: MIDITimeStamp { tickInterval.upperBound }
 
     /// The number of elapsed ticks from start to end.
-    public var totalTicks: MIDITimeStamp { endTicks > startTicks ? endTicks - startTicks : 0 }
+    public var totalTicks: MIDITimeStamp
+    {
+      endTicks > startTicks ? endTicks - startTicks : 0
+    }
 
     /// The starting point of the segment.
     public var startLocation: CGPoint { trajectory.position }
@@ -647,7 +735,8 @@ public extension Node.Path {
     public let length: CGFloat
 
     /// Returns the point along the segment with the associated `time` or `nil`.
-    public func location(for time: BarBeatTime) -> CGPoint? {
+    public func location(for time: BarBeatTime) -> CGPoint?
+    {
       // Check that the segment has a location for `time`.
       guard timeInterval.contains(time) else { return nil }
 
@@ -675,13 +764,15 @@ public extension Node.Path {
     /// - Parameter trajectory: The segment's postion, velocity and angle.
     /// - Parameter time: The total elapsed time at the start of the segment.
     /// - Parameter bounds: The bounding rectangle for the segment.
-    public init(trajectory: Node.Trajectory, time: BarBeatTime, bounds: CGRect) {
+    public init(trajectory: Node.Trajectory, time: BarBeatTime, bounds: CGRect)
+    {
       self.trajectory = trajectory
 
       // Determine the y value at the end of the segment.
       let endY: CGFloat
 
-      switch trajectory.direction.vertical {
+      switch trajectory.direction.vertical
+      {
         case .none:
           // No vertical movement so the y value is the same as at the start of
           // the segment.
@@ -710,7 +801,8 @@ public extension Node.Path {
       // Determine the x value at the end of the segment.
       let endX: CGFloat
 
-      switch trajectory.direction.horizontal {
+      switch trajectory.direction.horizontal
+      {
         case .none:
           // No horizontal movement so the x value is the same as at the start of
           // the segment.
@@ -738,7 +830,8 @@ public extension Node.Path {
       }()
 
       // Determine the value for `endLocation` using the two projected points.
-      switch (pY, pX) {
+      switch (pY, pX)
+      {
         case let (pY?, pX?)
         where trajectory.position.distanceTo(pY) < trajectory.position.distanceTo(pX):
           // Neither projection is nil, the y projection is closer so end there.
@@ -774,17 +867,20 @@ public extension Node.Path {
     }
 
     /// For the purpose of ordering, only the times are considered.
-    public static func == (lhs: Segment, rhs: Segment) -> Bool {
+    public static func == (lhs: Segment, rhs: Segment) -> Bool
+    {
       lhs.startTime == rhs.startTime
     }
 
     /// For the purpose of ordering, only the times are considered.
-    public static func < (lhs: Segment, rhs: Segment) -> Bool {
+    public static func < (lhs: Segment, rhs: Segment) -> Bool
+    {
       lhs.startTime < rhs.startTime
     }
 
     /// Detailed description of the segment's data.
-    public var description: String {
+    public var description: String
+    {
       """
       Segment {
         trajectory: \(trajectory)

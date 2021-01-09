@@ -338,7 +338,7 @@ public final class MixerViewController: UICollectionViewController,
           return
         }
 
-        if SettingsManager.shared.confirmDeleteTrack
+        if Settings.shared.confirmDeleteTrack
         {
           logw("delete confirmation not yet implemented for tracks")
         }

@@ -7,4 +7,4 @@
 //
 import Foundation
 
-public var settings: SettingsManager { SettingsManager.shared }
+public var settings: Settings { Settings.shared }

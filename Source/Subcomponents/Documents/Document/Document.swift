@@ -14,7 +14,7 @@ import UIKit
 // MARK: - Document
 
 /// A `UIDocument` subclass for presenting a document interface usable by the application.
-public final class Document: UIDocument, Named, NotificationDispatching
+public final class Document: UIDocument, Named
 {
   /// Whether the document is backed by an iCloud file.
   public var isUbiquitous: Bool
@@ -88,7 +88,7 @@ public final class Document: UIDocument, Named, NotificationDispatching
   /// Overridden to utilize `Manager.operationQueue`.
   override public var presentedItemOperationQueue: OperationQueue
   {
-    Manager.shared.operationQueue
+    documentManager.operationQueue
   }
 
   private var stateSubscription: Cancellable?
@@ -99,14 +99,13 @@ public final class Document: UIDocument, Named, NotificationDispatching
     super.init(fileURL: url)
 
     stateSubscription = NotificationCenter.default
-      .publisher(for: Notification.Name(rawValue: "didChangeState"), object: self)
+      .publisher(for: .documentDidChangeState, object: self)
       .sink
       {
-        [weak self] _ in
-        guard let weakself = self,
-              weakself.documentState ∋ .inConflict,
+        _ in
+        guard self.documentState ∋ .inConflict,
               let versions = NSFileVersion
-              .unresolvedConflictVersionsOfItem(at: weakself.fileURL)
+              .unresolvedConflictVersionsOfItem(at: self.fileURL)
         else
         {
           return
@@ -237,13 +236,16 @@ public final class Document: UIDocument, Named, NotificationDispatching
     {
       fatalError("Failed to get base name from new url")
     }
-    postNotification(name: .didRenameDocument,
+    postNotification(name: .documentDidRenameDocument,
                      object: self,
                      userInfo: ["newName": newName])
   }
+}
 
+public extension Document
+{
   /// Enumeration for specifying one of the supported document file types.
-  public enum SourceType: String
+  enum SourceType: String
   {
     case midi, groove
 
@@ -265,43 +267,32 @@ public final class Document: UIDocument, Named, NotificationDispatching
       }
     }
   }
+}
 
+// MARK: Document.Error
+
+public extension Document
+{
   /// Enumeration of possible errors thrown by an instance of `Document`.
-  public enum Error: String, Swift.Error
+  enum Error: String, Swift.Error
   {
-    case invalidContentType, invalidContent, missingSequence
+    case invalidContentType
+    case invalidContent
+    case missingSequence
   }
+}
 
-  /// Enumeration of the names of notifications dispatched by an instance of `Document`.
-  public enum NotificationName: String, LosslessStringConvertible
-  {
-    /// Posted when an existing document has been renamed.
-    case didRenameDocument
+// MARK: NotificationDispatching
 
-    /// Shadow for NSNotification.Name.UIDocumentStateChanged
-    case didChangeState
+extension Document: NotificationDispatching
+{
+  public static let didRenameDocumentNotification = Notification.Name("didRenameDocument")
+  public static let didChangeStateNotification = UIDocument.stateChangedNotification
+}
 
-    public var description: String
-    {
-      switch self
-      {
-        case .didRenameDocument: return rawValue
-        case .didChangeState: return UIDocument.stateChangedNotification.rawValue
-      }
-    }
-
-    public init?(_ description: String)
-    {
-      switch description
-      {
-        case UIDocument.stateChangedNotification.rawValue:
-          self = .didChangeState
-        default:
-          guard let name = NotificationName(rawValue: description) else { return nil }
-          self = name
-      }
-    }
-  }
+public extension Notification.Name {
+  static let documentDidRenameDocument = Document.didRenameDocumentNotification
+  static let documentDidChangeState = Document.didChangeStateNotification
 }
 
 public extension Notification

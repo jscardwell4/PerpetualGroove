@@ -34,7 +34,7 @@ public final class TempoTrack: Track {
       add(event: .meta(tempoEvent))
 
       // Post notification that the track has been updated.
-      postNotification(name: .didUpdate, object: self)
+      postNotification(name: .trackDidUpdate, object: self)
     }
   }
 
@@ -55,7 +55,7 @@ public final class TempoTrack: Track {
       add(event: .meta(timeSignatureEvent))
 
       // Post notification that the track has been updated.
-      postNotification(name: .didUpdate, object: self)
+      postNotification(name: .trackDidUpdate, object: self)
     }
   }
 

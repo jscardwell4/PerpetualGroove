@@ -21,7 +21,7 @@ public extension File
     public var name: String
 
     /// The track's color.
-    public var color: TrackColor
+    public var color: Sequencer.Track.Color
 
     /// An index of nodes belonging to the track.
     public var nodes: [Node.Identifier: Node] = [:]
@@ -163,7 +163,7 @@ public extension File
       // Get the JSON object and extract the necessary values.
       guard let dict = ObjectJSONValue(jsonValue),
             let name = String(dict["name"]),
-            let color = TrackColor(dict["color"]),
+            let color = Sequencer.Track.Color(dict["color"]),
             let instrument = ObjectJSONValue(dict["instrument"]),
             let nodes = ArrayJSONValue(dict["nodes"]),
             let loops = ArrayJSONValue(dict["loops"])

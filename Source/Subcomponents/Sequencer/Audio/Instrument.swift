@@ -36,7 +36,7 @@ public final class Instrument {
       // Check that the sound font containing the preset has changed.
       if !preset.soundFont.isEqualTo(oldValue.soundFont) {
         // Post notification that the instrument's sound font has changed.
-        postNotification(name: .soundFontDidChange,
+        postNotification(name: .instrumentSoundFontDidChange,
                          object: self,
                          userInfo: ["oldSoundFont": oldValue.soundFontName,
                                     "newSoundFont": preset.soundFontName])
@@ -45,7 +45,7 @@ public final class Instrument {
       // Check that the preset's header has changed.
       if preset.presetHeader != oldValue.presetHeader {
         // Post notification the instrument's program has changed.
-        postNotification(name: .programDidChange,
+        postNotification(name: .instrumentProgramDidChange,
                          object: self,
                          userInfo: ["oldProgramName": oldValue.programName,
                                     "newProgramName": preset.programName])
@@ -371,23 +371,18 @@ public extension Instrument {
 // MARK: NotificationDispatching
 
 extension Instrument: NotificationDispatching {
-  /// An enumeration of names for notification posted by `Instrument`.
-  public enum NotificationName: String, LosslessStringConvertible {
-    case programDidChange, soundFontDidChange
 
-    public var description: String { return rawValue }
+  public static let programDidChangeNotification =
+    Notification.Name("programDidChange")
 
-    public init?(_ description: String) { self.init(rawValue: description) }
-  }
+  public static let soundFontDidChangeNotification =
+    Notification.Name("soundFontDidChange")
+
 }
 
 public extension Notification.Name {
-  static var instrumentProgramDidChange: Notification.Name {
-    Notification.Name(rawValue: Instrument.NotificationName.programDidChange.rawValue)
-  }
-  static var instrumentSoundFontDidChange: Notification.Name {
-    Notification.Name(rawValue: Instrument.NotificationName.soundFontDidChange.rawValue)
-  }
+  static let instrumentProgramDidChange = Instrument.programDidChangeNotification
+  static let instrumentSoundFontDidChange = Instrument.soundFontDidChangeNotification
 }
 
 
