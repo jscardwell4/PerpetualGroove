@@ -1,5 +1,5 @@
 //
-//  Manager.swift
+//  DocumentManager.swift
 //  PerpetualGroove
 //
 //  Created by Jason Cardwell on 9/28/15.
@@ -12,27 +12,31 @@ import MoonKit
 import os
 import Sequencer
 
+// MARK: - Shorthand
+
+/// The singleton instance of `DocumentManager`.
+public let documentManager = DocumentManager()
+
+// MARK: - Logging
+
 /// A logger for internal use by the `Documents` framework.
 internal let log = os.Logger(subsystem: "com.moondeerstudios.groove.documents",
                              category: "Documents")
 
-// MARK: - Manager
+// MARK: - DocumentManager
 
 /// A Singleton whose job is to coordinate all file/document operations.
-public final class Manager
+public final class DocumentManager
 {
   // MARK: Stored Properties
 
-  /// The shared singleton instance of `Manager`.
-  public static let shared = Manager()
-
   /// Concurrent queue for manipulating documents and the underlying queue
   /// for `operationQueue`.
-  public let queue = DispatchQueue(label: "com.groove.documents",
-                                   attributes: .concurrent)
+  internal let queue = DispatchQueue(label: "com.groove.documents",
+                                     attributes: .concurrent)
 
   /// `OperationQueue` wrapper for `queue`.
-  public let operationQueue: OperationQueue
+  internal let operationQueue: OperationQueue
 
   /// Holds state information such as whether a document is being opened
   /// or metadata items are being gathered.
@@ -40,7 +44,7 @@ public final class Manager
   {
     didSet
     {
-      log.info("\(String(describing: oldValue)) ➞ \(String(describing: self.state))")
+      logi("\(String(describing: oldValue)) ➞ \(String(describing: self.state))")
 
       // Check that the `openingDocument` flag has changed.
       guard state ∆ oldValue ∋ .openingDocument else { return }
@@ -66,11 +70,11 @@ public final class Manager
       queue.async
       { [self] in
 
-        log.info("currentDocument: \(currentDocument?.localizedName ?? "nil")")
+        logi("currentDocument: \(currentDocument?.localizedName ?? "nil")")
 
         if let oldValue = oldValue
         {
-          log.info("closing document '\(oldValue.localizedName)'")
+          logi("closing document '\(oldValue.localizedName)'")
           oldValue.close(completionHandler: nil)
           fileURLSubscription = nil
         }
@@ -82,7 +86,7 @@ public final class Manager
             .sink
             {
               [weak currentDocument] (_: URL) in
-              log.info("observed change to file URL of current document")
+              logi("observed change to file URL of current document")
               currentDocument?.storageLocation.currentDocument = currentDocument!
             }
 
@@ -100,7 +104,7 @@ public final class Manager
       switch activeStorageLocation
       {
         case .iCloud
-        where state ∌ .gatheringMetadataItems && directoryMonitor.isMonitoring:
+              where state ∌ .gatheringMetadataItems && directoryMonitor.isMonitoring:
           directoryMonitor.stopMonitoring()
           fallthrough
 
@@ -110,7 +114,7 @@ public final class Manager
           metadataQuery.operationQueue?.addOperation { [self] in metadataQuery.start() }
 
         case .local
-        where state ∋ .gatheringMetadataItems && !directoryMonitor.isMonitoring:
+              where state ∋ .gatheringMetadataItems && !directoryMonitor.isMonitoring:
           metadataQuery.operationQueue?.addOperation { [self] in metadataQuery.stop() }
           fallthrough
 
@@ -122,7 +126,7 @@ public final class Manager
           }
           catch
           {
-            log.error("\(error as NSObject)")
+            loge("\(error as NSObject)")
             fatalError("Failed to begin monitoring local directory")
           }
 
@@ -151,10 +155,15 @@ public final class Manager
 
   // MARK: Initializing
 
-  // TODO: Reimplement setting and query notification monitoring.
+  /// Subscription for `iCloudStorageChanged` notifications.
+  private var iCloudStorageChangedNotificationSubscription: Cancellable?
+  /// Subscription for `didFinishGathering` notifications.
+  private var didFinishGatheringNotificationSubscription: Cancellable?
+  /// Subscription for `didUpdate` notifications.
+  private var didUpdateNotificationSubscription: Cancellable?
 
   /// The default initializer.
-  private init()
+  fileprivate init()
   {
     let operationQueue = OperationQueue()
     operationQueue.name = "com.groove.documentmanager"
@@ -172,7 +181,7 @@ public final class Manager
     {
       let monitor = try DirectoryMonitor(directoryURL: url)
       {
-        Manager.shared.didUpdateLocalItems(added: $0, removed: $1)
+        documentManager.didUpdateLocalItems(added: $0, removed: $1)
       }
       monitor.callbackQueue = operationQueue
 
@@ -180,7 +189,7 @@ public final class Manager
     }
     catch
     {
-      log.error("\(error as NSObject)")
+      loge("\(error as NSObject)")
       fatalError("Failed to initialize monitor for local directory.")
     }
 
@@ -196,14 +205,27 @@ public final class Manager
 
     metadataQuery = query
 
-    //      receptionist.observe(name: .iCloudStorageChanged, from: Settings.self,
-    //                           callback: Manager.didChangeStorage)
-    //
-    //      receptionist.observe(name: .didFinishGathering, from: metadataQuery,
-    //                           callback: Manager.didGatherMetadataItems)
-    //
-    //      receptionist.observe(name: .didUpdate, from: metadataQuery,
-    //                           callback: Manager.didUpdateMetadataItems)
+    didFinishGatheringNotificationSubscription = NotificationCenter.default
+      .publisher(for: .NSMetadataQueryDidFinishGathering, object: metadataQuery)
+      .sink { self.didGatherMetadataItems(notification: $0) }
+
+    didUpdateNotificationSubscription = NotificationCenter.default
+      .publisher(for: .NSMetadataQueryDidUpdate, object: metadataQuery)
+      .sink { self.didUpdateMetadataItems(notification: $0) }
+
+    iCloudStorageChangedNotificationSubscription = UserDefaults.standard
+      .publisher(for: \.iCloudStorage)
+      .sink
+      {
+        [self] preferCloud in
+        logi("observed notification of iCloud storage setting change")
+
+        guard (activeStorageLocation == .iCloud) ^ preferCloud else { return }
+
+        activeStorageLocation = preferredStorageLocation
+
+        openCurrentDocument(for: activeStorageLocation)
+      }
 
     activeStorageLocation = preferredStorageLocation
     openCurrentDocument(for: activeStorageLocation)
@@ -238,11 +260,11 @@ public final class Manager
   {
     queue.async
     { [self] in
-      let name = noncollidingFileName(for: name ?? Manager.defaultDocumentName)
+      let name = noncollidingFileName(for: name ?? DocumentManager.defaultDocumentName)
 
       guard let fileURL = activeStorageLocation.root + "\(name).groove" else { return }
 
-      log.info("creating a new document at path '\(fileURL.path)'")
+      logi("creating a new document at path '\(fileURL.path)'")
 
       let document = Document(fileURL: fileURL)
 
@@ -279,7 +301,7 @@ public final class Manager
     // until a non-colliding name is found.
     var i = 2
     while (try? (directoryURL + "\(baseName)\(i).\(ext)")
-      .checkPromisedItemIsReachable()) == true
+            .checkPromisedItemIsReachable()) == true
     {
       i += 1
     }
@@ -302,7 +324,7 @@ public final class Manager
         currentDocument = nil
       }
 
-      log.info("removing item '\(item.name)'")
+      logi("removing item '\(item.name)'")
 
       let coordinator = NSFileCoordinator(filePresenter: nil)
 
@@ -319,7 +341,7 @@ public final class Manager
         catch
         {
           // Simply log the error since we cannot throw.
-          log.error("\(error as NSObject)")
+          loge("\(error as NSObject)")
         }
       }
     }
@@ -334,11 +356,11 @@ public final class Manager
     guard state ∌ .openingDocument
     else
     {
-      log.warning("already opening a document")
+      logw("already opening a document")
       return
     }
 
-    log.info("opening document '\(document.fileURL.path)'")
+    logi("opening document '\(document.fileURL.path)'")
 
     // Update flag.
     state ∆= .openingDocument
@@ -348,12 +370,12 @@ public final class Manager
     { [self]
       success in
 
-      guard success else { log.error("failed to open document: \(document)"); return }
+      guard success else { loge("failed to open document: \(document)"); return }
 
       guard state ∋ .openingDocument
       else
       {
-        log.error("internal inconsistency, expected state to contain `openingDocument`")
+        loge("internal inconsistency, expected state to contain `openingDocument`")
         return
       }
 
@@ -379,7 +401,7 @@ public final class Manager
                                         fromBookmarkData: data)?.localizedName
     else
     {
-      log.warning("Unable to retrieve localized name from bookmark data…")
+      logw("Unable to retrieve localized name from bookmark data…")
       throw Error.invalidBookmarkData
     }
 
@@ -389,7 +411,7 @@ public final class Manager
                       relativeTo: nil,
                       bookmarkDataIsStale: &isStale)
 
-    log.info("resolved bookmark data for '\(name)'")
+    logi("resolved bookmark data for '\(name)'")
 
     return (document: Document(fileURL: url), isStale: isStale)
   }
@@ -405,29 +427,31 @@ public final class Manager
 
   // MARK: Storage
 
-  /// Handler for changes to the preferred storage location.
-  private func didChangeStorage(_: Notification)
-  {
-    log.info("observed notification of iCloud storage setting change")
-
-    guard preferredStorageLocation != activeStorageLocation else { return }
-
-    activeStorageLocation = preferredStorageLocation
-
-    openCurrentDocument(for: activeStorageLocation)
-  }
+  //  /// Handler for changes to the preferred storage location.
+  //  ///
+  //  /// - Parameter preferCloud: Whether settings indicate iCloud is preferred location.
+  //  private func didChangeStorage(preferCloud: Bool)
+  //  {
+  //    logi("observed notification of iCloud storage setting change")
+  //
+  //    guard (activeStorageLocation == .iCloud) ^ preferCloud else { return }
+  //
+  //    activeStorageLocation = preferredStorageLocation
+  //
+  //    openCurrentDocument(for: activeStorageLocation)
+  //  }
 
   // MARK: Metadata Items
 
   /// Handler for metadata query notifications. Runs on `metadataQuery.operationQueue`.
-  private func didGatherMetadataItems(_: Notification)
+  private func didGatherMetadataItems(notification: Notification)
   {
-    log.info("observed notification metadata query has finished gathering")
+    logi("observed notification metadata query has finished gathering")
 
     guard state ∋ .gatheringMetadataItems
     else
     {
-      log.warning("received gathering notification but flag is not set.")
+      logw("received gathering notification but flag is not set.")
       return
     }
 
@@ -440,9 +464,9 @@ public final class Manager
   }
 
   /// Callback for `NSMetadataQueryDidUpdateNotification`
-  private func didUpdateMetadataItems(_ notification: Notification)
+  private func didUpdateMetadataItems(notification: Notification)
   {
-    log.info("observed metadata query update notification")
+    logi("observed metadata query update notification")
 
     var itemsDidChange = false
 
@@ -463,22 +487,23 @@ public final class Manager
     postUpdateNotification(for: metadataItems)
   }
 
-  /// Overwrites `localItems` content with items derived from the local directory's current contents.
+  /// Overwrites `localItems` content with items derived from the local
+  /// directory's current contents.
   private func refreshLocalItems()
   {
     localItems = OrderedSet((directoryMonitor.directoryWrapper.fileWrappers ?? [:]).values
-      .compactMap
-      {
-        [directory = directoryMonitor.directoryURL] in
-        guard let name = $0.preferredFilename else { return nil }
-        return try? LocalDocumentItem(url: directory + name)
-      }.map(DocumentItem.local))
+                              .compactMap
+                              {
+                                [directory = directoryMonitor.directoryURL] in
+                                guard let name = $0.preferredFilename else { return nil }
+                                return try? LocalDocumentItem(url: directory + name)
+                              }.map(DocumentItem.local))
   }
 
   /// Handler for callbacks invoked by `directoryMonitor`.
   private func didUpdateLocalItems(added: [FileWrapper], removed: [FileWrapper])
   {
-    log.info("""
+    logi("""
     updating local items directory \
     '\(self.directoryMonitor.directoryWrapper.filename ?? "nil")
     """)
@@ -510,24 +535,25 @@ public final class Manager
 
   // MARK: Notification Posting
 
-  /// Posts a notification with changes obtained via comparison to `updateNotificationItems`.
+  /// Posts a notification with changes obtained via comparison to
+  /// `updateNotificationItems`.
   private func postUpdateNotification(for items: OrderedSet<DocumentItem>)
   {
     defer { updateNotificationItems = items }
 
-    log.info("items: \(items.map(({ $0.name })))")
+    logi("items: \(items.map(({ $0.name })))")
 
     guard updateNotificationItems != items
     else
     {
-      log.info("no change…")
+      logi("no change…")
       return
     }
 
     let removed = updateNotificationItems ∖ items
     let added = items ∖ updateNotificationItems
 
-    log.info("""
+    logi("""
     \(!removed.isEmpty ? "removed: \(removed)" : "")\
     \(!added.isEmpty ? (!removed.isEmpty ? "\nadded: \(added)" : "added: \(added)") : "")
     """)
@@ -540,7 +566,7 @@ public final class Manager
 
     guard !userInfo.isEmpty else { return }
 
-    log.info("posting 'didUpdateItems'")
+    logi("posting 'didUpdateItems'")
 
     postNotification(name: .managerDidUpdateItems,
                      object: self,
@@ -550,7 +576,7 @@ public final class Manager
 
 // MARK: - Manager.State
 
-public extension Manager
+public extension DocumentManager
 {
   /// Structure for storing `Manager` state.
   struct State: OptionSet
@@ -568,7 +594,7 @@ public extension Manager
 
 // MARK: - Manager.StorageLocation
 
-public extension Manager
+public extension DocumentManager
 {
   /// An enumeration for working with local and cloud-based document storage locations.
   enum StorageLocation
@@ -606,7 +632,8 @@ public extension Manager
       }
     }
 
-    /// Accessors for the document pointed to by the bookmark stored by the location's setting.
+    /// Accessors for the document pointed to by the bookmark stored by
+    /// the location's setting.
     public var currentDocument: Document?
     {
       get
@@ -615,7 +642,7 @@ public extension Manager
 
         do
         {
-          let (document, isStale) = try Manager.shared.resolveBookmarkData(data)
+          let (document, isStale) = try documentManager.resolveBookmarkData(data)
 
           if isStale
           {
@@ -632,7 +659,7 @@ public extension Manager
         }
         catch
         {
-          log.error("\(error as NSObject)")
+          loge("\(error as NSObject)")
           switch self
           {
             case .iCloud:
@@ -661,7 +688,7 @@ public extension Manager
 
 // MARK: - Manager.Error
 
-public extension Manager
+public extension DocumentManager
 {
   /// Enumeration of the possible errors thrown by `Manager`.
   enum Error: String, Swift.Error
@@ -676,7 +703,7 @@ public extension Manager
 
 // MARK: NotificationDispatching
 
-extension Manager: NotificationDispatching
+extension DocumentManager: NotificationDispatching
 {
   public static let didUpdateItemsNotification =
     Notification.Name("didUpdateItems")
@@ -695,60 +722,17 @@ extension Manager: NotificationDispatching
 
   public static let didOpenDocumentNotification =
     Notification.Name("didOpenDocument")
-
 }
 
-public extension Notification.Name {
-  static let managerDidUpdateItems = Manager.didUpdateItemsNotification
-  static let managerDidCreateDocument = Manager.didCreateDocumentNotification
-  static let managerWillChangeDocument = Manager.willChangeDocumentNotification
-  static let managerDidChangeDocument = Manager.didChangeDocumentNotification
-  static let managerWillOpenDocument = Manager.willOpenDocumentNotification
-  static let managerDidOpenDocument = Manager.didOpenDocumentNotification
+public extension Notification.Name
+{
+  static let managerDidUpdateItems = DocumentManager.didUpdateItemsNotification
+  static let managerDidCreateDocument = DocumentManager.didCreateDocumentNotification
+  static let managerWillChangeDocument = DocumentManager.willChangeDocumentNotification
+  static let managerDidChangeDocument = DocumentManager.didChangeDocumentNotification
+  static let managerWillOpenDocument = DocumentManager.willOpenDocumentNotification
+  static let managerDidOpenDocument = DocumentManager.didOpenDocumentNotification
 }
-
-// MARK: - NSMetadataQuery + NotificationDispatching
-
-/* extension NSMetadataQuery: NotificationDispatching
- {
-   /// Enumeration shadowing the metadata query related values of type `NSNotification.Name`.
-   public enum NotificationName: LosslessStringConvertible
-   {
-     case didStartGathering, gatheringProgress, didFinishGathering, didUpdate
-
-     public init?(_ description: String)
-     {
-       switch description
-       {
-         case NSNotification.Name.NSMetadataQueryDidStartGathering.rawValue:
-           self = .didStartGathering
-         case NSNotification.Name.NSMetadataQueryGatheringProgress.rawValue:
-           self = .gatheringProgress
-         case NSNotification.Name.NSMetadataQueryDidFinishGathering.rawValue:
-           self = .didFinishGathering
-         case NSNotification.Name.NSMetadataQueryDidUpdate.rawValue:
-           self = .didUpdate
-         default:
-           return nil
-       }
-     }
-
-     public var description: String
-     {
-       switch self
-       {
-         case .didStartGathering:
-           return NSNotification.Name.NSMetadataQueryDidStartGathering.rawValue
-         case .gatheringProgress:
-           return NSNotification.Name.NSMetadataQueryGatheringProgress.rawValue
-         case .didFinishGathering:
-           return NSNotification.Name.NSMetadataQueryDidFinishGathering.rawValue
-         case .didUpdate:
-           return NSNotification.Name.NSMetadataQueryDidUpdate.rawValue
-       }
-     }
-   }
- } */
 
 public extension Notification
 {

@@ -58,7 +58,7 @@ public final class InstrumentViewController: UIViewController, SecondaryContent
     catch
     {
       // Just log the error.
-      log.error("\(error as NSObject)")
+      loge("\(error as NSObject)")
     }
   }
 
@@ -88,7 +88,7 @@ public final class InstrumentViewController: UIViewController, SecondaryContent
     catch
     {
       // Just log the error.
-      log.error("\(error as NSObject)")
+      loge("\(error as NSObject)")
     }
   }
 
@@ -113,7 +113,7 @@ public final class InstrumentViewController: UIViewController, SecondaryContent
 
     // Load the initial preset into the to instrument.
     do { try instrument.load(preset: initialPreset) }
-    catch { log.error("\(error as NSObject)") }
+    catch { loge("\(error as NSObject)") }
   }
 
   /// The preset property value of `instrument` at the time `instrument` was set.

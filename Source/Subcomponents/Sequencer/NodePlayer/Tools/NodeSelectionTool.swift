@@ -241,9 +241,9 @@ public class NodeSelectionTool: Tool
     didSelectNode()
   }
 
-  /// Makes changes to the selected node using the provided closure. This method ensures that the
-  /// playback state of the current transport is appropriately managed before and after the changes
-  /// are made.
+  /// Makes changes to the selected node using the provided closure. This
+  /// method ensures that the playback state of the current transport is
+  /// appropriately managed before and after the changes are made.
   public final func adjustNode(_ makeAdjustments: () -> Void)
   {
     // Check that there is a node selected.

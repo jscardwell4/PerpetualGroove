@@ -19,19 +19,33 @@ public final class TransportViewController: UIViewController
   /// this button to display '❙❙'. Pressing this button while it displays '❙❙'
   /// pauses the transport and changes this button to display '▶︎'. If at any time
   /// the transport stops or reset, this button goes back to displaying '▶︎'.
-  @IBOutlet public var playPauseButton: ImageButtonView!
+  @IBOutlet public var playPauseButton: ImageButtonView?
 
   /// The button used to stop and reset the transport.
-  @IBOutlet public var stopButton: ImageButtonView!
+  @IBOutlet public var stopButton: ImageButtonView?
 
   /// The scroll wheel used to scrub the transport forward and backward.
-  @IBOutlet public var jogWheel: ScrollWheel!
+  @IBOutlet public var jogWheel: ScrollWheel?
 
   /// A stack view containing the transport buttons.
-  @IBOutlet public var transportStack: UIStackView!
+  @IBOutlet public var transportStack: UIStackView?
 
   /// The button used to toggle whether the transport is recording.
-  @IBOutlet public var recordButton: ImageButtonView!
+  @IBOutlet public var recordButton: ImageButtonView?
+
+  /// Image for the play button.
+  private let playImage = unwrapOrDie(UIImage(named: "play", in: bundle, with: nil))
+
+  /// Image for the play button when selected.
+  private let playSelectedImage = unwrapOrDie(UIImage(named: "play-selected",
+                                                      in: bundle, with: nil))
+
+  /// Image for the play button.
+  private let pauseImage = unwrapOrDie(UIImage(named: "pause", in: bundle, with: nil))
+
+  /// Image for the play button when selected.
+  private let pauseSelectedImage = unwrapOrDie(UIImage(named: "pause-selected",
+                                                       in: bundle, with: nil))
 
   /// Subscription for `didStart` notifications.
   private var didStartSubscription: Cancellable?
@@ -77,50 +91,54 @@ public final class TransportViewController: UIViewController
 
       didStartSubscription = NotificationCenter.default
         .publisher(for: .transportDidStart, object: transport)
+        .receive(on: DispatchQueue.main)
         .sink
         { _ in
-          self.stopButton.isEnabled = true
-          self.playPauseButton.image = #imageLiteral(resourceName: "pause")
-          self.playPauseButton.selectedImage = #imageLiteral(resourceName: "pause-selected")
+          self.stopButton?.isEnabled = true
+          self.playPauseButton?.image = self.pauseImage
+          self.playPauseButton?.selectedImage = self.pauseSelectedImage
         }
 
       didStopSubscription = NotificationCenter.default
         .publisher(for: .transportDidStop, object: transport)
+        .receive(on: DispatchQueue.main)
         .sink
         { _ in
-          self.stopButton.isEnabled = false
-          self.playPauseButton.image = #imageLiteral(resourceName: "play")
-          self.playPauseButton.selectedImage = #imageLiteral(resourceName: "play-selected")
+          self.stopButton?.isEnabled = false
+          self.playPauseButton?.image = self.playImage
+          self.playPauseButton?.selectedImage = self.playSelectedImage
         }
 
       didPauseSubscription = NotificationCenter.default
         .publisher(for: .transportDidPause, object: transport)
+        .receive(on: DispatchQueue.main)
         .sink
         { _ in
-          self.playPauseButton.image = #imageLiteral(resourceName: "play")
-          self.playPauseButton.selectedImage = #imageLiteral(resourceName: "play-selected")
+          self.playPauseButton?.image = self.playImage
+          self.playPauseButton?.selectedImage = self.playSelectedImage
         }
 
       didResetSubscription = NotificationCenter.default
         .publisher(for: .transportDidReset, object: transport)
+        .receive(on: DispatchQueue.main)
         .sink
         { _ in
-          self.stopButton.isEnabled = false
-          self.playPauseButton.image = #imageLiteral(resourceName: "play")
-          self.playPauseButton.selectedImage = #imageLiteral(resourceName: "play-selected")
+          self.stopButton?.isEnabled = false
+          self.playPauseButton?.image = self.playImage
+          self.playPauseButton?.selectedImage = self.playSelectedImage
         }
 
       didBeginJoggingSubscription = NotificationCenter.default
         .publisher(for: .transportDidBeginJogging, object: transport)
-        .sink { _ in self.transportStack.isUserInteractionEnabled = false }
+        .sink { _ in self.transportStack?.isUserInteractionEnabled = false }
 
       didEndJoggingSubscription = NotificationCenter.default
         .publisher(for: .transportDidEndJogging, object: transport)
-        .sink { _ in self.transportStack.isUserInteractionEnabled = true }
+        .sink { _ in self.transportStack?.isUserInteractionEnabled = true }
 
       didToggleRecordingSubscription = NotificationCenter.default
         .publisher(for: .transportDidToggleRecording, object: transport)
-        .sink { _ in self.recordButton.isSelected = self.transport.isRecording }
+        .sink { _ in self.recordButton?.isSelected = self.transport.isRecording }
     }
   }
 
@@ -129,36 +147,57 @@ public final class TransportViewController: UIViewController
   {
     super.viewDidLoad()
 
-    transport = controller.transport
+    transport = sequencer.transport
   }
 
   /// The action assigned to the record button. Toggles `transport.isRecording`.
-  @IBAction public func record() { transport.isRecording.toggle() }
+  @IBAction public func record() {
+    transport.isRecording.toggle()
+    logi("""
+      \(#fileID) \(#function) \
+      transport.isRecording = \(self.transport.isRecording)
+      """)
+  }
 
   /// The action assigned to the play/pause button. Pauses the transport
   /// when the transport is playing and begins playback for the transport otherwise.
   @IBAction public func playPause()
   {
-    if transport.isPlaying { transport.isPaused = true }
-    else { transport.isPlaying = true }
+    if transport.isPlaying {
+      transport.isPaused = true
+      logi("\(#fileID) \(#function) transport.isPaused = true")
+    }
+    else {
+      transport.isPlaying = true
+      logi("\(#fileID) \(#function) transport.isPlaying = true")
+    }
   }
 
   /// The action assigned to the stop button. Stops and resets the transport.
   /// If the transport is not playing or paused then this button is disabled.
-  @IBAction public func stop() { transport.reset() }
+  @IBAction public func stop() {
+    transport.reset()
+    logi("\(#fileID) \(#function) transport has been reset.")
+  }
 
-  /// Handles touch down events for the jog wheel. Sets `transport.isJogging` to `true`.
-  @IBAction private func beginJog() { transport.isJogging = true }
+  /// Handles touch down events for the jog wheel. Sets `transport.jogging` to `true`.
+  @IBAction private func beginJog() {
+    transport.jogging = true
+    logi("\(#fileID) \(#function) transport.jogging = true")
+  }
 
   /// Action invoked by the value changes of `jogWheel`.
   /// Jogs the transport by the scroll wheel's `𝝙revolutions`.
-  @IBAction private func jog()
+  @IBAction private func jog(scrollWheel: ScrollWheel)
   {
-    do { try transport.jog(by: jogWheel.𝝙revolutions) }
-    catch { log.error("\(error as NSObject)") }
+    do { try transport.jog(by: scrollWheel.𝝙revolutions) }
+    catch { loge("\(error as NSObject)") }
   }
 
   /// Action invoked when `jogWheel` has finished.
-  /// Sets `transport.isJogging` to `false`.
-  @IBAction private func endJog() { transport.isJogging = false }
+  /// Sets `transport.jogging` to `false`.
+  @IBAction private func endJog() {
+    transport.jogging = false
+    logi("\(#fileID) \(#function) transport.jogging = false")
+  }
 }

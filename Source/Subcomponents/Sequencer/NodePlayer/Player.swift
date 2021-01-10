@@ -94,7 +94,7 @@ public final class Player
       currentTool.tool?.active = true
 
       // Update the player node's touch handler.
-      playerNode?.touchReceiver = currentTool.tool
+      playerNode?.receiver = currentTool.tool
     }
   }
 
@@ -130,7 +130,7 @@ public final class Player
       guard let playerNode = playerNode
       else
       {
-        log.warning("cannot place a node without a player node")
+        logw("cannot place a node without a player node")
         return
       }
 
@@ -138,7 +138,7 @@ public final class Player
       {
         // Generate a name for the node composed of the current sequencer mode
         // and the name provided by target.
-        let name = "<\(controller.mode.rawValue)> \(target.nextNodeName)"
+        let name = "<\(sequencer.mode.rawValue)> \(target.nextNodeName)"
 
         // Create and add the node to the player node.
         let node = try Node(trajectory: trajectory,
@@ -153,9 +153,9 @@ public final class Player
         try target.nodeManager.add(node: node)
 
         // Initiate playback if the transport is not currently playing.
-        if !controller.transport.isPlaying
+        if !sequencer.transport.isPlaying
         {
-          controller.transport.isPlaying = true
+          sequencer.transport.isPlaying = true
         }
 
         // Post notification that the node has been added.
@@ -163,11 +163,11 @@ public final class Player
                          object: self,
                          userInfo: ["addedNode": node, "addedNodeDispatch": target])
 
-        log.info("added node \(name)")
+        logi("added node \(name)")
       }
       catch
       {
-        log.error("\(error as NSObject)")
+        loge("\(error as NSObject)")
       }
     }
   }

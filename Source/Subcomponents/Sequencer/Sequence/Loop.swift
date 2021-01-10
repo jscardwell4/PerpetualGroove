@@ -10,10 +10,13 @@ import Foundation
 import MIDI
 import MoonKit
 
+// MARK: - Loop
+
 /// A class that stores a sequence of MIDI events along with start and stop times for
 /// beginning playback of the sequence and the total number of times the sequence should
 /// be played.
-public final class Loop: NodeDispatch {
+public final class Loop: NodeDispatch
+{
   // MARK: Stored Properties
 
   /// The number of times to dispatch the loop's events. Setting the value of this
@@ -56,8 +59,9 @@ public final class Loop: NodeDispatch {
   /// The color associated with the loop. This property returns the track's color.
   public var color: Track.Color { track.color }
 
-  public var isRecording: Bool {
-    Controller.shared.mode == .loop && Controller.shared.player.currentDispatch === self
+  public var isRecording: Bool
+  {
+    sequencer.mode == .loop && player.currentDispatch === self
   }
 
   public var nextNodeName: String { "\(name) \(nodes.count + 1)" }
@@ -67,7 +71,8 @@ public final class Loop: NodeDispatch {
 
   /// 'Marker' meta event in the following format:<br>
   ///      `start(`*identifier*`):`*repetitions*`:`*repeatDelay*
-  public var beginLoopEvent: Event {
+  public var beginLoopEvent: Event
+  {
     // Create the text to use for the marker.
     let text = "start(\(identifier.uuidString)):\(repetitions):\(repeatDelay)"
 
@@ -77,7 +82,8 @@ public final class Loop: NodeDispatch {
 
   /// 'Marker' meta event in the following format:<br>
   ///      `end(`*identifier*`)`
-  public var endLoopEvent: Event {
+  public var endLoopEvent: Event
+  {
     // Create the text to use for the marker.
     let text = "end(\(identifier.uuidString))"
 
@@ -87,12 +93,13 @@ public final class Loop: NodeDispatch {
 
   // MARK: Event Dispatch
 
-  public func add<S>(events: S) where S: Swift.Sequence, S.Element == Event {
+  public func add<S>(events: S) where S: Swift.Sequence, S.Element == Event
+  {
     eventContainer.append(contentsOf: events)
-    Controller.shared.time.register(callback: weakCapture(of: self,
-                                                          block: type(of: self).dispatchEvents),
-                                    forTimes: registrationTimes(forAdding: events),
-                                    identifier: UUID())
+    sequencer.time.register(callback: weakCapture(of: self,
+                                                  block: type(of: self).dispatchEvents),
+                            forTimes: registrationTimes(forAdding: events),
+                            identifier: UUID())
   }
 
   /// Returns the bar beat times to register with the transport's time for dispatching
@@ -101,16 +108,18 @@ public final class Loop: NodeDispatch {
   where Source: Swift.Sequence, Source.Iterator.Element == Event
   {
     // Return the times for the MIDI node events found in `events`.
-    return events.filter {
+    return events.filter
+    {
       if case .node = $0 { return true }
       else { return false }
     }.map { $0.time }
   }
 
   /// Dispatches `event` via the loop's node manager.
-  public func dispatch(event: Event) {
+  public func dispatch(event: Event)
+  {
     // Get the node event wrapped by `event`.
-    guard case .node(let nodeEvent) = event else { return }
+    guard case let .node(nodeEvent) = event else { return }
 
     // Delegate to the node manager to perform actual event handling.
     nodeManager.handle(event: nodeEvent)
@@ -124,9 +133,10 @@ public final class Loop: NodeDispatch {
   /// Uses `track` to disconnect `node`.
   public func disconnect(node: Node) throws { try track.disconnect(node: node) }
 
-  /// Initializing with a track. The loop is assigned to the specified track. The loop is
-  /// provided a new identifier and an empty event container.
-  public init(track: InstrumentTrack) {
+  /// Initializing with a track. The loop is assigned to the specified track. The
+  /// loop is provided a new identifier and an empty event container.
+  public init(track: InstrumentTrack)
+  {
     // Initialize `track` with the specified instrument track.
     self.track = track
 
@@ -164,13 +174,13 @@ public final class Loop: NodeDispatch {
   }
 }
 
-
-
 // MARK: Swift.Sequence
 
-extension Loop: Swift.Sequence {
+extension Loop: Swift.Sequence
+{
   /// Returns an iterator over the loop's MIDI events.
-  public func makeIterator() -> AnyIterator<Event> {
+  public func makeIterator() -> AnyIterator<Event>
+  {
     var startEventInserted = false
     var endEventInserted = false
 
@@ -179,7 +189,8 @@ extension Loop: Swift.Sequence {
 
     var currentGenerator = eventContainer.makeIterator()
 
-    return AnyIterator {
+    return AnyIterator
+    {
       [
         startTicks = start.ticks,
         repeatCount = repetitions,
@@ -190,49 +201,56 @@ extension Loop: Swift.Sequence {
       ]
       () -> Event? in
 
-      if !startEventInserted {
+      if !startEventInserted
+      {
         startEventInserted = true
         var event = beginEvent
         event.time = BarBeatTime(tickValue: startTicks)
         return event
       }
 
-      else if var event = currentGenerator.next() {
+      else if var event = currentGenerator.next()
+      {
         event.time = BarBeatTime(tickValue: startTicks + event.time.ticks + offset)
         return event
       }
 
       else if repeatCount >= { let i = iteration; iteration += 1; return i }()
-        || repeatCount < 0
+                || repeatCount < 0
       {
         offset += delay + totalTicks
         currentGenerator = self.eventContainer.makeIterator()
 
-        if var event = currentGenerator.next() {
+        if var event = currentGenerator.next()
+        {
           event.time = BarBeatTime(tickValue: startTicks + event.time.ticks + offset)
           return event
         }
 
-        else if !endEventInserted {
+        else if !endEventInserted
+        {
           endEventInserted = true
           var event = endEvent
           event.time = BarBeatTime(tickValue: startTicks + event.time.ticks + offset)
           return event
         }
 
-        else {
+        else
+        {
           return nil
         }
       }
 
-      else if !endEventInserted {
+      else if !endEventInserted
+      {
         endEventInserted = true
         var event = endEvent
         event.time = BarBeatTime(tickValue: startTicks + event.time.ticks + offset)
         return event
       }
 
-      else {
+      else
+      {
         return nil
       }
     }
@@ -241,8 +259,10 @@ extension Loop: Swift.Sequence {
 
 // MARK: CustomStringConvertible
 
-extension Loop: CustomStringConvertible {
-  public var description: String {
+extension Loop: CustomStringConvertible
+{
+  public var description: String
+  {
     """
     time: \(time)
     repetitions: \(repetitions)

@@ -14,18 +14,22 @@ import UIKit
 // MARK: - GeneratorTool
 
 /// A tool for modifying the generator assigned to new or existing midi nodes.
-public final class GeneratorTool: PresentingNodeSelectionTool {
+public final class GeneratorTool: PresentingNodeSelectionTool
+{
   /// Overridden to trigger secondary content presentation when `active && mode == .new`.
   /// - seealso: `NodeSelectionTool.active`
-  override public var active: Bool {
-    didSet {
+  override public var active: Bool
+  {
+    didSet
+    {
       guard active != oldValue, active, mode == .new else { return }
       player.playerContainer?.presentContent(for: self, completion: { _ in })
     }
   }
 
   /// Enumeration of the supported modes for which the tool can be configured.
-  public enum Mode {
+  public enum Mode
+  {
     /// The tool is used to configure the generator assigned to new node placements.
     case new
 
@@ -37,18 +41,21 @@ public final class GeneratorTool: PresentingNodeSelectionTool {
   public let mode: Mode
 
   /// Initialize with a player node and mode.
-  public init(playerNode: PlayerNode, mode: Mode) {
+  public init(playerNode: PlayerNode, mode: Mode)
+  {
     self.mode = mode
     super.init(playerNode: playerNode)
   }
 
   /// Callback for changes to the secondary content's generator.
-  private func didChangeGenerator(_ generator: AnyGenerator) {
+  private func didChangeGenerator(_ generator: AnyGenerator)
+  {
     // Check that there is a node selected.
     guard let node = node else { return }
 
     // Register an action for undoing the changes to the node's generator.
-    player.undoManager.registerUndo(withTarget: node) {
+    player.undoManager.registerUndo(withTarget: node)
+    {
       [initialGenerator = node.generator] node in
 
       node.generator = initialGenerator
@@ -62,19 +69,23 @@ public final class GeneratorTool: PresentingNodeSelectionTool {
   }
 
   /// Overridden to return an instance of `GeneratorViewController` configured for `mode`.
-  override public var secondaryContent: SecondaryContent {
+  override public var secondaryContent: SecondaryContent
+  {
     // Check that there is not already a controller to return.
     guard _secondaryContent == nil else { return _secondaryContent! }
 
     // Create the controller.
     let secondaryContent = GeneratorViewController.viewController(for: mode)
 
-    switch mode {
+    switch mode
+    {
       case .existing:
         // Configure the controller to modify the generator for an existing node.
 
         // Check that there is a node selected.
-        guard let node = node else {
+        guard let node = node
+        else
+        {
           fatalError("cannot show view controller when no node has been selected")
         }
 
@@ -82,7 +93,10 @@ public final class GeneratorTool: PresentingNodeSelectionTool {
         secondaryContent.loadGenerator(node.generator)
 
         // Set the change callback to use the tool's method.
-        secondaryContent.didChangeGenerator = weakCapture(of: self, block: GeneratorTool.didChangeGenerator)
+        secondaryContent.didChangeGenerator = weakCapture(
+          of: self,
+          block: GeneratorTool.didChangeGenerator
+        )
 
         // Connect the previous and next actions.
         secondaryContent.previousAction =
@@ -96,7 +110,7 @@ public final class GeneratorTool: PresentingNodeSelectionTool {
           ? [.none]
           : [.previous, .next]
 
-        // TODO: Add cancel/confirm actions?
+      // TODO: Add cancel/confirm actions?
 
       case .new:
         // Configure the controller to modify the generator given to new nodes.
@@ -132,7 +146,8 @@ public final class GeneratorTool: PresentingNodeSelectionTool {
   }
 
   /// Overridden to be a noop unless `mode == .existing`.
-  override public func didSelectNode() {
+  override public func didSelectNode()
+  {
     // Check the tool's mode.
     guard mode == .existing else { return }
 
@@ -140,25 +155,29 @@ public final class GeneratorTool: PresentingNodeSelectionTool {
   }
 
   /// Overridden to be a noop when `mode != .existing`.
-  override public func touchesBegan(_ touches: Set<UITouch>) {
+  override public func touchesBegan(_ touches: Set<UITouch>)
+  {
     guard mode == .existing else { return }
     super.touchesBegan(touches)
   }
 
   /// Overridden to be a noop when `mode != .existing`.
-  override public func touchesEnded(_ touches: Set<UITouch>) {
+  override public func touchesEnded(_ touches: Set<UITouch>)
+  {
     guard mode == .existing else { return }
     super.touchesBegan(touches)
   }
 
   /// Overridden to be a noop when `mode != .existing`.
-  override public func touchesMoved(_ touches: Set<UITouch>) {
+  override public func touchesMoved(_ touches: Set<UITouch>)
+  {
     guard mode == .existing else { return }
     super.touchesMoved(touches)
   }
 
   /// Overridden to be a noop when `mode != .existing`.
-  override public func touchesCancelled(_ touches: Set<UITouch>) {
+  override public func touchesCancelled(_ touches: Set<UITouch>)
+  {
     guard mode == .existing else { return }
     super.touchesCancelled(touches)
   }
@@ -167,12 +186,14 @@ public final class GeneratorTool: PresentingNodeSelectionTool {
 // MARK: - GeneratorViewController
 
 /// `UIViewController` subclass providing an interface for configuring a generator.
-final class GeneratorViewController: UIViewController, SecondaryContent {
+final class GeneratorViewController: UIViewController, SecondaryContent
+{
   /// Returns a new controller instantiated from `Generator.storyboard`.
   /// When `mode == .existing`, the controller's view contains an additional
   /// row of controls consisting of left and right arrows which correspond
   /// to the controller's `previousAction` and `nextAction`.
-  static func viewController(for mode: GeneratorTool.Mode) -> GeneratorViewController {
+  static func viewController(for mode: GeneratorTool.Mode) -> GeneratorViewController
+  {
     let storyboard = UIStoryboard(name: "Generator", bundle: nil)
     let identifier = mode == .new ? "Generator" : "GeneratorWithArrows"
     let controller = storyboard.instantiateViewController(withIdentifier: identifier)
@@ -221,7 +242,8 @@ final class GeneratorViewController: UIViewController, SecondaryContent {
 
   /// Replaces `self.generator` with `generator`. Before the assignment, `isLoading`
   /// is set to `true`; and, after assignment `isLoading` is set to `false`.
-  func loadGenerator(_ generator: AnyGenerator) {
+  func loadGenerator(_ generator: AnyGenerator)
+  {
     isLoading = true
     self.generator = generator
     isLoading = false
@@ -229,8 +251,10 @@ final class GeneratorViewController: UIViewController, SecondaryContent {
 
   /// The configured generator. Modifying this property triggers invocation of
   /// `didChangeGenerator` unless `isLoading == true`.
-  private(set) var generator = AnyGenerator() {
-    didSet {
+  private(set) var generator = AnyGenerator()
+  {
+    didSet
+    {
       guard !isLoading else { return }
       didChangeGenerator?(generator)
     }
@@ -238,20 +262,24 @@ final class GeneratorViewController: UIViewController, SecondaryContent {
 
   /// Updates `generator` with the selected pitch.
   @IBAction
-  func didSelectPitch() {
+  func didSelectPitch()
+  {
     generator.root.natural = Natural.allCases[pitchSelector.selection]
   }
 
   /// Updates `generator` with the selected octave.
   @IBAction
-  func didSelectOctave() {
+  func didSelectOctave()
+  {
     generator.octave = Octave.allCases[octaveSelector.selection]
   }
 
   /// Updates `generator` with the selected pitch modifier.
   @IBAction
-  func didSelectModifier() {
-    switch modifierSelector.selection {
+  func didSelectModifier()
+  {
+    switch modifierSelector.selection
+    {
       case 0: generator.root.modifier = .flat
       case 2: generator.root.modifier = .sharp
       default: generator.root.modifier = nil
@@ -260,8 +288,10 @@ final class GeneratorViewController: UIViewController, SecondaryContent {
 
   /// Updates `generator` with the selected chord.
   @IBAction
-  func didSelectChord() {
-    switch generator {
+  func didSelectChord()
+  {
+    switch generator
+    {
       case let .note(generator) where chordSelector.selection > 0:
         let standardPattern = Chord.Pattern.Standard(index: chordSelector.selection - 1)
         let chordPattern = Chord.Pattern(standardPattern)
@@ -283,23 +313,27 @@ final class GeneratorViewController: UIViewController, SecondaryContent {
 
   /// Updates `generator` with the selected note duration.
   @IBAction
-  func didSelectDuration() {
+  func didSelectDuration()
+  {
     generator.duration = Duration.allCases[durationSelector.selection]
   }
 
   /// Updates `generator` with the selected note velocity.
   @IBAction
-  func didSelectVelocity() {
+  func didSelectVelocity()
+  {
     generator.velocity = Velocity.allCases[velocitySelector.selection]
   }
 
   /// Overridden to update controls with current values from `generator`.
-  override func viewDidAppear(_ animated: Bool) {
+  override func viewDidAppear(_ animated: Bool)
+  {
     super.viewDidAppear(animated)
 
     pitchSelector.selection = generator.root.natural.index
 
-    switch generator.root.modifier {
+    switch generator.root.modifier
+    {
       case (.flat)?: modifierSelector.selection = 0
       case (.sharp)?: modifierSelector.selection = 2
       default: modifierSelector.selection = 1
@@ -309,7 +343,8 @@ final class GeneratorViewController: UIViewController, SecondaryContent {
     durationSelector.selection = generator.duration.index
     velocitySelector.selection = generator.velocity.index
 
-    switch generator {
+    switch generator
+    {
       case .note:
         chordSelector.selection = 0
       case let .chord(generator):

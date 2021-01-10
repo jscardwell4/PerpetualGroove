@@ -13,6 +13,39 @@ import MoonKit
 import os
 import SoundFont
 
+// MARK: - Bundle
+
+/// The bundle for the `Sequencer` framework.
+public let bundle = unwrapOrDie(Bundle(identifier: "com.moondeerstudios.Sequencer"))
+
+// MARK: - Shorthand
+
+/// The singleton instance of `Controller`.
+public let sequencer = Controller()
+
+/// Shorthand for `sequencer.player.`.
+@inlinable public var player: Player { sequencer.player }
+
+/// Shorthand for `sequencer.time`.
+@inlinable public var time: Time { sequencer.time }
+
+/// Shorthand for `sequencer.sequence`.
+@inlinable public var sequence: Sequence? { sequencer.sequence }
+
+/// Shorthand for `sequencer.transport`.
+@inlinable public var transport: Transport { sequencer.transport }
+
+/// Shorthand for `sequencer.audioEngine`.
+@inlinable public var audioEngine: AudioEngine { sequencer.audioEngine }
+
+/// Shorthand for `sequencer.metronome`.
+@inlinable public var metronome: Metronome { sequencer.metronome }
+
+/// Shorthand for `sequencer.audiotionInstrument`.
+@inlinable public var auditionInstrument: Instrument { sequencer.auditionInstrument }
+
+// MARK: - Logging
+
 /// A logger for internal use by the framework.
 internal let log = os.Logger(subsystem: "com.moondeerstudios.groove.sequencer",
                              category: "Sequencer")
@@ -20,24 +53,25 @@ internal let log = os.Logger(subsystem: "com.moondeerstudios.groove.sequencer",
 // MARK: - Controller
 
 /// A class for overseeing the creation and playback of a sequence in the MIDI node player.
-public final class Controller {
+public final class Controller
+{
   // MARK: Stored Properties
 
   /// The shared singleton instance.
-  public static let shared = Controller()
+//  public static let shared = Controller()
 
   /// The sequencer's node player.
-  public let player = Player()
+  @usableFromInline internal let player: Player
 
   /// An instrument made availabe by the sequencer intended for use as a means of
   /// providing auditory feedback while configuring a separate `Instrument` instance.
-  public private(set) var auditionInstrument: Instrument
+  @usableFromInline internal private(set) var auditionInstrument: Instrument
 
   /// A metronome made available by the sequencer.
-  public private(set) var metronome: Metronome
+  @usableFromInline internal private(set) var metronome: Metronome
 
   /// The sequencer's audio engine.
-  public let audioEngine: AudioEngine
+  @usableFromInline internal let audioEngine: AudioEngine
 
   /// The primary transport used by the sequencer.
   public let primaryTransport = Transport(name: "primary")
@@ -55,20 +89,24 @@ public final class Controller {
 
   /// The sequence currently in use by the MIDI node player. Setting this property
   /// resets the transport currently in use.
-  @Published public private(set) var sequence: Sequence? {
+  @Published public private(set) var sequence: Sequence?
+  {
     didSet { reconfigure(for: sequence) }
   }
 
   /// The time signature currently in use. The default is 4/4. Changes to the value of
   /// this property update the time signature for the current sequence.
-  public var timeSignature: TimeSignature = .fourFour {
+  public var timeSignature: TimeSignature = .fourFour
+  {
     didSet { sequence?.timeSignature = timeSignature }
   }
 
   /// The current sequencer mode. Changing the value of this property affects
   /// which transport is in use and whether event processing is looped or linear.
-  @Published public private(set) var mode: Mode = .linear {
-    didSet {
+  @Published public private(set) var mode: Mode = .linear
+  {
+    didSet
+    {
       reconfigure(for: mode)
     }
   }
@@ -91,9 +129,10 @@ public final class Controller {
   // MARK: Initializer
 
   /// The private initializer for the singleton.
-  private init() {
+  fileprivate init()
+  {
     // Initialize the audio engine.
-    audioEngine = tryOrDie { try AudioEngine() }
+    let audioEngine = tryOrDie { try AudioEngine() }
 
     // Get the first sound font.
     let soundFont = SoundFont.bundledFonts[0]
@@ -107,7 +146,8 @@ public final class Controller {
                                    channel: UInt8(0))
 
     // Create the audition instrument.
-    auditionInstrument = tryOrDie { try Instrument(preset: preset) }
+    auditionInstrument = tryOrDie { try Instrument(preset: preset,
+                                                   audioEngine: audioEngine) }
 
     transport = primaryTransport
 
@@ -118,6 +158,9 @@ public final class Controller {
 
     // Start the audio engine.
     tryOrDie { try audioEngine.start() }
+    self.audioEngine = audioEngine
+
+    player = Player()
   }
 
   // MARK: Computed Properties
@@ -128,9 +171,11 @@ public final class Controller {
   public var time: Time { transport.time }
 
   /// Accessor for the `clock.beatsPerMinute` property of the sequencer's transports.
-  public var tempo: Double {
+  public var tempo: Double
+  {
     get { transport.tempo }
-    set {
+    set
+    {
       // Update both the transport's `tempo` property.
       primaryTransport.clock.beatsPerMinute = UInt16(newValue)
       auxiliaryTransport.clock.beatsPerMinute = UInt16(newValue)
@@ -146,7 +191,8 @@ public final class Controller {
   /// sequence.
   ///
   /// - Parameter sequence: The sequence being loaded or `nil` if unloading.
-  private func reconfigure(for sequence: Sequence?) {
+  private func reconfigure(for sequence: Sequence?)
+  {
     // Reset the transport.
     transport.reset()
 
@@ -175,9 +221,11 @@ public final class Controller {
   /// Performs any necessary steps to reconfigure the sequencer for the specified mode.
   ///
   /// - Parameter mode: The new mode for which to configure the sequencer.
-  private func reconfigure(for mode: Mode) {
+  private func reconfigure(for mode: Mode)
+  {
     // Manage the transports
-    switch mode {
+    switch mode
+    {
       case .linear:
         transport.reset()
         transport = primaryTransport
@@ -194,7 +242,8 @@ public final class Controller {
 
   /// Sets `mode` to `.loop` and reconfigures the sequencer appropriately.
   /// - precondition: `mode == .linear`
-  public func enterLoopMode() {
+  public func enterLoopMode()
+  {
     precondition(mode == .linear)
 
     // Fade out any linear nodes.
@@ -209,7 +258,8 @@ public final class Controller {
 
   /// Sets `mode` to `.linear` and reconfigures the sequencer appropriately.
   /// - precondition: `mode == .loop`
-  public func exitLoopMode() {
+  public func exitLoopMode()
+  {
     precondition(mode == .loop)
 
     // Fade out any loop nodes.
@@ -230,22 +280,25 @@ public final class Controller {
   // MARK: Loop Management
 
   /// Adds any non-empty loops to their respective tracks.
-  private func insertLoops() {
-    log.info("inserting loops: \(self.loops)")
+  private func insertLoops()
+  {
+    logi("inserting loops: \(self.loops)")
 
     // Calculate the start and end times
     let currentTime = time.barBeatTime
     let startTime = currentTime + loopStart
     let endTime = currentTime + loopEnd
 
-    // Iterate through non-empty loops to update start/end times and add them to their track.
-    for loop in loops.values where !loop.eventContainer.isEmpty {
+    // Iterate through non-empty loops to update start/end times and add them to
+    // their track.
+    for loop in loops.values where !loop.eventContainer.isEmpty
+    {
       loop.start = startTime
       loop.end = endTime
       loop.track.add(loop: loop)
     }
   }
-
+  
   /// Updates `loopStart` with the current value of `time.barBeatTime`.
   public func markLoopStart() { loopStart = time.barBeatTime }
 
@@ -259,30 +312,24 @@ public final class Controller {
 
   /// Configures `player.currentDispatch` appropriately for the current values
   /// of `sequence` and `mode`.
-  private func updateNodeDispatch() {
-    switch mode {
+  private func updateNodeDispatch()
+  {
+    switch mode
+    {
       case .linear:
         player.currentDispatch = sequence?.currentTrack
       case .loop:
         guard let track = sequence?.currentTrack else { break }
-        if let loop = loops[ObjectIdentifier(track)] {
+        if let loop = loops[ObjectIdentifier(track)]
+        {
           player.currentDispatch = loop
-        } else {
+        }
+        else
+        {
           let loop = Loop(track: track)
           loops[ObjectIdentifier(track)] = loop
           player.currentDispatch = loop
         }
     }
-  }
-}
-
-public extension Controller {
-  /// An enumeration for specifying the sequencer's mode of operation.
-  enum Mode: String {
-    /// The sequencer is manipulating it's current sequence as a whole.
-    case linear
-
-    /// The sequencer is manipulating a subsequence belonging to it's current sequence.
-    case loop
   }
 }

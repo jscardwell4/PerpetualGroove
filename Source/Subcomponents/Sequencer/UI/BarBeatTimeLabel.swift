@@ -20,7 +20,7 @@ final class BarBeatTimeLabel: UIView
   // MARK: Stored Properties
 
   /// Flag indicating whether the label's transport is currently being jogged.
-  private var isJogging = false
+  private var jogging = false
 
   /// The bar beat time being displayed by the label. Changing the value of this
   /// property causes the label to mark as dirty the frame of each of the label's
@@ -84,17 +84,17 @@ final class BarBeatTimeLabel: UIView
 
       didBeginJoggingSubscription = NotificationCenter.default
         .publisher(for: .transportDidBeginJogging, object: transport)
-        .sink { _ in self.isJogging = true }
+        .sink { _ in self.jogging = true }
 
       didEndJoggingSubscription = NotificationCenter.default
         .publisher(for: .transportDidEndJogging, object: transport)
-        .sink { _ in self.isJogging = false }
+        .sink { _ in self.jogging = false }
 
       didJogSubscription = NotificationCenter.default
         .publisher(for: .transportDidJog, object: transport)
         .sink
         {
-          guard self.isJogging, let jogTime = $0.jogTime else { return }
+          guard self.jogging, let jogTime = $0.jogTime else { return }
           self.currentTime = jogTime
         }
 
@@ -128,10 +128,10 @@ final class BarBeatTimeLabel: UIView
     #if !TARGET_INTERFACE_BUILDER
 
     // Register to receive notifications from the sequencer when it changes transports.
-    transportSubscription = controller.$transport.sink { self.transport = $0 }
+    transportSubscription = sequencer.$transport.sink { self.transport = $0 }
 
     // Set `transport` to the sequencer's current transport.
-    transport = controller.transport
+    transport = sequencer.transport
 
     #endif
   }
@@ -339,11 +339,11 @@ extension BarBeatTimeLabel
           // Return the number of beats in `time` adding 1 to the zero-based value.
 
           characters = String(time.beat + 1)
-
+          
         case .beatSubbeatDivider:
           // Always return the character used to divide the number of beats and the
           // number of subbeats.
-          
+
           characters = "."
 
         case .subbeat:

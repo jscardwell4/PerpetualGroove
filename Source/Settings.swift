@@ -8,12 +8,18 @@
 import Foundation
 import MoonKit
 
+// MARK: - Shorthand
+
+/// Shorthand access to the shared instance of `Settings`.
+@inlinable public var settings: Settings { Settings.shared }
+
+// MARK: - Settings
 
 /// Singleton class for managing the application's user-facing settings.
-public final class Settings {
-
+public final class Settings
+{
   /// The shared singleton instance of `Settings`.
-  public static let shared = Settings()
+  @usableFromInline internal static let shared = Settings()
 
   /// A boolean value specifying whether documents should use iCloud.
   @Setting<Bool>(.iCloudStorage, true) public var iCloudStorage: Bool
@@ -42,13 +48,14 @@ public final class Settings {
 
   /// Empty initializer made private to prevent the creation of unwanted instances.
   private init() {}
-
 }
+
+// MARK: - Setting
 
 /// A structure for wrapping values stored in the application's `UserDefaults`.
 @propertyWrapper
-public struct Setting<Value> {
-
+public struct Setting<Value>
+{
   /// The key for this setting. Also serves as the key for the setting's value
   /// in the standard `UserDefaults`.
   public let key: Key
@@ -57,12 +64,14 @@ public struct Setting<Value> {
   /// - Parameters:
   ///   - key: The name of the setting.
   ///   - defaultValue: The default value to register with `UserDefaults`.
-  init(_ key: Key, _ defaultValue: Value) {
+  init(_ key: Key, _ defaultValue: Value)
+  {
     self.key = key
-    switch defaultValue {
-      case let value as Bool:
-        UserDefaults.standard.register(defaults: [key.rawValue: value])
-      case let value as Data:
+    switch (key.dataType, defaultValue)
+    {
+      case (.boolean, _):
+        UserDefaults.standard.register(defaults: [key.rawValue: defaultValue])
+      case (.bookmark, let value as Data):
         UserDefaults.standard.register(defaults: [key.rawValue: value])
       default:
         break
@@ -70,30 +79,30 @@ public struct Setting<Value> {
   }
 
   /// Accessor for the setting value stored in the standard `UserDefaults`.
-  public var wrappedValue: Value {
-    get {
-      if  type(of: Value.self) == Bool.Type.self {
-        return UserDefaults.standard.bool(forKey: key.rawValue) as! Value
-      } else if type(of: Value.self) == Optional<Data>.self {
-        return UserDefaults.standard.data(forKey: key.rawValue) as! Value
-      } else {
-        fatalError("\(#fileID) \(#function) Unexpected data type.")
-      }
+  public var wrappedValue: Value
+  {
+    get
+    {
+      key.dataType == .boolean
+        ? UserDefaults.standard.bool(forKey: key.rawValue) as! Value
+        : UserDefaults.standard.data(forKey: key.rawValue) as! Value
     }
-    set {
-      if type(of: Value.self) == Bool.self {
-        UserDefaults.standard.set(newValue, forKey: key.rawValue)
-      } else if type(of: Value.self) == Optional<Data>.self,
-                let newValue = newValue as? Data
-      {
-        UserDefaults.standard.set(newValue, forKey: key.rawValue)
-      }
+    set
+    {
+      UserDefaults.standard.set(newValue, forKey: key.rawValue)
+//      if key.dataType == .boolean
+//      {
+//      }
+//      else if let newValue = newValue as? Data
+//      {
+//        UserDefaults.standard.set(newValue, forKey: key.rawValue)
+//      }
     }
   }
 
   /// Enumeration of the names of the various settings stored by the application.
-  public enum Key: String {
-    
+  public enum Key: String
+  {
     /// A boolean value specifying whether documents should use iCloud.
     case iCloudStorage
 
@@ -119,37 +128,64 @@ public struct Setting<Value> {
     /// Bookmark data for the most recently opened document from iCloud storage.
     case currentDocumentiCloud
 
+    /// The type of data stored by the setting using this key.
+    public var dataType: DataType {
+      switch self {
+        case .currentDocumentLocal,
+             .currentDocumentiCloud:
+          return .bookmark
+        default:
+          return .boolean
+      }
+    }
   }
 
+  /// Enumeration of the kinds of data being stored by the various settings.
+  public enum DataType {
+
+    /// The stored value is `Bool`
+    case boolean
+
+    /// The stored value is `Data?`
+    case bookmark
+  }
 }
 
 /// Extend `UserDefaults` to make the settings KVO compliant.
-public extension UserDefaults {
-  @objc dynamic var	iCloudStorage: Bool {
+public extension UserDefaults
+{
+  @objc dynamic var iCloudStorage: Bool
+  {
     bool(forKey: Setting<Bool>.Key.iCloudStorage.rawValue)
   }
-
-  @objc dynamic var	confirmDeleteDocument: Bool {
+  
+  @objc dynamic var confirmDeleteDocument: Bool
+  {
     bool(forKey: Setting<Bool>.Key.confirmDeleteDocument.rawValue)
   }
 
-  @objc dynamic var	confirmDeleteTrack: Bool {
+  @objc dynamic var confirmDeleteTrack: Bool
+  {
     bool(forKey: Setting<Bool>.Key.confirmDeleteTrack.rawValue)
   }
 
-  @objc dynamic var	scrollTrackLabels: Bool {
+  @objc dynamic var scrollTrackLabels: Bool
+  {
     bool(forKey: Setting<Bool>.Key.scrollTrackLabels.rawValue)
   }
 
-  @objc dynamic var	makeNewTrackCurrent: Bool {
+  @objc dynamic var makeNewTrackCurrent: Bool
+  {
     bool(forKey: Setting<Bool>.Key.makeNewTrackCurrent.rawValue)
   }
 
-  @objc dynamic var	currentDocumentLocal: Data? {
+  @objc dynamic var currentDocumentLocal: Data?
+  {
     data(forKey: Setting<Data?>.Key.currentDocumentLocal.rawValue)
   }
 
-  @objc dynamic var	currentDocumentiCloud: Data? {
+  @objc dynamic var currentDocumentiCloud: Data?
+  {
     data(forKey: Setting<Data?>.Key.currentDocumentiCloud.rawValue)
   }
 }

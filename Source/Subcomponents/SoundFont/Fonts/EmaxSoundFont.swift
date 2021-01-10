@@ -16,12 +16,12 @@ import class UIKit.UIImage
 public struct EmaxSoundFont: SoundFont2
 {
   // MARK: Stored Properties
-
+  
   /// The volume of the sound font.
   public let volume: Volume
-
+  
   // MARK: Computed Properties
-
+  
   /// The URL for the sound font within the application's main bundle.
   public var url: URL
   {
@@ -31,25 +31,25 @@ public struct EmaxSoundFont: SoundFont2
         .url(forResource: fileName, withExtension: "sf2")
     }
   }
-
+  
   /// Whether the sound font contains general midi percussion presets. This is `false`
   /// unless the sound font represents the 'drums and percussion' volume.
   public var isPercussion: Bool { volume.isPercussion }
-
+  
   /// The title-cased name of the sound font's volume.
   public var displayName: String { volume.displayName }
-
+  
   /// The name of the sound font file within the application's main bundle.
   public var fileName: String { "Emax Volume \(volume.index)" }
-
+  
   /// The image to display in the user interface for the sound font. Unique to `volume`.
   public var image: UIImage { volume.image }
-
+  
   // MARK: Initializing
-
+  
   /// Initializing with a volume.
   public init(_ volume: Volume) { self.volume = volume }
-
+  
   /// Initializing with a URL. The sound font is initialized by matching `url.path`
   /// against 'Emax Volume #` where '#' is a number between 1 and 6.
   ///
@@ -66,7 +66,7 @@ public struct EmaxSoundFont: SoundFont2
       throw ErrorMessage(errorDescription: "EmaxSoundFont.Error",
                          failureReason: "Invalid URL")
     }
-
+    
     // Initialize with the parsed volume number.
     self.init(try Volume(index: volume))
   }
@@ -81,14 +81,45 @@ public extension EmaxSoundFont
     public let displayName: String
     public let image: UIImage
     public let isPercussion: Bool
-
-    public static let brassAndWoodwinds = Volume(1, "Brass & Woodwinds", #imageLiteral(resourceName: "brass"))
-    public static let keyboardsAndSynths = Volume(2, "Keyboards & Synths", #imageLiteral(resourceName: "piano_keyboard"))
-    public static let guitarsAndBasses = Volume(3, "Guitars & Basses", #imageLiteral(resourceName: "guitar_bass"))
-    public static let worldInstruments = Volume(4, "World Instruments", #imageLiteral(resourceName: "world"))
-    public static let drumsAndPercussion = Volume(5, "Drums & Percussion", #imageLiteral(resourceName: "percussion"), true)
-    public static let orchestral = Volume(6, "Orchestral", #imageLiteral(resourceName: "orchestral"))
-
+    
+    public static let brassAndWoodwinds =
+      Volume(1,
+             "Brass & Woodwinds",
+             UIImage(named: "brass",
+                     in: Bundle(identifier: "com.moondeerstudios.SoundFont"),
+                     with: nil)!)
+    public static let keyboardsAndSynths =
+      Volume(2,
+             "Keyboards & Synths",
+             UIImage(named: "piano_keyboard",
+                     in: Bundle(identifier: "com.moondeerstudios.SoundFont"),
+                     with: nil)!)
+    public static let guitarsAndBasses =
+      Volume(3,
+             "Guitars & Basses",
+             UIImage(named: "guitar_bass",
+                     in: Bundle(identifier: "com.moondeerstudios.SoundFont"),
+                     with: nil)!)
+    public static let worldInstruments =
+      Volume(4,
+             "World Instruments",
+             UIImage(named: "world",
+                     in: Bundle(identifier: "com.moondeerstudios.SoundFont"),
+                     with: nil)!)
+    public static let drumsAndPercussion =
+      Volume(5,
+             "Drums & Percussion",
+             UIImage(named: "percussion",
+                     in: Bundle(identifier: "com.moondeerstudios.SoundFont"),
+                     with: nil)!,
+             true)
+    public static let orchestral =
+      Volume(6,
+             "Orchestral",
+             UIImage(named: "orchestral",
+                     in: Bundle(identifier: "com.moondeerstudios.SoundFont"),
+                     with: nil)!)
+    
     private init(_ index: Int,
                  _ displayName: String,
                  _ image: UIImage,
@@ -99,7 +130,7 @@ public extension EmaxSoundFont
       self.image = image
       self.isPercussion = isPercussion
     }
-
+    
     init(index: Int) throws
     {
       switch index

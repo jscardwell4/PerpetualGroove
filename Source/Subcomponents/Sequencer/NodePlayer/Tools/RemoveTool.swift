@@ -11,17 +11,21 @@ import SpriteKit
 import UIKit
 
 /// A tool for generating a node removal event.
-public final class RemoveTool: Tool {
+public final class RemoveTool: Tool
+{
   /// The player node to which midi nodes are to be added.
   public unowned let playerNode: PlayerNode
 
   /// Whether the tool is currently receiving touch events.
-  @objc public var active = false {
-    didSet {
+  @objc public var active = false
+  {
+    didSet
+    {
       // Check that the value actually changed.
       guard active != oldValue else { return }
 
-      switch active {
+      switch active
+      {
         case true: refreshLighting()
         case false: removeAllLights()
       }
@@ -36,7 +40,8 @@ public final class RemoveTool: Tool {
   private var nodesToRemove: Set<NodeRef> = []
 
   /// The next open category to assign for foreground lighting.
-  private static var categoryShift: UInt32 = 1 {
+  private static var categoryShift: UInt32 = 1
+  {
     didSet { categoryShift = (1 ... 31).clampValue(categoryShift) }
   }
 
@@ -45,19 +50,23 @@ public final class RemoveTool: Tool {
 
   /// Removes all light nodes attached to a midi node resetting the midi node's
   /// `lightingBitMask` to `0`.
-  private func removeAllLights() {
-    for node in playerNode.midiNodes {
+  private func removeAllLights()
+  {
+    for node in playerNode.midiNodes
+    {
       node?.childNode(withName: "removeToolLighting")?.removeFromParent()
       node?.lightingBitMask = 0
     }
   }
 
   /// Adds a light to `node` configured to make `node` less prominent.
-  private func addBackgroundLight(to node: Node) {
+  private func addBackgroundLight(to node: Node)
+  {
     let lightNode: SKLightNode
 
     // Switch on the light attached to `node`.
-    switch node.childNode(withName: "removeToolLighting") as? SKLightNode {
+    switch node.childNode(withName: "removeToolLighting") as? SKLightNode
+    {
       case let light? where light.categoryBitMask != 1:
         // The node already has a light but it is configured for foreground.
         // Configure it for background.
@@ -89,11 +98,13 @@ public final class RemoveTool: Tool {
   }
 
   /// Adds a light to `node` configured to make `node` more prominent.
-  private func addForegroundLight(to node: Node) {
+  private func addForegroundLight(to node: Node)
+  {
     let lightNode: SKLightNode
 
     // Switch on the light attached to `node`.
-    switch node.childNode(withName: "removeToolLighting") as? SKLightNode {
+    switch node.childNode(withName: "removeToolLighting") as? SKLightNode
+    {
       case let light? where light.categoryBitMask == 1:
         // The node has a light but it is configured for background.
         // Configure for foreground.
@@ -130,8 +141,10 @@ public final class RemoveTool: Tool {
 
   /// Inserts references for `nodes` into `nodesToRemove` and colors the light
   /// of each node black.
-  private func markNodesForRemoval(_ nodes: [Node]) {
-    for node in nodes {
+  private func markNodesForRemoval(_ nodes: [Node])
+  {
+    for node in nodes
+    {
       (node.childNode(withName: RemoveTool.lightNodeName) as? SKLightNode)?
         .lightColor = .black
       nodesToRemove.insert(NodeRef(node))
@@ -142,12 +155,14 @@ public final class RemoveTool: Tool {
   private var addNodeSubscription: Cancellable?
 
   /// Adds foreground or background light to each node for the current dispatch.
-  private func refreshLighting() {
+  private func refreshLighting()
+  {
     guard let dispatch = player.currentDispatch else { return }
 
     let dispatchNodes = dispatch.nodeManager.nodes.compactMap { $0.reference }
 
-    let (foregroundNodes, backgroundNodes) = playerNode.midiNodes.compactMap { $0 }.bisect {
+    let (foregroundNodes, backgroundNodes) = playerNode.midiNodes.compactMap { $0 }.bisect
+    {
       dispatchNodes.contains($0)
     }
 
@@ -160,20 +175,23 @@ public final class RemoveTool: Tool {
   public let deleteFromTrack: Bool
 
   /// Handler for notifications that the player's current dispatch will change.
-  private func willChangeDispatch(_: Foundation.Notification) {
+  private func willChangeDispatch(_: Foundation.Notification)
+  {
     guard active else { return }
-    controller.player.currentDispatch?.nodes.forEach(addBackgroundLight)
+    player.currentDispatch?.nodes.forEach(addBackgroundLight)
   }
 
   /// Handler for notifications that the player's current dispatch did change.
-  private func didChangeDispatch(_: Foundation.Notification) {
+  private func didChangeDispatch(_: Foundation.Notification)
+  {
     touch = nil
     guard active else { return }
     player.currentDispatch?.nodes.forEach(addForegroundLight)
   }
 
   /// Initialize with the player node and whether removal generates events or deletes.
-  public init(playerNode: PlayerNode, delete: Bool = false) {
+  public init(playerNode: PlayerNode, delete: Bool = false)
+  {
     // Set the property values.
     deleteFromTrack = delete
     self.playerNode = playerNode
@@ -196,14 +214,18 @@ public final class RemoveTool: Tool {
         guard active,
               let node = notification.addedNode,
               let dispatch = notification.addedNodeDispatch
-        else {
+        else
+        {
           return
         }
 
         // Add a foreground or background light depending on the node's dispatch.
-        if player.currentDispatch === dispatch {
+        if player.currentDispatch === dispatch
+        {
           addForegroundLight(to: node)
-        } else {
+        }
+        else
+        {
           addBackgroundLight(to: node)
         }
       })
@@ -212,8 +234,10 @@ public final class RemoveTool: Tool {
   /// Removes each node referenced in `nodesToRemove` from `player`, generating a
   /// node removal event if `deleteFromTrack == false` and deleting any event
   /// including or generated by the node when `deleteFromTrack == true`.
-  private func removeMarkedNodes() {
-    do {
+  private func removeMarkedNodes()
+  {
+    do
+    {
       // Check that the current dispatch's node manager can be accessed.
       guard let manager = player.currentDispatch?.nodeManager else { return }
 
@@ -222,23 +246,27 @@ public final class RemoveTool: Tool {
 
       // Iterate the nodes to remove performing the determined action,
       // fading out and removing the node.
-      for node in nodesToRemove.compactMap({ $0.reference }) {
+      for node in nodesToRemove.compactMap({ $0.reference })
+      {
         try remove(manager)(node)
         node.fadeOut(remove: true)
       }
-
-    } catch {
-      log.error("\(error as NSObject)")
+    }
+    catch
+    {
+      loge("\(error as NSObject)")
     }
   }
 
   /// Returns all the nodes of the current dispatch whose body contains `point`.
-  private func dispatchNodes(at point: CGPoint) -> [Node] {
+  private func dispatchNodes(at point: CGPoint) -> [Node]
+  {
     // Retrieve all the nodes for the current dispatch.
     guard let dispatchNodes = player.currentDispatch?.nodes else { return [] }
 
     // Get the identifiers for all the midi nodes located at `point`.
-    let identifiers = Set(playerNode.nodes(at: point).compactMap { ($0 as? Node)?.identifier })
+    let identifiers = Set(playerNode.nodes(at: point)
+                            .compactMap { ($0 as? Node)?.identifier })
 
     // Return all the midi nodes whose identifier is an element of `identifiers`.
     return dispatchNodes.filter { $0.identifier ∈ identifiers }
@@ -246,7 +274,8 @@ public final class RemoveTool: Tool {
 
   /// Updates `touch` when `active && touch == nil` adding any nodes beneath the touch
   /// to `nodesToRemove`.
-  @objc public func touchesBegan(_ touches: Set<UITouch>) {
+  @objc public func touchesBegan(_ touches: Set<UITouch>)
+  {
     guard active, touch == nil else { return }
 
     touch = touches.first
@@ -261,7 +290,8 @@ public final class RemoveTool: Tool {
   }
 
   /// Nullifies `touch` when `touch ∈ touches`.
-  @objc public func touchesCancelled(_ touches: Set<UITouch>) {
+  @objc public func touchesCancelled(_ touches: Set<UITouch>)
+  {
     // Check that `touch ∈ touches`.
     guard touch != nil, touches.contains(touch!) else { return }
 
@@ -270,7 +300,8 @@ public final class RemoveTool: Tool {
   }
 
   /// Removes marked nodes and nullifies `touch` when `touch ∈ touches`.
-  @objc public func touchesEnded(_ touches: Set<UITouch>) {
+  @objc public func touchesEnded(_ touches: Set<UITouch>)
+  {
     // Check that `touch ∈ touches`.
     guard touch != nil, touches.contains(touch!) else { return }
 
@@ -283,7 +314,8 @@ public final class RemoveTool: Tool {
 
   /// Stops tracking `touch` if it has moved outside `player`; otherwise,
   /// marks nodes for the current location of `touch`. Does nothing if `touches ∌ touch`.
-  @objc public func touchesMoved(_ touches: Set<UITouch>) {
+  @objc public func touchesMoved(_ touches: Set<UITouch>)
+  {
     // Check that `touch ∈ touches`.
     guard touch != nil, touches.contains(touch!) else { return }
 
@@ -291,7 +323,9 @@ public final class RemoveTool: Tool {
     let point = touch!.location(in: playerNode)
 
     // Check that the player contains the point; otherwise, stop tracking `touch`.
-    guard playerNode.contains(point) else {
+    guard playerNode.contains(point)
+    else
+    {
       touch = nil
       return
     }

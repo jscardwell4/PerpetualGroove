@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="iF7-fT-LPT">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -16,14 +17,14 @@
         <!--Mixer-->
         <scene sceneID="6FS-5d-R84">
             <objects>
-                <collectionViewController storyboardIdentifier="Mixer" title="Mixer" id="iF7-fT-LPT" userLabel="Mixer" customClass="ViewController" customModule="Sequencer.MixerContainer" sceneMemberID="viewController">
+                <collectionViewController storyboardIdentifier="Mixer" title="Mixer" id="iF7-fT-LPT" userLabel="Mixer" customClass="MixerViewController" customModule="Sequencer" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" contentMode="scaleToFill" directionalLockEnabled="YES" bounces="NO" alwaysBounceHorizontal="YES" showsVerticalScrollIndicator="NO" dataMode="prototypes" id="QhA-gV-EZG">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="575"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <collectionViewLayout key="collectionViewLayout" id="I5F-pR-bWx" customClass="MixerLayout" customModule="Sequencer.MixerContainer"/>
+                        <collectionViewLayout key="collectionViewLayout" id="I5F-pR-bWx" customClass="MixerLayout" customModule="Sequencer" customModuleProvider="target"/>
                         <cells>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" placeholderIntrinsicWidth="100" placeholderIntrinsicHeight="420" reuseIdentifier="MasterCell" id="Ywg-X3-Y1Q" userLabel="Master Cell" customClass="MasterCell" customModule="Sequencer.MixerContainer">
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" placeholderIntrinsicWidth="100" placeholderIntrinsicHeight="420" reuseIdentifier="MasterCell" id="Ywg-X3-Y1Q" userLabel="Master Cell" customClass="MasterCell" customModule="Sequencer" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="100" height="575"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -31,7 +32,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="VOL" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4EJ-Z0-Ecx" customClass="Label" customModule="MoonKit">
-                                            <rect key="frame" x="38.5" y="8" width="23.5" height="14"/>
+                                            <rect key="frame" x="36" y="8" width="28" height="14"/>
                                             <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                             <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
@@ -39,8 +40,8 @@
                                                 <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="VolumeLabel"/>
                                             </userDefinedRuntimeAttributes>
                                         </label>
-                                        <view opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Evx-CT-UhF" userLabel="Volume Slider" customClass="Slider" customModule="MoonKit">
-                                            <rect key="frame" x="28" y="30" width="44" height="256"/>
+                                        <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Evx-CT-UhF" userLabel="Volume Slider" customClass="Slider" customModule="MoonKit">
+                                            <rect key="frame" x="28" y="30" width="44" height="406.5"/>
                                             <userDefinedRuntimeAttributes>
                                                 <userDefinedRuntimeAttribute type="number" keyPath="value">
                                                     <real key="value" value="11"/>
@@ -71,7 +72,7 @@
                                             </connections>
                                         </view>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="PAN" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q27-Qm-1HH" customClass="Label" customModule="MoonKit">
-                                            <rect key="frame" x="38.5" y="446.5" width="23.5" height="14"/>
+                                            <rect key="frame" x="36" y="444.5" width="28" height="14"/>
                                             <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                             <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
@@ -80,7 +81,7 @@
                                             </userDefinedRuntimeAttributes>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" text="MASTER" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zFx-2Q-V0k" customClass="Label" customModule="MoonKit">
-                                            <rect key="frame" x="21.5" y="550.5" width="57" height="16.5"/>
+                                            <rect key="frame" x="25" y="548.5" width="50.5" height="18.5"/>
                                             <fontDescription key="fontDescription" name="Triump-Rg-Rock-02" family="Triump Rg Rock" pointSize="14"/>
                                             <color key="textColor" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
@@ -91,7 +92,7 @@
                                             </userDefinedRuntimeAttributes>
                                         </label>
                                         <view opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="242" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" placeholderIntrinsicWidth="100" placeholderIntrinsicHeight="100" translatesAutoresizingMaskIntoConstraints="NO" id="RJ4-aR-o07" customClass="Knob" customModule="MoonKit">
-                                            <rect key="frame" x="13" y="468.5" width="74" height="74"/>
+                                            <rect key="frame" x="13" y="466.5" width="74" height="74"/>
                                             <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" secondItem="RJ4-aR-o07" secondAttribute="height" multiplier="1:1" identifier="PanKnobAspectRatio" id="LAp-6H-dZc"/>
@@ -134,6 +135,7 @@
                                     <constraint firstItem="Q27-Qm-1HH" firstAttribute="centerX" secondItem="Ywg-X3-Y1Q" secondAttribute="centerX" id="MWd-4H-Tsc"/>
                                     <constraint firstItem="4EJ-Z0-Ecx" firstAttribute="top" secondItem="Ywg-X3-Y1Q" secondAttribute="topMargin" id="PNB-Xv-aa8"/>
                                     <constraint firstItem="RJ4-aR-o07" firstAttribute="top" secondItem="Q27-Qm-1HH" secondAttribute="bottom" constant="8" symbolic="YES" id="PfU-gq-IGx"/>
+                                    <constraint firstItem="Evx-CT-UhF" firstAttribute="leading" secondItem="Ywg-X3-Y1Q" secondAttribute="leadingMargin" constant="20" id="eva-i8-vbI"/>
                                     <constraint firstItem="RJ4-aR-o07" firstAttribute="centerX" secondItem="Ywg-X3-Y1Q" secondAttribute="centerX" id="ogk-E1-txI"/>
                                     <constraint firstItem="Evx-CT-UhF" firstAttribute="centerX" secondItem="Ywg-X3-Y1Q" secondAttribute="centerX" id="qIW-8q-qqm"/>
                                     <constraint firstAttribute="bottomMargin" secondItem="zFx-2Q-V0k" secondAttribute="bottom" id="rGM-Kw-Tx4"/>
@@ -150,7 +152,7 @@
                                     <outlet property="volumeSlider" destination="Evx-CT-UhF" id="JBl-MO-sV1"/>
                                 </connections>
                             </collectionViewCell>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" contentMode="center" reuseIdentifier="TrackCell" id="2AY-7g-m2Q" userLabel="Track Cell" customClass="TrackCell" customModule="Sequencer.MixerContainer">
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" contentMode="center" reuseIdentifier="TrackCell" id="2AY-7g-m2Q" userLabel="Track Cell" customClass="TrackCell" customModule="Sequencer" customModuleProvider="target">
                                 <rect key="frame" x="110" y="0.0" width="100" height="575"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -158,7 +160,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="VOL" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1nN-5d-7mi" customClass="Label" customModule="MoonKit">
-                                            <rect key="frame" x="38.5" y="8" width="23.5" height="14"/>
+                                            <rect key="frame" x="36" y="8" width="28" height="14"/>
                                             <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                             <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
@@ -166,7 +168,7 @@
                                                 <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="VolumeLabel"/>
                                             </userDefinedRuntimeAttributes>
                                         </label>
-                                        <view opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="241" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fQV-Nj-rrF" userLabel="Volume Slider" customClass="Slider" customModule="MoonKit">
+                                        <view opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="241" translatesAutoresizingMaskIntoConstraints="NO" id="fQV-Nj-rrF" userLabel="Volume Slider" customClass="Slider" customModule="MoonKit">
                                             <rect key="frame" x="28" y="30" width="44" height="259"/>
                                             <userDefinedRuntimeAttributes>
                                                 <userDefinedRuntimeAttribute type="number" keyPath="value">
@@ -197,8 +199,8 @@
                                                 <action selector="volumeDidChange" destination="2AY-7g-m2Q" eventType="valueChanged" id="PYg-cS-25p"/>
                                             </connections>
                                         </view>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" ambiguous="YES" misplaced="YES" text="PAN" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UVo-0O-vty" customClass="Label" customModule="MoonKit">
-                                            <rect key="frame" x="36.5" y="297" width="28" height="14"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="PAN" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UVo-0O-vty" customClass="Label" customModule="MoonKit">
+                                            <rect key="frame" x="36" y="297" width="28" height="14"/>
                                             <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                             <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
@@ -206,7 +208,7 @@
                                                 <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="PanLabel"/>
                                             </userDefinedRuntimeAttributes>
                                         </label>
-                                        <view opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="242" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="y4E-jp-B4L" customClass="Knob" customModule="MoonKit">
+                                        <view opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="242" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="y4E-jp-B4L" customClass="Knob" customModule="MoonKit">
                                             <rect key="frame" x="13" y="319" width="74" height="74"/>
                                             <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                             <constraints>
@@ -370,7 +372,7 @@
                                                 <outlet property="delegate" destination="2AY-7g-m2Q" id="DMw-YC-Lce"/>
                                             </connections>
                                         </view>
-                                        <view opaque="NO" contentMode="scaleAspectFit" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="i87-3C-3ae" userLabel="TrackColor" customClass="ImageButtonView" customModule="MoonKit">
+                                        <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="i87-3C-3ae" userLabel="TrackColor" customClass="ImageButtonView" customModule="MoonKit">
                                             <rect key="frame" x="8" y="553" width="84" height="14"/>
                                             <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                             <color key="tintColor" red="0.68166375160217285" green="0.38204258680343628" blue="0.2524854838848114" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -429,6 +431,7 @@
                                     <constraint firstItem="6he-9a-y4c" firstAttribute="top" secondItem="BZl-Ps-fwB" secondAttribute="bottom" constant="8" symbolic="YES" id="14M-m0-Y5N"/>
                                     <constraint firstItem="3Fc-u3-GOg" firstAttribute="leading" secondItem="2AY-7g-m2Q" secondAttribute="leadingMargin" id="1nY-fc-VQ1"/>
                                     <constraint firstItem="Ldg-6q-t2e" firstAttribute="height" secondItem="1nN-5d-7mi" secondAttribute="height" id="2AO-Om-jGz"/>
+                                    <constraint firstItem="y4E-jp-B4L" firstAttribute="centerX" secondItem="i87-3C-3ae" secondAttribute="centerX" id="2AT-Fs-arj"/>
                                     <constraint firstItem="2QL-te-Ivd" firstAttribute="leading" secondItem="2AY-7g-m2Q" secondAttribute="leadingMargin" constant="8" id="3zo-Xc-oMO"/>
                                     <constraint firstItem="UVo-0O-vty" firstAttribute="height" secondItem="1nN-5d-7mi" secondAttribute="height" id="5FE-He-p7N"/>
                                     <constraint firstAttribute="trailingMargin" secondItem="2QL-te-Ivd" secondAttribute="trailing" constant="8" id="5NE-Od-r4R"/>
@@ -440,6 +443,7 @@
                                     <constraint firstItem="PLx-z8-sAo" firstAttribute="top" secondItem="2AY-7g-m2Q" secondAttribute="top" id="Ddx-zp-JY3"/>
                                     <constraint firstItem="UVo-0O-vty" firstAttribute="centerX" secondItem="2AY-7g-m2Q" secondAttribute="centerX" id="Dyx-wS-pty"/>
                                     <constraint firstItem="UVo-0O-vty" firstAttribute="top" secondItem="fQV-Nj-rrF" secondAttribute="bottom" constant="8" symbolic="YES" id="EIb-Ws-lGu"/>
+                                    <constraint firstItem="y4E-jp-B4L" firstAttribute="centerX" secondItem="fQV-Nj-rrF" secondAttribute="centerX" id="EaY-u8-eHF"/>
                                     <constraint firstItem="Ldg-6q-t2e" firstAttribute="leading" secondItem="2AY-7g-m2Q" secondAttribute="leadingMargin" constant="8" id="GKv-UZ-W1N"/>
                                     <constraint firstAttribute="trailingMargin" secondItem="BZl-Ps-fwB" secondAttribute="trailing" constant="8" id="HGt-bv-khR"/>
                                     <constraint firstItem="2QL-te-Ivd" firstAttribute="top" secondItem="y4E-jp-B4L" secondAttribute="bottom" constant="8" symbolic="YES" id="JxR-Hf-gGU"/>
@@ -448,7 +452,9 @@
                                     <constraint firstAttribute="trailingMargin" secondItem="3Fc-u3-GOg" secondAttribute="trailing" id="LnZ-YM-4Yd"/>
                                     <constraint firstItem="2QL-te-Ivd" firstAttribute="centerX" secondItem="2AY-7g-m2Q" secondAttribute="centerX" id="MDh-uC-bZd"/>
                                     <constraint firstAttribute="trailing" secondItem="PLx-z8-sAo" secondAttribute="trailing" id="NiX-3b-LrS"/>
+                                    <constraint firstItem="i87-3C-3ae" firstAttribute="centerX" secondItem="fQV-Nj-rrF" secondAttribute="centerX" id="O3v-xU-uBk"/>
                                     <constraint firstAttribute="trailingMargin" secondItem="Ldg-6q-t2e" secondAttribute="trailing" constant="8" id="Rnj-BI-GSK"/>
+                                    <constraint firstItem="fQV-Nj-rrF" firstAttribute="leading" secondItem="2AY-7g-m2Q" secondAttribute="leadingMargin" constant="20" id="TPM-hL-dXd"/>
                                     <constraint firstItem="fQV-Nj-rrF" firstAttribute="top" secondItem="1nN-5d-7mi" secondAttribute="bottom" constant="8" symbolic="YES" id="Vub-kr-fOy"/>
                                     <constraint firstItem="BZl-Ps-fwB" firstAttribute="centerX" secondItem="2AY-7g-m2Q" secondAttribute="centerX" id="ZbS-5x-8C0"/>
                                     <constraint firstItem="Ldg-6q-t2e" firstAttribute="top" secondItem="2QL-te-Ivd" secondAttribute="bottom" constant="8" symbolic="YES" id="ZrK-MY-eDd"/>
@@ -459,10 +465,12 @@
                                     <constraint firstAttribute="bottom" secondItem="PLx-z8-sAo" secondAttribute="bottom" id="ebH-51-OJU"/>
                                     <constraint firstItem="6he-9a-y4c" firstAttribute="centerX" secondItem="2AY-7g-m2Q" secondAttribute="centerX" id="fCa-aa-7BH"/>
                                     <constraint firstItem="i87-3C-3ae" firstAttribute="centerX" secondItem="2AY-7g-m2Q" secondAttribute="centerX" id="fGQ-3m-cFk"/>
+                                    <constraint firstItem="i87-3C-3ae" firstAttribute="leading" secondItem="3Fc-u3-GOg" secondAttribute="leading" id="ir3-6R-O7N"/>
                                     <constraint firstItem="y4E-jp-B4L" firstAttribute="centerX" secondItem="2AY-7g-m2Q" secondAttribute="centerX" id="kBS-dq-WTE"/>
                                     <constraint firstItem="3Fc-u3-GOg" firstAttribute="top" secondItem="6he-9a-y4c" secondAttribute="bottom" constant="8" symbolic="YES" id="mOF-uG-KUq"/>
                                     <constraint firstItem="i87-3C-3ae" firstAttribute="top" secondItem="3Fc-u3-GOg" secondAttribute="bottom" constant="8" symbolic="YES" id="pnd-Ci-LyL"/>
                                     <constraint firstItem="i87-3C-3ae" firstAttribute="bottom" secondItem="2AY-7g-m2Q" secondAttribute="bottomMargin" id="pwu-w4-hS4"/>
+                                    <constraint firstItem="y4E-jp-B4L" firstAttribute="leading" secondItem="2AY-7g-m2Q" secondAttribute="leadingMargin" constant="5" id="qeh-yL-6aw"/>
                                     <constraint firstItem="3Fc-u3-GOg" firstAttribute="height" secondItem="1nN-5d-7mi" secondAttribute="height" id="qu6-a4-Kzq"/>
                                     <constraint firstItem="2QL-te-Ivd" firstAttribute="height" secondItem="1nN-5d-7mi" secondAttribute="height" id="u7f-XO-J33"/>
                                     <constraint firstItem="i87-3C-3ae" firstAttribute="height" secondItem="1nN-5d-7mi" secondAttribute="height" id="v4Q-lT-nid"/>
@@ -482,7 +490,7 @@
                                     <outlet property="volumeSlider" destination="fQV-Nj-rrF" id="XMG-4x-gK9"/>
                                 </connections>
                             </collectionViewCell>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="AddTrackCell" id="h8g-3b-xY3" userLabel="Add Track Cell" customClass="AddTrackCell" customModule="Sequencer.MixerContainer">
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="AddTrackCell" id="h8g-3b-xY3" userLabel="Add Track Cell" customClass="AddTrackCell" customModule="Sequencer" customModuleProvider="target">
                                 <rect key="frame" x="220" y="0.0" width="100" height="575"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -490,7 +498,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="VOL" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ckA-uv-GCY" customClass="Label" customModule="MoonKit">
-                                            <rect key="frame" x="38.5" y="8" width="23.5" height="14"/>
+                                            <rect key="frame" x="36" y="8" width="28" height="14"/>
                                             <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                             <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
@@ -498,7 +506,7 @@
                                                 <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="VolumeLabel"/>
                                             </userDefinedRuntimeAttributes>
                                         </label>
-                                        <view opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="241" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oIP-Ma-BgY" userLabel="Volume Slider" customClass="Slider" customModule="MoonKit">
+                                        <view opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="241" translatesAutoresizingMaskIntoConstraints="NO" id="oIP-Ma-BgY" userLabel="Volume Slider" customClass="Slider" customModule="MoonKit">
                                             <rect key="frame" x="28" y="30" width="44" height="259"/>
                                             <userDefinedRuntimeAttributes>
                                                 <userDefinedRuntimeAttribute type="number" keyPath="value">
@@ -526,8 +534,8 @@
                                                 <userDefinedRuntimeAttribute type="boolean" keyPath="isVertical" value="YES"/>
                                             </userDefinedRuntimeAttributes>
                                         </view>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" ambiguous="YES" misplaced="YES" text="PAN" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X6K-EB-nxp" customClass="Label" customModule="MoonKit">
-                                            <rect key="frame" x="36.5" y="297" width="28" height="14"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="PAN" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X6K-EB-nxp" customClass="Label" customModule="MoonKit">
+                                            <rect key="frame" x="36" y="297" width="28" height="14"/>
                                             <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                             <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
@@ -535,7 +543,7 @@
                                                 <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="PanLabel"/>
                                             </userDefinedRuntimeAttributes>
                                         </label>
-                                        <view opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="242" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="43K-cf-6Bq" customClass="Knob" customModule="MoonKit">
+                                        <view opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="242" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="43K-cf-6Bq" customClass="Knob" customModule="MoonKit">
                                             <rect key="frame" x="13" y="319" width="74" height="74"/>
                                             <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                             <constraints>
@@ -606,7 +614,7 @@
                                                 </userDefinedRuntimeAttribute>
                                             </userDefinedRuntimeAttributes>
                                         </view>
-                                        <view opaque="NO" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Pkt-du-P1t" userLabel="Mute" customClass="LabelButton" customModule="MoonKit">
+                                        <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Pkt-du-P1t" userLabel="Mute" customClass="LabelButton" customModule="MoonKit">
                                             <rect key="frame" x="27.5" y="445" width="45" height="14"/>
                                             <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                             <color key="tintColor" red="0.30125221610000003" green="0.29395070670000001" blue="0.28606623409999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -665,7 +673,7 @@
                                                 </userDefinedRuntimeAttribute>
                                             </userDefinedRuntimeAttributes>
                                         </view>
-                                        <view opaque="NO" contentMode="scaleAspectFit" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HUK-fb-hqg" userLabel="TrackColor" customClass="ImageButtonView" customModule="MoonKit">
+                                        <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="HUK-fb-hqg" userLabel="TrackColor" customClass="ImageButtonView" customModule="MoonKit">
                                             <rect key="frame" x="8" y="553" width="84" height="14"/>
                                             <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                             <color key="tintColor" red="0.68166375160000003" green="0.38204258679999997" blue="0.25248548389999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -742,27 +750,35 @@
                                     <constraint firstItem="oIP-Ma-BgY" firstAttribute="top" secondItem="ckA-uv-GCY" secondAttribute="bottom" constant="8" symbolic="YES" id="4jA-pR-RQT"/>
                                     <constraint firstItem="mYF-IU-Ego" firstAttribute="leading" secondItem="h8g-3b-xY3" secondAttribute="leading" id="5B4-Wf-rCy"/>
                                     <constraint firstItem="mYF-IU-Ego" firstAttribute="top" secondItem="h8g-3b-xY3" secondAttribute="top" id="5h3-uj-oHY"/>
+                                    <constraint firstItem="43K-cf-6Bq" firstAttribute="centerX" secondItem="oIP-Ma-BgY" secondAttribute="centerX" id="7cv-AY-70G"/>
+                                    <constraint firstItem="Pkt-du-P1t" firstAttribute="leading" secondItem="h8g-3b-xY3" secondAttribute="leadingMargin" constant="19.5" id="8yi-xt-YVZ"/>
                                     <constraint firstItem="43K-cf-6Bq" firstAttribute="width" secondItem="43K-cf-6Bq" secondAttribute="height" multiplier="1:1" identifier="PanKnobAspectRatio" id="9J3-KI-g9c"/>
                                     <constraint firstAttribute="trailingMargin" secondItem="iSa-iL-aAd" secondAttribute="trailing" id="9Xb-zk-kk4"/>
                                     <constraint firstItem="43K-cf-6Bq" firstAttribute="top" secondItem="X6K-EB-nxp" secondAttribute="bottom" constant="8" symbolic="YES" id="CWb-zr-Nvi"/>
                                     <constraint firstItem="iSa-iL-aAd" firstAttribute="leading" secondItem="h8g-3b-xY3" secondAttribute="leadingMargin" id="FPT-2V-NA5"/>
                                     <constraint firstItem="iSa-iL-aAd" firstAttribute="centerX" secondItem="h8g-3b-xY3" secondAttribute="centerX" id="GYb-hW-gdH"/>
+                                    <constraint firstItem="HUK-fb-hqg" firstAttribute="centerX" secondItem="oIP-Ma-BgY" secondAttribute="centerX" id="I1m-Az-okw"/>
                                     <constraint firstItem="43K-cf-6Bq" firstAttribute="centerX" secondItem="h8g-3b-xY3" secondAttribute="centerX" id="IjH-ht-9OY"/>
                                     <constraint firstItem="X6K-EB-nxp" firstAttribute="top" secondItem="oIP-Ma-BgY" secondAttribute="bottom" constant="8" symbolic="YES" id="JG8-wp-Pz6"/>
                                     <constraint firstAttribute="trailing" secondItem="mYF-IU-Ego" secondAttribute="trailing" id="Kwn-K3-szH"/>
                                     <constraint firstItem="X6K-EB-nxp" firstAttribute="centerX" secondItem="h8g-3b-xY3" secondAttribute="centerX" id="MGd-jq-sfS"/>
+                                    <constraint firstItem="Pkt-du-P1t" firstAttribute="centerX" secondItem="HUK-fb-hqg" secondAttribute="centerX" id="N5A-Sc-om4"/>
                                     <constraint firstItem="z6t-yM-l5c" firstAttribute="top" secondItem="3yX-mn-xTd" secondAttribute="bottom" constant="8" symbolic="YES" id="OF3-qq-gdy"/>
                                     <constraint firstItem="qhC-wG-5Ac" firstAttribute="centerX" secondItem="h8g-3b-xY3" secondAttribute="centerX" id="P8d-w0-ctT"/>
                                     <constraint firstItem="z6t-yM-l5c" firstAttribute="centerX" secondItem="h8g-3b-xY3" secondAttribute="centerX" id="R9o-be-vlL"/>
+                                    <constraint firstItem="Pkt-du-P1t" firstAttribute="centerX" secondItem="oIP-Ma-BgY" secondAttribute="centerX" id="TSu-iR-SIU"/>
                                     <constraint firstItem="3yX-mn-xTd" firstAttribute="centerX" secondItem="h8g-3b-xY3" secondAttribute="centerX" id="Ta6-ge-fB1"/>
                                     <constraint firstItem="HUK-fb-hqg" firstAttribute="height" secondItem="ckA-uv-GCY" secondAttribute="height" id="UMy-U8-c3s"/>
                                     <constraint firstItem="HUK-fb-hqg" firstAttribute="top" secondItem="iSa-iL-aAd" secondAttribute="bottom" constant="8" symbolic="YES" id="VK6-4u-huG"/>
                                     <constraint firstItem="iSa-iL-aAd" firstAttribute="top" secondItem="qhC-wG-5Ac" secondAttribute="bottom" constant="8" symbolic="YES" id="X7d-4T-MO9"/>
                                     <constraint firstItem="iSa-iL-aAd" firstAttribute="height" secondItem="ckA-uv-GCY" secondAttribute="height" id="b9h-c5-lqU"/>
+                                    <constraint firstItem="Pkt-du-P1t" firstAttribute="centerX" secondItem="43K-cf-6Bq" secondAttribute="centerX" id="bRp-z8-Km8"/>
                                     <constraint firstItem="3yX-mn-xTd" firstAttribute="height" secondItem="ckA-uv-GCY" secondAttribute="height" id="dKx-hg-kgw"/>
                                     <constraint firstItem="3yX-mn-xTd" firstAttribute="leading" secondItem="h8g-3b-xY3" secondAttribute="leadingMargin" constant="8" id="eIB-bv-n8N"/>
+                                    <constraint firstItem="oIP-Ma-BgY" firstAttribute="leading" secondItem="h8g-3b-xY3" secondAttribute="leadingMargin" constant="20" id="eJy-xF-yPF"/>
                                     <constraint firstAttribute="trailingMargin" secondItem="3yX-mn-xTd" secondAttribute="trailing" constant="8" id="eU9-6N-vBT"/>
                                     <constraint firstItem="Pkt-du-P1t" firstAttribute="height" secondItem="ckA-uv-GCY" secondAttribute="height" id="etk-WO-jB1"/>
+                                    <constraint firstItem="HUK-fb-hqg" firstAttribute="leading" secondItem="iSa-iL-aAd" secondAttribute="leading" id="fIh-Kd-R3V"/>
                                     <constraint firstItem="X6K-EB-nxp" firstAttribute="height" secondItem="ckA-uv-GCY" secondAttribute="height" id="fpT-z0-4lt"/>
                                     <constraint firstAttribute="bottom" secondItem="mYF-IU-Ego" secondAttribute="bottom" id="giu-SL-qnd"/>
                                     <constraint firstAttribute="trailingMargin" secondItem="z6t-yM-l5c" secondAttribute="trailing" constant="8" id="hUR-Ub-epI"/>
@@ -774,6 +790,8 @@
                                     <constraint firstItem="z6t-yM-l5c" firstAttribute="leading" secondItem="h8g-3b-xY3" secondAttribute="leadingMargin" constant="8" id="qx2-YF-Qjh"/>
                                     <constraint firstItem="z6t-yM-l5c" firstAttribute="height" secondItem="ckA-uv-GCY" secondAttribute="height" id="tsZ-4B-t65"/>
                                     <constraint firstItem="Pkt-du-P1t" firstAttribute="top" secondItem="z6t-yM-l5c" secondAttribute="bottom" constant="8" symbolic="YES" id="uUt-mY-0Ib"/>
+                                    <constraint firstItem="43K-cf-6Bq" firstAttribute="leading" secondItem="h8g-3b-xY3" secondAttribute="leadingMargin" constant="5" id="w6o-dR-qur"/>
+                                    <constraint firstItem="HUK-fb-hqg" firstAttribute="centerX" secondItem="43K-cf-6Bq" secondAttribute="centerX" id="x2J-mD-zaA"/>
                                     <constraint firstItem="ckA-uv-GCY" firstAttribute="top" secondItem="h8g-3b-xY3" secondAttribute="topMargin" id="y0R-CR-35W"/>
                                 </constraints>
                                 <size key="customSize" width="100" height="575"/>
@@ -814,6 +832,11 @@
             <point key="canvasLocation" x="256" y="-245"/>
         </scene>
     </scenes>
+    <designables>
+        <designable name="RJ4-aR-o07">
+            <size key="intrinsicContentSize" width="100" height="100"/>
+        </designable>
+    </designables>
     <color key="tintColor" red="0.8434065580368042" green="0.78949379920959473" blue="0.71009701490402222" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
     <resources>
         <image name="add-selected" width="56" height="56"/>

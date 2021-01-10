@@ -9,7 +9,7 @@
         <!--Transport View Controller-->
         <scene sceneID="Fea-tP-1xP">
             <objects>
-                <viewController storyboardIdentifier="Transport" id="Ca0-NX-Etk" customClass="TransportViewController" customModule="Sequencer" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Transport" id="Ca0-NX-Etk" customClass="TransportViewController" customModule="Sequencer" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="vcr-EL-Otd"/>
                         <viewControllerLayoutGuide type="bottom" id="58g-BR-77C"/>
@@ -132,7 +132,7 @@
                                     <action selector="beginJog" destination="Ca0-NX-Etk" eventType="touchDown" id="HEa-iV-rxz"/>
                                     <action selector="endJog" destination="Ca0-NX-Etk" eventType="touchUpInside" id="1ke-hk-OrA"/>
                                     <action selector="endJog" destination="Ca0-NX-Etk" eventType="touchUpOutside" id="8qy-f9-OFH"/>
-                                    <action selector="jog" destination="Ca0-NX-Etk" eventType="valueChanged" id="8H4-Yv-fwp"/>
+                                    <action selector="jogWithScrollWheel:" destination="Ca0-NX-Etk" eventType="valueChanged" id="IpB-HK-aBK"/>
                                 </connections>
                             </view>
                         </subviews>

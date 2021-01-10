@@ -16,8 +16,8 @@ import UIKit
 /// An abstract subclass of `UIControl` that wraps an instance of `InlinePickerView`
 /// to provide application-specific customization.
 @IBDesignable
-public class Picker: UIControl, InlinePickerDelegate {
-
+public class Picker: UIControl, InlinePickerDelegate
+{
   // MARK: Stored Properties
 
   /// Overridden to invoke `setup()`.
@@ -26,8 +26,10 @@ public class Picker: UIControl, InlinePickerDelegate {
 
   /// The items displayed by `picker`. Setting the value of this property causes
   /// `picker` to reload.
-  public var items: [InlinePickerView.Item] = [] {
-    didSet {
+  public var items: [InlinePickerView.Item] = []
+  {
+    didSet
+    {
       // Reload the picker view to keep the picker view's items in sync with `items`.
       picker.reloadData()
     }
@@ -41,7 +43,8 @@ public class Picker: UIControl, InlinePickerDelegate {
   public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); setup() }
 
   /// Configures the inline picker container.
-  private func setup() {
+  private func setup()
+  {
     // Connect the property wrapper.
     $selection = picker
 
@@ -63,17 +66,17 @@ public class Picker: UIControl, InlinePickerDelegate {
 
     // Add constraints to keep the picker vertically and horizontally stretched
     // across the container.
-    constrain(𝗛 ∶| [picker]|, 𝗩 ∶| [picker]|)
+    constrain(𝗛∶|[picker]|, 𝗩∶|[picker]|)
 
     #if TARGET_INTERFACE_BUILDER
 
-      // Assign the interface builder content to `items`.
-      items = type(of: self).contentForInterfaceBuilder
+    // Assign the interface builder content to `items`.
+    items = type(of: self).contentForInterfaceBuilder
 
     #else
 
-      // Assign items via a refresh.
-      refreshItems()
+    // Assign items via a refresh.
+    refreshItems()
 
     #endif
 
@@ -82,26 +85,30 @@ public class Picker: UIControl, InlinePickerDelegate {
   }
 
   /// Sets the colors, fonts, and metrics for `picker`.
-  private func decorate(picker: InlinePickerView) {
+  private func decorate(picker: InlinePickerView)
+  {
     setColors(for: picker)
     setFonts(for: picker)
     setMetrics(for: picker)
   }
 
   /// Sets the item color and selected item color for `picker`.
-  func setColors(for picker: InlinePickerView) {
+  func setColors(for picker: InlinePickerView)
+  {
     picker.itemColor = #colorLiteral(red: 0.7302821875, green: 0.7035630345, blue: 0.6637413502, alpha: 1)
     picker.selectedItemColor = #colorLiteral(red: 0.7608990073, green: 0.2564961016, blue: 0, alpha: 1)
   }
 
   /// Sets the font and selected font for `picker`.
-  func setFonts(for picker: InlinePickerView) {
+  func setFonts(for picker: InlinePickerView)
+  {
     picker.font = .controlFont
     picker.selectedFont = .controlSelectedFont
   }
 
   /// Sets the item height and item padding for `picker`.
-  func setMetrics(for picker: InlinePickerView) {
+  func setMetrics(for picker: InlinePickerView)
+  {
     picker.itemHeight = 36
     picker.itemPadding = 8
   }
@@ -125,8 +132,10 @@ public class Picker: UIControl, InlinePickerDelegate {
 
   /// Overridden to update the accessibility identifier of `picker` whenever the
   /// value of this property changes.
-  override public var accessibilityIdentifier: String? {
-    didSet {
+  override public var accessibilityIdentifier: String?
+  {
+    didSet
+    {
       // Give the picker view the same accessibility identifer.
       picker.accessibilityIdentifier = accessibilityIdentifier
     }
@@ -139,10 +148,11 @@ public class Picker: UIControl, InlinePickerDelegate {
   /// Selects the item at the specified index.
   /// - Parameter item: The index of the item to select.
   /// - Parameter animated: Whether to animate changes to the selection.
-  public func selectItem(_ item: Int, animated: Bool) {
+  public func selectItem(_ item: Int, animated: Bool)
+  {
     picker.selectItem(item, animated: animated)
   }
-
+  
   /// Overridden to return the intrinsic content size returned by `picker`.
   override public var intrinsicContentSize: CGSize { picker.intrinsicContentSize }
 
@@ -150,7 +160,8 @@ public class Picker: UIControl, InlinePickerDelegate {
   override public var forLastBaselineLayout: UIView { picker.forLastBaselineLayout }
 
   /// Returns the number of elements in `items`.
-  public func numberOfItems(in inlinePickerView: InlinePickerView) -> Int {
+  public func numberOfItems(in inlinePickerView: InlinePickerView) -> Int
+  {
     items.count
   }
 
@@ -168,4 +179,3 @@ public class Picker: UIControl, InlinePickerDelegate {
     .zero
   }
 }
-

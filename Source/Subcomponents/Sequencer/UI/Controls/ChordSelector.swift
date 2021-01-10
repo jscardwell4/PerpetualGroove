@@ -19,13 +19,13 @@ public final class ChordSelector: Picker
   /// empty selection.
   private static let labels: [InlinePickerView.Item] =
     [.text("–")] + Chord.Pattern.Standard.allCases.map { .text($0.name) }
-
+  
   /// Overridden to return `labels`.
   override public class var contentForInterfaceBuilder: [InlinePickerView.Item]
   {
     ChordSelector.labels
   }
-
+  
   /// Overridden to set `items` to the elements in `labels`.
   override public func refreshItems() { items = ChordSelector.labels }
 }

@@ -16,14 +16,15 @@ public let bundledFonts: [SoundFont2] = {
   let emax4 = EmaxSoundFont(.worldInstruments)
   let emax5 = EmaxSoundFont(.drumsAndPercussion)
   let emax6 = EmaxSoundFont(.orchestral)
-
-  let url = unwrapOrDie {
+  
+  let url = unwrapOrDie
+  {
     Bundle(identifier: "com.moondeerstudios.SoundFont")?
       .url(forResource: "SPYRO's Pure Oscillators",
            withExtension: "sf2")
   }
-
+  
   let spyro = tryOrDie { try AnySoundFont(url: url) }
-
+  
   return [emax1, emax2, emax3, emax4, emax5, emax6, spyro]
 }()

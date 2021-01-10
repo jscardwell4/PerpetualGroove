@@ -11,6 +11,17 @@
 		C217EE511DB43C690076B6E7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C217EE501DB43C690076B6E7 /* LaunchScreen.storyboard */; };
 		C217EE5A1DB43CC30076B6E7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C217EE581DB43CC30076B6E7 /* Main.storyboard */; };
 		C217EE5D1DB511710076B6E7 /* Purgatory.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C217EE5C1DB511710076B6E7 /* Purgatory.storyboard */; };
+		C21A9CA625AA811F0066EA26 /* Mode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21A9CA525AA811F0066EA26 /* Mode.swift */; };
+		C21A9CB425AB6F410066EA26 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C21A9CB325AB6F410066EA26 /* Media.xcassets */; };
+		C21A9CD425AB96CF0066EA26 /* MixerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21A9CCE25AB96CF0066EA26 /* MixerCell.swift */; };
+		C21A9CD525AB96CF0066EA26 /* MasterCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21A9CCF25AB96CF0066EA26 /* MasterCell.swift */; };
+		C21A9CD625AB96CF0066EA26 /* AddTrackCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21A9CD025AB96CF0066EA26 /* AddTrackCell.swift */; };
+		C21A9CD725AB96CF0066EA26 /* MixerLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21A9CD125AB96CF0066EA26 /* MixerLayout.swift */; };
+		C21A9CD825AB96CF0066EA26 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21A9CD225AB96CF0066EA26 /* PlayerView.swift */; };
+		C21A9CD925AB96CF0066EA26 /* TrackCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21A9CD325AB96CF0066EA26 /* TrackCell.swift */; };
+		C21A9CE625ABA05B0066EA26 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2AF20A5259B9FE200EC084A /* MoonKit.framework */; };
+		C21A9D0025ABA06C0066EA26 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2AF20A5259B9FE200EC084A /* MoonKit.framework */; };
+		C21A9D1A25ABA0780066EA26 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2AF20A5259B9FE200EC084A /* MoonKit.framework */; };
 		C23ECB8F259FBC2B00F17D85 /* SFBKChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23ECB8E259FBC2B00F17D85 /* SFBKChunk.swift */; };
 		C2516B2B1C08ECE10060710B /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2516B2A1C08ECE10060710B /* RootViewController.swift */; };
 		C252C843259D23DE000A0BA2 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C252C842259D23DE000A0BA2 /* Nimble.framework */; };
@@ -28,8 +39,6 @@
 		C263FD25259E44C1002B3377 /* PDTAChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C263FD22259E44C1002B3377 /* PDTAChunk.swift */; };
 		C263FD26259E44C1002B3377 /* SDTAChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C263FD23259E44C1002B3377 /* SDTAChunk.swift */; };
 		C263FD27259E44C1002B3377 /* INFOChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C263FD24259E44C1002B3377 /* INFOChunk.swift */; };
-		C26EE94E25A7E32E00F9E6B6 /* Shorthand.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26EE94D25A7E32E00F9E6B6 /* Shorthand.swift */; };
-		C2736C8125AA22F500C88424 /* Shorthand.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2736C8025AA22F500C88424 /* Shorthand.swift */; };
 		C2736CB825AA578100C88424 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C283B69B1BC02E3B007A4A36 /* Settings.bundle */; };
 		C2736CD225AA580600C88424 /* Woodblock.wav in Resources */ = {isa = PBXBuildFile; fileRef = C2F2ADC11B90EBD300FF4836 /* Woodblock.wav */; };
 		C2736CEC25AA591A00C88424 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C2736CEB25AA591A00C88424 /* Media.xcassets */; };
@@ -162,7 +171,7 @@
 		C2F43DA725A37B6C002DA417 /* Controller.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BCA1B84FB2100A0B08D /* Controller.swift */; };
 		C2F43DA825A37B6C002DA417 /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B12D961BDC531500A6C719 /* Track.swift */; };
 		C2F43DC325A37B7E002DA417 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24DCE371C3438A800AD98BE /* File.swift */; };
-		C2F43DC425A37B7E002DA417 /* Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D406731BB9FDC700681DEF /* Manager.swift */; };
+		C2F43DC425A37B7E002DA417 /* DocumentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D406731BB9FDC700681DEF /* DocumentManager.swift */; };
 		C2F43DC525A37B7E002DA417 /* NSMetadataItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2729ADE1BEE6B7C004FA34F /* NSMetadataItem.swift */; };
 		C2F43DC625A37B7E002DA417 /* DocumentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A27EE1B948E4E00BD1698 /* DocumentsViewController.swift */; };
 		C2F43DC725A37B7E002DA417 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EA30521BB9DF3300020958 /* Document.swift */; };
@@ -171,7 +180,6 @@
 		C2F43DE425A37B97002DA417 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22FA58C1BC830D600162DB4 /* Settings.swift */; };
 		C2FB65F825A90E8F00A04A48 /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FB65F725A90E8F00A04A48 /* PlayerViewController.swift */; };
 		C2FB661225A90EA500A04A48 /* MixerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FB661125A90EA500A04A48 /* MixerViewController.swift */; };
-		C2FB662025A9119C00A04A48 /* Shorthand.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FB661F25A9119C00A04A48 /* Shorthand.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -363,12 +371,20 @@
 		C20A10A01C51552B00522FD7 /* BarBeatTimeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarBeatTimeTests.swift; sourceTree = "<group>"; };
 		C217EE381DB435E40076B6E7 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		C217EE501DB43C690076B6E7 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
-		C217EE521DB43CA10076B6E7 /* Documents.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Documents.storyboard; path = "../../../../Resources/Interface Builder/Documents.storyboard"; sourceTree = "<group>"; };
+		C217EE521DB43CA10076B6E7 /* Documents.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Documents.storyboard; sourceTree = "<group>"; };
 		C217EE531DB43CA10076B6E7 /* Instrument.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Instrument.storyboard; path = "../../../../Resources/Interface Builder/Instrument.storyboard"; sourceTree = "<group>"; };
 		C217EE541DB43CA10076B6E7 /* Transport.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Transport.storyboard; path = "../../../../Resources/Interface Builder/Transport.storyboard"; sourceTree = "<group>"; };
 		C217EE581DB43CC30076B6E7 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		C217EE591DB43CC30076B6E7 /* MIDINodePlayer.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = MIDINodePlayer.storyboard; path = "../../../../Resources/Interface Builder/MIDINodePlayer.storyboard"; sourceTree = "<group>"; };
 		C217EE5C1DB511710076B6E7 /* Purgatory.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Purgatory.storyboard; sourceTree = "<group>"; };
+		C21A9CA525AA811F0066EA26 /* Mode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mode.swift; sourceTree = "<group>"; };
+		C21A9CB325AB6F410066EA26 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
+		C21A9CCE25AB96CF0066EA26 /* MixerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MixerCell.swift; sourceTree = "<group>"; };
+		C21A9CCF25AB96CF0066EA26 /* MasterCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MasterCell.swift; sourceTree = "<group>"; };
+		C21A9CD025AB96CF0066EA26 /* AddTrackCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddTrackCell.swift; sourceTree = "<group>"; };
+		C21A9CD125AB96CF0066EA26 /* MixerLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MixerLayout.swift; sourceTree = "<group>"; };
+		C21A9CD225AB96CF0066EA26 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+		C21A9CD325AB96CF0066EA26 /* TrackCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackCell.swift; sourceTree = "<group>"; };
 		C21E44C41B76546C00574BD2 /* AudioEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEngine.swift; sourceTree = "<group>"; };
 		C2207B901B9DC63300E4D65D /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		C223B1A11C8364ED006CF6B5 /* EventContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventContainer.swift; sourceTree = "<group>"; };
@@ -419,13 +435,11 @@
 		C2670CCD1C46FEF6000F76F9 /* Generator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Generator.swift; sourceTree = "<group>"; };
 		C2670CCF1C4704A2000F76F9 /* NodeDispatch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NodeDispatch.swift; sourceTree = "<group>"; };
 		C26A27EE1B948E4E00BD1698 /* DocumentsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsViewController.swift; sourceTree = "<group>"; };
-		C26EE94D25A7E32E00F9E6B6 /* Shorthand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shorthand.swift; sourceTree = "<group>"; };
 		C26FC16E1B7BA63300E271A3 /* Node.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
 		C26FC1701B7BAC7F00E271A3 /* PlayerNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerNode.swift; sourceTree = "<group>"; };
 		C26FC1721B7BAEBD00E271A3 /* AddTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddTool.swift; sourceTree = "<group>"; };
 		C2729ADC1BEE6B3D004FA34F /* LocalDocumentItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalDocumentItem.swift; sourceTree = "<group>"; };
 		C2729ADE1BEE6B7C004FA34F /* NSMetadataItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSMetadataItem.swift; sourceTree = "<group>"; };
-		C2736C8025AA22F500C88424 /* Shorthand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shorthand.swift; sourceTree = "<group>"; };
 		C2736CEB25AA591A00C88424 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		C27AC89A1C0E8ACC00762AAF /* RemoveTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoveTool.swift; sourceTree = "<group>"; };
 		C2807DDB1C74C60F0061A001 /* NudgeTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NudgeTool.swift; sourceTree = "<group>"; };
@@ -502,7 +516,7 @@
 		C2CD18E01B7E681A00705922 /* StatusError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusError.swift; sourceTree = "<group>"; };
 		C2CF38CC1B7EBED30085B3D5 /* InstrumentTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentTrack.swift; sourceTree = "<group>"; };
 		C2D2EAB21DC10FD400DAC5EC /* Picker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Picker.swift; sourceTree = "<group>"; };
-		C2D406731BB9FDC700681DEF /* Manager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Manager.swift; sourceTree = "<group>"; };
+		C2D406731BB9FDC700681DEF /* DocumentManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentManager.swift; sourceTree = "<group>"; };
 		C2DF7A9F25A8EE600045E7D9 /* SoundFontSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundFontSelector.swift; sourceTree = "<group>"; };
 		C2DF7AB925A8EE710045E7D9 /* ProgramSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgramSelector.swift; sourceTree = "<group>"; };
 		C2DF7AC725A8EE800045E7D9 /* PitchSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PitchSelector.swift; sourceTree = "<group>"; };
@@ -574,7 +588,6 @@
 		C2FAAC7D1D99C7620089D1B0 /* SoundFontFileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundFontFileTests.swift; sourceTree = "<group>"; };
 		C2FB65F725A90E8F00A04A48 /* PlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
 		C2FB661125A90EA500A04A48 /* MixerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MixerViewController.swift; sourceTree = "<group>"; };
-		C2FB661F25A9119C00A04A48 /* Shorthand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shorthand.swift; sourceTree = "<group>"; };
 		C2FEB0241C0F6183000BD1B7 /* GeneratorTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneratorTool.swift; sourceTree = "<group>"; };
 		C2FF79841BD05F1E002CBA79 /* BarBeatTime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarBeatTime.swift; sourceTree = "<group>"; };
 		C2FF79861BD06115002CBA79 /* TimeSignature.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeSignature.swift; sourceTree = "<group>"; };
@@ -593,6 +606,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C21A9CE625ABA05B0066EA26 /* MoonKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -623,6 +637,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C21A9D0025ABA06C0066EA26 /* MoonKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -638,6 +653,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C21A9D1A25ABA0780066EA26 /* MoonKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -691,9 +707,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C21A9CCD25AB95CA0066EA26 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				C21A9CD025AB96CF0066EA26 /* AddTrackCell.swift */,
+				C21A9CCF25AB96CF0066EA26 /* MasterCell.swift */,
+				C21A9CCE25AB96CF0066EA26 /* MixerCell.swift */,
+				C21A9CD125AB96CF0066EA26 /* MixerLayout.swift */,
+				C21A9CD225AB96CF0066EA26 /* PlayerView.swift */,
+				C21A9CD325AB96CF0066EA26 /* TrackCell.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		C239A1E625A7806B00A14982 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C21A9CB325AB6F410066EA26 /* Media.xcassets */,
 				C239A1E825A780B800A14982 /* json */,
 				C239A1E725A780AE00A14982 /* sf2 */,
 			);
@@ -803,7 +833,6 @@
 				C24E83951C3EDFD800B4A16A /* SecondaryControllerContainer.swift */,
 				C29A337B1DAE7E4800728E4B /* Colors.swift */,
 				C29A337D1DAE7E8800728E4B /* Fonts.swift */,
-				C2FB661F25A9119C00A04A48 /* Shorthand.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -818,7 +847,6 @@
 				C2873A8125A4E69000870EE0 /* Audio */,
 				C2873A8025A4E64E00870EE0 /* Time */,
 				C2873A7E25A4E60800870EE0 /* Sequence */,
-				C26EE94D25A7E32E00F9E6B6 /* Shorthand.swift */,
 				C2AA2BCA1B84FB2100A0B08D /* Controller.swift */,
 			);
 			path = Sequencer;
@@ -853,6 +881,8 @@
 		C2736D7E25AA5B2D00C88424 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C2012FC81E22C84D0067DDC5 /* DocumentCell.xib */,
+				C217EE521DB43CA10076B6E7 /* Documents.storyboard */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -996,8 +1026,6 @@
 		C285087D25A639830063049A /* Document */ = {
 			isa = PBXGroup;
 			children = (
-				C217EE521DB43CA10076B6E7 /* Documents.storyboard */,
-				C2012FC81E22C84D0067DDC5 /* DocumentCell.xib */,
 				C2EA30521BB9DF3300020958 /* Document.swift */,
 				C283B69D1BC0495A007A4A36 /* DocumentItem.swift */,
 				C2729ADC1BEE6B3D004FA34F /* LocalDocumentItem.swift */,
@@ -1014,6 +1042,7 @@
 				C2B12D961BDC531500A6C719 /* Track.swift */,
 				C2CF38CC1B7EBED30085B3D5 /* InstrumentTrack.swift */,
 				C2569E3F1B90005400EEB441 /* TempoTrack.swift */,
+				C21A9CA525AA811F0066EA26 /* Mode.swift */,
 			);
 			path = Sequence;
 			sourceTree = "<group>";
@@ -1040,6 +1069,7 @@
 		C2873A8225A4E6C500870EE0 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				C21A9CCD25AB95CA0066EA26 /* Views */,
 				C2FB65F625A90E4A00A04A48 /* ViewControllers */,
 				C2FB65F525A90E4200A04A48 /* Containers */,
 				C2DF7A9E25A8EE220045E7D9 /* Controls */,
@@ -1087,8 +1117,7 @@
 				C285087D25A639830063049A /* Document */,
 				C285086225A638AF0063049A /* File */,
 				C285084725A638A70063049A /* UI */,
-				C2D406731BB9FDC700681DEF /* Manager.swift */,
-				C2736C8025AA22F500C88424 /* Shorthand.swift */,
+				C2D406731BB9FDC700681DEF /* DocumentManager.swift */,
 			);
 			path = Documents;
 			sourceTree = "<group>";
@@ -1769,6 +1798,7 @@
 				C2E8BFC325A781CE001A6CEC /* Emax Volume 6.sf2 in Resources */,
 				C2E8BFA625A781C3001A6CEC /* Emax Volume 3.json in Resources */,
 				C2E8BFA725A781C3001A6CEC /* Emax Volume 6.json in Resources */,
+				C21A9CB425AB6F410066EA26 /* Media.xcassets in Resources */,
 				C2E8BFC725A781CE001A6CEC /* Emax Volume 3.sf2 in Resources */,
 				C2E8BFA225A781C3001A6CEC /* Emax Volume 5.json in Resources */,
 				C2E8BFA525A781C3001A6CEC /* Emax Volume 2.json in Resources */,
@@ -1966,7 +1996,6 @@
 				C2F43B3625A2AD4F002DA417 /* Fonts.swift in Sources */,
 				C2F43B3825A2AD4F002DA417 /* Colors.swift in Sources */,
 				C2F43B3525A2AD4F002DA417 /* SecondaryControllerContainer.swift in Sources */,
-				C2FB662025A9119C00A04A48 /* Shorthand.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1989,8 +2018,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C2F43DC425A37B7E002DA417 /* Manager.swift in Sources */,
-				C2736C8125AA22F500C88424 /* Shorthand.swift in Sources */,
+				C2F43DC425A37B7E002DA417 /* DocumentManager.swift in Sources */,
 				C285089025A63A620063049A /* Track.swift in Sources */,
 				C2F43DC625A37B7E002DA417 /* DocumentsViewController.swift in Sources */,
 				C2F43DC325A37B7E002DA417 /* File.swift in Sources */,
@@ -2018,9 +2046,11 @@
 				C2F43D9925A37B6C002DA417 /* Metronome.swift in Sources */,
 				C2F43D9A25A37B6C002DA417 /* Transport.swift in Sources */,
 				C2E8C0CA25A7A8A7001A6CEC /* NodeDispatch.swift in Sources */,
+				C21A9CD825AB96CF0066EA26 /* PlayerView.swift in Sources */,
 				C2DF7AE425A8EE9C0045E7D9 /* ChordSelector.swift in Sources */,
 				C2E8C0DE25A7A8AE001A6CEC /* Tool.swift in Sources */,
 				C2E8C0D925A7A8AE001A6CEC /* ThrottleTool.swift in Sources */,
+				C21A9CD925AB96CF0066EA26 /* TrackCell.swift in Sources */,
 				C2F43D9F25A37B6C002DA417 /* Time.swift in Sources */,
 				C2F43D9C25A37B6C002DA417 /* Sequence.swift in Sources */,
 				C2E8C0DC25A7A8AE001A6CEC /* NodeSelectionTool.swift in Sources */,
@@ -2030,6 +2060,7 @@
 				C2E8C0C825A7A8A7001A6CEC /* Node.swift in Sources */,
 				C2E8C0DA25A7A8AE001A6CEC /* RotateTool.swift in Sources */,
 				C2F43DA525A37B6C002DA417 /* AudioEngine.swift in Sources */,
+				C21A9CD425AB96CF0066EA26 /* MixerCell.swift in Sources */,
 				C2F43D9E25A37B6C002DA417 /* TempoViewController.swift in Sources */,
 				C2E8C0DF25A7A8AE001A6CEC /* AddTool.swift in Sources */,
 				C2FB65F825A90E8F00A04A48 /* PlayerViewController.swift in Sources */,
@@ -2037,12 +2068,14 @@
 				C2E8C0C925A7A8A7001A6CEC /* Scene.swift in Sources */,
 				C2F43DA825A37B6C002DA417 /* Track.swift in Sources */,
 				C2FB661225A90EA500A04A48 /* MixerViewController.swift in Sources */,
-				C26EE94E25A7E32E00F9E6B6 /* Shorthand.swift in Sources */,
 				C2E8C0DB25A7A8AE001A6CEC /* RemoveTool.swift in Sources */,
+				C21A9CD525AB96CF0066EA26 /* MasterCell.swift in Sources */,
 				C2F43DA725A37B6C002DA417 /* Controller.swift in Sources */,
 				C2E8C0CC25A7A8A7001A6CEC /* NodeManager.swift in Sources */,
 				C2DF7B0025A8EEB60045E7D9 /* DurationSelector.swift in Sources */,
+				C21A9CD725AB96CF0066EA26 /* MixerLayout.swift in Sources */,
 				C2E8C0CB25A7A8A7001A6CEC /* PlayerNode.swift in Sources */,
+				C21A9CA625AA811F0066EA26 /* Mode.swift in Sources */,
 				C2F43DA625A37B6C002DA417 /* InstrumentViewController.swift in Sources */,
 				C2DF7AD625A8EE8F0045E7D9 /* PitchModifierSelector.swift in Sources */,
 				C2E8C06225A7A68A001A6CEC /* Picker.swift in Sources */,
@@ -2054,6 +2087,7 @@
 				C2DF7B0E25A8EEC90045E7D9 /* VelocitySelector.swift in Sources */,
 				C2F43DA425A37B6C002DA417 /* InstrumentTrack.swift in Sources */,
 				C2F43D9B25A37B6C002DA417 /* BarBeatTimeLabel.swift in Sources */,
+				C21A9CD625AB96CF0066EA26 /* AddTrackCell.swift in Sources */,
 				C2DF7ABA25A8EE710045E7D9 /* ProgramSelector.swift in Sources */,
 				C2E8C0ED25A7A8B2001A6CEC /* Player.swift in Sources */,
 				C2E8C0E025A7A8AE001A6CEC /* NudgeTool.swift in Sources */,
@@ -2329,6 +2363,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Source/Subcomponents/SoundFont/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -2371,6 +2406,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Source/Subcomponents/SoundFont/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -2413,6 +2449,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Source/Subcomponents/SoundFont/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -2453,6 +2490,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Source/Subcomponents/SoundFont/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -2948,6 +2986,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Source/Subcomponents/MIDI/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -2988,6 +3027,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Source/Subcomponents/MIDI/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -3028,6 +3068,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Source/Subcomponents/MIDI/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -3066,6 +3107,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Source/Subcomponents/MIDI/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -3220,6 +3262,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Source/Subcomponents/Common/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -3260,6 +3303,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Source/Subcomponents/Common/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -3300,6 +3344,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Source/Subcomponents/Common/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -3338,6 +3383,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Source/Subcomponents/Common/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -3608,6 +3654,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Source/Subcomponents/Documents/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -3648,6 +3695,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Source/Subcomponents/Documents/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -3688,6 +3736,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Source/Subcomponents/Documents/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -3726,6 +3775,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Source/Subcomponents/Documents/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -3880,6 +3930,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Source/Subcomponents/Sequencer/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -3920,6 +3971,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Source/Subcomponents/Sequencer/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -3960,6 +4012,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Source/Subcomponents/Sequencer/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -3998,6 +4051,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Source/Subcomponents/Sequencer/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";

@@ -12,7 +12,8 @@ import SpriteKit
 import UIKit
 
 /// A tool for generating new `Node` instances.
-public final class AddTool: Tool {
+public final class AddTool: Tool
+{
   /// The player node to which midi nodes are to be added.
   public unowned let playerNode: PlayerNode
 
@@ -36,12 +37,15 @@ public final class AddTool: Tool {
   private var velocities: [CGVector] = []
 
   /// The currently tracked touch.
-  private var touch: UITouch? {
-    didSet {
+  private var touch: UITouch?
+  {
+    didSet
+    {
       // Clear cache of velocities.
       velocities = []
 
-      switch touch {
+      switch touch
+      {
         case let touch?:
 
           // Check that there is a dispatch object from which to grab a track color.
@@ -82,13 +86,15 @@ public final class AddTool: Tool {
 
   /// Appends a new velocity to `velocities` using the timestamp and location
   /// retrieved from `touch`.
-  private func updateData() {
+  private func updateData()
+  {
     // Check that the timestamp and location can be retrieved and that they
     // are both new values.
     guard let timestampʹ = touch?.timestamp,
           let locationʹ = touch?.location(in: playerNode),
           timestampʹ != timestamp, locationʹ != location
-    else {
+    else
+    {
       return
     }
 
@@ -106,14 +112,16 @@ public final class AddTool: Tool {
   }
 
   /// Updates `touch` when `active && touch == nil`.
-  @objc public func touchesBegan(_ touches: Set<UITouch>) {
+  @objc public func touchesBegan(_ touches: Set<UITouch>)
+  {
     guard active, touch == nil else { return }
 
     touch = touches.first
   }
 
   /// Sets `touch` to `nil`.
-  @objc public func touchesCancelled(_ touches: Set<UITouch>) {
+  @objc public func touchesCancelled(_ touches: Set<UITouch>)
+  {
     // Check that there is a touch being tracked and that it is present in `touches`.
     guard touch != nil, touches.contains(touch!) else { return }
 
@@ -121,7 +129,8 @@ public final class AddTool: Tool {
   }
 
   /// Adds a new node to the player.
-  @objc public func touchesEnded(_ touches: Set<UITouch>) {
+  @objc public func touchesEnded(_ touches: Set<UITouch>)
+  {
     // Check that there is a touch being tracked and that it is present in `touches`.
     guard touch != nil, touches.contains(touch!) else { return }
 
@@ -148,14 +157,16 @@ public final class AddTool: Tool {
   }
 
   /// Appends a new velocity to `velocities` and updates the position of `touchNode`.
-  @objc public func touchesMoved(_ touches: Set<UITouch>) {
+  @objc public func touchesMoved(_ touches: Set<UITouch>)
+  {
     // Check that there is a touch being tracked and that it is present in `touches`.
     guard touch != nil, touches.contains(touch!) else { return }
 
     // Check that tracked touch is within the player's bounding box.
     guard let position = touch?.location(in: playerNode),
           playerNode.contains(position)
-    else {
+    else
+    {
       touch = nil
       return
     }

@@ -21,7 +21,7 @@ public final class VelocitySelector: Picker
     .image(#imageLiteral(resourceName: "𝑝𝑝𝑝")), .image(#imageLiteral(resourceName: "𝑝𝑝")), .image(#imageLiteral(resourceName: "𝑝")), .image(#imageLiteral(resourceName: "𝑚𝑝")),
     .image(#imageLiteral(resourceName: "𝑚𝑓")), .image(#imageLiteral(resourceName: "𝑓")), .image(#imageLiteral(resourceName: "𝑓𝑓")), .image(#imageLiteral(resourceName: "𝑓𝑓𝑓")),
   ]
-
+  
   /// Overridden to return `images`.
   override public class var contentForInterfaceBuilder: [InlinePickerView.Item] { images }
 

@@ -19,13 +19,13 @@ public final class OctaveSelector: Picker
   {
     .text("\($0.rawValue)")
   }
-
+  
   /// Overridden to return the index for selecting `four`.
   override public class var initialSelection: Int { 5 }
-
+  
   /// Overridden to return `labels`.
   override public class var contentForInterfaceBuilder: [InlinePickerView.Item] { labels }
-
+  
   /// Overridden to set `items` to the elements in `labels`.
   override public func refreshItems() { items = OctaveSelector.labels }
 }

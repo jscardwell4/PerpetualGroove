@@ -186,7 +186,8 @@ public extension NodeEvent
         loopIdentifier = UUID(
           uuid: data.withUnsafeBytes
           { (pointer: UnsafeRawBufferPointer) -> uuid_t in
-            (pointer.baseAddress! + currentIndex).assumingMemoryBound(to: uuid_t.self).pointee
+            (pointer.baseAddress! + currentIndex).assumingMemoryBound(to: uuid_t.self)
+              .pointee
           }
         )
       }
@@ -200,7 +201,8 @@ public extension NodeEvent
       guard String(data[currentIndex]) == ":"
       else
       {
-        throw File.Error.fileStructurallyUnsound("Missing separator in node event identifier")
+        throw File.Error
+        .fileStructurallyUnsound("Missing separator in node event identifier")
       }
 
       currentIndex += 1
@@ -214,7 +216,8 @@ public extension NodeEvent
       nodeIdentifier = UUID(
         uuid: data.withUnsafeBytes
         { (pointer: UnsafeRawBufferPointer) -> uuid_t in
-          (pointer.baseAddress! + currentIndex).assumingMemoryBound(to: uuid_t.self).pointee
+          (pointer.baseAddress! + currentIndex).assumingMemoryBound(to: uuid_t.self)
+            .pointee
         }
       )
     }
@@ -257,7 +260,8 @@ public extension NodeEvent
 
     public static func == (lhs: Identifier, rhs: Identifier) -> Bool
     {
-      return lhs.nodeIdentifier == rhs.nodeIdentifier && lhs.loopIdentifier == rhs.loopIdentifier
+      return lhs.nodeIdentifier == rhs.nodeIdentifier && lhs.loopIdentifier == rhs
+        .loopIdentifier
     }
   }
 }
@@ -280,7 +284,8 @@ public extension NodeEvent
       guard data.count >= identifierByteCount
       else
       {
-        throw File.Error.invalidLength("Data length must at least cover length of identifier")
+        throw File.Error
+        .invalidLength("Data length must at least cover length of identifier")
       }
 
       let identifier = try Identifier(data: data[currentIndex +--> identifierByteCount])
@@ -377,9 +382,9 @@ public extension NodeEvent
       {
         case let (.add(identifier1, trajectory1, generator1),
                   .add(identifier2, trajectory2, generator2))
-               where identifier1 == identifier2
-               && trajectory1 == trajectory2
-               && generator1 == generator2:
+              where identifier1 == identifier2
+              && trajectory1 == trajectory2
+              && generator1 == generator2:
           return true
         case let (.remove(identifier1), .remove(identifier2))
               where identifier1 == identifier2:
@@ -394,7 +399,8 @@ public extension NodeEvent
 public extension NodeEvent
 {
   /// Type for expressing velocity and angle from a point.
-  struct Trajectory: Hashable, ByteArrayConvertible, LosslessJSONValueConvertible, CustomStringConvertible
+  struct Trajectory: Hashable, ByteArrayConvertible, LosslessJSONValueConvertible,
+                     CustomStringConvertible
   {
     /// The constant used to adjust the velocity units when calculating times
     public static let modifier: Fraction = 1÷1_000
@@ -475,7 +481,8 @@ public extension NodeEvent
     }
 
     /// The angle of the trajectory.
-    public var angle: CGFloat {
+    public var angle: CGFloat
+    {
       get { velocity.angle }
       set { velocity.angle = newValue }
     }
@@ -483,7 +490,8 @@ public extension NodeEvent
     /// Elapsed time in seconds between the specified points
     public func time(from p1: CGPoint, to p2: CGPoint) -> TimeInterval
     {
-      let result = abs(TimeInterval(p1.distanceTo(p2) / slope)) * TimeInterval(Trajectory.modifier)
+      let result = abs(TimeInterval(p1.distanceTo(p2) / slope)) *
+        TimeInterval(Trajectory.modifier)
 
       guard result.isFinite else { fatalError("Invalid time: \(result)") }
 
@@ -491,10 +499,16 @@ public extension NodeEvent
     }
 
     /// The 'zero' trajectory.
-    public static var zero: Trajectory { return Trajectory(velocity: .zero, position: .zero) }
+    public static var zero: Trajectory
+    {
+      return Trajectory(velocity: .zero, position: .zero)
+    }
 
     /// Trajectory value for representing a 'null' or 'invalid' trajectory
-    public static var null: Trajectory { return Trajectory(velocity: CGVector.zero, position: CGPoint.null) }
+    public static var null: Trajectory
+    {
+      return Trajectory(velocity: CGVector.zero, position: CGPoint.null)
+    }
 
     public func hash(into hasher: inout Hasher)
     {
@@ -513,7 +527,8 @@ public extension NodeEvent
     /// The array of ascii character bytes as described in `init(_ bytes:)`.
     public var bytes: [UInt8]
     {
-      return Array("{\(NSCoder.string(for: position)), \(NSCoder.string(for: velocity))}".utf8)
+      return Array("{\(NSCoder.string(for: position)), \(NSCoder.string(for: velocity))}"
+                    .utf8)
     }
 
     /// Initializing with an array of bytes. The bytes should decode into ascii character '{', followed by
@@ -527,7 +542,8 @@ public extension NodeEvent
       let float = "-?[0-9]+(?:\\.[0-9]+)?"
       let value = "\\{\(float), \(float)\\}"
 
-      guard let match = (~/"\\{(\(value)), (\(value))\\}").firstMatch(in: string, anchored: true),
+      guard let match = (~/"\\{(\(value)), (\(value))\\}")
+              .firstMatch(in: string, anchored: true),
             let positionCapture = match.captures[1],
             let velocityCapture = match.captures[2]
       else
@@ -566,7 +582,10 @@ public extension NodeEvent
       self.velocity = velocity
     }
 
-    public var description: String { return "{ velocity: \(velocity); position: \(position) }" }
+    public var description: String
+    {
+      return "{ velocity: \(velocity); position: \(position) }"
+    }
 
     /// Type for specifiying the direction of a `Trajectory`.
     public enum Direction: Equatable, CustomStringConvertible
@@ -607,10 +626,13 @@ public extension NodeEvent
           case let ((x1, y1), (x2, y2)) where x1 == x2 && y1 == y2: self = .none
           case let ((x1, y1), (x2, y2)) where x1 == x2 && y1 < y2: self = .vertical(.up)
           case let ((x1, _), (x2, _)) where x1 == x2: self = .vertical(.down)
-          case let ((x1, y1), (x2, y2)) where x1 < x2 && y1 == y2: self = .horizontal(.right)
+          case let ((x1, y1), (x2, y2))
+                where x1 < x2 && y1 == y2: self = .horizontal(.right)
           case let ((_, y1), (_, y2)) where y1 == y2: self = .horizontal(.left)
-          case let ((x1, y1), (x2, y2)) where x1 < x2 && y1 < y2: self = .diagonal(.up, .right)
-          case let ((x1, y1), (x2, y2)) where x1 < x2 && y1 > y2: self = .diagonal(.down, .right)
+          case let ((x1, y1), (x2, y2))
+                where x1 < x2 && y1 < y2: self = .diagonal(.up, .right)
+          case let ((x1, y1), (x2, y2))
+                where x1 < x2 && y1 > y2: self = .diagonal(.down, .right)
           case let ((_, y1), (_, y2)) where y1 < y2: self = .diagonal(.up, .left)
           case let ((_, y1), (_, y2)) where y1 > y2: self = .diagonal(.down, .left)
           default: self = .none

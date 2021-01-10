@@ -73,8 +73,9 @@ public enum AnyTool: Int
   /// Non-optional initalizer from `rawValue`. Invalid values return `none`.
   public init(_ int: Int) { self = AnyTool(rawValue: int) ?? .none }
 
-  /// Initialize from the instance of a tool. Initialize to `none` if `tool` is `nil`.
-  /// `tool` must be an instance owned by `NodePlayer` otherwise it is as if `tool == nil`.
+  /// Initialize from the instance of a tool. Initialize to `none` if `tool`
+  /// is `nil`.`tool` must be an instance owned by `NodePlayer` otherwise it
+  /// is as if `tool == nil`.
   public init(_ tool: Tool?)
   {
     guard let tool = tool,
@@ -96,4 +97,3 @@ public enum AnyTool: Int
     }
   }
 }
-

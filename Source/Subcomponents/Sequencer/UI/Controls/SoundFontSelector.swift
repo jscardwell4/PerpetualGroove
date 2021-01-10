@@ -19,7 +19,7 @@ public final class SoundFontSelector: Picker
   {
     items = SoundFont.bundledFonts.map { .text($0.displayName) }
   }
-
+  
   /// The names to use items when built for interface builder.
   private static let labels: [InlinePickerView.Item] = [
     .text("Emax Volume 1"),
@@ -30,7 +30,7 @@ public final class SoundFontSelector: Picker
     .text("Emax Volume 6"),
     .text("SPYRO's Pure Oscillators"),
   ]
-
+  
   /// Overridden to return `labels`.
   override public class var contentForInterfaceBuilder: [InlinePickerView.Item] { labels }
 }

@@ -3,6 +3,7 @@
     <device id="ipad9_7" orientation="landscape" layout="fullscreen" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -11,10 +12,10 @@
         </array>
     </customFonts>
     <scenes>
-        <!--View Controller-->
+        <!--Player View Controller-->
         <scene sceneID="Klf-hv-dkY">
             <objects>
-                <viewController storyboardIdentifier="MIDIPlayer" id="6xH-va-xT7" customClass="ViewController" customModule="Sequencer.PlayerContainer" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MIDIPlayer" id="6xH-va-xT7" customClass="PlayerViewController" customModule="Sequencer" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="3bO-nI-SWz"/>
                         <viewControllerLayoutGuide type="bottom" id="MgW-0J-CjH"/>
@@ -36,9 +37,9 @@
                                     <outlet property="delegate" destination="6xH-va-xT7" id="7cP-70-k1G"/>
                                 </connections>
                             </textField>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JSz-xf-acH" userLabel="MIDI Player" customClass="View" customModule="Sequencer.PlayerContainer.ViewController">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JSz-xf-acH" userLabel="MIDI Player" customClass="PlayerView" customModule="Sequencer" customModuleProvider="target">
                                 <rect key="frame" x="20" y="78" width="447" height="447"/>
-                                <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" systemColor="tertiarySystemFillColor"/>
                                 <accessibility key="accessibilityConfiguration" identifier="MIDIPlayer"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="JSz-xf-acH" secondAttribute="height" multiplier="1:1" identifier="MIDIPlayerAspectRatio" id="EWs-d5-4VK"/>
@@ -63,7 +64,7 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <accessibility key="accessibilityConfiguration" identifier="BeginRepeatButton"/>
                                         <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/begin_repeat"/>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="image" value="begin_repeat"/>
                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="BeginRepeatButton"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
                                                 <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -78,7 +79,7 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <accessibility key="accessibilityConfiguration" identifier="EndRepeatButton"/>
                                         <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/end_repeat"/>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="image" value="end_repeat"/>
                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="EndRepeatButton"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
                                                 <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -93,8 +94,8 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <accessibility key="accessibilityConfiguration" identifier="LoopCancelButton"/>
                                         <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/cancel_loop"/>
-                                            <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/cancel_loop-selected"/>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="image" value="cancel_loop"/>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="cancel_loop-selected"/>
                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="LoopCancelButton"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
                                                 <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -109,8 +110,8 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <accessibility key="accessibilityConfiguration" identifier="LoopConfirmButton"/>
                                         <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/confirm_loop"/>
-                                            <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/confirm_loop-selected"/>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="image" value="confirm_loop"/>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="confirm_loop-selected"/>
                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="LoopConfirmButton"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
                                                 <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -125,8 +126,8 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <accessibility key="accessibilityConfiguration" identifier="LoopToggleButton"/>
                                         <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/tape"/>
-                                            <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/tape-selected"/>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="image" value="tape"/>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="tape-selected"/>
                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="LoopToggleButton"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
                                                 <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -163,8 +164,8 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="33.5" height="42"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="AddNoteButton"/>
                                                 <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/node_note_add"/>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/node_note_add-selected"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="node_note_add"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="node_add-selected"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="AddNoteButton"/>
                                                     <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
                                                         <color key="value" red="0.64416515827178955" green="0.5787731409072876" blue="0.48529356718063354" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -175,8 +176,8 @@
                                                 <rect key="frame" x="43.5" y="0.0" width="33" height="42"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="AddButton"/>
                                                 <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/node_add"/>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/node_add-selected"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="node_add"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="node_add-selected"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="AddButton"/>
                                                     <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
                                                         <color key="value" red="0.64416515827178955" green="0.5787731409072876" blue="0.48529356718063354" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -187,8 +188,8 @@
                                                 <rect key="frame" x="86.5" y="0.0" width="33.5" height="42"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="RemoveButton"/>
                                                 <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/node_remove"/>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/node_remove-selected"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="node_remove"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="node_remove-selected"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="RemoveButton"/>
                                                     <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
                                                         <color key="value" red="0.64416515827178955" green="0.5787731409072876" blue="0.48529356718063354" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -199,8 +200,8 @@
                                                 <rect key="frame" x="130" y="0.0" width="33.5" height="42"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="DeleteButton"/>
                                                 <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/node_delete"/>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/node_delete-selected"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="node_delete"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="node_delete-selected"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="DeleteButton"/>
                                                     <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
                                                         <color key="value" red="0.64416515827178955" green="0.5787731409072876" blue="0.48529356718063354" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -211,8 +212,8 @@
                                                 <rect key="frame" x="173.5" y="0.0" width="33" height="42"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="GeneratorButton"/>
                                                 <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/node_note"/>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/node_note-selected"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="node_note"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="node_note-selected"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="GeneratorButton"/>
                                                     <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
                                                         <color key="value" red="0.64416515827178955" green="0.5787731409072876" blue="0.48529356718063354" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -223,8 +224,8 @@
                                                 <rect key="frame" x="216.5" y="0.0" width="33.5" height="42"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="RotateButton"/>
                                                 <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/rotate"/>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/rotate-selected"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="rotate"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="rotate-selected"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="GeneratorButton"/>
                                                     <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
                                                         <color key="value" red="0.64416515827178955" green="0.5787731409072876" blue="0.48529356718063354" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -320,26 +321,28 @@
     </designables>
     <color key="tintColor" red="0.8434065580368042" green="0.78949379920959473" blue="0.71009701490402222" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
     <resources>
-        <image name="Editing/begin_repeat" width="40" height="56"/>
-        <image name="Editing/cancel_loop" width="56" height="56"/>
-        <image name="Editing/cancel_loop-selected" width="56" height="56"/>
-        <image name="Editing/confirm_loop" width="56" height="56"/>
-        <image name="Editing/confirm_loop-selected" width="56" height="56"/>
-        <image name="Editing/end_repeat" width="40" height="56"/>
-        <image name="Editing/node_add" width="56" height="56"/>
-        <image name="Editing/node_add-selected" width="56" height="56"/>
-        <image name="Editing/node_delete" width="56" height="56"/>
-        <image name="Editing/node_delete-selected" width="56" height="56"/>
-        <image name="Editing/node_note" width="56" height="56"/>
-        <image name="Editing/node_note-selected" width="56" height="56"/>
-        <image name="Editing/node_note_add" width="56" height="56"/>
-        <image name="Editing/node_note_add-selected" width="56" height="56"/>
-        <image name="Editing/node_remove" width="56" height="56"/>
-        <image name="Editing/node_remove-selected" width="56" height="56"/>
-        <image name="Editing/rotate" width="56" height="56"/>
-        <image name="Editing/rotate-selected" width="56" height="56"/>
-        <image name="Editing/tape" width="56" height="56"/>
-        <image name="Editing/tape-selected" width="56" height="56"/>
+        <image name="begin_repeat" width="40" height="56"/>
+        <image name="cancel_loop" width="56" height="56"/>
+        <image name="cancel_loop-selected" width="56" height="56"/>
+        <image name="confirm_loop" width="56" height="56"/>
+        <image name="confirm_loop-selected" width="56" height="56"/>
+        <image name="end_repeat" width="40" height="56"/>
+        <image name="node_add" width="56" height="56"/>
+        <image name="node_add-selected" width="56" height="56"/>
+        <image name="node_delete" width="56" height="56"/>
+        <image name="node_delete-selected" width="56" height="56"/>
+        <image name="node_note" width="56" height="56"/>
+        <image name="node_note-selected" width="56" height="56"/>
+        <image name="node_note_add" width="56" height="56"/>
+        <image name="node_remove" width="56" height="56"/>
+        <image name="node_remove-selected" width="56" height="56"/>
+        <image name="rotate" width="56" height="56"/>
+        <image name="rotate-selected" width="56" height="56"/>
         <image name="spinner1" width="56" height="56"/>
+        <image name="tape" width="56" height="56"/>
+        <image name="tape-selected" width="56" height="56"/>
+        <systemColor name="tertiarySystemFillColor">
+            <color red="0.46274509803921571" green="0.46274509803921571" blue="0.50196078431372548" alpha="0.12" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
     </resources>
 </document>

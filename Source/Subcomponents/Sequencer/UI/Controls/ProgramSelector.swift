@@ -24,16 +24,16 @@ public final class ProgramSelector: Picker
     .text("D Trumpet"),
     .text("Trumpet"),
   ]
-
+  
   /// Overridden to return `labels`.
   override public class var contentForInterfaceBuilder: [InlinePickerView.Item] { labels }
-
+  
   /// Overridden to update `items` with the preset header names from `soundFont`.
   override public func refreshItems()
   {
     items = soundFont?.presetHeaders.map { .text($0.name) } ?? []
   }
-
+  
   /// The sound font from which preset header names are queried for `items`.
   /// Setting the value of this property causes `items` to refresh.
   public var soundFont: SoundFont2? { didSet { refreshItems() } }

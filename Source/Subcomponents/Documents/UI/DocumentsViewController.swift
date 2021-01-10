@@ -5,11 +5,11 @@
 //  Created by Jason Cardwell on 10/24/14.
 //  Copyright (c) 2014 Moondeer Studios. All rights reserved.
 //
+import Combine
 import Common
 import Foundation
 import MoonKit
 import UIKit
-import Combine
 
 // MARK: - DocumentsViewController
 
@@ -31,7 +31,7 @@ public final class DocumentsViewController: UICollectionViewController
     guard let item = (sender.superview?.superview as? DocumentCell)?.item
     else
     {
-      log.warning("sender superview is not an item-containing document cell")
+      logw("sender superview is not an item-containing document cell")
       return
     }
 
@@ -40,15 +40,15 @@ public final class DocumentsViewController: UICollectionViewController
     guard let index = itemManager.remove(item)
     else
     {
-      log.warning("items does not contain item to delete: \(item)")
+      logw("items does not contain item to delete: \(item)")
       return
     }
 
     let indexPath = IndexPath(item: index, section: 1)
 
-    if Settings.shared.confirmDeleteDocument
+    if settings.confirmDeleteDocument
     {
-      log.warning("delete confirmation not yet implemented")
+      logw("delete confirmation not yet implemented")
     }
 
     // Clear selection if this was the selected item.
@@ -58,7 +58,7 @@ public final class DocumentsViewController: UICollectionViewController
     collectionView?.deleteItems(at: [indexPath])
 
     // Delete this item's file on disk.
-    Manager.shared.delete(item: item)
+    documentManager.delete(item: item)
   }
 
   /// Constraint for the collection view's width
@@ -89,7 +89,7 @@ public final class DocumentsViewController: UICollectionViewController
       // Check that the controller's view has loaded.
       guard isViewLoaded else { return }
 
-      log.info("""
+      logi("""
       \(oldValue?.description ?? "nil") ➞ \(self.selectedItem?.description ?? "nil")
       """)
 
@@ -156,7 +156,7 @@ public final class DocumentsViewController: UICollectionViewController
     guard isViewLoaded else { return }
 
     // Get the current document or clear the selection and return.
-    guard let document = Manager.shared.currentDocument
+    guard let document = documentManager.currentDocument
     else
     {
       selectedItem = nil
@@ -205,7 +205,7 @@ public final class DocumentsViewController: UICollectionViewController
                             forCellWithReuseIdentifier: "DocumentCellNib")
 
     // Constrain the collection view to the controller's view.
-    view.constrain(𝗩 ∶|- [collectionView]-|, 𝗛 ∶|- [collectionView]-|)
+    view.constrain(𝗩∶|-[collectionView]-|, 𝗛∶|-[collectionView]-|)
 
     // Create the width and height constaints for the collection view.
     let id = Identifier(for: self, tags: "Content")
@@ -224,8 +224,8 @@ public final class DocumentsViewController: UICollectionViewController
     super.viewWillAppear(animated)
 
     // Make sure we have items to load.
-    guard Manager.shared.preferredStorageLocation == .local
-            || !Manager.shared.isGatheringMetadataItems
+    guard documentManager.preferredStorageLocation == .local
+            || !documentManager.isGatheringMetadataItems
     else
     {
       return
@@ -329,7 +329,8 @@ public final class DocumentsViewController: UICollectionViewController
   }
 }
 
-extension DocumentsViewController {
+extension DocumentsViewController
+{
   /// A type for managing the items in the collection. `ItemManager` conforms to
   /// the `Collection` protocol via indirection by wrapping calls to its collection
   /// of items.
@@ -387,7 +388,7 @@ extension DocumentsViewController {
     weak var controller: DocumentsViewController?
 
     /// Set of document items used to populate the collection.
-    var items: OrderedSet<DocumentItem> = Manager.shared.items
+    var items: OrderedSet<DocumentItem> = documentManager.items
     {
       didSet
       {
@@ -425,13 +426,13 @@ extension DocumentsViewController {
     {
       managerDidUpdateItemsSubscription = NotificationCenter.default
         .publisher(for: .managerDidUpdateItems, object: documentManager)
-        .sink { self.didUpdateItems(notification: $0)}
+        .sink { self.didUpdateItems(notification: $0) }
       managerWillChangeDocumentSubscription = NotificationCenter.default
         .publisher(for: .managerWillChangeDocument, object: documentManager)
-        .sink { self.willChangeDocument(notification: $0)}
+        .sink { self.willChangeDocument(notification: $0) }
       managerDidChangeDocumentSubscription = NotificationCenter.default
         .publisher(for: .managerDidChangeDocument, object: documentManager)
-        .sink { self.didChangeDocument(notification: $0)}
+        .sink { self.didChangeDocument(notification: $0) }
     }
 
     /// Adds and/or removes items according to the contents of `notification`.
@@ -534,17 +535,17 @@ extension DocumentsViewController {
     /// Updates the corresponding cell with the document's new name
     private func documentDidChangeName(notification: Notification)
     {
-      log.info("userInfo: \(String(describing: notification.userInfo))")
+      logi("userInfo: \(String(describing: notification.userInfo))")
 
       // Retrieve the document's new name.
       guard let newName = notification.newDocumentName
       else
       {
-        log.warning("name change notification without new name value in user info")
+        logw("name change notification without new name value in user info")
         return
       }
 
-      log.info("current document changed name to '\(newName)'")
+      logi("current document changed name to '\(newName)'")
 
       // Retrieve the document.
       guard let document = notification.object as? Document
@@ -584,8 +585,6 @@ extension DocumentsViewController {
       cell.item = newItem
     }
   }
-
-
 }
 
 // MARK: - DocumentsViewLayout
@@ -791,36 +790,13 @@ public final class DocumentCell: UICollectionViewCell
     }
   }
 
-  //  /// Creates and attaches the pan gesture for showing and hiding the delete button.
-  //  private func setup() {
-  //    //TODO: remove if the nib works
-  //    let gesture = PanGesture(handler: unownedMethod(self, DocumentCell.handlePan))
-  //    gesture.confineToView = true
-  //    gesture.delaysTouchesBegan = true
-  //    gesture.axis = .horizontal
-  //
-  //    addGestureRecognizer(gesture)
-  //  }
-
   /// Overridden to ensure the delete button is not left showing upon reuse.
   override public func prepareForReuse()
   {
     super.prepareForReuse()
-    
+
     // Reset the leading constraint's constant to its default value for hiding the
     // delete button.
     leadingConstraint?.constant = 0
   }
-
-  //  /// Overridden to perform custom setup.
-  //  override init(frame: CGRect) {
-  //    super.init(frame: frame)
-  //    setup()
-  //  }
-
-  //  /// Overridden to perform custom setup.
-  //  required init?(coder aDecoder: NSCoder) {
-  //    super.init(coder: aDecoder)
-  //    setup()
-  //  }
 }

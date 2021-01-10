@@ -16,25 +16,25 @@ public extension File
   {
     /// Use the identifier type utilized by midi node events.
     public typealias Identifier = NodeEvent.Identifier
-
+    
     /// The type for encapsulating initial angle and velocity data.
     public typealias Trajectory = Sequencer.Node.Trajectory
-
+    
     /// Typealias for the midi event kind utilized by `Node`.
     public typealias Event = NodeEvent
-
+    
     /// The unique identifier for the node within its track.
     public let identifier: Identifier
-
+    
     /// The node's initial trajectory.
     public var trajectory: Node.Trajectory
-
+    
     /// The node's generator
     public var generator: AnyGenerator
-
+    
     /// The bar beat time at which point the node is added to the player.
     public var addTime: BarBeatTime
-
+    
     /// The bar beat time at which point the node is removed from the player.
     /// A `nil` value for this property indicates that the node is never removed
     /// from the player.
@@ -44,12 +44,12 @@ public extension File
       {
         // Check that `removeTime` is invalid.
         guard removeTime != nil, removeTime! < addTime else { return }
-
+        
         // Clear the invalid time.
         removeTime = nil
       }
     }
-
+    
     /// The event for adding the node to the player.
     public var addEvent: Event
     {
@@ -59,17 +59,17 @@ public extension File
                        generator: generator),
             time: addTime)
     }
-
+    
     /// The event for removing the node from the player or `nil` if `removeTime == nil`.
     public var removeEvent: Event?
     {
       // Get the remove time.
       guard let removeTime = removeTime else { return nil }
-
+      
       // Return a remove event with the node's identifier and remove time.
       return Event(data: .remove(identifier: identifier), time: removeTime)
     }
-
+    
     /// Initializing with a node event.
     /// - Parameter event: To be successful the event must be an add event.
     public init?(event: Event)
@@ -80,14 +80,14 @@ public extension File
       {
         return nil
       }
-
+      
       // Initialize the node's properties.
       addTime = event.time
       self.identifier = identifier
       self.trajectory = trajectory
       self.generator = generator
     }
-
+    
     /// A JSON object with values for keys 'identifier', 'generator',
     /// 'trajectory', 'addTime', and 'removeTime'.
     public var jsonValue: JSONValue
@@ -97,10 +97,10 @@ public extension File
         "generator": generator.jsonValue,
         "trajectory": trajectory.jsonValue,
         "addTime": .string(addTime.rawValue),
-        "removeTime": removeTime != nil ? .string(removeTime!.rawValue) : .null,
+        "removeTime": removeTime != nil ? .string(removeTime!.rawValue) : .null
       ])
     }
-
+    
     /// Initializing with a JSON value.
     ///
     /// - Parameters:
@@ -119,31 +119,31 @@ public extension File
       {
         return nil
       }
-
+      
       // Intialize the corresponding property for each value extracted from the object.
       self.identifier = identifier
       self.generator = generator
       self.trajectory = trajectory
       self.addTime = addTime
-
+      
       // Extract the remove time value.
       switch dict["removeTime"]
       {
         case let .string(s)?:
           // The JSON object contains an entry for node's remove time,
           // use it to initialize `removeTime`.
-
+          
           removeTime = BarBeatTime(rawValue: s)
-
+          
         case .null?:
           // The JSON object contains an entry for the node's remove time
           // specifying a null value.
-
+          
           fallthrough
-
+          
         default:
           // The JSON object does not contain an entry for the node's remove time.
-
+          
           removeTime = nil
       }
     }

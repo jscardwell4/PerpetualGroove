@@ -16,7 +16,7 @@ public enum DocumentItem
   case metaData(NSMetadataItem)
   case local(LocalDocumentItem)
   case document(Document)
-
+  
   /// Date the document's file was last modified.
   public var modificationDate: Date?
   {
@@ -27,7 +27,7 @@ public enum DocumentItem
       case let .document(document): return document.fileModificationDate
     }
   }
-
+  
   /// Date the document's file was created.
   public var creationDate: Date?
   {
@@ -38,7 +38,7 @@ public enum DocumentItem
       case let .document(document): return document.fileCreationDate
     }
   }
-
+  
   /// The size of the item's file on disk.
   public var size: UInt64
   {
@@ -49,7 +49,7 @@ public enum DocumentItem
       case let .document(document): return document.fileSize
     }
   }
-
+  
   /// Whether the item represents a document stored on iCloud.
   public var isUbiquitous: Bool
   {
@@ -60,7 +60,7 @@ public enum DocumentItem
       case let .document(document): return document.isUbiquitous
     }
   }
-
+  
   /// The url for the item's file.
   public var url: URL
   {

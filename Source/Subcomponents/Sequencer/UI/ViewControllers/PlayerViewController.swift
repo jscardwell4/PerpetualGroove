@@ -19,7 +19,7 @@ import UIKit
 public final class PlayerViewController: UIViewController, UITextFieldDelegate
 {
   /// The view responsible for displaying the `PlayerScene`.
-  @IBOutlet public var playerView: View!
+  @IBOutlet public var playerView: PlayerView!
 
   /// The width of a tool button.
   private let buttonWidth: CGFloat = 42
@@ -28,83 +28,83 @@ public final class PlayerViewController: UIViewController, UITextFieldDelegate
   private let buttonPadding: CGFloat = 10
 
   /// Sets the start of the loop to the current time.
-  @IBAction private func startLoopAction() { controller.markLoopStart() }
+  @IBAction private func startLoopAction() { sequencer.markLoopStart() }
 
   /// Sets the end of the loop to the current time.
-  @IBAction private func stopLoopAction() { controller.markLoopEnd() }
+  @IBAction private func stopLoopAction() { sequencer.markLoopEnd() }
 
   /// Sets the mode of the sequencer to `loop`.
-  @IBAction private func toggleLoopAction() { controller.enterLoopMode() }
+  @IBAction private func toggleLoopAction() { sequencer.enterLoopMode() }
 
   /// Sets the mode of the sequencer to `default`.
-  @IBAction private func cancelLoopAction() { controller.exitLoopMode() }
+  @IBAction private func cancelLoopAction() { sequencer.exitLoopMode() }
 
   /// Sets the mode of the sequencer to `default`.
-  @IBAction private func confirmLoopAction() { controller.exitLoopMode() }
+  @IBAction private func confirmLoopAction() { sequencer.exitLoopMode() }
 
   /// Control containing the primary tool buttons.
-  @IBOutlet private(set) var primaryTools: ImageSegmentedControl!
+  @IBOutlet private(set) var primaryTools: ImageSegmentedControl?
 
   /// Stack containing the loop-related tool buttons.
-  @IBOutlet private var loopTools: UIStackView!
+  @IBOutlet private var loopTools: UIStackView?
 
   /// Handler for `primaryTools` segment selection.
   @IBAction
   private func didSelectTool(_ sender: ImageSegmentedControl)
   {
-    controller.player.currentTool = AnyTool(sender.selectedSegmentIndex)
+    player.currentTool = AnyTool(sender.selectedSegmentIndex)
   }
 
   /// Button for toggling loop mode.
-  @IBOutlet private var loopToggleButton: ImageButtonView!
+  @IBOutlet private var loopToggleButton: ImageButtonView?
 
   /// Button for setting the loop start.
-  @IBOutlet private var loopStartButton: ImageButtonView!
+  @IBOutlet private var loopStartButton: ImageButtonView?
 
   /// Button for setting the loop end.
-  @IBOutlet private var loopEndButton: ImageButtonView!
+  @IBOutlet private var loopEndButton: ImageButtonView?
 
   /// Button for cancelling the loop.
-  @IBOutlet private var loopCancelButton: ImageButtonView!
+  @IBOutlet private var loopCancelButton: ImageButtonView?
 
   /// Button for confirming the loop.
-  @IBOutlet private var loopConfirmButton: ImageButtonView!
+  @IBOutlet private var loopConfirmButton: ImageButtonView?
 
   /// Configures the toolbar buttons for `mode`.
-  private func configure(for mode: Controller.Mode)
+  private func configure(for mode: Mode)
   {
     switch mode
     {
       case .loop:
         // Hide the loop toggle, show the loop-related buttons and expand `loopTools`.
 
-        loopToggleButton.isHidden = true
+        loopToggleButton?.isHidden = true
         loopToolButtons.forEach
         {
-          $0.isHidden = false
-          $0.setNeedsDisplay()
+          $0?.isHidden = false
+          $0?.setNeedsDisplay()
         }
 
-        loopToolsWidthConstraint.constant = 4 * buttonWidth + 3 * buttonPadding
+        loopToolsWidthConstraint?.constant = 4 * buttonWidth + 3 * buttonPadding
 
       case .linear:
         // Show the loop toggle, hide the loop-related buttons and contract `loopTools`.
 
-        loopToggleButton.isHidden = false
-        loopToggleButton.setNeedsDisplay()
-        loopToolButtons.forEach { $0.isHidden = true }
-        loopToolsWidthConstraint.constant = buttonWidth
+        loopToggleButton?.isHidden = false
+        loopToggleButton?.setNeedsDisplay()
+        loopToolButtons.forEach { $0?.isHidden = true }
+        loopToolsWidthConstraint?.constant = buttonWidth
     }
   }
 
   /// Collection of loop-related tool buttons.
-  private var loopToolButtons: [ImageButtonView]
+  private var loopToolButtons: [ImageButtonView?]
   {
-    return [loopStartButton, loopEndButton, loopCancelButton, loopConfirmButton]
+    [loopStartButton, loopEndButton, loopCancelButton, loopConfirmButton]
   }
 
   /// Width constraint for `loopTools`.
-  @IBOutlet private var loopToolsWidthConstraint: NSLayoutConstraint!
+  @IBOutlet private var loopToolsWidthConstraint: NSLayoutConstraint?
 
   /// Subscription for the player's current tool.
   private var currentToolSubscription: Cancellable?
@@ -112,40 +112,32 @@ public final class PlayerViewController: UIViewController, UITextFieldDelegate
   /// Subscription for the controller's current mode.
   private var currentModeSubscription: Cancellable?
 
+  /// Flag used to activate and deactivate the progress spinner.
+  public var activeSpinner: Bool = false {
+    didSet {
+      guard activeSpinner != oldValue else { return }
+      if activeSpinner, let spinner = spinner, !spinner.isAnimating
+      {
+        spinner.startAnimating()
+        spinner.isHidden = false
+      } else if !activeSpinner, let spinner = spinner, spinner.isAnimating {
+        spinner.stopAnimating()
+        spinner.isHidden = true
+      }
+    }
+  }
+
   /// Configures subscriptions.
   private func setup()
   {
-    currentToolSubscription = controller.player.$currentTool.sink
+    currentToolSubscription = player.$currentTool.sink
     {
-      guard self.primaryTools.selectedSegmentIndex != $0.rawValue else { return }
-      self.primaryTools.selectedSegmentIndex = $0.rawValue
+      self.primaryTools?.selectedSegmentIndex = $0.rawValue
     }
-    currentModeSubscription = controller.$mode.sink
+    currentModeSubscription = sequencer.$mode.sink
     {
       newMode in UIView.animate(withDuration: 0.25) { self.configure(for: newMode) }
     }
-
-//    receptionist.observe(name: .willOpenDocument, from: Manager.self,
-//                         callback: weakCapture(of: self, block:ViewController.willOpenDocument))
-//      /// Begins animating the `spinner`.
-//      private func willOpenDocument(_: Notification) {
-//        spinner.startAnimating()
-//        spinner.isHidden = false
-//      }
-//
-//
-//    receptionist.observe(name: .didChangeDocument, from: Manager.self,
-//                         callback: weakCapture(of: self, block:ViewController.didChangeDocument))
-//      /// Updates `documentName` with the name of the new document and stops
-//      /// `spinner` if necessary.
-//      private func didChangeDocument(_: Notification) {
-//        documentName.text = documentManager?.currentDocument?.localizedName
-//
-//        guard spinner.isHidden == false else { return }
-//
-//        spinner.stopAnimating()
-//        spinner.isHidden = true
-//      }
   }
 
   /// Overridden to run `setup()`.
@@ -166,25 +158,40 @@ public final class PlayerViewController: UIViewController, UITextFieldDelegate
   override public func viewDidLoad()
   {
     super.viewDidLoad()
-
-    documentName.text = nil
+    documentName?.text = nil
   }
 
   public var documentManager: DocumentManager?
 
   /// Text field for displaying and editing the name of the current document.
-  @IBOutlet public var documentName: UITextField!
+  @IBOutlet public var documentName: UITextField?
 
   /// Spinner for indicating the opening of a file.
-  @IBOutlet public var spinner: UIImageView!
+  @IBOutlet public var spinner: UIImageView?
   {
     didSet
     {
-      spinner?.animationImages = [#imageLiteral(resourceName: "spinner1"), #imageLiteral(resourceName: "spinner2"), #imageLiteral(resourceName: "spinner3"), #imageLiteral(resourceName: "spinner4"), #imageLiteral(resourceName: "spinner5"), #imageLiteral(resourceName: "spinner6"), #imageLiteral(resourceName: "spinner7"), #imageLiteral(resourceName: "spinner8")]
-        .map { $0.image(withColor: .white) }
+      guard let spinner = spinner,
+            let bundle = Bundle(identifier: "com.moondeerstudios.Sequencer")
+      else
+      {
+        return
+      }
 
-      spinner?.animationDuration = 0.8
-      spinner?.isHidden = true
+      spinner.animationImages = [
+        UIImage(named: "spinner1", in: bundle, with: nil)!,
+        UIImage(named: "spinner2", in: bundle, with: nil)!,
+        UIImage(named: "spinner3", in: bundle, with: nil)!,
+        UIImage(named: "spinner4", in: bundle, with: nil)!,
+        UIImage(named: "spinner5", in: bundle, with: nil)!,
+        UIImage(named: "spinner6", in: bundle, with: nil)!,
+        UIImage(named: "spinner7", in: bundle, with: nil)!,
+        UIImage(named: "spinner8", in: bundle, with: nil)!
+      ]
+      .map { $0.image(withColor: .white) }
+
+      spinner.animationDuration = 0.8
+      spinner.isHidden = true
     }
   }
 
@@ -228,40 +235,6 @@ public final class PlayerViewController: UIViewController, UITextFieldDelegate
     }
 
     documentManager?.currentDocument?.rename(to: text)
-  }
-}
-
-public extension PlayerViewController
-{
-  /// `SKView` subclass that presents a `Scene`.
-  final class View: SKView
-  {
-    /// The player scene being presented.
-    public var playerScene: Scene? { scene as? Scene }
-
-    /// Configures various properties and presents a new `Scene` instance.
-    private func setup()
-    {
-      ignoresSiblingOrder = true
-      shouldCullNonVisibleNodes = false
-      showsFPS = true
-      showsNodeCount = true
-      presentScene(Scene(size: bounds.size))
-    }
-
-    /// Overridden to run `setup()`.
-    override public init(frame: CGRect)
-    {
-      super.init(frame: frame)
-      setup()
-    }
-
-    /// Overridden to run `setup()`.
-    public required init?(coder aDecoder: NSCoder)
-    {
-      super.init(coder: aDecoder)
-      setup()
-    }
   }
 }
 

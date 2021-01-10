@@ -16,21 +16,24 @@ import UIKit
 {
   /// The main window of the application.
   var window: UIWindow?
-
+  
   /// The root view controller for `window`.
   private(set) weak var viewController: RootViewController!
-
+  
   /// Sets the `viewController` property and kickstarts various initializations.
   func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool
   {
-    _ = Controller.shared
-    _ = Manager.shared
-
+    MoonKit.Logger.shared.logLevel = .info
+    logi("\(#fileID) \(#function) Touching settings, sequencer, and documentManager…")
+    _ = settings
+    _ = sequencer
+    _ = documentManager
+    
     viewController = window?.rootViewController as? RootViewController
-
+    
     return true
   }
 }

@@ -5,12 +5,12 @@
 //  Created by Jason Cardwell on 8/12/15.
 //  Copyright © 2015 Moondeer Studios. All rights reserved.
 //
+import Combine
 import CoreMIDI
 import MIDI
 import MoonKit
 import SpriteKit
 import UIKit
-import Combine
 
 // MARK: - Node
 
@@ -19,19 +19,19 @@ public final class Node: SKSpriteNode
   public typealias Trajectory = NodeEvent.Trajectory
 
   /// Whether the node is moving along `path`.
-  public private(set) var isStationary: Bool = false
+  public private(set) var stationary: Bool = false
 
   /// Whether the node is being jogged by the transport.
-  public private(set) var isJogging: Bool
+  public private(set) var jogging: Bool
 
   /// Whether the node is slated to be removed.
-  public private(set) var isPendingRemoval: Bool = false
+  public private(set) var pendingRemoval: Bool = false
   {
-    didSet { isHidden = isPendingRemoval }
+    didSet { isHidden = pendingRemoval }
   }
 
   /// Whether the node has sent a 'note on' event not yet stopped with a 'note off' event.
-  public private(set) var isPlaying: Bool = false
+  public private(set) var playing: Bool = false
 
   /// The node's midi client.
   private var client = MIDIClientRef()
@@ -59,8 +59,7 @@ public final class Node: SKSpriteNode
     }
   }
 
-  /// Whether a note is ended via a note on event with velocity of 0 or with a note
-  /// off event
+  /// Whether a note is ended via a note on event with velocity of 0 or note off event.
   public static let useVelocityForOff = true
 
   /// The unique identifier for the node that is preserved across file operations.
@@ -99,7 +98,7 @@ public final class Node: SKSpriteNode
   /// Causes the node to fade into the scene.
   public func fadeIn() { fadeInAction.run() }
 
-  /// Identifier for us in note on/off events.
+  /// Identifier for use in note on/off events.
   private lazy var senderID = UInt(bitPattern: ObjectIdentifier(self))
 
   /// Pushes a new 'note on' event through `generator` and sets `isPlaying` to `true`.
@@ -110,11 +109,11 @@ public final class Node: SKSpriteNode
       try generator.receiveNoteOn(endPoint: endPoint,
                                   identifier: senderID,
                                   ticks: time.ticks)
-      isPlaying = true
+      playing = true
     }
     catch
     {
-      log.error("\(error as NSObject)")
+      loge("\(error as NSObject)")
     }
   }
 
@@ -126,11 +125,11 @@ public final class Node: SKSpriteNode
       try generator.receiveNoteOff(endPoint: endPoint,
                                    identifier: senderID,
                                    ticks: time.ticks)
-      isPlaying = false
+      playing = false
     }
     catch
     {
-      log.error("\(error as NSObject)")
+      loge("\(error as NSObject)")
       fatalError("Failed to send the 'note off' event through `generator`.")
     }
   }
@@ -151,20 +150,20 @@ public final class Node: SKSpriteNode
   }
 
   /// Handler for notifications indicating the node should begin jogging.
-  private func didBeginJogging()
+  private func didBeginJogging(notification: Notification)
   {
-    precondition(!isJogging)
+    precondition(!jogging)
 
-    log.info("position: \(self.position); path: \(self.path)")
+    logi("position: \(self.position); path: \(self.path)")
 
-    isJogging = true
+    jogging = true
     removeAllActions()
   }
 
   /// Handler for notifications indicating the node has jogged to a new location.
   private func didJog(notification: Notification)
   {
-    precondition(isJogging)
+    precondition(jogging)
 
     guard let time = notification.jogTime
     else
@@ -172,22 +171,22 @@ public final class Node: SKSpriteNode
       fatalError("notification does not contain ticks")
     }
 
-    log.info("time: \(time)")
+    logi("time: \(time)")
 
     switch time
     {
-      case <--initTime where !isPendingRemoval:
+      case <--initTime where !pendingRemoval:
         // Time has moved backward past the point of the node's initial start.
         // Hide and flag for removal.
 
-        isPendingRemoval = true
+        pendingRemoval = true
 
-      case initTime|-> where isPendingRemoval:
+      case initTime|-> where pendingRemoval:
         // Time has moved back within the bounds of the node's existence from an
         // earlier time. Reveal, unset the flag for removal, and fall through to
         // update the pending position.
 
-        isPendingRemoval = false
+        pendingRemoval = false
         fallthrough
 
       case initTime|->:
@@ -211,18 +210,18 @@ public final class Node: SKSpriteNode
   }
 
   /// Handler for notifications indicating the node has stopped jogging.
-  private func didEndJogging()
+  private func didEndJogging(notification: Notification)
   {
-    guard isJogging
+    guard jogging
     else
     {
-      log.warning("Internal inconsistency, should have jogging flag set."); return
+      logw("Internal inconsistency, should have jogging flag set."); return
     }
 
-    isJogging = false
+    jogging = false
 
     // Check whether the node should be removed.
-    guard !isPendingRemoval
+    guard !pendingRemoval
     else
     {
       removeFromParent()
@@ -230,7 +229,7 @@ public final class Node: SKSpriteNode
     }
 
     // Check whether the node has been paused.
-    guard !isStationary else { return }
+    guard !stationary else { return }
 
     // Update the current segment and resume movement of the node.
     guard let nextSegment = path.segmentIndex(for: time.barBeatTime)
@@ -244,34 +243,30 @@ public final class Node: SKSpriteNode
     moveAction.run()
   }
 
-  /// Hander for notifications indicating that the sequencer's transport has begun playback.
-  private func didStart()
+  /// Hander for notifications indicating that the sequencer's transport has begun.
+  private func didStart(notification: Notification)
   {
     // Check that the node is paused; otherwise, it should already be moving.
-    guard isStationary else { return }
+    guard stationary else { return }
 
     // Update state and begin moving.
-    isStationary = false
+    stationary = false
     moveAction.run()
   }
 
-  /// Handler for notifications indicating that the sequencer's transport has paused playback.
-  private func didPause()
+  /// Handler for notifications indicating that the sequencer's transport has paused.
+  private func didPause(notification: Notification)
   {
     // Check that the node is not already paused.
-    guard !isStationary else { return }
+    guard !stationary else { return }
 
     // Update state and stop moving.
-    isStationary = true
+    stationary = true
     removeAllActions()
   }
 
   /// Handler for notifications indicating that the sequencer's transport has reset.
-  private func didReset()
-  {
-    // Fade out and remove.
-    fadeOut(remove: true)
-  }
+  private func didReset(notification: Notification) { fadeOut(remove: true) }
 
   /// The texture used by all `Node` instances.
   public static let texture = SKTexture(image: UIImage(named: "ball")!)
@@ -318,7 +313,7 @@ public final class Node: SKSpriteNode
   {
     initTime = time.barBeatTime
     initialTrajectory = trajectory
-    isJogging = controller.transport.isJogging
+    jogging = sequencer.transport.jogging
 
     self.dispatch = dispatch
     self.generator = generator
@@ -341,23 +336,28 @@ public final class Node: SKSpriteNode
 
     // Subscribe to transport notifications from the currently assigned transport.
     transportDidBeginJoggingSubscription = NotificationCenter.default
-      .publisher(for: .transportDidBeginJogging, object: controller.transport)
-      .sink { _ in self.didBeginJogging() }
+      .publisher(for: .transportDidBeginJogging, object: sequencer.transport)
+      .sink { self.didBeginJogging(notification: $0) }
+
     transportDidJogSubscription = NotificationCenter.default
-      .publisher(for: .transportDidJog, object: controller.transport)
+      .publisher(for: .transportDidJog, object: sequencer.transport)
       .sink { self.didJog(notification: $0) }
+
     transportDidEndJoggingSubscription = NotificationCenter.default
-      .publisher(for: .transportDidEndJogging, object: controller.transport)
-      .sink { _ in self.didEndJogging()}
+      .publisher(for: .transportDidEndJogging, object: sequencer.transport)
+      .sink { self.didEndJogging(notification: $0) }
+
     transportDidStartSubscription = NotificationCenter.default
-      .publisher(for: .transportDidStart, object: controller.transport)
-      .sink { _ in self.didStart() }
+      .publisher(for: .transportDidStart, object: sequencer.transport)
+      .sink { self.didStart(notification: $0) }
+
     transportDidPauseSubscription = NotificationCenter.default
-      .publisher(for: .transportDidPause, object: controller.transport)
-      .sink { _ in self.didPause() }
+      .publisher(for: .transportDidPause, object: sequencer.transport)
+      .sink { self.didPause(notification: $0) }
+
     transportDidResetSubscription = NotificationCenter.default
-      .publisher(for: .transportDidReset, object: controller.transport)
-      .sink { _ in self.didReset() }
+      .publisher(for: .transportDidReset, object: sequencer.transport)
+      .sink { self.didReset(notification: $0) }
 
     // Create midi client and source.
     try require(MIDIClientCreateWithBlock(name as CFString, &client, nil),
@@ -390,17 +390,17 @@ public final class Node: SKSpriteNode
   /// Sends 'note off' event if needed and disposed of midi resources.
   deinit
   {
-    if isPlaying { sendNoteOff() }
+    if playing { sendNoteOff() }
 
     do
     {
-      log.info("disposing of MIDI client and end point")
+      logi("disposing of MIDI client and end point")
       try require(MIDIEndpointDispose(endPoint), "Failed to dispose of end point")
       try require(MIDIClientDispose(client), "Failed to dispose of midi client")
     }
     catch
     {
-      log.error("\(error as NSObject)")
+      loge("\(error as NSObject)")
     }
   }
 }
@@ -479,7 +479,7 @@ extension Node
 
           // Calculate half of the action's duration.
           let halfDuration = node.generator.duration
-            .seconds(withBPM: controller.tempo) * 0.5
+            .seconds(withBPM: sequencer.tempo) * 0.5
 
           // Scale up to playing size for half the action.
           let scaleUp = SKAction.resize(toWidth: Node.playingSize.width,
@@ -833,7 +833,7 @@ public extension Node.Path
       switch (pY, pX)
       {
         case let (pY?, pX?)
-        where trajectory.position.distanceTo(pY) < trajectory.position.distanceTo(pX):
+              where trajectory.position.distanceTo(pY) < trajectory.position.distanceTo(pX):
           // Neither projection is nil, the y projection is closer so end there.
 
           endLocation = pY

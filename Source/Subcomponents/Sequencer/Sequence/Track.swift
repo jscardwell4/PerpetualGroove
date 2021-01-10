@@ -85,7 +85,7 @@ public class Track: Named, EventDispatch, CustomStringConvertible
       "name: \(name)",
       "headEvents:\n\(headEvents)",
       "events:\n\(eventContainer)",
-      "tailEvents:\n\(tailEvents)",
+      "tailEvents:\n\(tailEvents)"
     ].joined(separator: "\n")
   }
 
@@ -160,7 +160,7 @@ public class Track: Named, EventDispatch, CustomStringConvertible
   public func add<S: Swift.Sequence>(events: S) where S.Element == Event
   {
     eventContainer.append(contentsOf: events)
-    Controller.shared.time.register(
+    sequencer.time.register(
       callback: weakCapture(of: self, block: type(of: self).dispatchEvents),
       forTimes: registrationTimes(forAdding: events),
       identifier: UUID()
@@ -174,7 +174,7 @@ public class Track: Named, EventDispatch, CustomStringConvertible
   /// - Parameter events: The MIDI events for which to generate registration times.
   /// - Returns: The registration times appropriate for `events`.
   public func registrationTimes<Source>(forAdding events: Source) -> [BarBeatTime]
-    where Source: Swift.Sequence, Source.Element == Event
+  where Source: Swift.Sequence, Source.Element == Event
   {
     // Get the end of track event contained by `events` or return an empty array.
     guard let eot = events.first(where: {
@@ -272,7 +272,7 @@ public extension Track
       .muddyWaters, .steelBlue, .celery, .chestnut, .crayonPurple, .verdigris, .twine,
       .tapestry, .vegasGold, .richBlue, .fruitSalad, .husk, .mahogany, .mediumElectricBlue,
       .appleGreen, .venetianRed, .indigo, .easternBlue, .indochine, .flirt, .ultramarine,
-      .laRioja, .forestGreen, .pizza,
+      .laRioja, .forestGreen, .pizza
     ]
   }
 }

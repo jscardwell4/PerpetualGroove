@@ -76,7 +76,7 @@ public struct File: DataConvertible, LosslessJSONValueConvertible
       "source": source?.absoluteString.jsonValue ?? .null,
       "tracks": tracks.jsonValue,
       "tempoChanges": tempoChanges.jsonValue,
-      "endOfFile": .string(endOfFile.rawValue),
+      "endOfFile": .string(endOfFile.rawValue)
     ])
   }
   

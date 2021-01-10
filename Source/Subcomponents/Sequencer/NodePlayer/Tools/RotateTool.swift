@@ -13,10 +13,12 @@ import UIKit
 // MARK: - RotateTool
 
 /// A tool for adjusting the intial angle of a midi node.
-public final class RotateTool: PresentingNodeSelectionTool {
+public final class RotateTool: PresentingNodeSelectionTool
+{
   /// Overridden to return an instance of `RotateViewController` for
   /// manipulating the selected node.
-  override public var secondaryContent: SecondaryContent {
+  override public var secondaryContent: SecondaryContent
+  {
     guard _secondaryContent == nil else { return _secondaryContent! }
 
     let ballColor = node?.dispatch?.color.value ?? .lightGray
@@ -24,11 +26,15 @@ public final class RotateTool: PresentingNodeSelectionTool {
 
     return RotateViewController.viewController(withBallColor: ballColor,
                                                initialAngle: initialAngle,
-                                               didRotate: weakCapture(of: self, block: RotateTool.didRotate))
+                                               didRotate: weakCapture(
+                                                of: self,
+                                                block: RotateTool.didRotate
+                                               ))
   }
 
   /// Handler for rotation values reported by the tool's user interface.
-  private func didRotate(_ rotation: CGFloat) {
+  private func didRotate(_ rotation: CGFloat)
+  {
     // Check that there is a node selected and that the angle of its intial trajectory
     // does not equal `rotation`.
     guard let node = node,
@@ -42,13 +48,15 @@ public final class RotateTool: PresentingNodeSelectionTool {
     let newTrajectory = oldTrajectory.withAngle(rotation)
 
     // Register an action for undoing the changes to the node's intial trajectory.
-    player.undoManager.registerUndo(withTarget: node) {
+    player.undoManager.registerUndo(withTarget: node)
+    {
       node in
 
       node.initialTrajectory = oldTrajectory
 
       // Register an action for redoing the changes to the node's intial trajectory.
-      player.undoManager.registerUndo(withTarget: node) {
+      player.undoManager.registerUndo(withTarget: node)
+      {
         $0.initialTrajectory = newTrajectory
       }
     }
@@ -62,7 +70,8 @@ public final class RotateTool: PresentingNodeSelectionTool {
 
 /// `UIViewController` subclass providing an interface for specifying an
 /// angle of rotation.
-public final class RotateViewController: UIViewController, SecondaryContent {
+public final class RotateViewController: UIViewController, SecondaryContent
+{
   /// Returns a new instance of `RotateViewController` instantiated from
   /// `Rotate.storyboard` configured with the specified ball color, initial
   /// angle, and rotation callback.
@@ -70,7 +79,8 @@ public final class RotateViewController: UIViewController, SecondaryContent {
     withBallColor color: UIColor,
     initialAngle: CGFloat,
     didRotate: ((CGFloat) -> Void)?
-  ) -> RotateViewController {
+  ) -> RotateViewController
+  {
     let storyboard = UIStoryboard(name: "Rotate", bundle: nil)
     let viewController = storyboard.instantiateInitialViewController()
       as! RotateViewController
@@ -94,7 +104,8 @@ public final class RotateViewController: UIViewController, SecondaryContent {
     [.cancel, .confirm]
 
   /// Overridden to configure colors and angles of rotation.
-  override public func viewWillAppear(_ animated: Bool) {
+  override public func viewWillAppear(_ animated: Bool)
+  {
     super.viewWillAppear(animated)
 
     ball.tintColor = ballColor
@@ -121,8 +132,10 @@ public final class RotateViewController: UIViewController, SecondaryContent {
 
   /// Handler for `rotationGesture`.
   @IBAction
-  private func handleRotation(_ sender: UIRotationGestureRecognizer) {
-    switch sender.state {
+  private func handleRotation(_ sender: UIRotationGestureRecognizer)
+  {
+    switch sender.state
+    {
       case .began:
         // The gesture has just begun. Synchronize the arrow's transform with
         // the gesture's rotation.

@@ -16,17 +16,17 @@ public final class MixerContainer: SecondaryControllerContainer
 {
   /// The view controller responsible for the primary content.
   public private(set) weak var mixerViewController: MixerViewController?
-
+  
   /// Overridden to assign the segue's destination to `mixerViewController`.
   override public func prepare(for segue: UIStoryboardSegue, sender: Any?)
   {
     super.prepare(for: segue, sender: sender)
     mixerViewController = segue.destination as? MixerViewController
   }
-
+  
   /// Overridden to nullify `mixerViewController.soundFontTarget`. Also invokes `super`.
   override public func completion(forAction dismissalAction: DismissalAction)
-    -> (Bool) -> Void
+  -> (Bool) -> Void
   {
     {
       self.mixerViewController?.soundFontTarget = nil

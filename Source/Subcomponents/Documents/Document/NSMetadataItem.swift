@@ -40,10 +40,10 @@ extension NSMetadataItem
               percentUploaded, downloadingStatus, downloadingError, uploadingError]
     }
   }
-
+  
   /// Returns the value returned by invoking `value(forAttribute:)`.
   subscript(itemKey: ItemKey) -> Any? { value(forAttribute: itemKey.rawValue) as Any? }
-
+  
   var fileSystemName: String? { self[.fsName] as? String }
   var displayName: String { self[.displayName] as? String ?? "Unnamed Item" }
   var URL: Foundation.URL { self[.url] as! Foundation.URL }
@@ -52,7 +52,11 @@ extension NSMetadataItem
   var creationDate: Date? { self[.fsCreationDate] as? Date }
   var modificationDate: Date? { self[.fsContentChangeDate] as? Date }
   var isUbiquitous: Bool? { (self[.isUbiquitous] as? NSNumber)?.boolValue }
-  var hasUnresolvedConflicts: Bool? { (self[.hasUnresolvedConflicts] as? NSNumber)?.boolValue }
+  var hasUnresolvedConflicts: Bool?
+  {
+    (self[.hasUnresolvedConflicts] as? NSNumber)?.boolValue
+  }
+  
   var downloading: Bool? { (self[.isDownloading] as? NSNumber)?.boolValue }
   var uploaded: Bool? { (self[.isUploaded] as? NSNumber)?.boolValue }
   var uploading: Bool? { (self[.isUploading] as? NSNumber)?.boolValue }
@@ -61,7 +65,7 @@ extension NSMetadataItem
   var downloadingStatus: String? { self[.downloadingStatus] as? String }
   var downloadingError: NSError? { self[.downloadingError] as? NSError }
   var uploadingError: NSError? { self[.uploadingError] as? NSError }
-
+  
   var attributesDescription: String
   {
     var result = "NSMetadataItem {\n\t"
@@ -99,14 +103,14 @@ extension Notification
   {
     userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem]
   }
-
+  
   /// The changed items for a notification posted by an instance of `NSMetaDataQuery`
   /// or `nil`.
   var changedMetadataItems: [NSMetadataItem]?
   {
     userInfo?[NSMetadataQueryUpdateChangedItemsKey] as? [NSMetadataItem]
   }
-
+  
   /// The added items for a notification posted by an instance of `NSMetaDataQuery`
   /// or `nil`.
   var addedMetadataItems: [NSMetadataItem]?

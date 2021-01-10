@@ -13,8 +13,8 @@ import Common
 /// Typealias for a weak `Node` instance.
 public typealias NodeRef = Weak<Node>
 
-/// Protocol for the common properties and methods of objects that generate `Node` 
-/// instances.
+/// Protocol for the common properties and methods of types that generate
+/// or manipulate `Node` instances.
 public protocol NodeDispatch: EventDispatch, Named {
 
   /// Name to assign to the next node dispatched.
