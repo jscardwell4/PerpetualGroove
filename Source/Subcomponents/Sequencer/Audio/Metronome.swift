@@ -71,7 +71,7 @@ public final class Metronome
   private func click(_ time: BarBeatTime)
   {
     // Check that the transport is playing.
-    guard sequencer.transport.isPlaying else { return }
+    guard sequencer.transport.playing else { return }
     
     // Play a C4 or G3 over `channel` according to whether this is the first beat
     // of the bar.

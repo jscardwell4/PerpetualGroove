@@ -16,7 +16,7 @@ import SoundFont
 // MARK: - Bundle
 
 /// The bundle for the `Sequencer` framework.
-public let bundle = unwrapOrDie(Bundle(identifier: "com.moondeerstudios.Sequencer"))
+internal let bundle = unwrapOrDie(Bundle(identifier: "com.moondeerstudios.Sequencer"))
 
 // MARK: - Shorthand
 
@@ -181,7 +181,7 @@ public final class Controller
       auxiliaryTransport.clock.beatsPerMinute = UInt16(newValue)
 
       // Update the sequence's `tempo` property if the current transport is recording.
-      if transport.isRecording { sequence?.tempo = tempo }
+      if transport.recording { sequence?.tempo = tempo }
     }
   }
 

@@ -21,7 +21,7 @@ public enum PitchModifier: String
 // MARK: - Natural
 
 /// An enumeration of the seven 'natural' note names in western tonal music.
-public enum Natural: String, EnumerableType, Strideable
+public enum Natural: String, CaseIterable, Strideable
 {
   case a = "A", b = "B", c = "C", d = "D", e = "E", f = "F", g = "G"
   
@@ -62,7 +62,7 @@ public enum Natural: String, EnumerableType, Strideable
 // MARK: - Octave
 
 /// An enumeration of the octaves representable with MIDI values.
-public enum Octave: Int, LosslessJSONValueConvertible, EnumerableType
+public enum Octave: Int, LosslessJSONValueConvertible, CaseIterable
 {
   case negativeOne = -1, zero, one, two, three, four, five, six, seven, eight, nine
   
@@ -81,7 +81,7 @@ public enum Octave: Int, LosslessJSONValueConvertible, EnumerableType
 // MARK: - Velocity
 
 /// An enumeration for musical dynamics.
-public enum Velocity: String, EnumerableType, CustomStringConvertible
+public enum Velocity: String, CaseIterable, CustomStringConvertible
 {
   case 𝑝𝑝𝑝, 𝑝𝑝, 𝑝, 𝑚𝑝, 𝑚𝑓, 𝑓, 𝑓𝑓, 𝑓𝑓𝑓
   

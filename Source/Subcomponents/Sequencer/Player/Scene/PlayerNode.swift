@@ -21,7 +21,7 @@ public final class PlayerNode: SKShapeNode
     super.init()
     name = "player"
     path = bezierPath.cgPath
-    strokeColor = .primaryColor
+    strokeColor = .primaryColor1
     isUserInteractionEnabled = true
   }
 

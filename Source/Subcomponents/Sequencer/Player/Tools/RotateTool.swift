@@ -109,7 +109,7 @@ public final class RotateViewController: UIViewController, SecondaryContent
     super.viewWillAppear(animated)
 
     ball.tintColor = ballColor
-    arrow.tintColor = .quaternaryColor
+    arrow.tintColor = .quaternaryColor1
 
     arrow.transform = CGAffineTransform(rotationAngle: initialAngle)
     rotationGesture.rotation = initialAngle

@@ -19,7 +19,7 @@ import UIKit
 public final class PlayerViewController: UIViewController, UITextFieldDelegate
 {
   /// The view responsible for displaying the `PlayerScene`.
-  @IBOutlet public var playerView: PlayerView!
+  @IBOutlet public var playerView: PlayerSKView!
 
   /// The width of a tool button.
   private let buttonWidth: CGFloat = 42

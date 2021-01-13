@@ -17,19 +17,28 @@
 		C21A9CD525AB96CF0066EA26 /* MasterCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21A9CCF25AB96CF0066EA26 /* MasterCell.swift */; };
 		C21A9CD625AB96CF0066EA26 /* AddTrackCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21A9CD025AB96CF0066EA26 /* AddTrackCell.swift */; };
 		C21A9CD725AB96CF0066EA26 /* MixerLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21A9CD125AB96CF0066EA26 /* MixerLayout.swift */; };
-		C21A9CD825AB96CF0066EA26 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21A9CD225AB96CF0066EA26 /* PlayerView.swift */; };
+		C21A9CD825AB96CF0066EA26 /* PlayerSKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21A9CD225AB96CF0066EA26 /* PlayerSKView.swift */; };
 		C21A9CD925AB96CF0066EA26 /* TrackCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21A9CD325AB96CF0066EA26 /* TrackCell.swift */; };
 		C21A9CE625ABA05B0066EA26 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2AF20A5259B9FE200EC084A /* MoonKit.framework */; };
 		C21A9D0025ABA06C0066EA26 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2AF20A5259B9FE200EC084A /* MoonKit.framework */; };
 		C21A9D1A25ABA0780066EA26 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2AF20A5259B9FE200EC084A /* MoonKit.framework */; };
+		C21A9D7025ABCDBD0066EA26 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C283B69B1BC02E3B007A4A36 /* Settings.bundle */; };
+		C21A9D7F25ABCEC90066EA26 /* TransportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21A9D7E25ABCEC80066EA26 /* TransportView.swift */; };
+		C21A9D8E25ACAF040066EA26 /* JogWheel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21A9D8D25ACAF040066EA26 /* JogWheel.swift */; };
+		C223185925AE6F870034D2E9 /* ToolButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C223185825AE6F870034D2E9 /* ToolButton.swift */; };
+		C223186625AE77AF0034D2E9 /* LoopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C223186525AE77AF0034D2E9 /* LoopButton.swift */; };
 		C23ECB8F259FBC2B00F17D85 /* SFBKChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23ECB8E259FBC2B00F17D85 /* SFBKChunk.swift */; };
+		C24E1E0425AE443C009D593E /* PlayerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24E1E0325AE443C009D593E /* PlayerController.swift */; };
+		C24E1E2725AE44F7009D593E /* PlayerHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24E1E2625AE44F7009D593E /* PlayerHost.swift */; };
+		C24E1E3425AE4AE6009D593E /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24E1E3325AE4AE6009D593E /* PlayerView.swift */; };
+		C25114C925ACCB3A00262893 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C25114C825ACCB3A00262893 /* Colors.xcassets */; };
 		C2516B2B1C08ECE10060710B /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2516B2A1C08ECE10060710B /* RootViewController.swift */; };
 		C252C843259D23DE000A0BA2 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C252C842259D23DE000A0BA2 /* Nimble.framework */; };
 		C252C869259D2E73000A0BA2 /* SoundFont.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C252C860259D2E73000A0BA2 /* SoundFont.framework */; platformFilter = ios; };
 		C252C870259D2E73000A0BA2 /* SoundFontTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C252C86F259D2E73000A0BA2 /* SoundFontTests.swift */; };
 		C252C872259D2E73000A0BA2 /* SoundFont.h in Headers */ = {isa = PBXBuildFile; fileRef = C252C862259D2E73000A0BA2 /* SoundFont.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		C252C875259D2E73000A0BA2 /* SoundFont.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C252C860259D2E73000A0BA2 /* SoundFont.framework */; };
-		C252C876259D2E73000A0BA2 /* SoundFont.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C252C860259D2E73000A0BA2 /* SoundFont.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C252C875259D2E73000A0BA2 /* SoundFont.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C252C860259D2E73000A0BA2 /* SoundFont.framework */; platformFilter = ios; };
+		C252C876259D2E73000A0BA2 /* SoundFont.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C252C860259D2E73000A0BA2 /* SoundFont.framework */; platformFilter = ios; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C252C884259D2EAD000A0BA2 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2207B901B9DC63300E4D65D /* File.swift */; };
 		C252C888259D2EBC000A0BA2 /* SoundFont2.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E542381BD56E00005B452F /* SoundFont2.swift */; };
 		C255A6E425A22C300012AD69 /* NodeEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E98CA325A112BD00FE1560 /* NodeEvent.swift */; };
@@ -39,7 +48,6 @@
 		C263FD25259E44C1002B3377 /* PDTAChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C263FD22259E44C1002B3377 /* PDTAChunk.swift */; };
 		C263FD26259E44C1002B3377 /* SDTAChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C263FD23259E44C1002B3377 /* SDTAChunk.swift */; };
 		C263FD27259E44C1002B3377 /* INFOChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C263FD24259E44C1002B3377 /* INFOChunk.swift */; };
-		C2736CB825AA578100C88424 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C283B69B1BC02E3B007A4A36 /* Settings.bundle */; };
 		C2736CD225AA580600C88424 /* Woodblock.wav in Resources */ = {isa = PBXBuildFile; fileRef = C2F2ADC11B90EBD300FF4836 /* Woodblock.wav */; };
 		C2736CEC25AA591A00C88424 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C2736CEB25AA591A00C88424 /* Media.xcassets */; };
 		C2736CF925AA5A1E00C88424 /* Mixer.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C4311BD664B000CAEE9C /* Mixer.storyboard */; };
@@ -61,6 +69,97 @@
 		C2873A2425A3E8A400870EE0 /* MIDIEventContainerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28831941C78E8AD00F6865D /* MIDIEventContainerTests.swift */; };
 		C2873A3F25A3E8AD00870EE0 /* NoteChordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23B05941C0219560081AC6E /* NoteChordTests.swift */; };
 		C28D9690259E8DAD005F80B4 /* DataTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28D968F259E8DAD005F80B4 /* DataTypes.swift */; };
+		C290C49E25ACE7A3003F0EE9 /* RecordToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C290C49D25ACE7A3003F0EE9 /* RecordToggle.swift */; };
+		C290C4AB25ACE9DB003F0EE9 /* PlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C290C4AA25ACE9DB003F0EE9 /* PlayButton.swift */; };
+		C290C4B825ACE9F2003F0EE9 /* StopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C290C4B725ACE9F2003F0EE9 /* StopButton.swift */; };
+		C290C4C625ACF523003F0EE9 /* MetronomeToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C290C4C525ACF523003F0EE9 /* MetronomeToggle.swift */; };
+		C290C4E925AD00B8003F0EE9 /* TempoSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C290C4E825AD00B8003F0EE9 /* TempoSlider.swift */; };
+		C290C4F625AD2585003F0EE9 /* Clock.swift in Sources */ = {isa = PBXBuildFile; fileRef = C290C4F525AD2585003F0EE9 /* Clock.swift */; };
+		C290C50225AE117D003F0EE9 /* Latinotype - Triump-Rg-Rock-10.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059225A0D1EB009EAA19 /* Latinotype - Triump-Rg-Rock-10.otf */; };
+		C290C50325AE117D003F0EE9 /* Latinotype - Triump-Rg-Rock-09.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA05A325A0D1EB009EAA19 /* Latinotype - Triump-Rg-Rock-09.otf */; };
+		C290C50425AE117D003F0EE9 /* Latinotype - Triump-Rg-Blur-07.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059C25A0D1EB009EAA19 /* Latinotype - Triump-Rg-Blur-07.otf */; };
+		C290C50525AE117D003F0EE9 /* Latinotype - Triump-Rg-Rock-11.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058F25A0D1EB009EAA19 /* Latinotype - Triump-Rg-Rock-11.otf */; };
+		C290C50625AE117D003F0EE9 /* Latinotype - Triump-Rg-Blur-06.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059E25A0D1EB009EAA19 /* Latinotype - Triump-Rg-Blur-06.otf */; };
+		C290C50725AE117D003F0EE9 /* Latinotype - Triump-Rg-Blur-09.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059725A0D1EB009EAA19 /* Latinotype - Triump-Rg-Blur-09.otf */; };
+		C290C50825AE117D003F0EE9 /* Latinotype - Triump-Rg-Extras.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059F25A0D1EB009EAA19 /* Latinotype - Triump-Rg-Extras.otf */; };
+		C290C50925AE117D003F0EE9 /* Latinotype - Triump-Rg-Blur-11.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059B25A0D1EB009EAA19 /* Latinotype - Triump-Rg-Blur-11.otf */; };
+		C290C50A25AE117D003F0EE9 /* Latinotype - Triump-Rg-Blur-01.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA05A225A0D1EB009EAA19 /* Latinotype - Triump-Rg-Blur-01.otf */; };
+		C290C50B25AE117D003F0EE9 /* Latinotype - Triump-Rg-Rock-05.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059025A0D1EB009EAA19 /* Latinotype - Triump-Rg-Rock-05.otf */; };
+		C290C50C25AE117D003F0EE9 /* Latinotype - Triump-Rg-Blur-04.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059925A0D1EB009EAA19 /* Latinotype - Triump-Rg-Blur-04.otf */; };
+		C290C50D25AE117D003F0EE9 /* Latinotype - Triump-Rg-Rock-01.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059325A0D1EB009EAA19 /* Latinotype - Triump-Rg-Rock-01.otf */; };
+		C290C50E25AE117D003F0EE9 /* Latinotype - Triump-Rg-Blur-05.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059A25A0D1EB009EAA19 /* Latinotype - Triump-Rg-Blur-05.otf */; };
+		C290C50F25AE117D003F0EE9 /* Latinotype - Triump-Rg-Blur-12.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059D25A0D1EB009EAA19 /* Latinotype - Triump-Rg-Blur-12.otf */; };
+		C290C51025AE117D003F0EE9 /* Latinotype - Triump-Rg-Rock-12.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058D25A0D1EB009EAA19 /* Latinotype - Triump-Rg-Rock-12.otf */; };
+		C290C51125AE117D003F0EE9 /* Latinotype - Triump-Rg-Rock-02.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059525A0D1EB009EAA19 /* Latinotype - Triump-Rg-Rock-02.otf */; };
+		C290C51225AE117D003F0EE9 /* Latinotype - Triump-Rg-Rock-03.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059425A0D1EB009EAA19 /* Latinotype - Triump-Rg-Rock-03.otf */; };
+		C290C51325AE117D003F0EE9 /* Latinotype - Triump-Rg-Blur-08.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059625A0D1EB009EAA19 /* Latinotype - Triump-Rg-Blur-08.otf */; };
+		C290C51425AE117D003F0EE9 /* Latinotype - Triump-Rg-Rock-06.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058C25A0D1EB009EAA19 /* Latinotype - Triump-Rg-Rock-06.otf */; };
+		C290C51525AE117D003F0EE9 /* Latinotype - Triump-Rg-Rock-08.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA05A525A0D1EB009EAA19 /* Latinotype - Triump-Rg-Rock-08.otf */; };
+		C290C51625AE117D003F0EE9 /* Latinotype - Triump-Rg-Blur-02.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA05A025A0D1EB009EAA19 /* Latinotype - Triump-Rg-Blur-02.otf */; };
+		C290C51725AE117D003F0EE9 /* Latinotype - Triump-Rg-Rock-04.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059125A0D1EB009EAA19 /* Latinotype - Triump-Rg-Rock-04.otf */; };
+		C290C51825AE117D003F0EE9 /* Latinotype - Triump-Rg-Blur-03.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA05A125A0D1EB009EAA19 /* Latinotype - Triump-Rg-Blur-03.otf */; };
+		C290C51925AE117D003F0EE9 /* Latinotype - Triump-Rg-Rock-07.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058E25A0D1EB009EAA19 /* Latinotype - Triump-Rg-Rock-07.otf */; };
+		C290C51A25AE117D003F0EE9 /* Latinotype - Triump-Rg-Ornaments.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA05A425A0D1EB009EAA19 /* Latinotype - Triump-Rg-Ornaments.otf */; };
+		C290C51B25AE117D003F0EE9 /* Latinotype - Triump-Rg-Blur-10.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059825A0D1EB009EAA19 /* Latinotype - Triump-Rg-Blur-10.otf */; };
+		C290C52725AE1184003F0EE9 /* Yellow Design Studio - Eveleth Slant Regular Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA057F25A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Slant Regular Bold.otf */; };
+		C290C52825AE1184003F0EE9 /* Yellow Design Studio - Eveleth Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058025A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Light.otf */; };
+		C290C52925AE1184003F0EE9 /* Yellow Design Studio - Eveleth Shapes.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA057D25A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Shapes.otf */; };
+		C290C52A25AE1184003F0EE9 /* Yellow Design Studio - Eveleth Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058525A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Regular.otf */; };
+		C290C52B25AE1184003F0EE9 /* Yellow Design Studio - Eveleth Clean Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA057C25A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Clean Regular.otf */; };
+		C290C52C25AE1184003F0EE9 /* Yellow Design Studio - Eveleth Dot Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058925A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Dot Light.otf */; };
+		C290C52D25AE1184003F0EE9 /* Yellow Design Studio - Eveleth Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058325A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Thin.otf */; };
+		C290C52E25AE1184003F0EE9 /* Yellow Design Studio - Eveleth Clean Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058A25A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Clean Thin.otf */; };
+		C290C52F25AE1184003F0EE9 /* Yellow Design Studio - Eveleth Slant Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058125A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Slant Regular.otf */; };
+		C290C53025AE1184003F0EE9 /* Yellow Design Studio - Eveleth Dot Regular Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058225A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Dot Regular Bold.otf */; };
+		C290C53125AE1184003F0EE9 /* Yellow Design Studio - Eveleth Icons.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA057E25A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Icons.otf */; };
+		C290C53225AE1184003F0EE9 /* Yellow Design Studio - Eveleth Dot Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058825A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Dot Regular.otf */; };
+		C290C53325AE1184003F0EE9 /* Yellow Design Studio - Eveleth Shadow.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058725A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Shadow.otf */; };
+		C290C53425AE1184003F0EE9 /* Yellow Design Studio - Eveleth Clean Shadow.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA057B25A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Clean Shadow.otf */; };
+		C290C53525AE1184003F0EE9 /* Yellow Design Studio - Eveleth Slant Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058625A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Slant Light.otf */; };
+		C290C53625AE1184003F0EE9 /* Yellow Design Studio - Eveleth Regular Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058425A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Regular Bold.otf */; };
+		C290C54225AE148F003F0EE9 /* Yellow Design Studio - Eveleth Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058025A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Light.otf */; };
+		C290C54325AE148F003F0EE9 /* Yellow Design Studio - Eveleth Icons.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA057E25A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Icons.otf */; };
+		C290C54425AE148F003F0EE9 /* Yellow Design Studio - Eveleth Regular Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058425A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Regular Bold.otf */; };
+		C290C54525AE148F003F0EE9 /* Yellow Design Studio - Eveleth Dot Regular Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058225A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Dot Regular Bold.otf */; };
+		C290C54625AE148F003F0EE9 /* Yellow Design Studio - Eveleth Slant Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058625A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Slant Light.otf */; };
+		C290C54725AE148F003F0EE9 /* Yellow Design Studio - Eveleth Shadow.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058725A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Shadow.otf */; };
+		C290C54825AE148F003F0EE9 /* Yellow Design Studio - Eveleth Clean Shadow.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA057B25A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Clean Shadow.otf */; };
+		C290C54925AE148F003F0EE9 /* Yellow Design Studio - Eveleth Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058525A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Regular.otf */; };
+		C290C54A25AE148F003F0EE9 /* Yellow Design Studio - Eveleth Dot Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058925A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Dot Light.otf */; };
+		C290C54B25AE148F003F0EE9 /* Yellow Design Studio - Eveleth Clean Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058A25A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Clean Thin.otf */; };
+		C290C54C25AE148F003F0EE9 /* Yellow Design Studio - Eveleth Slant Regular Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA057F25A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Slant Regular Bold.otf */; };
+		C290C54D25AE148F003F0EE9 /* Yellow Design Studio - Eveleth Shapes.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA057D25A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Shapes.otf */; };
+		C290C54E25AE148F003F0EE9 /* Yellow Design Studio - Eveleth Dot Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058825A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Dot Regular.otf */; };
+		C290C54F25AE148F003F0EE9 /* Yellow Design Studio - Eveleth Slant Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058125A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Slant Regular.otf */; };
+		C290C55025AE148F003F0EE9 /* Yellow Design Studio - Eveleth Clean Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA057C25A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Clean Regular.otf */; };
+		C290C55125AE148F003F0EE9 /* Yellow Design Studio - Eveleth Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058325A0D1EB009EAA19 /* Yellow Design Studio - Eveleth Thin.otf */; };
+		C290C55D25AE1495003F0EE9 /* Latinotype - Triump-Rg-Blur-09.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059725A0D1EB009EAA19 /* Latinotype - Triump-Rg-Blur-09.otf */; };
+		C290C55E25AE1495003F0EE9 /* Latinotype - Triump-Rg-Blur-07.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059C25A0D1EB009EAA19 /* Latinotype - Triump-Rg-Blur-07.otf */; };
+		C290C55F25AE1495003F0EE9 /* Latinotype - Triump-Rg-Rock-12.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058D25A0D1EB009EAA19 /* Latinotype - Triump-Rg-Rock-12.otf */; };
+		C290C56025AE1495003F0EE9 /* Latinotype - Triump-Rg-Blur-06.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059E25A0D1EB009EAA19 /* Latinotype - Triump-Rg-Blur-06.otf */; };
+		C290C56125AE1495003F0EE9 /* Latinotype - Triump-Rg-Blur-01.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA05A225A0D1EB009EAA19 /* Latinotype - Triump-Rg-Blur-01.otf */; };
+		C290C56225AE1495003F0EE9 /* Latinotype - Triump-Rg-Blur-10.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059825A0D1EB009EAA19 /* Latinotype - Triump-Rg-Blur-10.otf */; };
+		C290C56325AE1495003F0EE9 /* Latinotype - Triump-Rg-Rock-03.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059425A0D1EB009EAA19 /* Latinotype - Triump-Rg-Rock-03.otf */; };
+		C290C56425AE1495003F0EE9 /* Latinotype - Triump-Rg-Rock-06.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058C25A0D1EB009EAA19 /* Latinotype - Triump-Rg-Rock-06.otf */; };
+		C290C56525AE1495003F0EE9 /* Latinotype - Triump-Rg-Rock-02.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059525A0D1EB009EAA19 /* Latinotype - Triump-Rg-Rock-02.otf */; };
+		C290C56625AE1495003F0EE9 /* Latinotype - Triump-Rg-Blur-02.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA05A025A0D1EB009EAA19 /* Latinotype - Triump-Rg-Blur-02.otf */; };
+		C290C56725AE1495003F0EE9 /* Latinotype - Triump-Rg-Ornaments.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA05A425A0D1EB009EAA19 /* Latinotype - Triump-Rg-Ornaments.otf */; };
+		C290C56825AE1495003F0EE9 /* Latinotype - Triump-Rg-Blur-08.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059625A0D1EB009EAA19 /* Latinotype - Triump-Rg-Blur-08.otf */; };
+		C290C56925AE1495003F0EE9 /* Latinotype - Triump-Rg-Rock-05.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059025A0D1EB009EAA19 /* Latinotype - Triump-Rg-Rock-05.otf */; };
+		C290C56A25AE1495003F0EE9 /* Latinotype - Triump-Rg-Blur-11.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059B25A0D1EB009EAA19 /* Latinotype - Triump-Rg-Blur-11.otf */; };
+		C290C56B25AE1495003F0EE9 /* Latinotype - Triump-Rg-Rock-10.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059225A0D1EB009EAA19 /* Latinotype - Triump-Rg-Rock-10.otf */; };
+		C290C56C25AE1495003F0EE9 /* Latinotype - Triump-Rg-Blur-04.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059925A0D1EB009EAA19 /* Latinotype - Triump-Rg-Blur-04.otf */; };
+		C290C56D25AE1495003F0EE9 /* Latinotype - Triump-Rg-Rock-11.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058F25A0D1EB009EAA19 /* Latinotype - Triump-Rg-Rock-11.otf */; };
+		C290C56E25AE1495003F0EE9 /* Latinotype - Triump-Rg-Rock-01.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059325A0D1EB009EAA19 /* Latinotype - Triump-Rg-Rock-01.otf */; };
+		C290C56F25AE1495003F0EE9 /* Latinotype - Triump-Rg-Blur-12.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059D25A0D1EB009EAA19 /* Latinotype - Triump-Rg-Blur-12.otf */; };
+		C290C57025AE1495003F0EE9 /* Latinotype - Triump-Rg-Blur-03.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA05A125A0D1EB009EAA19 /* Latinotype - Triump-Rg-Blur-03.otf */; };
+		C290C57125AE1495003F0EE9 /* Latinotype - Triump-Rg-Blur-05.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059A25A0D1EB009EAA19 /* Latinotype - Triump-Rg-Blur-05.otf */; };
+		C290C57225AE1495003F0EE9 /* Latinotype - Triump-Rg-Extras.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059F25A0D1EB009EAA19 /* Latinotype - Triump-Rg-Extras.otf */; };
+		C290C57325AE1495003F0EE9 /* Latinotype - Triump-Rg-Rock-09.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA05A325A0D1EB009EAA19 /* Latinotype - Triump-Rg-Rock-09.otf */; };
+		C290C57425AE1495003F0EE9 /* Latinotype - Triump-Rg-Rock-04.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA059125A0D1EB009EAA19 /* Latinotype - Triump-Rg-Rock-04.otf */; };
+		C290C57525AE1495003F0EE9 /* Latinotype - Triump-Rg-Rock-08.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA05A525A0D1EB009EAA19 /* Latinotype - Triump-Rg-Rock-08.otf */; };
+		C290C57625AE1495003F0EE9 /* Latinotype - Triump-Rg-Rock-07.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA058E25A0D1EB009EAA19 /* Latinotype - Triump-Rg-Rock-07.otf */; };
+		C290C58325AE27BD003F0EE9 /* TransportController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C290C58225AE27BD003F0EE9 /* TransportController.swift */; };
 		C2AF20A6259B9FE200EC084A /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2AF20A5259B9FE200EC084A /* MoonKit.framework */; };
 		C2AF20A7259B9FE200EC084A /* MoonKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2AF20A5259B9FE200EC084A /* MoonKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C2DF7AA025A8EE600045E7D9 /* SoundFontSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DF7A9F25A8EE600045E7D9 /* SoundFontSelector.swift */; };
@@ -295,13 +394,6 @@
 			remoteGlobalIDString = C2F43AEF25A2ACE0002DA417;
 			remoteInfo = Common;
 		};
-		C2F43B8D25A37658002DA417 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C2E043291B72F4DC005F0675 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C2E043301B72F4DC005F0675;
-			remoteInfo = Groove;
-		};
 		C2F43BDF25A376F1002DA417 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C2E043291B72F4DC005F0675 /* Project object */;
@@ -383,10 +475,14 @@
 		C21A9CCF25AB96CF0066EA26 /* MasterCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MasterCell.swift; sourceTree = "<group>"; };
 		C21A9CD025AB96CF0066EA26 /* AddTrackCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddTrackCell.swift; sourceTree = "<group>"; };
 		C21A9CD125AB96CF0066EA26 /* MixerLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MixerLayout.swift; sourceTree = "<group>"; };
-		C21A9CD225AB96CF0066EA26 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+		C21A9CD225AB96CF0066EA26 /* PlayerSKView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerSKView.swift; sourceTree = "<group>"; };
 		C21A9CD325AB96CF0066EA26 /* TrackCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackCell.swift; sourceTree = "<group>"; };
+		C21A9D7E25ABCEC80066EA26 /* TransportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransportView.swift; sourceTree = "<group>"; };
+		C21A9D8D25ACAF040066EA26 /* JogWheel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JogWheel.swift; sourceTree = "<group>"; };
 		C21E44C41B76546C00574BD2 /* AudioEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEngine.swift; sourceTree = "<group>"; };
 		C2207B901B9DC63300E4D65D /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
+		C223185825AE6F870034D2E9 /* ToolButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolButton.swift; sourceTree = "<group>"; };
+		C223186525AE77AF0034D2E9 /* LoopButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoopButton.swift; sourceTree = "<group>"; };
 		C223B1A11C8364ED006CF6B5 /* EventContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventContainer.swift; sourceTree = "<group>"; };
 		C22FA58C1BC830D600162DB4 /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Settings.swift; path = ../../Settings.swift; sourceTree = "<group>"; };
 		C23516611E06E123009AC033 /* MIDINote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINote.swift; sourceTree = "<group>"; };
@@ -403,11 +499,15 @@
 		C23B059C1C026F4C0081AC6E /* ChordGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChordGenerator.swift; sourceTree = "<group>"; };
 		C23ECB8E259FBC2B00F17D85 /* SFBKChunk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFBKChunk.swift; sourceTree = "<group>"; };
 		C24DCE371C3438A800AD98BE /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
+		C24E1E0325AE443C009D593E /* PlayerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerController.swift; sourceTree = "<group>"; };
+		C24E1E2625AE44F7009D593E /* PlayerHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerHost.swift; sourceTree = "<group>"; };
+		C24E1E3325AE4AE6009D593E /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
 		C24E83951C3EDFD800B4A16A /* SecondaryControllerContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecondaryControllerContainer.swift; sourceTree = "<group>"; };
 		C24E83971C3EE0A300B4A16A /* MixerContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MixerContainer.swift; sourceTree = "<group>"; };
 		C24E83991C3EE0D100B4A16A /* PlayerContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerContainer.swift; sourceTree = "<group>"; };
 		C24E839B1C3EE17900B4A16A /* MixerContainer.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = MixerContainer.storyboard; path = "../../../../Resources/Interface Builder/MixerContainer.storyboard"; sourceTree = "<group>"; };
 		C24E839D1C3EEE1300B4A16A /* MIDINodePlayerContainer.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = MIDINodePlayerContainer.storyboard; path = "../../../../Resources/Interface Builder/MIDINodePlayerContainer.storyboard"; sourceTree = "<group>"; };
+		C25114C825ACCB3A00262893 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		C2516B2A1C08ECE10060710B /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RootViewController.swift; path = "Other Views and Controllers/RootViewController.swift"; sourceTree = "<group>"; };
 		C2516B2C1C08F1B50060710B /* TransportViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransportViewController.swift; sourceTree = "<group>"; };
 		C252C831259D21E5000A0BA2 /* GrooveTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GrooveTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -447,7 +547,7 @@
 		C2807DDF1C74C6270061A001 /* RotateTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RotateTool.swift; sourceTree = "<group>"; };
 		C2807DE11C74F34B0061A001 /* Rotate.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Rotate.storyboard; path = "../../../../Resources/Interface Builder/Rotate.storyboard"; sourceTree = "<group>"; };
 		C282911C1C1DFFD600F9975C /* Tool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tool.swift; sourceTree = "<group>"; };
-		C283B69B1BC02E3B007A4A36 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Settings.bundle; path = ../../../../Resources/Settings.bundle; sourceTree = "<group>"; };
+		C283B69B1BC02E3B007A4A36 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		C283B69D1BC0495A007A4A36 /* DocumentItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentItem.swift; sourceTree = "<group>"; };
 		C284F7CA1C49C8A8009C72A0 /* MIDINodePathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MIDINodePathTests.swift; sourceTree = "<group>"; };
 		C285088B25A63A610063049A /* Node.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
@@ -455,6 +555,13 @@
 		C285088D25A63A610063049A /* Track.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Track.swift; sourceTree = "<group>"; };
 		C28831941C78E8AD00F6865D /* MIDIEventContainerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MIDIEventContainerTests.swift; sourceTree = "<group>"; };
 		C28D968F259E8DAD005F80B4 /* DataTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataTypes.swift; sourceTree = "<group>"; };
+		C290C49D25ACE7A3003F0EE9 /* RecordToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordToggle.swift; sourceTree = "<group>"; };
+		C290C4AA25ACE9DB003F0EE9 /* PlayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayButton.swift; sourceTree = "<group>"; };
+		C290C4B725ACE9F2003F0EE9 /* StopButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopButton.swift; sourceTree = "<group>"; };
+		C290C4C525ACF523003F0EE9 /* MetronomeToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeToggle.swift; sourceTree = "<group>"; };
+		C290C4E825AD00B8003F0EE9 /* TempoSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempoSlider.swift; sourceTree = "<group>"; };
+		C290C4F525AD2585003F0EE9 /* Clock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Clock.swift; sourceTree = "<group>"; };
+		C290C58225AE27BD003F0EE9 /* TransportController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransportController.swift; sourceTree = "<group>"; };
 		C291C3F41B91F05900702AEA /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		C2981BA71C2468FD007FC51F /* Loop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Loop.swift; sourceTree = "<group>"; };
 		C2981BA91C2B85F4007FC51F /* Transport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transport.swift; sourceTree = "<group>"; };
@@ -560,6 +667,7 @@
 		C2E98CE425A124FB00FE1560 /* MetaEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaEvent.swift; sourceTree = "<group>"; };
 		C2E98CEB25A1250E00FE1560 /* ChannelEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelEvent.swift; sourceTree = "<group>"; };
 		C2EA30521BB9DF3300020958 /* Document.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
+		C2ECAC8125ACBFF300C31DF2 /* Groove.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Groove.entitlements; sourceTree = "<group>"; };
 		C2F2ADC11B90EBD300FF4836 /* Woodblock.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = Woodblock.wav; path = "../../../../Resources/Sound Sets/Woodblock.wav"; sourceTree = "<group>"; };
 		C2F2ADC31B91098A00FF4836 /* NoteGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteGenerator.swift; sourceTree = "<group>"; };
 		C2F2ADC51B91203700FF4836 /* Metronome.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Metronome.swift; sourceTree = "<group>"; };
@@ -570,7 +678,6 @@
 		C2F43AFF25A2ACE1002DA417 /* CommonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonTests.swift; sourceTree = "<group>"; };
 		C2F43B0125A2ACE1002DA417 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C2F43B6425A2ADFE002DA417 /* MoonKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MoonKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C2F43B8925A37658002DA417 /* NodePlayerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NodePlayerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2F43B9025A37658002DA417 /* NodePlayerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodePlayerTests.swift; sourceTree = "<group>"; };
 		C2F43BD525A376F1002DA417 /* Documents.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Documents.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2F43BD725A376F1002DA417 /* Documents.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Documents.h; sourceTree = "<group>"; };
@@ -665,13 +772,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C2F43B8625A37658002DA417 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		C2F43BD225A376F1002DA417 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -714,10 +814,21 @@
 				C21A9CCF25AB96CF0066EA26 /* MasterCell.swift */,
 				C21A9CCE25AB96CF0066EA26 /* MixerCell.swift */,
 				C21A9CD125AB96CF0066EA26 /* MixerLayout.swift */,
-				C21A9CD225AB96CF0066EA26 /* PlayerView.swift */,
+				C21A9CD225AB96CF0066EA26 /* PlayerSKView.swift */,
 				C21A9CD325AB96CF0066EA26 /* TrackCell.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		C21A9D7D25ABCE660066EA26 /* SwiftUI */ = {
+			isa = PBXGroup;
+			children = (
+				C24E1E0225AE4399009D593E /* Player */,
+				C24E1DF625AE432A009D593E /* Mixer */,
+				C24E1DF525AE431F009D593E /* Generator */,
+				C290C4C425ACF4B2003F0EE9 /* Transport */,
+			);
+			path = SwiftUI;
 			sourceTree = "<group>";
 		};
 		C239A1E625A7806B00A14982 /* Resources */ = {
@@ -759,14 +870,14 @@
 			path = json;
 			sourceTree = "<group>";
 		};
-		C239EC481DB269AC004A580A /* NodePlayer */ = {
+		C239EC481DB269AC004A580A /* Player */ = {
 			isa = PBXGroup;
 			children = (
 				C285079925A6316E0063049A /* Scene */,
 				C285079825A6312C0063049A /* Tools */,
 				C2576E0C1C13343E00F9A192 /* Player.swift */,
 			);
-			path = NodePlayer;
+			path = Player;
 			sourceTree = "<group>";
 		};
 		C2404BDA1B78F02C00A68A64 /* Source */ = {
@@ -784,7 +895,7 @@
 		C2404BDB1B78F03E00A68A64 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				C2BA057925A0D1EB009EAA19 /* Fonts */,
+				C283B69B1BC02E3B007A4A36 /* Settings.bundle */,
 				C2BA057825A0CFED009EAA19 /* Interface Builder */,
 				C2E0433F1B72F4DC005F0675 /* Assets.xcassets */,
 			);
@@ -801,6 +912,41 @@
 			name = "Supporting Files";
 			path = "/Users/Moondeer/Projects/PerpetualGroove/Supporting Files";
 			sourceTree = "<absolute>";
+		};
+		C24E1DF525AE431F009D593E /* Generator */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Generator;
+			sourceTree = "<group>";
+		};
+		C24E1DF625AE432A009D593E /* Mixer */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Mixer;
+			sourceTree = "<group>";
+		};
+		C24E1E0225AE4399009D593E /* Player */ = {
+			isa = PBXGroup;
+			children = (
+				C223186525AE77AF0034D2E9 /* LoopButton.swift */,
+				C24E1E0325AE443C009D593E /* PlayerController.swift */,
+				C24E1E2625AE44F7009D593E /* PlayerHost.swift */,
+				C24E1E3325AE4AE6009D593E /* PlayerView.swift */,
+				C223185825AE6F870034D2E9 /* ToolButton.swift */,
+			);
+			path = Player;
+			sourceTree = "<group>";
+		};
+		C25114BC25ACCAFA00262893 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				C2BA057925A0D1EB009EAA19 /* Fonts */,
+				C25114C825ACCB3A00262893 /* Colors.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
 		};
 		C252C861259D2E73000A0BA2 /* SoundFont */ = {
 			isa = PBXGroup;
@@ -827,8 +973,8 @@
 		C255A72B25A2ABB70012AD69 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				C2736CB725AA577400C88424 /* Resources */,
 				C2937E1925A6598B0061BD92 /* Supporting Files */,
+				C25114BC25ACCAFA00262893 /* Resources */,
 				C22FA58C1BC830D600162DB4 /* Settings.swift */,
 				C24E83951C3EDFD800B4A16A /* SecondaryControllerContainer.swift */,
 				C29A337B1DAE7E4800728E4B /* Colors.swift */,
@@ -842,7 +988,7 @@
 			children = (
 				C2873A9025A4E70900870EE0 /* Supporting Files */,
 				C2736CD125AA57E700C88424 /* Resources */,
-				C239EC481DB269AC004A580A /* NodePlayer */,
+				C239EC481DB269AC004A580A /* Player */,
 				C2873A8225A4E6C500870EE0 /* UI */,
 				C2873A8125A4E69000870EE0 /* Audio */,
 				C2873A8025A4E64E00870EE0 /* Time */,
@@ -850,14 +996,6 @@
 				C2AA2BCA1B84FB2100A0B08D /* Controller.swift */,
 			);
 			path = Sequencer;
-			sourceTree = "<group>";
-		};
-		C2736CB725AA577400C88424 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				C283B69B1BC02E3B007A4A36 /* Settings.bundle */,
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 		C2736CD125AA57E700C88424 /* Resources */ = {
@@ -1069,6 +1207,7 @@
 		C2873A8225A4E6C500870EE0 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				C21A9D7D25ABCE660066EA26 /* SwiftUI */,
 				C21A9CCD25AB95CA0066EA26 /* Views */,
 				C2FB65F625A90E4A00A04A48 /* ViewControllers */,
 				C2FB65F525A90E4200A04A48 /* Containers */,
@@ -1098,6 +1237,22 @@
 				C217EE381DB435E40076B6E7 /* AudioToolbox.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C290C4C425ACF4B2003F0EE9 /* Transport */ = {
+			isa = PBXGroup;
+			children = (
+				C21A9D7E25ABCEC80066EA26 /* TransportView.swift */,
+				C21A9D8D25ACAF040066EA26 /* JogWheel.swift */,
+				C290C49D25ACE7A3003F0EE9 /* RecordToggle.swift */,
+				C290C4AA25ACE9DB003F0EE9 /* PlayButton.swift */,
+				C290C4B725ACE9F2003F0EE9 /* StopButton.swift */,
+				C290C4C525ACF523003F0EE9 /* MetronomeToggle.swift */,
+				C290C4E825AD00B8003F0EE9 /* TempoSlider.swift */,
+				C290C4F525AD2585003F0EE9 /* Clock.swift */,
+				C290C58225AE27BD003F0EE9 /* TransportController.swift */,
+			);
+			path = Transport;
 			sourceTree = "<group>";
 		};
 		C2937E1925A6598B0061BD92 /* Supporting Files */ = {
@@ -1251,6 +1406,7 @@
 		C2E043281B72F4DC005F0675 = {
 			isa = PBXGroup;
 			children = (
+				C2ECAC8125ACBFF300C31DF2 /* Groove.entitlements */,
 				C2E043331B72F4DC005F0675 /* PerpetualGroove */,
 				C2E043321B72F4DC005F0675 /* Products */,
 				C28A0F511D99DE650011F706 /* Frameworks */,
@@ -1268,7 +1424,6 @@
 				C2E98C2425A1087300FE1560 /* MIDITests.xctest */,
 				C2F43AF025A2ACE0002DA417 /* Common.framework */,
 				C2F43AF825A2ACE1002DA417 /* CommonTests.xctest */,
-				C2F43B8925A37658002DA417 /* NodePlayerTests.xctest */,
 				C2F43BD525A376F1002DA417 /* Documents.framework */,
 				C2F43BDD25A376F1002DA417 /* DocumentsTests.xctest */,
 				C2F43C3325A377EF002DA417 /* Sequencer.framework */,
@@ -1573,24 +1728,6 @@
 			productReference = C2F43AF825A2ACE1002DA417 /* CommonTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		C2F43B8825A37658002DA417 /* NodePlayerTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = C2F43B9D25A37658002DA417 /* Build configuration list for PBXNativeTarget "NodePlayerTests" */;
-			buildPhases = (
-				C2F43B8525A37658002DA417 /* Sources */,
-				C2F43B8625A37658002DA417 /* Frameworks */,
-				C2F43B8725A37658002DA417 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				C2F43B8E25A37658002DA417 /* PBXTargetDependency */,
-			);
-			name = NodePlayerTests;
-			productName = NodePlayerTests;
-			productReference = C2F43B8925A37658002DA417 /* NodePlayerTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		C2F43BD425A376F1002DA417 /* Documents */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C2F43BEC25A376F1002DA417 /* Build configuration list for PBXNativeTarget "Documents" */;
@@ -1726,10 +1863,6 @@
 						CreatedOnToolsVersion = 12.3;
 						TestTargetID = C2E043301B72F4DC005F0675;
 					};
-					C2F43B8825A37658002DA417 = {
-						CreatedOnToolsVersion = 12.3;
-						TestTargetID = C2E043301B72F4DC005F0675;
-					};
 					C2F43BD425A376F1002DA417 = {
 						CreatedOnToolsVersion = 12.3;
 					};
@@ -1767,7 +1900,6 @@
 				C2E98C2325A1087300FE1560 /* MIDITests */,
 				C2F43AEF25A2ACE0002DA417 /* Common */,
 				C2F43AF725A2ACE1002DA417 /* CommonTests */,
-				C2F43B8825A37658002DA417 /* NodePlayerTests */,
 				C2F43BD425A376F1002DA417 /* Documents */,
 				C2F43BDC25A376F1002DA417 /* DocumentsTests */,
 				C2F43C3225A377EF002DA417 /* Sequencer */,
@@ -1817,10 +1949,53 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C290C56825AE1495003F0EE9 /* Latinotype - Triump-Rg-Blur-08.otf in Resources */,
+				C290C55125AE148F003F0EE9 /* Yellow Design Studio - Eveleth Thin.otf in Resources */,
+				C290C54925AE148F003F0EE9 /* Yellow Design Studio - Eveleth Regular.otf in Resources */,
+				C290C54D25AE148F003F0EE9 /* Yellow Design Studio - Eveleth Shapes.otf in Resources */,
+				C290C56025AE1495003F0EE9 /* Latinotype - Triump-Rg-Blur-06.otf in Resources */,
+				C290C56125AE1495003F0EE9 /* Latinotype - Triump-Rg-Blur-01.otf in Resources */,
+				C290C56625AE1495003F0EE9 /* Latinotype - Triump-Rg-Blur-02.otf in Resources */,
 				C217EE5A1DB43CC30076B6E7 /* Main.storyboard in Resources */,
+				C290C56F25AE1495003F0EE9 /* Latinotype - Triump-Rg-Blur-12.otf in Resources */,
+				C290C56B25AE1495003F0EE9 /* Latinotype - Triump-Rg-Rock-10.otf in Resources */,
+				C290C56E25AE1495003F0EE9 /* Latinotype - Triump-Rg-Rock-01.otf in Resources */,
+				C290C56A25AE1495003F0EE9 /* Latinotype - Triump-Rg-Blur-11.otf in Resources */,
+				C290C57125AE1495003F0EE9 /* Latinotype - Triump-Rg-Blur-05.otf in Resources */,
+				C290C57525AE1495003F0EE9 /* Latinotype - Triump-Rg-Rock-08.otf in Resources */,
+				C290C55D25AE1495003F0EE9 /* Latinotype - Triump-Rg-Blur-09.otf in Resources */,
+				C290C54A25AE148F003F0EE9 /* Yellow Design Studio - Eveleth Dot Light.otf in Resources */,
+				C290C56C25AE1495003F0EE9 /* Latinotype - Triump-Rg-Blur-04.otf in Resources */,
+				C290C54425AE148F003F0EE9 /* Yellow Design Studio - Eveleth Regular Bold.otf in Resources */,
 				C217EE5D1DB511710076B6E7 /* Purgatory.storyboard in Resources */,
+				C290C54B25AE148F003F0EE9 /* Yellow Design Studio - Eveleth Clean Thin.otf in Resources */,
+				C290C54625AE148F003F0EE9 /* Yellow Design Studio - Eveleth Slant Light.otf in Resources */,
+				C290C56225AE1495003F0EE9 /* Latinotype - Triump-Rg-Blur-10.otf in Resources */,
+				C290C55025AE148F003F0EE9 /* Yellow Design Studio - Eveleth Clean Regular.otf in Resources */,
+				C290C56325AE1495003F0EE9 /* Latinotype - Triump-Rg-Rock-03.otf in Resources */,
+				C290C54F25AE148F003F0EE9 /* Yellow Design Studio - Eveleth Slant Regular.otf in Resources */,
+				C290C54525AE148F003F0EE9 /* Yellow Design Studio - Eveleth Dot Regular Bold.otf in Resources */,
+				C290C56525AE1495003F0EE9 /* Latinotype - Triump-Rg-Rock-02.otf in Resources */,
+				C21A9D7025ABCDBD0066EA26 /* Settings.bundle in Resources */,
+				C290C56425AE1495003F0EE9 /* Latinotype - Triump-Rg-Rock-06.otf in Resources */,
+				C290C57625AE1495003F0EE9 /* Latinotype - Triump-Rg-Rock-07.otf in Resources */,
+				C290C54C25AE148F003F0EE9 /* Yellow Design Studio - Eveleth Slant Regular Bold.otf in Resources */,
 				C2E043401B72F4DC005F0675 /* Assets.xcassets in Resources */,
+				C290C55E25AE1495003F0EE9 /* Latinotype - Triump-Rg-Blur-07.otf in Resources */,
 				C217EE511DB43C690076B6E7 /* LaunchScreen.storyboard in Resources */,
+				C290C55F25AE1495003F0EE9 /* Latinotype - Triump-Rg-Rock-12.otf in Resources */,
+				C290C54325AE148F003F0EE9 /* Yellow Design Studio - Eveleth Icons.otf in Resources */,
+				C290C54E25AE148F003F0EE9 /* Yellow Design Studio - Eveleth Dot Regular.otf in Resources */,
+				C290C56725AE1495003F0EE9 /* Latinotype - Triump-Rg-Ornaments.otf in Resources */,
+				C290C56D25AE1495003F0EE9 /* Latinotype - Triump-Rg-Rock-11.otf in Resources */,
+				C290C54725AE148F003F0EE9 /* Yellow Design Studio - Eveleth Shadow.otf in Resources */,
+				C290C54225AE148F003F0EE9 /* Yellow Design Studio - Eveleth Light.otf in Resources */,
+				C290C57025AE1495003F0EE9 /* Latinotype - Triump-Rg-Blur-03.otf in Resources */,
+				C290C57325AE1495003F0EE9 /* Latinotype - Triump-Rg-Rock-09.otf in Resources */,
+				C290C56925AE1495003F0EE9 /* Latinotype - Triump-Rg-Rock-05.otf in Resources */,
+				C290C57425AE1495003F0EE9 /* Latinotype - Triump-Rg-Rock-04.otf in Resources */,
+				C290C54825AE148F003F0EE9 /* Yellow Design Studio - Eveleth Clean Shadow.otf in Resources */,
+				C290C57225AE1495003F0EE9 /* Latinotype - Triump-Rg-Extras.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1842,18 +2017,53 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C2736CB825AA578100C88424 /* Settings.bundle in Resources */,
+				C290C50425AE117D003F0EE9 /* Latinotype - Triump-Rg-Blur-07.otf in Resources */,
+				C290C53525AE1184003F0EE9 /* Yellow Design Studio - Eveleth Slant Light.otf in Resources */,
+				C290C52725AE1184003F0EE9 /* Yellow Design Studio - Eveleth Slant Regular Bold.otf in Resources */,
+				C290C52925AE1184003F0EE9 /* Yellow Design Studio - Eveleth Shapes.otf in Resources */,
+				C290C52A25AE1184003F0EE9 /* Yellow Design Studio - Eveleth Regular.otf in Resources */,
+				C290C52B25AE1184003F0EE9 /* Yellow Design Studio - Eveleth Clean Regular.otf in Resources */,
+				C290C50C25AE117D003F0EE9 /* Latinotype - Triump-Rg-Blur-04.otf in Resources */,
+				C290C51925AE117D003F0EE9 /* Latinotype - Triump-Rg-Rock-07.otf in Resources */,
+				C290C52F25AE1184003F0EE9 /* Yellow Design Studio - Eveleth Slant Regular.otf in Resources */,
+				C290C50225AE117D003F0EE9 /* Latinotype - Triump-Rg-Rock-10.otf in Resources */,
+				C290C50B25AE117D003F0EE9 /* Latinotype - Triump-Rg-Rock-05.otf in Resources */,
+				C290C51325AE117D003F0EE9 /* Latinotype - Triump-Rg-Blur-08.otf in Resources */,
+				C290C53225AE1184003F0EE9 /* Yellow Design Studio - Eveleth Dot Regular.otf in Resources */,
+				C290C51225AE117D003F0EE9 /* Latinotype - Triump-Rg-Rock-03.otf in Resources */,
+				C290C50525AE117D003F0EE9 /* Latinotype - Triump-Rg-Rock-11.otf in Resources */,
+				C290C53325AE1184003F0EE9 /* Yellow Design Studio - Eveleth Shadow.otf in Resources */,
+				C290C50825AE117D003F0EE9 /* Latinotype - Triump-Rg-Extras.otf in Resources */,
+				C290C51825AE117D003F0EE9 /* Latinotype - Triump-Rg-Blur-03.otf in Resources */,
+				C290C51A25AE117D003F0EE9 /* Latinotype - Triump-Rg-Ornaments.otf in Resources */,
+				C290C52D25AE1184003F0EE9 /* Yellow Design Studio - Eveleth Thin.otf in Resources */,
+				C290C51525AE117D003F0EE9 /* Latinotype - Triump-Rg-Rock-08.otf in Resources */,
+				C290C51B25AE117D003F0EE9 /* Latinotype - Triump-Rg-Blur-10.otf in Resources */,
+				C290C53425AE1184003F0EE9 /* Yellow Design Studio - Eveleth Clean Shadow.otf in Resources */,
+				C290C51625AE117D003F0EE9 /* Latinotype - Triump-Rg-Blur-02.otf in Resources */,
+				C290C50725AE117D003F0EE9 /* Latinotype - Triump-Rg-Blur-09.otf in Resources */,
+				C290C50925AE117D003F0EE9 /* Latinotype - Triump-Rg-Blur-11.otf in Resources */,
+				C290C50325AE117D003F0EE9 /* Latinotype - Triump-Rg-Rock-09.otf in Resources */,
+				C290C50D25AE117D003F0EE9 /* Latinotype - Triump-Rg-Rock-01.otf in Resources */,
+				C290C51025AE117D003F0EE9 /* Latinotype - Triump-Rg-Rock-12.otf in Resources */,
+				C25114C925ACCB3A00262893 /* Colors.xcassets in Resources */,
+				C290C52E25AE1184003F0EE9 /* Yellow Design Studio - Eveleth Clean Thin.otf in Resources */,
+				C290C53625AE1184003F0EE9 /* Yellow Design Studio - Eveleth Regular Bold.otf in Resources */,
+				C290C53125AE1184003F0EE9 /* Yellow Design Studio - Eveleth Icons.otf in Resources */,
+				C290C50A25AE117D003F0EE9 /* Latinotype - Triump-Rg-Blur-01.otf in Resources */,
+				C290C51125AE117D003F0EE9 /* Latinotype - Triump-Rg-Rock-02.otf in Resources */,
+				C290C53025AE1184003F0EE9 /* Yellow Design Studio - Eveleth Dot Regular Bold.otf in Resources */,
+				C290C50E25AE117D003F0EE9 /* Latinotype - Triump-Rg-Blur-05.otf in Resources */,
+				C290C51425AE117D003F0EE9 /* Latinotype - Triump-Rg-Rock-06.otf in Resources */,
+				C290C50F25AE117D003F0EE9 /* Latinotype - Triump-Rg-Blur-12.otf in Resources */,
+				C290C50625AE117D003F0EE9 /* Latinotype - Triump-Rg-Blur-06.otf in Resources */,
+				C290C51725AE117D003F0EE9 /* Latinotype - Triump-Rg-Rock-04.otf in Resources */,
+				C290C52825AE1184003F0EE9 /* Yellow Design Studio - Eveleth Light.otf in Resources */,
+				C290C52C25AE1184003F0EE9 /* Yellow Design Studio - Eveleth Dot Light.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C2F43AF625A2ACE1002DA417 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C2F43B8725A37658002DA417 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2007,13 +2217,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C2F43B8525A37658002DA417 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		C2F43BD125A376F1002DA417 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2046,22 +2249,30 @@
 				C2F43D9925A37B6C002DA417 /* Metronome.swift in Sources */,
 				C2F43D9A25A37B6C002DA417 /* Transport.swift in Sources */,
 				C2E8C0CA25A7A8A7001A6CEC /* NodeDispatch.swift in Sources */,
-				C21A9CD825AB96CF0066EA26 /* PlayerView.swift in Sources */,
+				C24E1E2725AE44F7009D593E /* PlayerHost.swift in Sources */,
+				C21A9CD825AB96CF0066EA26 /* PlayerSKView.swift in Sources */,
+				C290C49E25ACE7A3003F0EE9 /* RecordToggle.swift in Sources */,
 				C2DF7AE425A8EE9C0045E7D9 /* ChordSelector.swift in Sources */,
 				C2E8C0DE25A7A8AE001A6CEC /* Tool.swift in Sources */,
 				C2E8C0D925A7A8AE001A6CEC /* ThrottleTool.swift in Sources */,
 				C21A9CD925AB96CF0066EA26 /* TrackCell.swift in Sources */,
 				C2F43D9F25A37B6C002DA417 /* Time.swift in Sources */,
+				C290C4AB25ACE9DB003F0EE9 /* PlayButton.swift in Sources */,
 				C2F43D9C25A37B6C002DA417 /* Sequence.swift in Sources */,
 				C2E8C0DC25A7A8AE001A6CEC /* NodeSelectionTool.swift in Sources */,
 				C2F43D9625A37B6C002DA417 /* Instrument.swift in Sources */,
 				C2DF7AA025A8EE600045E7D9 /* SoundFontSelector.swift in Sources */,
 				C2E8C0DD25A7A8AE001A6CEC /* GeneratorTool.swift in Sources */,
 				C2E8C0C825A7A8A7001A6CEC /* Node.swift in Sources */,
+				C223186625AE77AF0034D2E9 /* LoopButton.swift in Sources */,
+				C290C4B825ACE9F2003F0EE9 /* StopButton.swift in Sources */,
+				C24E1E3425AE4AE6009D593E /* PlayerView.swift in Sources */,
 				C2E8C0DA25A7A8AE001A6CEC /* RotateTool.swift in Sources */,
+				C21A9D7F25ABCEC90066EA26 /* TransportView.swift in Sources */,
 				C2F43DA525A37B6C002DA417 /* AudioEngine.swift in Sources */,
 				C21A9CD425AB96CF0066EA26 /* MixerCell.swift in Sources */,
 				C2F43D9E25A37B6C002DA417 /* TempoViewController.swift in Sources */,
+				C223185925AE6F870034D2E9 /* ToolButton.swift in Sources */,
 				C2E8C0DF25A7A8AE001A6CEC /* AddTool.swift in Sources */,
 				C2FB65F825A90E8F00A04A48 /* PlayerViewController.swift in Sources */,
 				C2F43D9725A37B6C002DA417 /* MixerContainer.swift in Sources */,
@@ -2081,15 +2292,21 @@
 				C2E8C06225A7A68A001A6CEC /* Picker.swift in Sources */,
 				C2E8C06025A7A68A001A6CEC /* PlayerContainer.swift in Sources */,
 				C2DF7AC825A8EE800045E7D9 /* PitchSelector.swift in Sources */,
+				C290C4F625AD2585003F0EE9 /* Clock.swift in Sources */,
 				C2F43D9D25A37B6C002DA417 /* TempoTrack.swift in Sources */,
 				C2F43DA125A37B6C002DA417 /* Loop.swift in Sources */,
 				C2F43D9525A37B6C002DA417 /* TransportViewController.swift in Sources */,
 				C2DF7B0E25A8EEC90045E7D9 /* VelocitySelector.swift in Sources */,
+				C21A9D8E25ACAF040066EA26 /* JogWheel.swift in Sources */,
 				C2F43DA425A37B6C002DA417 /* InstrumentTrack.swift in Sources */,
 				C2F43D9B25A37B6C002DA417 /* BarBeatTimeLabel.swift in Sources */,
+				C24E1E0425AE443C009D593E /* PlayerController.swift in Sources */,
 				C21A9CD625AB96CF0066EA26 /* AddTrackCell.swift in Sources */,
 				C2DF7ABA25A8EE710045E7D9 /* ProgramSelector.swift in Sources */,
 				C2E8C0ED25A7A8B2001A6CEC /* Player.swift in Sources */,
+				C290C4E925AD00B8003F0EE9 /* TempoSlider.swift in Sources */,
+				C290C4C625ACF523003F0EE9 /* MetronomeToggle.swift in Sources */,
+				C290C58325AE27BD003F0EE9 /* TransportController.swift in Sources */,
 				C2E8C0E025A7A8AE001A6CEC /* NudgeTool.swift in Sources */,
 				C2DF7AF225A8EEAC0045E7D9 /* OctaveSelector.swift in Sources */,
 			);
@@ -2127,6 +2344,7 @@
 		};
 		C252C874259D2E73000A0BA2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
+			platformFilter = ios;
 			target = C252C85F259D2E73000A0BA2 /* SoundFont */;
 			targetProxy = C252C873259D2E73000A0BA2 /* PBXContainerItemProxy */;
 		};
@@ -2142,6 +2360,7 @@
 		};
 		C28508DE25A643F20063049A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
+			platformFilter = ios;
 			target = C252C85F259D2E73000A0BA2 /* SoundFont */;
 			targetProxy = C28508DD25A643F20063049A /* PBXContainerItemProxy */;
 		};
@@ -2189,11 +2408,6 @@
 			isa = PBXTargetDependency;
 			target = C2F43AEF25A2ACE0002DA417 /* Common */;
 			targetProxy = C2F43B0325A2ACE1002DA417 /* PBXContainerItemProxy */;
-		};
-		C2F43B8E25A37658002DA417 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = C2E043301B72F4DC005F0675 /* Groove */;
-			targetProxy = C2F43B8D25A37658002DA417 /* PBXContainerItemProxy */;
 		};
 		C2F43BE025A376F1002DA417 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2378,10 +2592,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.SoundFont;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -2421,10 +2635,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.SoundFont;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -2463,9 +2677,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.SoundFont;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -2504,9 +2718,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.SoundFont;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -2694,6 +2908,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Groove.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -2712,8 +2927,9 @@
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
 				STRIP_STYLE = debugging;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = "Debug-Verbose";
 		};
@@ -2779,6 +2995,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Groove.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -2797,8 +3014,9 @@
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
 				STRIP_STYLE = debugging;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Profile;
 		};
@@ -2915,6 +3133,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Groove.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -2933,8 +3152,9 @@
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
 				STRIP_STYLE = debugging;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -2944,6 +3164,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Groove.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -2961,10 +3182,11 @@
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
 				STRIP_STYLE = debugging;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -3513,122 +3735,6 @@
 				);
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.CommonTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
-			};
-			name = Release;
-		};
-		C2F43B9E25A37658002DA417 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = JT6STF4SHA;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Tests/NodePlayerTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NodePlayerTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
-			};
-			name = Debug;
-		};
-		C2F43B9F25A37658002DA417 /* Debug-Verbose */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = JT6STF4SHA;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Tests/NodePlayerTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NodePlayerTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
-			};
-			name = "Debug-Verbose";
-		};
-		C2F43BA025A37658002DA417 /* Profile */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = JT6STF4SHA;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Tests/NodePlayerTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NodePlayerTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
-			};
-			name = Profile;
-		};
-		C2F43BA125A37658002DA417 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = JT6STF4SHA;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Tests/NodePlayerTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NodePlayerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -4286,17 +4392,6 @@
 				C2F43B0C25A2ACE1002DA417 /* Debug-Verbose */,
 				C2F43B0D25A2ACE1002DA417 /* Profile */,
 				C2F43B0E25A2ACE1002DA417 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		C2F43B9D25A37658002DA417 /* Build configuration list for PBXNativeTarget "NodePlayerTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				C2F43B9E25A37658002DA417 /* Debug */,
-				C2F43B9F25A37658002DA417 /* Debug-Verbose */,
-				C2F43BA025A37658002DA417 /* Profile */,
-				C2F43BA125A37658002DA417 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

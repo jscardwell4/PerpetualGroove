@@ -13,7 +13,7 @@ import MoonKit
 extension NSMetadataItem
 {
   /// Enumeration wrapping various file attribute keys.
-  enum ItemKey: String, EnumerableType
+  enum ItemKey: String, CaseIterable
   {
     case fsName = "kMDItemFSName"
     case displayName = "kMDItemDisplayName"

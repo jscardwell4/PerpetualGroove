@@ -14,7 +14,6 @@ import UIKit
 // MARK: - BarBeatTimeLabel
 
 /// A view for displaying a transport's bar beat time.
-@IBDesignable
 final class BarBeatTimeLabel: UIView
 {
   // MARK: Stored Properties
@@ -124,8 +123,6 @@ final class BarBeatTimeLabel: UIView
   /// for interface builder this method does nothing.
   private func setup()
   {
-    // Check that the build target is not interface builder.
-    #if !TARGET_INTERFACE_BUILDER
 
     // Register to receive notifications from the sequencer when it changes transports.
     transportSubscription = sequencer.$transport.sink { self.transport = $0 }
@@ -133,7 +130,6 @@ final class BarBeatTimeLabel: UIView
     // Set `transport` to the sequencer's current transport.
     transport = sequencer.transport
 
-    #endif
   }
 
   // MARK: Computed Properties
@@ -300,7 +296,7 @@ extension BarBeatTimeLabel
     /// The dictionary of attributes used to draw a component's text.
     static let characterAttributes: [NSAttributedString.Key: Any] = [
       .font: UIFont.largeDisplayFont,
-      .foregroundColor: UIColor.primaryColor,
+      .foregroundColor: UIColor.primaryColor1,
       .paragraphStyle: NSParagraphStyle.paragraphStyleWithAttributes(alignment: .center),
     ]
 

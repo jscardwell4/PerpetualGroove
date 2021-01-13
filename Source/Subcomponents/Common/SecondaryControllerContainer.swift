@@ -67,8 +67,8 @@ open class SecondaryControllerContainer: UIViewController
       let button = ImageButtonView(autolayout: true)
 
       button.image = image
-      button.normalTintColor = .pearlBush
-      button.highlightedTintColor = .mahogany
+      button.normalTintColor = .quaternaryColor1
+      button.highlightedTintColor = .highlightColor
       button.identifier = identifier
       button.accessibilityIdentifier = identifier
       button.addTarget(self, action: action, for: .touchUpInside)

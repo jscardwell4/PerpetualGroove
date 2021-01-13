@@ -138,7 +138,7 @@ public final class TransportViewController: UIViewController
 
       didToggleRecordingSubscription = NotificationCenter.default
         .publisher(for: .transportDidToggleRecording, object: transport)
-        .sink { _ in self.recordButton?.isSelected = self.transport.isRecording }
+        .sink { _ in self.recordButton?.isSelected = self.transport.recording }
     }
   }
 
@@ -152,10 +152,10 @@ public final class TransportViewController: UIViewController
 
   /// The action assigned to the record button. Toggles `transport.isRecording`.
   @IBAction public func record() {
-    transport.isRecording.toggle()
+    transport.recording.toggle()
     logi("""
       \(#fileID) \(#function) \
-      transport.isRecording = \(self.transport.isRecording)
+      transport.isRecording = \(self.transport.recording)
       """)
   }
 
@@ -163,12 +163,12 @@ public final class TransportViewController: UIViewController
   /// when the transport is playing and begins playback for the transport otherwise.
   @IBAction public func playPause()
   {
-    if transport.isPlaying {
-      transport.isPaused = true
+    if transport.playing {
+      transport.paused = true
       logi("\(#fileID) \(#function) transport.isPaused = true")
     }
     else {
-      transport.isPlaying = true
+      transport.playing = true
       logi("\(#fileID) \(#function) transport.isPlaying = true")
     }
   }

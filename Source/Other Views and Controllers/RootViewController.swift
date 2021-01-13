@@ -11,6 +11,7 @@ import Foundation
 import MoonKit
 import Sequencer
 import UIKit
+import SwiftUI
 
 /// The root view controller for the application's window.
 final class RootViewController: UIViewController
@@ -35,7 +36,7 @@ final class RootViewController: UIViewController
   /// The view controller responsible for presenting an interface for the
   /// current transport allowing playback to be started, paused, stopped,
   /// scrubbed, recorded, and reset.
-  private(set) weak var transportViewController: TransportViewController!
+  private(set) weak var transportViewController: TransportController!
   
   /// The stack containing the top and bottom stacks of content.
   @IBOutlet var contentStack: UIStackView!
@@ -60,9 +61,6 @@ final class RootViewController: UIViewController
   
   /// The view within which the transport is embedded.
   @IBOutlet var transportContainer: UIView!
-  
-  /// The view within which the tempo interface is embedded.
-  @IBOutlet var tempoContainer: UIView!
   
   /// Overridden to ensure the top stack is at the front.
   override func viewDidLoad()
@@ -119,7 +117,7 @@ final class RootViewController: UIViewController
   }
   
   /// Overridden to return `true`.
-  override var prefersStatusBarHidden: Bool { return true }
+  override var prefersStatusBarHidden: Bool { return false }
   
   /// Overridden to assign the destination controller to one of the root
   /// view controller's properties.
@@ -143,7 +141,7 @@ final class RootViewController: UIViewController
       case let controller as PlayerViewController:
         playerViewController = controller
         
-      case let controller as TransportViewController:
+      case let controller as TransportController:
         transportViewController = controller
         
       default:

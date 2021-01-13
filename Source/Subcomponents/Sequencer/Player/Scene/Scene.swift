@@ -22,7 +22,7 @@ public final class Scene: SKScene
     // Configure the scene's properties.
     $0.scaleMode = .aspectFit
     $0.physicsWorld.gravity = .zero
-    $0.backgroundColor = .backgroundColor
+    $0.backgroundColor = .backgroundColor1
 
     // Create and add the player node.
     $0.playerNode = PlayerNode(bezierPath: UIBezierPath(rect: $0.frame))

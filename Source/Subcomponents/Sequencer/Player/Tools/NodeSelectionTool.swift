@@ -253,10 +253,10 @@ public class NodeSelectionTool: Tool
     let preadjustedNodeStart = node.initTime
 
     // Store whether the transport is initially paused.
-    let isPaused = transport.isPaused
+    let isPaused = transport.paused
 
     // Make sure the transport is paused before adjusting.
-    if !isPaused { transport.isPaused = true }
+    if !isPaused { transport.paused = true }
 
     // Jog to the node's start time.
     transport.jog(to: preadjustedNodeStart)
@@ -275,7 +275,7 @@ public class NodeSelectionTool: Tool
     guard !isPaused else { return }
 
     // Resume playback.
-    transport.isPlaying = true
+    transport.playing = true
   }
 }
 

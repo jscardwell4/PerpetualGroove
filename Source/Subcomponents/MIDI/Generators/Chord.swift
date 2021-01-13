@@ -381,7 +381,7 @@ public struct Chord: RawRepresentable, Hashable, CustomStringConvertible
     
     /// An enumeration of commonly used chord patterns. The raw string values are suitable
     /// for use in `Pattern.init?(rawValue:)`.
-    public enum Standard: String, EnumerableType, Named
+    public enum Standard: String, CaseIterable, Named
     {
       case major = "(3,5)"
       case minor = "(♭3,5)"

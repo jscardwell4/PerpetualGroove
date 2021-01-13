@@ -37,7 +37,7 @@
                                     <outlet property="delegate" destination="6xH-va-xT7" id="7cP-70-k1G"/>
                                 </connections>
                             </textField>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JSz-xf-acH" userLabel="MIDI Player" customClass="PlayerView" customModule="Sequencer" customModuleProvider="target">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JSz-xf-acH" userLabel="MIDI Player" customClass="PlayerSKView" customModule="Sequencer" customModuleProvider="target">
                                 <rect key="frame" x="20" y="78" width="447" height="447"/>
                                 <color key="backgroundColor" systemColor="tertiarySystemFillColor"/>
                                 <accessibility key="accessibilityConfiguration" identifier="MIDIPlayer"/>

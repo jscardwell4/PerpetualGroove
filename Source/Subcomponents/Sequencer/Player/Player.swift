@@ -153,9 +153,9 @@ public final class Player
         try target.nodeManager.add(node: node)
 
         // Initiate playback if the transport is not currently playing.
-        if !sequencer.transport.isPlaying
+        if !sequencer.transport.playing
         {
-          sequencer.transport.isPlaying = true
+          sequencer.transport.playing = true
         }
 
         // Post notification that the node has been added.

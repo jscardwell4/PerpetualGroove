@@ -8,7 +8,7 @@
 import SpriteKit
 
 /// `SKView` subclass that presents a `Scene`.
-public final class PlayerView: SKView
+public final class PlayerSKView: SKView
 {
   /// The player scene being presented.
   public var playerScene: Scene? {

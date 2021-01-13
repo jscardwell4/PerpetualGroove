@@ -5,40 +5,71 @@
 //  Created by Jason Cardwell on 10/12/16.
 //  Copyright © 2016 Moondeer Studios. All rights reserved.
 //
-
 import Foundation
+import MoonKit
+import struct SwiftUI.Color
 import class UIKit.UIColor
+
+private let bundle = unwrapOrDie(Bundle(identifier: "com.moondeerstudios.Common"))
+
+public extension Color
+{
+  static let backgroundColor1 = Color("backgroundColor1", bundle: bundle)
+  static let backgroundColor2 = Color("backgroundColor2", bundle: bundle)
+  static let highlightColor = Color("highlightColor", bundle: bundle)
+  static let primaryColor1 = Color("primaryColor1", bundle: bundle)
+  static let primaryColor2 = Color("primaryColor2", bundle: bundle)
+  static let secondaryColor1 = Color("secondaryColor1", bundle: bundle)
+  static let secondaryColor2 = Color("secondaryColor2", bundle: bundle)
+  static let tertiaryColor1 = Color("tertiaryColor1", bundle: bundle)
+  static let tertiaryColor2 = Color("tertiaryColor2", bundle: bundle)
+  static let quaternaryColor1 = Color("quaternaryColor1", bundle: bundle)
+  static let quaternaryColor2 = Color("quaternaryColor2", bundle: bundle)
+  static let donkeyBrown = Color("donkeyBrown", bundle: bundle)
+  static let gravel = Color("gravel", bundle: bundle)
+  static let ironsideGray = Color("ironsideGray", bundle: bundle)
+  static let judgeGray = Color("judgeGray", bundle: bundle)
+  static let montana = Color("montana", bundle: bundle)
+  static let disabledColor = Color("disabledColor", bundle: bundle)
+  static let paleSlate = Color("paleSlate", bundle: bundle)
+}
 
 /// Extend `UIColor` with derived class properties for colors used within the application.
 public extension UIColor
 {
-  static var backgroundColor: UIColor { mineShaft }
-  static var popoverBackgroundColor: UIColor { rangoonGreen }
-  static var primaryColor: UIColor { silk }
-  static var primaryColor2: UIColor { cottonSeed }
-  static var secondaryColor: UIColor { grayNickel }
-  static var secondaryColor2: UIColor { bronco }
-  static var tertiaryColor: UIColor { fuscousGray }
-  static var tertiaryColor2: UIColor { stormDust }
-  static var quaternaryColor: UIColor { pearlBush }
-  static var highlightColor: UIColor { mahogany }
-
-  static var silk: UIColor { #colorLiteral(red: 0.729411764705882, green: 0.701960784313725, blue: 0.662745098039216, alpha: 1.0) }
-  static var cottonSeed: UIColor { #colorLiteral(red: 0.768627451, green: 0.7490196078, blue: 0.7254901961, alpha: 1) }
-  static var paleSlate: UIColor { #colorLiteral(red: 0.7764705882, green: 0.7529411765, blue: 0.7176470588, alpha: 1) }
-  static var grayNickel: UIColor { #colorLiteral(red: 0.5725490196, green: 0.5294117647, blue: 0.4705882353, alpha: 1) }
-  static var rangoonGreen: UIColor { #colorLiteral(red: 0.0980392156862745, green: 0.0980392156862745, blue: 0.0941176470588235, alpha: 1.0) }
-  static var montana: UIColor { #colorLiteral(red: 0.231372549019608, green: 0.231372549019608, blue: 0.231372549019608, alpha: 1.0) }
-  static var fuscousGray: UIColor { #colorLiteral(red: 0.301960784313725, green: 0.294117647058824, blue: 0.286274509803922, alpha: 1.0) }
-  static var mineShaft: UIColor { #colorLiteral(red: 0.2, green: 0.196078431372549, blue: 0.192156862745098, alpha: 1.0) }
-  static var nero: UIColor { #colorLiteral(red: 0.149019607843137, green: 0.149019607843137, blue: 0.145098039215686, alpha: 1.0) }
-  static var ironsideGray: UIColor { #colorLiteral(red: 0.333333333333333, green: 0.325490196078431, blue: 0.313725490196078, alpha: 1.0) }
-  static var gravel: UIColor { #colorLiteral(red: 0.301960784313725, green: 0.294117647058824, blue: 0.286274509803922, alpha: 1.0) }
-  static var judgeGray: UIColor { #colorLiteral(red: 0.36078431372549, green: 0.325490196078431, blue: 0.274509803921569, alpha: 1.0) }
-  static var bronco: UIColor { #colorLiteral(red: 0.662745098039216, green: 0.627450980392157, blue: 0.580392156862745, alpha: 1.0) }
-  static var stormDust: UIColor { #colorLiteral(red: 0.4, green: 0.392156862745098, blue: 0.380392156862745, alpha: 1.0) }
-  static var donkeyBrown: UIColor { #colorLiteral(red: 0.643137254901961, green: 0.580392156862745, blue: 0.486274509803922, alpha: 1.0) }
-  static var pearlBush: UIColor { #colorLiteral(red: 0.874509803921569, green: 0.827450980392157, blue: 0.76078431372549, alpha: 1.0) }
-  static var pearlBush2: UIColor { #colorLiteral(red: 0.909803921568627, green: 0.874509803921569, blue: 0.827450980392157, alpha: 1.0) }
-  static var mahogany: UIColor { #colorLiteral(red: 0.76078431372549, green: 0.254901960784314, blue: 0.0, alpha: 1.0) }
+  static let backgroundColor1 =
+    unwrapOrDie(UIColor(named: "backgroundColor1", in: bundle, compatibleWith: nil))
+  static let backgroundColor2 =
+    unwrapOrDie(UIColor(named: "backgroundColor2", in: bundle, compatibleWith: nil))
+  static let highlightColor =
+    unwrapOrDie(UIColor(named: "highlightColor", in: bundle, compatibleWith: nil))
+  static let primaryColor1 =
+    unwrapOrDie(UIColor(named: "primaryColor1", in: bundle, compatibleWith: nil))
+  static let primaryColor2 =
+    unwrapOrDie(UIColor(named: "primaryColor2", in: bundle, compatibleWith: nil))
+  static let secondaryColor1 =
+    unwrapOrDie(UIColor(named: "secondaryColor1", in: bundle, compatibleWith: nil))
+  static let secondaryColor2 =
+    unwrapOrDie(UIColor(named: "secondaryColor2", in: bundle, compatibleWith: nil))
+  static let tertiaryColor1 =
+    unwrapOrDie(UIColor(named: "tertiaryColor1", in: bundle, compatibleWith: nil))
+  static let tertiaryColor2 =
+    unwrapOrDie(UIColor(named: "tertiaryColor2", in: bundle, compatibleWith: nil))
+  static let quaternaryColor1 =
+    unwrapOrDie(UIColor(named: "quaternaryColor1", in: bundle, compatibleWith: nil))
+  static let quaternaryColor2 =
+    unwrapOrDie(UIColor(named: "quaternaryColor2", in: bundle, compatibleWith: nil))
+  static let donkeyBrown =
+    unwrapOrDie(UIColor(named: "donkeyBrown", in: bundle, compatibleWith: nil))
+  static let gravel =
+    unwrapOrDie(UIColor(named: "gravel", in: bundle, compatibleWith: nil))
+  static let ironsideGray =
+    unwrapOrDie(UIColor(named: "ironsideGray", in: bundle, compatibleWith: nil))
+  static let judgeGray =
+    unwrapOrDie(UIColor(named: "judgeGray", in: bundle, compatibleWith: nil))
+  static let montana =
+    unwrapOrDie(UIColor(named: "montana", in: bundle, compatibleWith: nil))
+  static let disabledColor = unwrapOrDie(UIColor(named: "disabledColor", in: bundle, compatibleWith: nil))
+  static let paleSlate =
+    unwrapOrDie(UIColor(named: "paleSlate", in: bundle, compatibleWith: nil))
 }

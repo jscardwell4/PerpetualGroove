@@ -3,6 +3,7 @@
     <device id="ipad9_7" orientation="landscape" layout="fullscreen" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -55,7 +56,7 @@
                                                     </mask>
                                                 </variation>
                                                 <connections>
-                                                    <segue destination="9eP-6Y-Ip3" kind="embed" id="qMo-AN-sAC"/>
+                                                    <segue destination="PuY-lH-MdJ" kind="embed" identifier="NodePlayer" id="AEG-ie-Fby"/>
                                                 </connections>
                                             </containerView>
                                         </subviews>
@@ -106,10 +107,10 @@
                                                 </connections>
                                             </view>
                                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="neB-2q-lJV">
-                                                <rect key="frame" x="247.5" y="0.0" width="358" height="150"/>
+                                                <rect key="frame" x="296" y="0.0" width="688" height="150"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="150" id="248-Pj-xhM"/>
-                                                    <constraint firstAttribute="width" constant="358" id="Cjv-EF-OUo"/>
+                                                    <constraint firstAttribute="width" constant="688" id="Cjv-EF-OUo"/>
                                                 </constraints>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TransportContainer"/>
@@ -127,17 +128,7 @@
                                                     </mask>
                                                 </variation>
                                                 <connections>
-                                                    <segue destination="dy3-8f-fO7" kind="embed" id="DK4-1E-XBN"/>
-                                                </connections>
-                                            </containerView>
-                                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="O9D-bO-M36">
-                                                <rect key="frame" x="674" y="14" width="310" height="122"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="122" id="V6T-LN-9w6"/>
-                                                    <constraint firstAttribute="width" constant="310" id="fNb-PE-qOd"/>
-                                                </constraints>
-                                                <connections>
-                                                    <segue destination="6r8-nl-XpT" kind="embed" id="Rto-sZ-p0g"/>
+                                                    <segue destination="IP7-6y-svq" kind="embed" identifier="Transport" id="mPn-GC-jxR"/>
                                                 </connections>
                                             </containerView>
                                         </subviews>
@@ -360,7 +351,6 @@
                         <outlet property="documentsPopoverView" destination="L5k-qi-Yb6" id="ib7-VB-2Y5"/>
                         <outlet property="midiContainer" destination="cDh-C7-9la" id="52L-qm-joj"/>
                         <outlet property="mixerContainer" destination="Xii-MX-zKn" id="66b-hf-2hE"/>
-                        <outlet property="tempoContainer" destination="O9D-bO-M36" id="g8E-Gk-9Iw"/>
                         <outlet property="topStack" destination="NZR-ya-29p" id="TEF-H3-XKm"/>
                         <outlet property="topStackHeight" destination="zSM-Hw-lw3" id="SgD-sH-xZn"/>
                         <outlet property="transportContainer" destination="neB-2q-lJV" id="G3D-rW-I4K"/>
@@ -384,14 +374,6 @@
             </objects>
             <point key="canvasLocation" x="112.5" y="1180.5"/>
         </scene>
-        <!--Transport-->
-        <scene sceneID="beA-cT-Q9Z">
-            <objects>
-                <viewControllerPlaceholder storyboardName="Transport" bundleIdentifier="com.moondeerstudios.Sequencer" id="dy3-8f-fO7" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="4Ca-7U-0NM" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="319" y="1165"/>
-        </scene>
         <!--MIDINodePlayerContainer-->
         <scene sceneID="8Az-Bg-Kgb">
             <objects>
@@ -399,6 +381,24 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8v7-d4-8pw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="716" y="1026"/>
+        </scene>
+        <!--Transport Controller-->
+        <scene sceneID="FJf-E8-6vq">
+            <objects>
+                <viewController storyboardIdentifier="Transport" id="IP7-6y-svq" customClass="TransportController" customModule="Sequencer" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="TVV-wq-rjc"/>
+                        <viewControllerLayoutGuide type="bottom" id="sfb-03-NYa"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="ECs-K0-GoD">
+                        <rect key="frame" x="0.0" y="0.0" width="688" height="150"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Kgd-Ou-R6I" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="932" y="1399"/>
         </scene>
         <!--Documents-->
         <scene sceneID="yJ1-PB-18M">
@@ -408,14 +408,6 @@
             </objects>
             <point key="canvasLocation" x="-66" y="1164"/>
         </scene>
-        <!--Tempo-->
-        <scene sceneID="8hZ-0F-23R">
-            <objects>
-                <viewControllerPlaceholder storyboardName="Tempo" bundleIdentifier="com.moondeerstudios.Sequencer" id="6r8-nl-XpT" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="d4v-oj-6bj" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="711" y="1157"/>
-        </scene>
         <!--Purgatory-->
         <scene sceneID="Rgq-7y-U6S">
             <objects>
@@ -424,9 +416,30 @@
             </objects>
             <point key="canvasLocation" x="529" y="1164"/>
         </scene>
+        <!--Player Controller-->
+        <scene sceneID="Wkb-5p-V4a">
+            <objects>
+                <viewController storyboardIdentifier="NodePlayer" id="PuY-lH-MdJ" customClass="PlayerController" customModule="Sequencer" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="0Ib-o8-h6s"/>
+                        <viewControllerLayoutGuide type="bottom" id="FJ1-5k-pAF"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="CcN-qm-pMM">
+                        <rect key="frame" x="0.0" y="0.0" width="482" height="575"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="CyW-v9-0Xh" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1198" y="825"/>
+        </scene>
     </scenes>
     <resources>
         <image name="files" width="56" height="56"/>
         <image name="files-selected" width="56" height="56"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>
