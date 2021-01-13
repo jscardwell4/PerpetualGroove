@@ -1,5 +1,5 @@
 //
-//  RecordToggle.swift
+//  TransportButton.swift
 //  Sequencer
 //
 //  Created by Jason Cardwell on 1/11/21.
@@ -7,16 +7,27 @@
 //
 import SwiftUI
 
+/// A view for toggling the state of recording for the transport.
 struct RecordToggle: View
 {
-  @Binding var isRecording: Bool
-
+  /// The view's body is composed of a single button that toggle's the value
+  /// of `transport.recording` and styles the button accordingly. 
   var body: some View
   {
-    Button(action: { self.isRecording.toggle() })
+    Button(action: { transport.recording.toggle() })
     {
       Image("record", bundle: bundle)
     }
-    .accentColor(isRecording ? .highlightColor : .primaryColor1)
+    .accentColor(transport.recording ? .highlightColor : .primaryColor2)
   }
+}
+
+struct RecordToggle_Previews: PreviewProvider {
+  static var previews: some View {
+    RecordToggle()
+      .previewLayout(.sizeThatFits)
+      .preferredColorScheme(.dark)
+      .padding()
+  }
+  
 }

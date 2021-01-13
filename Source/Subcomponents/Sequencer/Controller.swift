@@ -173,7 +173,7 @@ public final class Controller
   /// Accessor for the `clock.beatsPerMinute` property of the sequencer's transports.
   public var tempo: Double
   {
-    get { transport.tempo }
+    get { Double(transport.tempo) }
     set
     {
       // Update both the transport's `tempo` property.

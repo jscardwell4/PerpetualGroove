@@ -295,7 +295,7 @@ extension BarBeatTimeLabel
 
     /// The dictionary of attributes used to draw a component's text.
     static let characterAttributes: [NSAttributedString.Key: Any] = [
-      .font: UIFont.largeDisplayFont,
+      .font: UIFont.largeLabel,
       .foregroundColor: UIColor.primaryColor1,
       .paragraphStyle: NSParagraphStyle.paragraphStyleWithAttributes(alignment: .center),
     ]

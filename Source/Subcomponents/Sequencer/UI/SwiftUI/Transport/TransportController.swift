@@ -19,12 +19,12 @@ public final class TransportController: UIHostingController<TransportView>
 
   // MARK: Initializing
 
-  public init() { super.init(rootView: TransportView(transport: transport)) }
+  public init() { super.init(rootView: TransportView()) }
 
   override public init(rootView: TransportView) { super.init(rootView: rootView) }
 
   public required init?(coder aDecoder: NSCoder)
   {
-    super.init(rootView: TransportView(transport: transport))
+    super.init(rootView: TransportView())
   }
 }

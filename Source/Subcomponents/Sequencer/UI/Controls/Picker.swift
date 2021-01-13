@@ -102,8 +102,8 @@ public class Picker: UIControl, InlinePickerDelegate
   /// Sets the font and selected font for `picker`.
   func setFonts(for picker: InlinePickerView)
   {
-    picker.font = .controlFont
-    picker.selectedFont = .controlSelectedFont
+    picker.font = .control
+    picker.selectedFont = .controlSelected
   }
 
   /// Sets the item height and item padding for `picker`.

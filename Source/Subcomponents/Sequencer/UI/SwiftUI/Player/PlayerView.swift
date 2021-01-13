@@ -10,7 +10,7 @@ import SwiftUI
 
 // MARK: - PlayerView
 
-/// A view encapsulating the node player and various editing functionality.
+/// A view encapsulating the node player with limited editing functionality.
 public struct PlayerView: View
 {
   /// The backing string for the document name text field
@@ -52,10 +52,8 @@ public struct PlayerView: View
   /// document, and a horizontal toolbar containing buttons for the player's tools.
   public var body: some View
   {
-    // Wrap everything in a vertical stack.
     VStack
     {
-      // Create a text field for manipulating the name of the currently loaded document.
       TextField("Document Name",
                 text: $documentName,
                 onEditingChanged: isEditingDidChange(newValue:),
@@ -63,14 +61,12 @@ public struct PlayerView: View
         .autocapitalization(.none)
         .disableAutocorrection(true)
         .foregroundColor(isEditing ? .highlightColor : .primaryColor1)
-        .font(Font.custom("Triump-Rg-Rock-02", size: 24))
+        .font(.largeControlEditing)
         .multilineTextAlignment(.trailing)
         .padding(.trailing)
 
-      // Create the host for the `SKView` subclass.
-      PlayerHost().frame(width: 447, height: 447, alignment: .center)
+      PlayerHost()
 
-      // Create the horizontal stack for the tool buttons.
       HStack
       {
         Spacer()
@@ -100,7 +96,7 @@ public struct PlayerView: View
       }
       .padding()
     }
-    .padding()
+    .frame(width: 447)
     .accentColor(.primaryColor1)
   }
 }
@@ -111,10 +107,9 @@ struct PlayerView_Previews: PreviewProvider
 {
   static var previews: some View
   {
-    Group {
-      PlayerView().frame(width: 680, height: 600, alignment: .center)
-        .preferredColorScheme(.dark)
-        .previewLayout(.sizeThatFits)
-    }
+    PlayerView()
+      .preferredColorScheme(.dark)
+      .previewLayout(.sizeThatFits)
+      .padding()
   }
 }

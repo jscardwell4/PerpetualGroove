@@ -9,13 +9,13 @@ import SwiftUI
 
 // MARK: - ToolButton
 
-/// A view to serve as a button for one the player's tools.
+/// A view to serve as a button for selecting one the player's tools.
 public struct ToolButton: View
 {
   /// The tool represented by this button.
   private let tool: AnyTool
 
-  /// The name of the image for representing `tool`.
+  /// The name of the image found in `bundle` for representing `tool`.
   private var imageName: String
   {
     switch tool
@@ -35,10 +35,13 @@ public struct ToolButton: View
   {
     if tool != .none
     {
-      Button(
-        action: { player.currentTool = self.tool },
-        label: { Image(imageName, bundle: bundle) }
-      )
+      Button(action: { player.currentTool = self.tool })
+      {
+        Image(imageName, bundle: bundle)
+          .resizable()
+          .frame(width: 34, height: 34)
+      }
+
       .accentColor(player.currentTool == tool ? .highlightColor : .primaryColor1)
     }
   }

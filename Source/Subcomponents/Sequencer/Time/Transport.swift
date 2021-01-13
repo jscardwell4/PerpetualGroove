@@ -195,13 +195,13 @@ public final class Transport
   
   /// Initializing with a name.
   /// - Parameter name: The name to use for this transport and its `clock` property.
-  public init(name: String)
+  public init(name: String, beatsPerMinute: UInt16 = 120)
   {
     // Initialize the transport's name.
     self.name = name
     
     // Initialize the transport's clock with a new MIDI clock.
-    clock = MIDIClock(name: name)
+    clock = MIDIClock(name: name, beatsPerMinute: beatsPerMinute)
     
     // Create a new `Time` instance that observes the new MIDI clock.
     time = Time(clockSource: clock.endPoint)
@@ -211,10 +211,9 @@ public final class Transport
   
   /// The number of beats per minute. This property is simply a wrapper for
   /// `clock.beatsPerMinute`.
-  public var tempo: Double
+  @Published public var tempo: UInt16 = 120
   {
-    get { Double(clock.beatsPerMinute) }
-    set { clock.beatsPerMinute = UInt16(newValue) }
+    didSet { clock.beatsPerMinute = tempo }
   }
   
   // MARK: Jogging

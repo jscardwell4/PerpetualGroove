@@ -5,6 +5,7 @@
 //  Created by Jason Cardwell on 1/11/21.
 //  Copyright © 2021 Moondeer Studios. All rights reserved.
 //
+import Combine
 import Common
 import Foundation
 import MIDI
@@ -13,9 +14,17 @@ import SwiftUI
 
 // MARK: - Clock
 
+/// A view for displaying the transport's clock.
 struct Clock: View
 {
-  @Binding var currentTime: BarBeatTime
+  /// The bar beat time backing the display of this view.
+  @State private var currentTime: BarBeatTime = transport.time.barBeatTime
+
+  /// Holds the subscription for `transport.time.barBeatTime` updates.
+  private var currentTimeSubscription: Cancellable?
+
+  /// The view's body is composed of three groups of digits representing
+  /// the bar, beat, and subbeat values for `currentTime`.
   var body: some View
   {
     HStack(alignment: .center, spacing: 2)
@@ -26,46 +35,85 @@ struct Clock: View
       Divider(component: .beatSubbeatDivider)
       Digits(time: currentTime, component: .subbeat)
     }
-    .font(Font.custom("EvelethDotRegularBold", size: 44))
+    .font(.clock)
     .foregroundColor(.primaryColor1)
+    .frame(width: 300, height: 100)
+  }
+
+  /// The initializer configures the subscription for `transport.time.$barBeatTime`.
+  init()
+  {
+    currentTimeSubscription = transport.time.$barBeatTime.assign(
+      to: \.currentTime,
+      on: self
+    )
   }
 }
 
-extension Clock
+// MARK: - Digits
+
+/// A view for displaying digits for a clock component.
+private struct Digits: View
 {
-  struct Digits: View
+  /// An enumeration of digit-representable clock components.
+  enum Component
   {
-    enum Component { case bar, beat, subbeat }
+    /// The number of bars in the bar beat time.
+    case bar
 
-    private var digits: String
+    /// The number of beats in the bar beat time.
+    case beat
+
+    /// The number of subbeats in the bar beat time.
+    case subbeat
+  }
+
+  /// A string containing the component's digits.
+  private var digits: String
+  {
+    switch component
     {
-      switch component
-      {
-        case .bar: return String(time.bar, radix: 10, minCount: 3)
-        case .beat: return String(time.beat)
-        case .subbeat: return String(time.subbeat, radix: 10, minCount: 3)
-      }
-    }
-
-    let time: BarBeatTime
-    let component: Component
-
-    var body: some View
-    {
-      Text(verbatim: digits)
+      case .bar: return String(time.bar, radix: 10, minCount: 3)
+      case .beat: return String(time.beat)
+      case .subbeat: return String(time.subbeat, radix: 10, minCount: 3)
     }
   }
 
-  struct Divider: View
+  /// The time of which these digits compose some portion.
+  let time: BarBeatTime
+
+  /// The component to which the digits are assigned.
+  let component: Component
+
+  /// The view's body is simply some verbatim text set to `digits`.
+  var body: some View
   {
-    enum Component { case barBeatDivider, beatSubbeatDivider }
+    Text(verbatim: digits)
+  }
+}
 
-    let component: Component
+// MARK: - Divider
 
-    var body: some View
-    {
-      Text(verbatim: component == .barBeatDivider ? ":" : ".").baselineOffset(4.0)
-    }
+/// A view for displaying a divider between two instances of `Digits`.
+private struct Divider: View
+{
+  /// An enumeration of clock inter-digit dividers.
+  enum Component
+  {
+    /// The ':' divider between the bar and beat digits.
+    case barBeatDivider
+
+    /// The '.' divider between the beat and subbeat digits.
+    case beatSubbeatDivider
+  }
+
+  /// The component to which the divider is assigned.
+  let component: Component
+
+  /// The view's body is simply some verbatim text set to ':' or '.' accordinglgy.
+  var body: some View
+  {
+    Text(verbatim: component == .barBeatDivider ? ":" : ".").baselineOffset(4.0)
   }
 }
 
@@ -73,20 +121,11 @@ extension Clock
 
 struct Clock_Previews: PreviewProvider
 {
-  @State static var previewBarBeatTime = BarBeatTime(
-    bar: 1,
-    beat: 2,
-    subbeat: 124,
-    beatsPerBar: 4,
-    beatsPerMinute: 120,
-    subbeatDivisor: 480,
-    isNegative: false
-  )
   static var previews: some View
   {
-    Clock(currentTime: $previewBarBeatTime)
-      .frame(width: 300, height: 100, alignment: .center)
+    Clock()
       .previewLayout(.sizeThatFits)
       .preferredColorScheme(.dark)
+      .padding()
   }
 }

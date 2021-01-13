@@ -18,8 +18,13 @@ struct LoopButton: View
   /// The body of the view is either a single button or an empty view if `tool == .none`.
   var body: some View
   {
-    Button(action: action.action, label: { Image(action.imageName, bundle: bundle) })
-      .accentColor(.primaryColor1)
+    Button(action: action.action)
+    {
+      Image(action.imageName, bundle: bundle)
+        .resizable()
+        .frame(width: 34, height: 34)
+    }
+    .accentColor(.primaryColor1)
   }
 
   /// Default initializer.
@@ -27,18 +32,27 @@ struct LoopButton: View
   /// - Parameters:
   ///   - tool: The tool the button shall represent.
   ///   - action: The action that the button shall perform.
-  public init(action: Action)
-  {
-    self.action = action
-  }
-}
+  public init(action: Action) { self.action = action }
 
-extension LoopButton
-{
+  /// An enumeration of the action's performable by an instance of `LoopButton`.
   enum Action
   {
-    case beginRepeat, endRepeat, cancelLoop, confirmLoop, toggleLoop
+    /// Marks the starting position of a loop.
+    case beginRepeat
 
+    /// Marks the ending position of a loop.
+    case endRepeat
+
+    /// Exits loop mode discarding any editing modifications.
+    case cancelLoop
+
+    /// Exits loop mode storing any editing modifications.
+    case confirmLoop
+
+    /// Enters loop mode.
+    case toggleLoop
+
+    /// The name of the image found in `bundle` used by the button.
     var imageName: String
     {
       switch self
@@ -51,6 +65,7 @@ extension LoopButton
       }
     }
 
+    /// The action performed by the button.
     var action: () -> Void
     {
       switch self

@@ -28,7 +28,7 @@ public final class MIDIClock: Named
   
   /// The number of beats per minute. Setting the value of this property causes the clock
   /// to recalculate all of its properties deriving from this property.
-  public var beatsPerMinute: UInt16 = 120 { didSet { recalculate() } }
+  public var beatsPerMinute: UInt16 { didSet { recalculate() } }
   
   /// The number of nanoseconds per MIDI clock tick. The value of this property is
   /// calculated using the values of `resolution` and `beatsPerMinute`.
@@ -68,10 +68,11 @@ public final class MIDIClock: Named
   /// Initializing with the clock's name.
   ///
   /// - Parameter name: The name to assign the clock.
-  public init(name: String)
+  public init(name: String, beatsPerMinute: UInt16)
   {
-    // Initialize the clock's name using the value specified.
+    // Initialize the clock's name and beats per minute using the values specified.
     self.name = name
+    self.beatsPerMinute = beatsPerMinute
     
     // Force property calculations.
     recalculate()

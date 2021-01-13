@@ -9,9 +9,12 @@ import Foundation
 import SwiftUI
 import UIKit
 
+/// Controller for hosting instances of `PlayerView`.
 public final class PlayerController: UIHostingController<PlayerView>
 {
-  public override func viewDidLoad() {
+  /// Overridden to clear the background color.
+  override public func viewDidLoad()
+  {
     super.viewDidLoad()
     view.backgroundColor = .clear
   }
@@ -19,12 +22,6 @@ public final class PlayerController: UIHostingController<PlayerView>
   // MARK: Initializing
 
   public init() { super.init(rootView: PlayerView()) }
-
   override public init(rootView: PlayerView) { super.init(rootView: rootView) }
-
-  public required init?(coder aDecoder: NSCoder)
-  {
-    super.init(rootView: PlayerView())
-  }
-
+  public required init?(coder aDecoder: NSCoder) { super.init(rootView: PlayerView()) }
 }

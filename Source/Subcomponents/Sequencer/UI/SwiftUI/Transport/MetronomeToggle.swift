@@ -7,16 +7,32 @@
 //
 import SwiftUI
 
+// MARK: - MetronomeToggle
+
+/// A view for toggling the metronome on and off.
 struct MetronomeToggle: View
 {
-  @Binding var isOn: Bool
-  
+  /// The view's body is composed of a single button that toggles the value of
+  /// `metronome.isOn` and adjusts its color accordingly.
   var body: some View
   {
-    Button(action: { self.isOn.toggle() })
+    Button(action: { metronome.isOn.toggle() })
     {
       Image("metronome", bundle: bundle)
     }
-    .accentColor(isOn ? .highlightColor : .primaryColor1)
+    .accentColor(metronome.isOn ? .highlightColor : .primaryColor1)
+  }
+}
+
+// MARK: - MetronomeToggle_Previews
+
+struct MetronomeToggle_Previews: PreviewProvider
+{
+  static var previews: some View
+  {
+    MetronomeToggle()
+      .previewLayout(.sizeThatFits)
+      .preferredColorScheme(.dark)
+      .padding()
   }
 }

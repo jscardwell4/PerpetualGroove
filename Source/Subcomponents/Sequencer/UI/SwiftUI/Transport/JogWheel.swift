@@ -10,23 +10,45 @@ import SwiftUI
 
 // MARK: - JogWheel
 
-struct JogWheel: UIViewRepresentable
+/// A view for hosting an instance of `ScrollWheel` for jogging the transport.
+struct JogWheel: View
+{
+  /// The view's body is simply the hosted scroll wheel.
+  var body: some View
+  {
+    ScrollWheelHost()
+      .frame(width: 150, height: 150)
+  }
+}
+
+// MARK: - ScrollWheelHost
+
+/// A type for hosting `ScrollWheel` instances.
+private struct ScrollWheelHost: UIViewRepresentable
 {
 
+  /// Generates a scroll wheel styled and configured for use as a jog control.
   func makeUIView(context: Context) -> ScrollWheel
   {
-    let jogWheel = ScrollWheel(frame: CGRect(x: 0, y: 0, width: 150, height: 150))
-    jogWheel.wheelImage = UIImage(named: "wheel", in: bundle, with: nil)
-    jogWheel.dimpleImage = UIImage(named: "dimple", in: bundle, with: nil)
-    jogWheel.dimpleFillImage = UIImage(named: "dimple_fill", in: bundle, with: nil)
-    jogWheel.dimpleColor = .secondaryColor1
-    jogWheel.wheelColor = .secondaryColor2
-    jogWheel.dimpleStyle = .sourceAtop
-    jogWheel.dimpleFillStyle = .sourceIn
-    jogWheel.bounds = CGRect(size: CGSize(width: 150, height: 150))
-    return jogWheel
+    let scrollWheel = ScrollWheel(frame: CGRect(x: 0, y: 0, width: 150, height: 150))
+    scrollWheel.wheelImage = UIImage(named: "wheel", in: bundle, with: nil)
+    scrollWheel.dimpleImage = UIImage(named: "dimple", in: bundle, with: nil)
+    scrollWheel.dimpleFillImage = UIImage(named: "dimple_fill", in: bundle, with: nil)
+    scrollWheel.dimpleColor = .secondaryColor1
+    scrollWheel.wheelColor = .secondaryColor2
+    scrollWheel.dimpleStyle = .sourceAtop
+    scrollWheel.dimpleFillStyle = .sourceIn
+    scrollWheel.bounds = CGRect(size: CGSize(width: 150, height: 150))
+    return scrollWheel
   }
 
+  /// Updates the hosted scroll wheel.
+  ///
+  /// - Notice: This method currently does nothing.
+  ///
+  /// - Parameters:
+  ///   - uiView: The hosted `ScrollWheel` instance.
+  ///   - context: This parameter is ignored.
   func updateUIView(_ uiView: ScrollWheel, context: Context)
   {}
 }
@@ -37,8 +59,9 @@ struct JogWheel_Previews: PreviewProvider
 {
   static var previews: some View
   {
-    JogWheel().frame(width: 150, height: 150, alignment: .center)
+    JogWheel()
       .preferredColorScheme(.dark)
       .previewLayout(.sizeThatFits)
+      .padding()
   }
 }

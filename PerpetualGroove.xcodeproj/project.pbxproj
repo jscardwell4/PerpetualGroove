@@ -42,6 +42,9 @@
 		C252C884259D2EAD000A0BA2 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2207B901B9DC63300E4D65D /* File.swift */; };
 		C252C888259D2EBC000A0BA2 /* SoundFont2.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E542381BD56E00005B452F /* SoundFont2.swift */; };
 		C255A6E425A22C300012AD69 /* NodeEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E98CA325A112BD00FE1560 /* NodeEvent.swift */; };
+		C25AA36425AF633F009CDA25 /* EvelethFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25AA36325AF633F009CDA25 /* EvelethFont.swift */; };
+		C25AA37125AF6360009CDA25 /* TriumpFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25AA37025AF6360009CDA25 /* TriumpFont.swift */; };
+		C25AA37E25AF8334009CDA25 /* FontStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25AA37D25AF8334009CDA25 /* FontStyle.swift */; };
 		C263FCE5259D3F1D002B3377 /* SoundFontFileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FAAC7D1D99C7620089D1B0 /* SoundFontFileTests.swift */; };
 		C263FD01259D4250002B3377 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C263FD00259D4250002B3377 /* Nimble.framework */; platformFilter = ios; };
 		C263FD1B259E43AA002B3377 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C263FD1A259E43AA002B3377 /* Functions.swift */; };
@@ -525,6 +528,9 @@
 		C2562D091C63DBFB0086789D /* NodeManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NodeManager.swift; sourceTree = "<group>"; };
 		C2569E3F1B90005400EEB441 /* TempoTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TempoTrack.swift; sourceTree = "<group>"; };
 		C2576E0C1C13343E00F9A192 /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
+		C25AA36325AF633F009CDA25 /* EvelethFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EvelethFont.swift; sourceTree = "<group>"; };
+		C25AA37025AF6360009CDA25 /* TriumpFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TriumpFont.swift; sourceTree = "<group>"; };
+		C25AA37D25AF8334009CDA25 /* FontStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontStyle.swift; sourceTree = "<group>"; };
 		C25EBC821B8BFAFA00E57665 /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		C263FCFC259D41A5002B3377 /* SoundFont.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = SoundFont.xctestplan; sourceTree = "<group>"; };
 		C263FD00259D4250002B3377 /* Nimble.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Nimble.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -975,12 +981,23 @@
 			children = (
 				C2937E1925A6598B0061BD92 /* Supporting Files */,
 				C25114BC25ACCAFA00262893 /* Resources */,
+				C25AA36225AF6314009CDA25 /* Fonts */,
 				C22FA58C1BC830D600162DB4 /* Settings.swift */,
 				C24E83951C3EDFD800B4A16A /* SecondaryControllerContainer.swift */,
 				C29A337B1DAE7E4800728E4B /* Colors.swift */,
-				C29A337D1DAE7E8800728E4B /* Fonts.swift */,
 			);
 			path = Common;
+			sourceTree = "<group>";
+		};
+		C25AA36225AF6314009CDA25 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				C29A337D1DAE7E8800728E4B /* Fonts.swift */,
+				C25AA36325AF633F009CDA25 /* EvelethFont.swift */,
+				C25AA37025AF6360009CDA25 /* TriumpFont.swift */,
+				C25AA37D25AF8334009CDA25 /* FontStyle.swift */,
+			);
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 		C26A27ED1B93C0AE00BD1698 /* Sequencer */ = {
@@ -2202,10 +2219,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C25AA36425AF633F009CDA25 /* EvelethFont.swift in Sources */,
+				C25AA37125AF6360009CDA25 /* TriumpFont.swift in Sources */,
 				C2F43DE425A37B97002DA417 /* Settings.swift in Sources */,
 				C2F43B3625A2AD4F002DA417 /* Fonts.swift in Sources */,
 				C2F43B3825A2AD4F002DA417 /* Colors.swift in Sources */,
 				C2F43B3525A2AD4F002DA417 /* SecondaryControllerContainer.swift in Sources */,
+				C25AA37E25AF8334009CDA25 /* FontStyle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

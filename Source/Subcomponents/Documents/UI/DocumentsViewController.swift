@@ -122,11 +122,11 @@ public final class DocumentsViewController: UICollectionViewController
   /// Updates the width constraint for the new max character count.
   private func characterCountDidChange(from _: Int, to newCount: Int)
   {
-    itemWidth = CGFloat(max(15, newCount)) * UIFont.controlFont.characterWidth
+    itemWidth = CGFloat(max(15, newCount)) * UIFont.control.characterWidth
   }
 
   /// Minimum allowable width for an item's cell.
-  fileprivate static let minimumItemWidth: CGFloat = UIFont.controlFont.characterWidth * 15
+  fileprivate static let minimumItemWidth: CGFloat = UIFont.control.characterWidth * 15
 
   /// The current width for an item's cell.
   fileprivate var itemWidth: CGFloat = DocumentsViewController.minimumItemWidth
@@ -138,7 +138,7 @@ public final class DocumentsViewController: UICollectionViewController
   }
 
   /// The height for an item's cell.
-  fileprivate static let itemHeight: CGFloat = UIFont.controlFont.pointSize * 2
+  fileprivate static let itemHeight: CGFloat = UIFont.control.pointSize * 2
 
   /// The necessary height for displaying all the items in the collection.
   private var collectionHeight: CGFloat
