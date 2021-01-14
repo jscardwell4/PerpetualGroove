@@ -60,5 +60,7 @@ extension AnySoundFont
   enum Error: String, Swift.Error, CustomStringConvertible
   {
     case InvalidURL = "Invalid URL"
+
+    var description: String { rawValue }
   }
 }

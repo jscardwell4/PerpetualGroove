@@ -60,6 +60,9 @@ public extension UIFont
 
   /// The font created using `FontStyle.clock`.
   static let clock = UIFont(fontStyle: .clock)
+
+  /// The font created using `FontStyle.listItem`.
+  static let listItem = UIFont(fontStyle: .listItem)
 }
 
 /// Extend `Font` with `FontStyle` convenience initializer and static properties.
@@ -105,4 +108,8 @@ public extension Font
 
   /// The font created using `FontStyle.clock`.
   static let clock = Font.style(.clock)
+
+  /// The font created using `FontStyle.listItem`.
+  static let listItem = Font.style(.listItem)
+
 }

@@ -17,6 +17,8 @@ public extension Color
   static let backgroundColor1 = Color("backgroundColor1", bundle: bundle)
   static let backgroundColor2 = Color("backgroundColor2", bundle: bundle)
   static let highlightColor = Color("highlightColor", bundle: bundle)
+  static let deleteColor = Color("deleteColor", bundle: bundle)
+  static let deleteHighlightedColor = Color("deleteHighlightedColor", bundle: bundle)
   static let primaryColor1 = Color("primaryColor1", bundle: bundle)
   static let primaryColor2 = Color("primaryColor2", bundle: bundle)
   static let secondaryColor1 = Color("secondaryColor1", bundle: bundle)
@@ -43,6 +45,10 @@ public extension UIColor
     unwrapOrDie(UIColor(named: "backgroundColor2", in: bundle, compatibleWith: nil))
   static let highlightColor =
     unwrapOrDie(UIColor(named: "highlightColor", in: bundle, compatibleWith: nil))
+  static let deleteColor =
+    unwrapOrDie(UIColor(named: "deleteColor", in: bundle, compatibleWith: nil))
+  static let deleteHighlightedColor =
+    unwrapOrDie(UIColor(named: "deleteHighlightedColor", in: bundle, compatibleWith: nil))
   static let primaryColor1 =
     unwrapOrDie(UIColor(named: "primaryColor1", in: bundle, compatibleWith: nil))
   static let primaryColor2 =
@@ -69,7 +75,8 @@ public extension UIColor
     unwrapOrDie(UIColor(named: "judgeGray", in: bundle, compatibleWith: nil))
   static let montana =
     unwrapOrDie(UIColor(named: "montana", in: bundle, compatibleWith: nil))
-  static let disabledColor = unwrapOrDie(UIColor(named: "disabledColor", in: bundle, compatibleWith: nil))
+  static let disabledColor =
+    unwrapOrDie(UIColor(named: "disabledColor", in: bundle, compatibleWith: nil))
   static let paleSlate =
     unwrapOrDie(UIColor(named: "paleSlate", in: bundle, compatibleWith: nil))
 }

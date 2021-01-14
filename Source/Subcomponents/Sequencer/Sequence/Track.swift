@@ -174,7 +174,7 @@ public class Track: Named, EventDispatch, CustomStringConvertible
   /// - Parameter events: The MIDI events for which to generate registration times.
   /// - Returns: The registration times appropriate for `events`.
   public func registrationTimes<Source>(forAdding events: Source) -> [BarBeatTime]
-  where Source: Swift.Sequence, Source.Element == Event
+    where Source: Swift.Sequence, Source.Element == Event
   {
     // Get the end of track event contained by `events` or return an empty array.
     guard let eot = events.first(where: {
@@ -227,48 +227,48 @@ public extension Track
 {
   /// Enumeration for specifying the color of a MIDI node dispatching instance whose raw
   /// value is an unsigned 32-bit integer representing a hexadecimal RGB value.
-  enum Color: UInt32
+  enum Color: UInt32, CaseIterable
   {
-    case muddyWaters = 0xBD_7651
-    case steelBlue = 0x48_75A8
-    case celery = 0x9F_B44D
-    case chestnut = 0xBA_5055
-    case crayonPurple = 0x80_48A8
-    case verdigris = 0x48_A4A8
-    case twine = 0xBD_8F51
-    case tapestry = 0xAB_4A8D
-    case vegasGold = 0xBD_BA51
-    case richBlue = 0x50_48A8
-    case fruitSalad = 0x53_A949
-    case husk = 0xBD_A451
-    case mahogany = 0xC2_4100
-    case mediumElectricBlue = 0x00_499B
-    case appleGreen = 0x8E_B200
-    case venetianRed = 0xBC_000A
-    case indigo = 0x5B_009B
-    case easternBlue = 0x00_959B
-    case indochine = 0xC2_6E00
-    case flirt = 0xA2_006F
-    case ultramarine = 0x0C_009B
-    case laRioja = 0xC2_BC00
-    case forestGreen = 0x11_9E00
-    case pizza = 0xC2_9500
+    case muddyWaters = 0xBD7651
+    case steelBlue = 0x4875A8
+    case celery = 0x9FB44D
+    case chestnut = 0xBA5055
+    case crayonPurple = 0x8048A8
+    case verdigris = 0x48A4A8
+    case twine = 0xBD8F51
+    case tapestry = 0xAB4A8D
+    case vegasGold = 0xBDBA51
+    case richBlue = 0x5048A8
+    case fruitSalad = 0x53A949
+    case husk = 0xBDA451
+    case mahogany = 0xC24100
+    case mediumElectricBlue = 0x00499B
+    case appleGreen = 0x8EB200
+    case venetianRed = 0xBC000A
+    case indigo = 0x5B009B
+    case easternBlue = 0x00959B
+    case indochine = 0xC26E00
+    case flirt = 0xA2006F
+    case ultramarine = 0x0C009B
+    case laRioja = 0xC2BC00
+    case forestGreen = 0x119E00
+    case pizza = 0xC29500
 
     /// The `UIColor` derived from `rawValue`.
     public var value: UIColor { UIColor(rgbHex: rawValue) }
 
     public static func nextColor(after color: Color) -> Color
     {
-      colors[(colors.firstIndex(of: color)! + 1) % colors.count]
+      allCases[(allCases.firstIndex(of: color)! + 1) % allCases.count]
     }
 
     public static func nextColor(currentColors: Set<Color>) -> Color
     {
-      colors.first { currentColors ∌ $0 } ?? colors[0]
+      allCases.first { currentColors ∌ $0 } ?? allCases[0]
     }
 
     /// All possible `TrackColor` values.
-    public static let colors: [Color] = [
+    public static let allCases: [Color] = [
       .muddyWaters, .steelBlue, .celery, .chestnut, .crayonPurple, .verdigris, .twine,
       .tapestry, .vegasGold, .richBlue, .fruitSalad, .husk, .mahogany, .mediumElectricBlue,
       .appleGreen, .venetianRed, .indigo, .easternBlue, .indochine, .flirt, .ultramarine,

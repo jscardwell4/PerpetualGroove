@@ -27,6 +27,20 @@
 		C21A9D8E25ACAF040066EA26 /* JogWheel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21A9D8D25ACAF040066EA26 /* JogWheel.swift */; };
 		C223185925AE6F870034D2E9 /* ToolButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C223185825AE6F870034D2E9 /* ToolButton.swift */; };
 		C223186625AE77AF0034D2E9 /* LoopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C223186525AE77AF0034D2E9 /* LoopButton.swift */; };
+		C236B3EA25AFAFFC00109166 /* DocumentRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C236B3E925AFAFFC00109166 /* DocumentRow.swift */; };
+		C236B3F725AFB00F00109166 /* CreateDocumentRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C236B3F625AFB00F00109166 /* CreateDocumentRow.swift */; };
+		C236B40425AFB34B00109166 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C236B40325AFB34B00109166 /* Media.xcassets */; };
+		C236B41125AFCFEF00109166 /* MixerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C236B41025AFCFEF00109166 /* MixerView.swift */; };
+		C236B41E25AFD01000109166 /* MainBus.swift in Sources */ = {isa = PBXBuildFile; fileRef = C236B41D25AFD01000109166 /* MainBus.swift */; };
+		C236B42B25AFD25A00109166 /* VolumeSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C236B42A25AFD25A00109166 /* VolumeSlider.swift */; };
+		C236B43825AFDF1B00109166 /* PanKnob.swift in Sources */ = {isa = PBXBuildFile; fileRef = C236B43725AFDF1B00109166 /* PanKnob.swift */; };
+		C236B44525B0ACCB00109166 /* AddTrackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C236B44425B0ACCB00109166 /* AddTrackButton.swift */; };
+		C236B45225B0ACDF00109166 /* TrackBus.swift in Sources */ = {isa = PBXBuildFile; fileRef = C236B45125B0ACDF00109166 /* TrackBus.swift */; };
+		C236B45F25B0B61A00109166 /* SoloButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C236B45E25B0B61A00109166 /* SoloButton.swift */; };
+		C236B46C25B0B63000109166 /* MuteButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C236B46B25B0B63000109166 /* MuteButton.swift */; };
+		C236B48625B0B67000109166 /* BusLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C236B48525B0B67000109166 /* BusLabel.swift */; };
+		C236B49325B0B69000109166 /* SoundFontButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C236B49225B0B69000109166 /* SoundFontButton.swift */; };
+		C236B4A025B0B6A000109166 /* ColorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C236B49F25B0B6A000109166 /* ColorButton.swift */; };
 		C23ECB8F259FBC2B00F17D85 /* SFBKChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23ECB8E259FBC2B00F17D85 /* SFBKChunk.swift */; };
 		C24E1E0425AE443C009D593E /* PlayerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24E1E0325AE443C009D593E /* PlayerController.swift */; };
 		C24E1E2725AE44F7009D593E /* PlayerHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24E1E2625AE44F7009D593E /* PlayerHost.swift */; };
@@ -45,6 +59,8 @@
 		C25AA36425AF633F009CDA25 /* EvelethFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25AA36325AF633F009CDA25 /* EvelethFont.swift */; };
 		C25AA37125AF6360009CDA25 /* TriumpFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25AA37025AF6360009CDA25 /* TriumpFont.swift */; };
 		C25AA37E25AF8334009CDA25 /* FontStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25AA37D25AF8334009CDA25 /* FontStyle.swift */; };
+		C25AA38B25AFA354009CDA25 /* DocumentsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25AA38A25AFA354009CDA25 /* DocumentsController.swift */; };
+		C25AA39825AFA36F009CDA25 /* DocumentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25AA39725AFA36F009CDA25 /* DocumentsView.swift */; };
 		C263FCE5259D3F1D002B3377 /* SoundFontFileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FAAC7D1D99C7620089D1B0 /* SoundFontFileTests.swift */; };
 		C263FD01259D4250002B3377 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C263FD00259D4250002B3377 /* Nimble.framework */; platformFilter = ios; };
 		C263FD1B259E43AA002B3377 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C263FD1A259E43AA002B3377 /* Functions.swift */; };
@@ -489,6 +505,20 @@
 		C223B1A11C8364ED006CF6B5 /* EventContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventContainer.swift; sourceTree = "<group>"; };
 		C22FA58C1BC830D600162DB4 /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Settings.swift; path = ../../Settings.swift; sourceTree = "<group>"; };
 		C23516611E06E123009AC033 /* MIDINote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINote.swift; sourceTree = "<group>"; };
+		C236B3E925AFAFFC00109166 /* DocumentRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentRow.swift; sourceTree = "<group>"; };
+		C236B3F625AFB00F00109166 /* CreateDocumentRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateDocumentRow.swift; sourceTree = "<group>"; };
+		C236B40325AFB34B00109166 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
+		C236B41025AFCFEF00109166 /* MixerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MixerView.swift; sourceTree = "<group>"; };
+		C236B41D25AFD01000109166 /* MainBus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainBus.swift; sourceTree = "<group>"; };
+		C236B42A25AFD25A00109166 /* VolumeSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeSlider.swift; sourceTree = "<group>"; };
+		C236B43725AFDF1B00109166 /* PanKnob.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanKnob.swift; sourceTree = "<group>"; };
+		C236B44425B0ACCB00109166 /* AddTrackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTrackButton.swift; sourceTree = "<group>"; };
+		C236B45125B0ACDF00109166 /* TrackBus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackBus.swift; sourceTree = "<group>"; };
+		C236B45E25B0B61A00109166 /* SoloButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoloButton.swift; sourceTree = "<group>"; };
+		C236B46B25B0B63000109166 /* MuteButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteButton.swift; sourceTree = "<group>"; };
+		C236B48525B0B67000109166 /* BusLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusLabel.swift; sourceTree = "<group>"; };
+		C236B49225B0B69000109166 /* SoundFontButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundFontButton.swift; sourceTree = "<group>"; };
+		C236B49F25B0B6A000109166 /* ColorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorButton.swift; sourceTree = "<group>"; };
 		C239A1E925A780C900A14982 /* Emax Volume 1.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "Emax Volume 1.json"; sourceTree = "<group>"; };
 		C239A1EA25A780C900A14982 /* Emax Volume 6.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "Emax Volume 6.json"; sourceTree = "<group>"; };
 		C239A1EB25A780C900A14982 /* Emax Volume 4.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "Emax Volume 4.json"; sourceTree = "<group>"; };
@@ -531,6 +561,8 @@
 		C25AA36325AF633F009CDA25 /* EvelethFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EvelethFont.swift; sourceTree = "<group>"; };
 		C25AA37025AF6360009CDA25 /* TriumpFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TriumpFont.swift; sourceTree = "<group>"; };
 		C25AA37D25AF8334009CDA25 /* FontStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontStyle.swift; sourceTree = "<group>"; };
+		C25AA38A25AFA354009CDA25 /* DocumentsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentsController.swift; sourceTree = "<group>"; };
+		C25AA39725AFA36F009CDA25 /* DocumentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentsView.swift; sourceTree = "<group>"; };
 		C25EBC821B8BFAFA00E57665 /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		C263FCFC259D41A5002B3377 /* SoundFont.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = SoundFont.xctestplan; sourceTree = "<group>"; };
 		C263FD00259D4250002B3377 /* Nimble.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Nimble.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -837,6 +869,41 @@
 			path = SwiftUI;
 			sourceTree = "<group>";
 		};
+		C236B3E825AFAFCE00109166 /* SwiftUI */ = {
+			isa = PBXGroup;
+			children = (
+				C25AA39725AFA36F009CDA25 /* DocumentsView.swift */,
+				C25AA38A25AFA354009CDA25 /* DocumentsController.swift */,
+				C236B3E925AFAFFC00109166 /* DocumentRow.swift */,
+				C236B3F625AFB00F00109166 /* CreateDocumentRow.swift */,
+			);
+			path = SwiftUI;
+			sourceTree = "<group>";
+		};
+		C236B4B725B0DE2900109166 /* Controls */ = {
+			isa = PBXGroup;
+			children = (
+				C236B42A25AFD25A00109166 /* VolumeSlider.swift */,
+				C236B44425B0ACCB00109166 /* AddTrackButton.swift */,
+				C236B49225B0B69000109166 /* SoundFontButton.swift */,
+				C236B49F25B0B6A000109166 /* ColorButton.swift */,
+				C236B48525B0B67000109166 /* BusLabel.swift */,
+				C236B46B25B0B63000109166 /* MuteButton.swift */,
+				C236B45E25B0B61A00109166 /* SoloButton.swift */,
+				C236B43725AFDF1B00109166 /* PanKnob.swift */,
+			);
+			path = Controls;
+			sourceTree = "<group>";
+		};
+		C236B4B825B0DE5200109166 /* Columns */ = {
+			isa = PBXGroup;
+			children = (
+				C236B45125B0ACDF00109166 /* TrackBus.swift */,
+				C236B41D25AFD01000109166 /* MainBus.swift */,
+			);
+			path = Columns;
+			sourceTree = "<group>";
+		};
 		C239A1E625A7806B00A14982 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -929,6 +996,9 @@
 		C24E1DF625AE432A009D593E /* Mixer */ = {
 			isa = PBXGroup;
 			children = (
+				C236B4B825B0DE5200109166 /* Columns */,
+				C236B4B725B0DE2900109166 /* Controls */,
+				C236B41025AFCFEF00109166 /* MixerView.swift */,
 			);
 			path = Mixer;
 			sourceTree = "<group>";
@@ -1038,6 +1108,7 @@
 			children = (
 				C2012FC81E22C84D0067DDC5 /* DocumentCell.xib */,
 				C217EE521DB43CA10076B6E7 /* Documents.storyboard */,
+				C236B40325AFB34B00109166 /* Media.xcassets */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -1162,6 +1233,7 @@
 		C285084725A638A70063049A /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				C236B3E825AFAFCE00109166 /* SwiftUI */,
 				C26A27EE1B948E4E00BD1698 /* DocumentsViewController.swift */,
 			);
 			path = UI;
@@ -2092,6 +2164,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C2736D7F25AA5B4C00C88424 /* DocumentCell.xib in Resources */,
+				C236B40425AFB34B00109166 /* Media.xcassets in Resources */,
 				C2736DA525AA5B5800C88424 /* Documents.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2244,8 +2317,12 @@
 				C2F43DC425A37B7E002DA417 /* DocumentManager.swift in Sources */,
 				C285089025A63A620063049A /* Track.swift in Sources */,
 				C2F43DC625A37B7E002DA417 /* DocumentsViewController.swift in Sources */,
+				C236B3F725AFB00F00109166 /* CreateDocumentRow.swift in Sources */,
+				C236B3EA25AFAFFC00109166 /* DocumentRow.swift in Sources */,
+				C25AA39825AFA36F009CDA25 /* DocumentsView.swift in Sources */,
 				C2F43DC325A37B7E002DA417 /* File.swift in Sources */,
 				C285088E25A63A620063049A /* Node.swift in Sources */,
+				C25AA38B25AFA354009CDA25 /* DocumentsController.swift in Sources */,
 				C2F43DC525A37B7E002DA417 /* NSMetadataItem.swift in Sources */,
 				C2F43DC725A37B7E002DA417 /* Document.swift in Sources */,
 				C285088F25A63A620063049A /* Loop.swift in Sources */,
@@ -2272,10 +2349,14 @@
 				C24E1E2725AE44F7009D593E /* PlayerHost.swift in Sources */,
 				C21A9CD825AB96CF0066EA26 /* PlayerSKView.swift in Sources */,
 				C290C49E25ACE7A3003F0EE9 /* RecordToggle.swift in Sources */,
+				C236B49325B0B69000109166 /* SoundFontButton.swift in Sources */,
+				C236B48625B0B67000109166 /* BusLabel.swift in Sources */,
+				C236B43825AFDF1B00109166 /* PanKnob.swift in Sources */,
 				C2DF7AE425A8EE9C0045E7D9 /* ChordSelector.swift in Sources */,
 				C2E8C0DE25A7A8AE001A6CEC /* Tool.swift in Sources */,
 				C2E8C0D925A7A8AE001A6CEC /* ThrottleTool.swift in Sources */,
 				C21A9CD925AB96CF0066EA26 /* TrackCell.swift in Sources */,
+				C236B41125AFCFEF00109166 /* MixerView.swift in Sources */,
 				C2F43D9F25A37B6C002DA417 /* Time.swift in Sources */,
 				C290C4AB25ACE9DB003F0EE9 /* PlayButton.swift in Sources */,
 				C2F43D9C25A37B6C002DA417 /* Sequence.swift in Sources */,
@@ -2290,25 +2371,31 @@
 				C2E8C0DA25A7A8AE001A6CEC /* RotateTool.swift in Sources */,
 				C21A9D7F25ABCEC90066EA26 /* TransportView.swift in Sources */,
 				C2F43DA525A37B6C002DA417 /* AudioEngine.swift in Sources */,
+				C236B46C25B0B63000109166 /* MuteButton.swift in Sources */,
 				C21A9CD425AB96CF0066EA26 /* MixerCell.swift in Sources */,
+				C236B42B25AFD25A00109166 /* VolumeSlider.swift in Sources */,
 				C2F43D9E25A37B6C002DA417 /* TempoViewController.swift in Sources */,
 				C223185925AE6F870034D2E9 /* ToolButton.swift in Sources */,
 				C2E8C0DF25A7A8AE001A6CEC /* AddTool.swift in Sources */,
+				C236B44525B0ACCB00109166 /* AddTrackButton.swift in Sources */,
 				C2FB65F825A90E8F00A04A48 /* PlayerViewController.swift in Sources */,
 				C2F43D9725A37B6C002DA417 /* MixerContainer.swift in Sources */,
 				C2E8C0C925A7A8A7001A6CEC /* Scene.swift in Sources */,
 				C2F43DA825A37B6C002DA417 /* Track.swift in Sources */,
 				C2FB661225A90EA500A04A48 /* MixerViewController.swift in Sources */,
 				C2E8C0DB25A7A8AE001A6CEC /* RemoveTool.swift in Sources */,
+				C236B4A025B0B6A000109166 /* ColorButton.swift in Sources */,
 				C21A9CD525AB96CF0066EA26 /* MasterCell.swift in Sources */,
 				C2F43DA725A37B6C002DA417 /* Controller.swift in Sources */,
 				C2E8C0CC25A7A8A7001A6CEC /* NodeManager.swift in Sources */,
 				C2DF7B0025A8EEB60045E7D9 /* DurationSelector.swift in Sources */,
 				C21A9CD725AB96CF0066EA26 /* MixerLayout.swift in Sources */,
 				C2E8C0CB25A7A8A7001A6CEC /* PlayerNode.swift in Sources */,
+				C236B45F25B0B61A00109166 /* SoloButton.swift in Sources */,
 				C21A9CA625AA811F0066EA26 /* Mode.swift in Sources */,
 				C2F43DA625A37B6C002DA417 /* InstrumentViewController.swift in Sources */,
 				C2DF7AD625A8EE8F0045E7D9 /* PitchModifierSelector.swift in Sources */,
+				C236B45225B0ACDF00109166 /* TrackBus.swift in Sources */,
 				C2E8C06225A7A68A001A6CEC /* Picker.swift in Sources */,
 				C2E8C06025A7A68A001A6CEC /* PlayerContainer.swift in Sources */,
 				C2DF7AC825A8EE800045E7D9 /* PitchSelector.swift in Sources */,
@@ -2319,6 +2406,7 @@
 				C2DF7B0E25A8EEC90045E7D9 /* VelocitySelector.swift in Sources */,
 				C21A9D8E25ACAF040066EA26 /* JogWheel.swift in Sources */,
 				C2F43DA425A37B6C002DA417 /* InstrumentTrack.swift in Sources */,
+				C236B41E25AFD01000109166 /* MainBus.swift in Sources */,
 				C2F43D9B25A37B6C002DA417 /* BarBeatTimeLabel.swift in Sources */,
 				C24E1E0425AE443C009D593E /* PlayerController.swift in Sources */,
 				C21A9CD625AB96CF0066EA26 /* AddTrackCell.swift in Sources */,

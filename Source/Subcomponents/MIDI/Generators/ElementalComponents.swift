@@ -131,7 +131,7 @@ extension Velocity: LosslessJSONValueConvertible, ImageAssetLiteralType {}
 // MARK: - Duration
 
 /// An enumeration for expressing the duration of musical note.
-public enum Duration: String, EnumerableType
+public enum Duration: String, CaseIterable
 {
   case doubleWhole, dottedWhole, whole, dottedHalf, half, dottedQuarter, quarter,
        dottedEighth, eighth, dottedSixteenth, sixteenth, dottedThirtySecond, thirtySecond,

@@ -104,6 +104,14 @@ public struct FontStyle
     size: 64,
     style: .largeTitle
   )
+
+  /// A style with font `EvelethFont.light`, size `17`, and style `.title`.
+  public static let listItem = FontStyle(
+    font: EvelethFont.light,
+    size: 17,
+    style: .title
+  )
+
 }
 
 // MARK: - PostscriptFont

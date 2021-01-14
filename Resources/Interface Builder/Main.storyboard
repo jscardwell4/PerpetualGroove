@@ -3,6 +3,7 @@
     <device id="ipad9_7" orientation="landscape" layout="fullscreen" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -83,7 +84,9 @@
                                                     <constraint firstAttribute="width" secondItem="gJq-1L-zk3" secondAttribute="height" multiplier="1:1" id="XMe-jI-IHT"/>
                                                 </constraints>
                                                 <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="files"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="image">
+                                                        <imageReference key="value" image="files" renderingMode="template"/>
+                                                    </userDefinedRuntimeAttribute>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="DocumentsButton"/>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="files-selected"/>
                                                     <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
@@ -168,7 +171,7 @@
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="FilesPopoverContainer"/>
                                                 </userDefinedRuntimeAttributes>
                                                 <connections>
-                                                    <segue destination="Eww-vV-yXw" kind="embed" identifier="Files" id="gf3-z5-9vC"/>
+                                                    <segue destination="qcJ-mt-1TG" kind="embed" identifier="Files" id="VGZ-uX-Vvq"/>
                                                 </connections>
                                             </containerView>
                                         </subviews>
@@ -366,21 +369,31 @@
             </objects>
             <point key="canvasLocation" x="231.5" y="639.5"/>
         </scene>
+        <!--Documents Controller-->
+        <scene sceneID="nKt-wr-9sz">
+            <objects>
+                <viewController id="qcJ-mt-1TG" customClass="DocumentsController" customModule="Documents" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Ehg-jh-T2C"/>
+                        <viewControllerLayoutGuide type="bottom" id="dOj-Vd-CzJ"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Cx6-SJ-gHC">
+                        <rect key="frame" x="0.0" y="0.0" width="250" height="108"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iVD-RX-jvU" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-642" y="59"/>
+        </scene>
         <!--MixerContainer-->
         <scene sceneID="A7a-AD-6Of">
             <objects>
                 <viewControllerPlaceholder storyboardIdentifier="Mixer" storyboardName="MixerContainer" bundleIdentifier="com.moondeerstudios.Sequencer" id="kbm-WN-nc0" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8QL-P7-Hyc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="112.5" y="1180.5"/>
-        </scene>
-        <!--MIDINodePlayerContainer-->
-        <scene sceneID="8Az-Bg-Kgb">
-            <objects>
-                <viewControllerPlaceholder storyboardName="MIDINodePlayerContainer" bundleIdentifier="com.moondeerstudios.Sequencer" id="9eP-6Y-Ip3" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="8v7-d4-8pw" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="716" y="1026"/>
+            <point key="canvasLocation" x="-225" y="866"/>
         </scene>
         <!--Transport Controller-->
         <scene sceneID="FJf-E8-6vq">
@@ -398,15 +411,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Kgd-Ou-R6I" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="932" y="1399"/>
-        </scene>
-        <!--Documents-->
-        <scene sceneID="yJ1-PB-18M">
-            <objects>
-                <viewControllerPlaceholder storyboardIdentifier="Files" storyboardName="Documents" bundleIdentifier="com.moondeerstudios.Documents" referencedIdentifier="Documents" id="Eww-vV-yXw" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Czz-jX-k9v" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-66" y="1164"/>
+            <point key="canvasLocation" x="324" y="1431"/>
         </scene>
         <!--Purgatory-->
         <scene sceneID="Rgq-7y-U6S">
@@ -414,7 +419,7 @@
                 <viewControllerPlaceholder storyboardIdentifier="Purgatory" storyboardName="Purgatory" referencedIdentifier="Purgatory" id="m5P-Ta-9o8" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="L4r-o7-Ao6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="529" y="1164"/>
+            <point key="canvasLocation" x="-260" y="1136"/>
         </scene>
         <!--Player Controller-->
         <scene sceneID="Wkb-5p-V4a">
@@ -432,7 +437,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CyW-v9-0Xh" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1198" y="825"/>
+            <point key="canvasLocation" x="895" y="451"/>
         </scene>
     </scenes>
     <resources>

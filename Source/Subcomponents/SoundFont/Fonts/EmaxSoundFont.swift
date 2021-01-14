@@ -153,5 +153,7 @@ extension EmaxSoundFont
   enum Error: String, Swift.Error, CustomStringConvertible
   {
     case InvalidVolumeNumber = "Invalid volumne number"
+
+    var description: String { rawValue }
   }
 }

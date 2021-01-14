@@ -32,7 +32,7 @@ public final class Sequence
   /// the stack is popped, effectively updating the value of `currentTrack`.
   private var currentTrackStack: Stack<Weak<InstrumentTrack>> = []
   
-  private var trackSubscriptions: [InstrumentTrack: [AnyCancellable]] = [:]
+  private var trackSubscriptions: [InstrumentTrack: Set<AnyCancellable>] = [:]
   
   // MARK: Initialization
   
@@ -282,18 +282,17 @@ public final class Sequence
     instrumentTracks.append(track)
     
     // Subscribe to track notifications.
-    let didUpdate = NotificationCenter.default
-      .publisher(for: .trackDidUpdate, object: track)
-      .sink(receiveValue: { self.trackDidUpdate(notification: $0) })
-    
-    let soloStatusChanged = NotificationCenter.default
-      .publisher(for: .trackSoloStatusDidChange, object: track)
-      .sink { self.trackSoloStatusDidChange(notification: $0) }
-    
-    var subscriptions: [AnyCancellable] = []
-    didUpdate.store(in: &subscriptions)
-    soloStatusChanged.store(in: &subscriptions)
-    
+    var subscriptions: Set<AnyCancellable> = []
+
+    subscriptions.store {
+      NotificationCenter.default
+        .publisher(for: .trackDidUpdate, object: track)
+        .sink(receiveValue: { self.trackDidUpdate(notification: $0) })
+      NotificationCenter.default
+        .publisher(for: .trackSoloStatusDidChange, object: track)
+        .sink { self.trackSoloStatusDidChange(notification: $0) }
+    }
+
     trackSubscriptions[track] = subscriptions
     
     logi("track added: \(track.name)")
