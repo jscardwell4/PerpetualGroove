@@ -16,7 +16,7 @@ struct ColorButton: View
 
   @State var color: Track.Color
 
-  @Binding var isSelected: Bool
+  @State var isSelected: Bool
 
   private static let normalImage = Image("color_swatch", bundle: bundle)
   private static let selectedImage = Image("color_swatch-selected", bundle: bundle)
@@ -35,10 +35,9 @@ struct ColorButton: View
 
 struct ColorButton_Previews: PreviewProvider
 {
-  @State static var isSelected = false
   static var previews: some View
   {
-    ColorButton(color: .muddyWaters, isSelected: $isSelected)
+    ColorButton(color: .muddyWaters, isSelected: false)
       .previewLayout(.sizeThatFits)
       .preferredColorScheme(.dark)
       .padding()

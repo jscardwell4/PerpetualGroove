@@ -7,17 +7,27 @@
 //
 import AVFoundation
 import Foundation
-import MoonKit
+import MoonDev
 
 /// Singleton class for managing the application's audio environment and resources.
-public final class AudioEngine
+public final class AudioEngine: ObservableObject
 {
   /// The underlying audio engine.
   private let engine = AVAudioEngine()
   
   /// The mixer node provided by the audio engine.
-  public var mixer: AVAudioMixerNode { engine.mainMixerNode }
-  
+  internal var mixer: AVAudioMixerNode { engine.mainMixerNode }
+
+  /// Accessors for the volume of the master bus.
+  @Published public var masterVolume: Float {
+    didSet { mixer.volume = (0...1).clamp(masterVolume) }
+  }
+
+  /// Accessors for the pan of the master bus.
+  @Published public var masterPan: Float {
+    didSet { mixer.pan = (-1...1).clamp(masterPan) }
+  }
+
   /// Attach an `AVAudioNode` instance.
   ///
   /// - Parameter node: The node to attach.
@@ -36,6 +46,8 @@ public final class AudioEngine
     let audioSession = AVAudioSession.sharedInstance()
     try audioSession.setCategory(AVAudioSession.Category.playback)
     try audioSession.setActive(true)
+    masterVolume = engine.mainMixerNode.volume
+    masterPan = engine.mainMixerNode.pan
   }
   
   /// Starts the audio engine.

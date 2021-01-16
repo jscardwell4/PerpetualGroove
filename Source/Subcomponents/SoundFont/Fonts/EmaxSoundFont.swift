@@ -6,7 +6,7 @@
 //  Copyright © 2021 Moondeer Studios. All rights reserved.
 //
 import Foundation
-import MoonKit
+import MoonDev
 import class UIKit.UIImage
 
 // MARK: - EmaxSoundFont
@@ -75,7 +75,7 @@ public struct EmaxSoundFont: SoundFont2
 public extension EmaxSoundFont
 {
   /// A structure for specifying volume data within the 'Emax' collection.
-  struct Volume
+  struct Volume: Equatable
   {
     public let index: Int
     public let displayName: String

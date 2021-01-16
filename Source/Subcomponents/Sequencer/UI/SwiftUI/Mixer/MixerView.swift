@@ -6,23 +6,38 @@
 //  Copyright © 2021 Moondeer Studios. All rights reserved.
 //
 import Common
-import SwiftUI
-import MoonKit
+import MoonDev
 import SoundFont
+import SwiftUI
 
 // MARK: - MixerView
 
 struct MixerView: View
 {
+  @ObservedObject var model: MixerModel
+
   var body: some View
   {
+    // Generate the grid items.
+    let columns = Array(repeating: GridItem(.fixed(100)),
+                        count: model.sequence.instrumentTracks.count)
     HStack
     {
       MainBus()
-      TrackBus()
+      LazyVGrid(columns: columns, alignment: .center)
+      {
+        ForEach(model.sequence.instrumentTracks)
+        {
+          TrackBus(track: $0)
+        }
+      }
       AddTrackButton()
     }
-    .fixedSize()
+  }
+
+  init(sequence: Sequence)
+  {
+    model = MixerModel(sequence: sequence)
   }
 }
 
@@ -30,10 +45,24 @@ struct MixerView: View
 
 struct MixerView_Previews: PreviewProvider
 {
+  static let previewSequence: Sequence = {
+    let sequence = Sequence()
+    for index in 0 ..< 3
+    {
+      let font = AnySoundFont.bundledFonts.randomElement()!
+      let header = font.presetHeaders.randomElement()!
+      let preset = Instrument.Preset(font: font, header: header, channel: 0)
+      let instrument = try! Instrument(preset: preset, audioEngine: audioEngine)
+      sequence.add(track: try! InstrumentTrack(index: index + 1, instrument: instrument))
+    }
+    return sequence
+  }()
+
   static var previews: some View
   {
-    MixerView()
+    MixerView(sequence: previewSequence)
       .preferredColorScheme(.dark)
       .previewLayout(.sizeThatFits)
+      .fixedSize()
   }
 }

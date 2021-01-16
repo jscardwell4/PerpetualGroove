@@ -12,9 +12,8 @@ import SwiftUI
 
 struct SoloButton: View
 {
-  @Binding var isEngaged: Bool
 
-  @Binding var isEnabled: Bool
+  let isEngaged: Bool
 
   var body: some View
   {
@@ -24,13 +23,9 @@ struct SoloButton: View
         .font(.style(FontStyle(font: EvelethFont.light, size: 14, style: .title)))
     }
     .frame(width: 68, height: 14)
-    .accentColor(Color(isEngaged && !isEnabled
-                        ? "disabledEngagedTintColor"
-                        : (isEnabled && !isEngaged
-                            ? "disengagedTintColor"
-                            : (isEnabled
-                                ? "engagedTintColor"
-                                : "disabledTintColor")),
+    .accentColor(Color(isEngaged
+                        ? "engagedTintColor"
+                        : "disengagedTintColor",
                        bundle: bundle))
   }
 }
@@ -39,11 +34,9 @@ struct SoloButton: View
 
 struct SoloButton_Previews: PreviewProvider
 {
-  @State static var isEngaged: Bool = false
-  @State static var isEnabled: Bool = false
   static var previews: some View
   {
-    SoloButton(isEngaged: $isEngaged, isEnabled: $isEnabled)
+    SoloButton(isEngaged: false)
       .previewLayout(.sizeThatFits)
       .preferredColorScheme(.dark)
       .padding()

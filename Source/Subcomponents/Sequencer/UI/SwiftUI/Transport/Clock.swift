@@ -9,7 +9,7 @@ import Combine
 import Common
 import Foundation
 import MIDI
-import MoonKit
+import MoonDev
 import SwiftUI
 
 // MARK: - Clock

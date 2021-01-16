@@ -7,7 +7,7 @@
 //
 import CoreMIDI
 import Foundation
-import MoonKit
+import MoonDev
 
 // MARK: - MIDIClock
 

@@ -7,7 +7,7 @@
 //
 import Foundation
 import MIDI
-import MoonKit
+import MoonDev
 
 /// A subclass of `Track` for containing only tempo-related MIDI events.
 public final class TempoTrack: Track
@@ -182,14 +182,13 @@ public final class TempoTrack: Track
   
   // MARK: Initializing
   
-  /// Initializing with a sequence. Overridden to add time signature and tempo events to the
+  /// Initializing with an index. Overridden to add time signature and tempo events to the
   /// new track.
   ///
-  /// - Parameter sequence: The `Sequence` owning the new tempo track.
-  override public init(sequence: Sequence)
+  /// - Parameter index: The track's index.
+  override public init(index: Int)
   {
-    // Initialize with the sequence.
-    super.init(sequence: sequence)
+    super.init(index: index)
     
     // Add a time signature event with the sequencer's current value.
     add(event: .meta(timeSignatureEvent))
@@ -198,19 +197,18 @@ public final class TempoTrack: Track
     add(event: .meta(tempoEvent))
   }
   
-  /// Initializing with a sequence and a MIDI file chunk. The MIDI events contained by
+  /// Initializing with an index and a MIDI file chunk. The MIDI events contained by
   /// `trackChunk` are filtered using `TempoTrack.isTempoTrackEvent`. The filtered events
   /// are then added to the tempo track. If the filtered events did not contain a time
   /// signature event, `timeSignatureEvent` is added to the tempo track. If the filtered
   /// events did not contain a tempo event, `tempoEvent` is added to the tempo track.
   ///
   /// - Parameters:
-  ///   - sequence: The `Sequence` owning the tempo track.
+  ///   - index: The track's index.
   ///   - trackChunk: The `TrackChunk` containing the tempo track's MIDI events.
-  public init(sequence: Sequence, trackChunk: TrackChunk)
+  public init(index: Int, trackChunk: TrackChunk)
   {
-    // Initialize with the specified sequence.
-    super.init(sequence: sequence)
+    super.init(index: index)
     
     // Add all suitable MIDI events from `trackChunk` to the tempo track.
     add(events: trackChunk.events.filter(TempoTrack.isTempoTrackEvent))

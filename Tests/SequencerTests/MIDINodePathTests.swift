@@ -6,7 +6,7 @@
 //  Copyright © 2016 Moondeer Studios. All rights reserved.
 //
 import XCTest
-import MoonKit
+import MoonDev
 import Nimble
 @testable import Groove
 @testable import MIDI

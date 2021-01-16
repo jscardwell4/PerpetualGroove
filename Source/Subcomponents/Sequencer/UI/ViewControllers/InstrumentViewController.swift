@@ -7,7 +7,7 @@
 //
 import Common
 import MIDI
-import MoonKit
+import MoonDev
 import SoundFont
 import UIKit
 
@@ -32,12 +32,10 @@ public final class InstrumentViewController: UIViewController, SecondaryContent
     guard let instrument = instrument else { return }
 
     // Get the selected sound font.
-    let soundFont = SoundFont.bundledFonts[soundFontSelector.selection]
+    let soundFont = AnySoundFont.bundledFonts[soundFontSelector.selection]
 
     // Create a preset specifying the selected sound font's first program.
-    let preset = Instrument.Preset(soundFont: soundFont,
-                                   presetHeader: soundFont[0],
-                                   channel: 0)
+    let preset = Instrument.Preset(font: soundFont, header: soundFont[0], channel: 0)
 
     do
     {
@@ -71,8 +69,8 @@ public final class InstrumentViewController: UIViewController, SecondaryContent
 
     // Create a preset for the current configuration.
     let preset = Instrument.Preset(
-      soundFont: instrument.soundFont,
-      presetHeader: instrument.soundFont[programSelector.selection],
+      font: instrument.soundFont,
+      header: instrument.soundFont[programSelector.selection],
       channel: UInt8(channelStepper.value)
     )
 
@@ -132,10 +130,10 @@ public final class InstrumentViewController: UIViewController, SecondaryContent
       // Check that there is an instrument, that the view is loaded, and that indexes
       // may be retrieved for the sound font and the program.
       guard let instrument = instrument,
-            let soundFontIndex = SoundFont.bundledFonts
+            let soundFontIndex = AnySoundFont.bundledFonts
               .firstIndex(where: { instrument.soundFont.isEqualTo($0) }),
             let programIndex = instrument.soundFont.presetHeaders
-              .firstIndex(of: instrument.preset.presetHeader),
+              .firstIndex(of: instrument.preset.header),
             isViewLoaded
       else
       {

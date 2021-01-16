@@ -8,7 +8,7 @@
 import CoreMIDI
 import Foundation
 import MIDI
-import MoonKit
+import MoonDev
 
 /// A high level bar beat time representation that builds around the basic `BarBeatTime`
 /// structure. An instance of this class represents a bar beat time value synchronized

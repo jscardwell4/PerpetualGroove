@@ -9,7 +9,7 @@ import typealias AudioToolbox.AudioUnitParameterValue
 import typealias AudioUnit.AudioUnitElement
 import Combine
 import Common
-import MoonKit
+import MoonDev
 import UIKit
 
 // MARK: - MixerViewController
@@ -61,20 +61,20 @@ public final class MixerViewController: UICollectionViewController,
       selectTrack(at: monitoredSequence?.currentTrackIndex)
 
       // Observe the new sequence.
-      if let sequence = monitoredSequence
-      {
-        trackChangeSubscription = NotificationCenter.default
-          .publisher(for: .sequenceDidChangeTrack, object: sequence)
-          .sink(receiveValue: { self.updateTracks($0) })
-
-        trackAdditionSubscription = NotificationCenter.default
-          .publisher(for: .sequenceDidAddTrack, object: sequence)
-          .sink(receiveValue: { self.updateTracks($0) })
-
-        trackRemovalSubscription = NotificationCenter.default
-          .publisher(for: .sequenceDidRemoveTrack, object: sequence)
-          .sink(receiveValue: { self.updateTracks($0) })
-      }
+//      if let sequence = monitoredSequence
+//      {
+//        trackChangeSubscription = NotificationCenter.default
+//          .publisher(for: .sequenceDidChangeTrack, object: sequence)
+//          .sink(receiveValue: { self.updateTracks($0) })
+//
+//        trackAdditionSubscription = NotificationCenter.default
+//          .publisher(for: .sequenceDidAddTrack, object: sequence)
+//          .sink(receiveValue: { self.updateTracks($0) })
+//
+//        trackRemovalSubscription = NotificationCenter.default
+//          .publisher(for: .sequenceDidRemoveTrack, object: sequence)
+//          .sink(receiveValue: { self.updateTracks($0) })
+//      }
     }
   }
 
@@ -164,7 +164,7 @@ public final class MixerViewController: UICollectionViewController,
 
   /// `IndexPath` of the cell currently being magnified. This property is a simple
   /// wrapper around `collectionViewLayout.magnifiedItem`.
-  @WritablePassThrough(\MixerLayout.magnifiedItem) private var magnifiedItem: IndexPath?
+  @WritablePassthrough(\MixerLayout.magnifiedItem) private var magnifiedItem: IndexPath?
 
   /// `collectionViewLayout` downcast to its actual type.
   public var mixerLayout: MixerLayout { collectionViewLayout as! MixerLayout }
@@ -331,11 +331,9 @@ public final class MixerViewController: UICollectionViewController,
 
         // Check flag and retrieve the marked track's index.
         guard markedForRemoval, magnifiedItem != nil,
-              let trackIndex = (collectionView
-                                  .cellForItem(
-                                    at: magnifiedItem!
-                                  ) as? TrackCell)?
-                .track?.index
+              let track = (collectionView
+                            .cellForItem(at: magnifiedItem!) as? TrackCell)?.track,
+              let trackIndex = sequence.instrumentTracks.firstIndex(of: track)
         else
         {
           return
@@ -445,35 +443,35 @@ public final class MixerViewController: UICollectionViewController,
   func updateTracks(_ notification: Notification)
   {
     // Make sure there is a collection view to update.
-    guard let collectionView = collectionView else { return }
-
-    switch notification.name
-    {
-      case .sequenceDidAddTrack:
-        // Updated `addedTrackIndex` if the track at `added` is pending.
-        // Insert a cell for the added track and update the size of the collection.
-
-        guard let added = notification.addedTrackIndex else { break }
-        let addedIndexPath = Section.tracks[added]
-        if pendingTrackIndex == added { addedTrackIndex = addedIndexPath }
-        collectionView.insertItems(at: [addedIndexPath])
-        updateSize()
-
-      case .sequenceDidRemoveTrack:
-        // Delete the cell for the removed track and update the size of the collection.
-
-        guard let removed = notification.removedTrackIndex else { break }
-        collectionView.deleteItems(at: [Section.tracks[removed]])
-        updateSize()
-
-      case .sequenceDidChangeTrack:
-        // Select the new track.
-
-        selectTrack(at: monitoredSequence?.currentTrackIndex, animated: true)
-
-      default:
-        fatalError("Unexpected notification received.")
-    }
+//    guard let collectionView = collectionView else { return }
+//
+//    switch notification.name
+//    {
+//      case .sequenceDidAddTrack:
+//        // Updated `addedTrackIndex` if the track at `added` is pending.
+//        // Insert a cell for the added track and update the size of the collection.
+//
+//        guard let added = notification.addedTrackIndex else { break }
+//        let addedIndexPath = Section.tracks[added]
+//        if pendingTrackIndex == added { addedTrackIndex = addedIndexPath }
+//        collectionView.insertItems(at: [addedIndexPath])
+//        updateSize()
+//
+//      case .sequenceDidRemoveTrack:
+//        // Delete the cell for the removed track and update the size of the collection.
+//
+//        guard let removed = notification.removedTrackIndex else { break }
+//        collectionView.deleteItems(at: [Section.tracks[removed]])
+//        updateSize()
+//
+//      case .sequenceDidChangeTrack:
+//        // Select the new track.
+//
+//        selectTrack(at: monitoredSequence?.currentTrackIndex, animated: true)
+//
+//      default:
+//        fatalError("Unexpected notification received.")
+//    }
   }
 
   /// Updates the constants for the width and height constraints as well as the

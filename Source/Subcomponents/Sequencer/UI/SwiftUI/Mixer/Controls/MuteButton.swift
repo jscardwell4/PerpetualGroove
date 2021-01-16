@@ -12,9 +12,9 @@ import SwiftUI
 
 struct MuteButton: View
 {
-  @Binding var isEngaged: Bool
 
-  @Binding var isEnabled: Bool
+  let isEngaged: Bool
+  let isEnabled: Bool
 
   var body: some View
   {
@@ -39,11 +39,9 @@ struct MuteButton: View
 
 struct MuteButton_Previews: PreviewProvider
 {
-  @State static var isEngaged: Bool = false
-  @State static var isEnabled: Bool = false
   static var previews: some View
   {
-    MuteButton(isEngaged: $isEngaged, isEnabled: $isEnabled)
+    MuteButton(isEngaged: false, isEnabled: false)
       .previewLayout(.sizeThatFits)
       .preferredColorScheme(.dark)
       .padding()

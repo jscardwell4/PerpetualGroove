@@ -7,6 +7,7 @@
 //
 import Combine
 import Common
+import MoonDev
 import SoundFont
 import SwiftUI
 
@@ -14,23 +15,9 @@ import SwiftUI
 
 struct TrackBus: View
 {
-  @State var volume: Float = 5
+  @ObservedObject var model: TrackBusModel
 
-  @State var pan: Float = 0
-
-  @State var isSelected: Bool = false
-
-  @State var isSoloEngaged: Bool = false
-
-  @State var isSoloEnabled: Bool = true
-
-  @State var isMuteEngaged: Bool = false
-
-  @State var isMuteEnabled: Bool = true
-
-  @State var label: String = "Bus 1"
-
-//  @ObservedObject var track: InstrumentTrack
+  init(track: InstrumentTrack) { model = TrackBusModel(track: track) }
 
   /*
    removal display
@@ -39,13 +26,19 @@ struct TrackBus: View
   {
     VStack
     {
-      VolumeSlider(volume: $volume)
-      PanKnob(pan: $pan)
-      SoloButton(isEngaged: $isSoloEngaged, isEnabled: $isSoloEnabled).padding()
-      MuteButton(isEngaged: $isMuteEngaged, isEnabled: $isMuteEnabled).padding()
-      SoundFontButton(soundFont: bundledFonts[2])
-      BusLabel(label: $label).padding(.top)
-      ColorButton(color: .muddyWaters, isSelected: $isSelected).padding(.bottom)
+      VolumeSlider(volume: model.volume)
+      PanKnob(pan: model.pan)
+      SoloButton(isEngaged: model.isSoloed)
+        .padding()
+      MuteButton(isEngaged: model.isMute,
+                 isEnabled: model.isMuteEnabled)
+        .padding()
+      SoundFontButton(soundFont: model.soundFont)
+      BusLabel(label: model.displayName)
+        .padding(.top)
+      ColorButton(color: model.color,
+                  isSelected: model.isCurrent)
+        .padding(.bottom)
     }
   }
 }
@@ -54,9 +47,18 @@ struct TrackBus: View
 
 struct TrackBus_Previews: PreviewProvider
 {
+  static let previewTrack: InstrumentTrack = {
+    let font = AnySoundFont.bundledFonts.randomElement()!
+    let header =
+      unwrapOrDie(font.presetHeaders.randomElement())
+    let preset = Instrument.Preset(font: font, header: header, channel: 0)
+    let instrument = tryOrDie { try Instrument(preset: preset, audioEngine: audioEngine) }
+    return tryOrDie { try InstrumentTrack(index: 1, instrument: instrument) }
+  }()
+
   static var previews: some View
   {
-    TrackBus()
+    TrackBus(track: previewTrack)
       .previewLayout(.sizeThatFits)
       .preferredColorScheme(.dark)
       .fixedSize()

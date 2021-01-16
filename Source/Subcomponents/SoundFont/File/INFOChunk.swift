@@ -5,7 +5,7 @@
 //  Created by Jason Cardwell on 12/31/20.
 //  Copyright © 2020 Moondeer Studios. All rights reserved.
 //
-import MoonKit
+import MoonDev
 
 /// Parses the info chunk of the file
 public struct INFOChunk

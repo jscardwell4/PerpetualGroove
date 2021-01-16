@@ -6,7 +6,7 @@
 //  Copyright © 2021 Moondeer Studios. All rights reserved.
 //
 import Foundation
-import MoonKit
+import MoonDev
 
 /// A structure for representing a meta MIDI event. The signature of a meta MIDI event is
 /// as follows:

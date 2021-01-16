@@ -6,7 +6,7 @@
 //  Copyright © 2015 Moondeer Studios. All rights reserved.
 //
 import Foundation
-import MoonKit
+import MoonDev
 
 /// Extends `NSMetadataItem` to provide more convenient access to the various file
 /// attributes of the item.

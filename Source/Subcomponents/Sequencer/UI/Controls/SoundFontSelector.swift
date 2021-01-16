@@ -6,7 +6,7 @@
 //  Copyright © 2021 Moondeer Studios. All rights reserved.
 //
 import Foundation
-import MoonKit
+import MoonDev
 import SoundFont
 
 // MARK: - SoundFontSelector
@@ -17,7 +17,7 @@ public final class SoundFontSelector: Picker
   /// Overridden to update `items` with the names of the sequencer's sound fonts.
   override public func refreshItems()
   {
-    items = SoundFont.bundledFonts.map { .text($0.displayName) }
+    items = AnySoundFont.bundledFonts.map { .text($0.displayName) }
   }
   
   /// The names to use items when built for interface builder.

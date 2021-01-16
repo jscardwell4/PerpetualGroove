@@ -25,7 +25,7 @@ struct SoundFontButton: View {
 
 struct SoundFontButton_Previews: PreviewProvider {
     static var previews: some View {
-      SoundFontButton(soundFont: bundledFonts[0])
+      SoundFontButton(soundFont: AnySoundFont.bundledFonts[0])
           .previewLayout(.sizeThatFits)
           .preferredColorScheme(.dark)
           .padding()

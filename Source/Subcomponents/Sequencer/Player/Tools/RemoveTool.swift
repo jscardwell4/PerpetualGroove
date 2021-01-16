@@ -6,7 +6,7 @@
 //  Copyright © 2015 Moondeer Studios. All rights reserved.
 //
 import Combine
-import MoonKit
+import MoonDev
 import SpriteKit
 import UIKit
 
@@ -42,7 +42,7 @@ public final class RemoveTool: Tool
   /// The next open category to assign for foreground lighting.
   private static var categoryShift: UInt32 = 1
   {
-    didSet { categoryShift = (1 ... 31).clampValue(categoryShift) }
+    didSet { categoryShift = (1 ... 31).clamp(categoryShift) }
   }
 
   /// The name assigned to light nodes added by the tool.

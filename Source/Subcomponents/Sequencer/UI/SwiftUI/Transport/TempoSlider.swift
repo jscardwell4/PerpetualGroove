@@ -6,12 +6,12 @@
 //  Copyright © 2021 Moondeer Studios. All rights reserved.
 //
 import Combine
-import MoonKit
+import MoonDev
 import SwiftUI
 
 // MARK: - TempoSlider
 
-/// A view wrapping a hosted instance of `MoonKit.Slider` for controlling the
+/// A view wrapping a hosted instance of `MoonDev.Slider` for controlling the
 /// transport's tempo setting.
 struct TempoSlider: View
 {
@@ -23,7 +23,7 @@ struct TempoSlider: View
   {
     SliderHost(value: $tempo, valueChangedAction: UIAction
     {
-      transport.tempo = UInt16(($0.sender as! MoonKit.Slider).value)
+      transport.tempo = UInt16(($0.sender as! MoonDev.Slider).value)
     })
       .frame(width: 300, height: 44)
   }
@@ -40,7 +40,7 @@ struct TempoSlider: View
 
 // MARK: - SliderHost
 
-/// A wrapper for an instance of `MoonKit.Slider` configured for use as a tempo slider.
+/// A wrapper for an instance of `MoonDev.Slider` configured for use as a tempo slider.
 private struct SliderHost: UIViewRepresentable
 {
   /// The backing value for the slider.
@@ -53,11 +53,11 @@ private struct SliderHost: UIViewRepresentable
   ///
   /// - Parameter context: This parameter is ignored.
   /// - Returns: The hosted slider.
-  func makeUIView(context: Context) -> MoonKit.Slider
+  func makeUIView(context: Context) -> MoonDev.Slider
   {
     let thumbImage = UIImage(named: "horizontal_thumb", in: bundle, with: nil)!
     let height = thumbImage.size.height
-    let slider = MoonKit.Slider(frame: CGRect(size: CGSize(width: 300, height: height)))
+    let slider = MoonDev.Slider(frame: CGRect(size: CGSize(width: 300, height: height)))
     slider.backgroundColor = .clear
     slider.addAction(valueChangedAction, for: .valueChanged)
     slider.thumbImage = thumbImage
@@ -99,7 +99,7 @@ private struct SliderHost: UIViewRepresentable
   /// - Parameters:
   ///   - uiView: The hosted slider.
   ///   - context: This parameter is ignored.
-  func updateUIView(_ uiView: MoonKit.Slider, context: Context)
+  func updateUIView(_ uiView: MoonDev.Slider, context: Context)
   {
     uiView.value = Float(value)
   }

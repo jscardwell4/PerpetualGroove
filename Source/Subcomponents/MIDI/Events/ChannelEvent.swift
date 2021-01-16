@@ -6,7 +6,7 @@
 //  Copyright © 2021 Moondeer Studios. All rights reserved.
 //
 import Foundation
-import MoonKit
+import MoonDev
 
 /// Struct to hold data for a channel event where
 /// event = \<delta time\> \<status\> \<data1\> \<data2\>

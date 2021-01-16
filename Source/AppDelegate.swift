@@ -7,7 +7,7 @@
 //
 import Common
 import Documents
-import MoonKit
+import MoonDev
 import Sequencer
 import UIKit
 
@@ -26,7 +26,7 @@ import UIKit
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool
   {
-    MoonKit.Logger.shared.logLevel = .info
+    MoonDev.Logger.shared.logLevel = .info
     logi("\(#fileID) \(#function) Touching settings, sequencer, and documentManager…")
     _ = settings
     _ = sequencer

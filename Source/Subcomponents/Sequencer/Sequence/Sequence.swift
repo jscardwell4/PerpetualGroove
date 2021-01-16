@@ -9,36 +9,46 @@ import Combine
 import Common
 import Foundation
 import MIDI
-import MoonKit
+import MoonDev
 
 // MARK: - Sequence
 
 /// The `Sequence` class manages a collection of tracks and serves as the top level
 /// object persisted by the `Document` class.
-public final class Sequence
+public class Sequence
 {
   // MARK: Stored Properties
-  
+
   /// The collection of the sequence's tracks excluding the tempo track.
   public private(set) var instrumentTracks: [InstrumentTrack] = []
-  
+
   /// The tempo track for the sequence. When reading/writing to/from a type 1 MIDI file,
   /// the tempo track always precedes the list of instrument tracks.
-  public private(set) lazy var tempoTrack = TempoTrack(sequence: self)
-  
+  public private(set) lazy var tempoTrack = TempoTrack(index: 0)
+
   /// A stack structure holding weak references to instrument tracks. The top of this
   /// stack provides the `currentTrack` property value for the sequence. When a track is
   /// selected, a reference to the track is pushed to this stack. When a track is deleted,
   /// the stack is popped, effectively updating the value of `currentTrack`.
   private var currentTrackStack: Stack<Weak<InstrumentTrack>> = []
-  
+
+  /// Holds the cancellable subscriptions to track related publishers.
   private var trackSubscriptions: [InstrumentTrack: Set<AnyCancellable>] = [:]
-  
+
+  /// Subject for publishing added tracks.
+  private let trackAdditionSubject = PassthroughSubject<InstrumentTrack, Never>()
+
+  /// Subject for publishing removed tracks.
+  private let trackRemovalSubject = PassthroughSubject<InstrumentTrack, Never>()
+
+  /// Subject for publishing track changes.
+  private let trackChangeSubject = PassthroughSubject<Void, Never>()
+
   // MARK: Initialization
-  
+
   /// The default initializer.
   public init() {}
-  
+
   /// Initializing with MIDI file data. After the default
   /// initializer has been invoked passing `document`, the MIDI event data in `file` is
   /// used to generate the sequence's tempo and instrument tracks.
@@ -46,11 +56,11 @@ public final class Sequence
   {
     // Invoke the default initializer with the specified document.
     self.init()
-    
+
     // Get the file's track chunks. The array is converted into a slice so the variable
     // can be updated should the first track be consumed before the collection is iterated.
     var trackChunks = ArraySlice(file.tracks)
-    
+
     // If the first track chunk contains only tempo-related events replace the empty
     // tempo track created in the default initializer with a tempo track intialized
     // using the first track chunk.
@@ -58,39 +68,48 @@ public final class Sequence
        trackChunk.events.first(where: { !TempoTrack.isTempoTrackEvent($0) }) == nil
     {
       // Initialize the tempo track using the first track chunk.
-      tempoTrack = TempoTrack(sequence: self, trackChunk: trackChunk)
-      
+      tempoTrack = TempoTrack(index: 0, trackChunk: trackChunk)
+
       // Remove the first track chunk from the array of unprocessed track chunks.
       trackChunks = trackChunks.dropFirst()
     }
-    
+
     // Iterate the unprocessed track chunks.
-    for trackChunk in trackChunks
+    for (index, trackChunk) in trackChunks.enumerated()
     {
       // Initialize a new track using the track chunk.
-      guard let track = try? InstrumentTrack(sequence: self, trackChunk: trackChunk)
+      guard let track = try? InstrumentTrack(index: index + 1, trackChunk: trackChunk)
       else
       {
         continue
       }
-      
+
       // Add the track to the sequence.
       add(track: track)
     }
   }
-  
+
   // MARK: Computed Properties
-  
+
   /// The time of the last event in the sequence.
   public var sequenceEnd: BarBeatTime { tracks.map(\.endOfTrack).max() ?? .zero }
-  
+
   /// The position of the currently selected track within `instrumentTracks`.
   public var currentTrackIndex: Int?
   {
-    get { currentTrack?.index }
+    get
+    {
+      guard let track = currentTrack,
+            let index = instrumentTracks.firstIndex(of: track)
+      else
+      {
+        return nil
+      }
+      return index
+    }
     set { currentTrack = newValue == nil ? nil : instrumentTracks[newValue!] }
   }
-  
+
   /// The sequence's currently selected instrument track. Most of the operations
   /// performed by the mixer and the MIDI node player operate on value of this property
   /// of the sequence currently in use. This is a derived property backed by the
@@ -105,11 +124,11 @@ public final class Sequence
         // Pop the `nil` reference out of the stack.
         currentTrackStack.pop()
       }
-      
+
       // Return the reference at the top of `currentTrackStack`.
       return currentTrackStack.peek?.reference
     }
-    
+
     set
     {
       switch newValue
@@ -117,23 +136,23 @@ public final class Sequence
         case let newTrack?
               where currentTrackStack.peek?.reference !== newTrack:
           // A new track has been selected, push it onto the stack of instrument tracks.
-          
+
           currentTrackStack.push(Weak(newTrack))
-          
+
         case nil where !currentTrackStack.isEmpty:
           // The current track has been deselected.
-          
+
           currentTrackStack.pop()
-          
+
         default:
           // The new value is either already in the stack or the new value is `nil` and the
           // the stack is already empty.
-          
+
           break
       }
     }
   }
-  
+
   /// The number of beats per minute used by the sequence. This property wraps the property
   /// of `tempoTrack` with the same name.
   public var tempo: Double
@@ -141,7 +160,7 @@ public final class Sequence
     get { tempoTrack.tempo }
     set { tempoTrack.tempo = newValue }
   }
-  
+
   /// The time signature information used by the sequence. This property wraps the property
   /// of `tempoTrack` with the same name.
   public var timeSignature: TimeSignature
@@ -149,21 +168,24 @@ public final class Sequence
     get { tempoTrack.timeSignature }
     set { tempoTrack.timeSignature = newValue }
   }
-  
+
   /// The collection of all tracks in the sequence. This amounts to `instrumentTracks` with
   /// `tempoTrack` inserted as the first element in the collection.
   public var tracks: [Track] { [tempoTrack] + instrumentTracks }
-  
+
+  /// An array of all the instrument tracks currently set to solo.
+  public var soloTracks: [InstrumentTrack] { instrumentTracks.filter(\.isSoloed) }
+
   // MARK: Receiving Notifications
-  
+
   /// Indicates whether the sequence has been updated. This flag is to coalesce sequence
   /// updates occuring while the transport is playing into a single notification posted
   /// when the transport resets.
   private var hasChanges = false
-  
+
   /// Handler for track update notifications. If the transport is playing, this method
   /// sets the `hasChanges` flag; otherwise, this method posts a `didUpdate` notification.
-  private func trackDidUpdate(notification: Notification)
+  private func trackDidUpdate()
   {
     // If the transport is currently playing.
     if transport.playing
@@ -171,52 +193,22 @@ public final class Sequence
       // Set the `hashChanges` flag to `true` to postpone posting a notification.
       hasChanges = true
     }
-    
+
     // Otherwise, post notification that the sequence has been updated.
     else
     {
       // Clear the `hasChanges` flag since a notification is being posted.
       hasChanges = false
-      
-      logi("posting 'DidUpdate'")
-      
-      // Post the `didUpdate` notification.
-      postNotification(name: .sequenceDidUpdate, object: self)
     }
   }
-  
+
   /// Handler for `didToggleRecording` notifications received from the current transport.
   private func toggleRecording(notification: Notification)
   {
     // Update the tempo track's recording flag.
     tempoTrack.isRecording = sequencer.transport.recording
   }
-  
-  /// Handler for `soloStatusDidChange` notifications of a track. Sets the `forceMute`
-  /// property of each `instrumentTrack` according to whether the track has it's solo flag
-  /// set and which track is responsible for posting the notification.
-  private func trackSoloStatusDidChange(notification: Notification)
-  {
-    // Get the instrument track that posted `notification`, ensuring that the track
-    // is owned by the sequence.
-    guard let track = notification.object as? InstrumentTrack,
-          track.sequence === self
-    else
-    {
-      return
-    }
-    
-    // Create a set composed of the soloing tracks.
-    let soloTracks = Set(instrumentTracks.filter { $0.solo })
-    
-    // Iterate the instrument tracks to update their `forceMute` value.
-    for track in instrumentTracks
-    {
-      // Set the track's `forceMute` value according to whether the track is soloing.
-      track.forceMute = track ∉ soloTracks
-    }
-  }
-  
+
   /// Handler for `didReset` notifications received from the current transport. This method
   /// checks whether the `hasChanges` flag has been set. If it has then this method clears
   /// the flag and posts the `didUpdate` notification for the sequence.
@@ -224,33 +216,26 @@ public final class Sequence
   {
     // Check that the `hasChanges` flag has been set.
     guard hasChanges else { return }
-    
+
     // Clear the flag since notification is being posted.
     hasChanges = false
-    
-    logi("posting 'DidUpdate'")
-    
-    // Post notification that the sequence has been updated.
-    postNotification(name: .sequenceDidUpdate, object: self)
   }
-  
+
   // MARK: Track Management
-  
+
   /// Swaps the position of the instrument tracks located at `idx1` and `idx2`.
   public func exchangeInstrumentTrack(at idx1: Int, with idx2: Int)
   {
     // Check that both indexes are valid.
     guard instrumentTracks.indices.contains([idx1, idx2]) else { return }
-    
+
     // Perform the swap.
     instrumentTracks.swapAt(idx1, idx2)
-    
-    logi("posting 'DidUpdate'")
-    
-    // Post notification that the sequence has updated.
-    postNotification(name: .sequenceDidUpdate, object: self)
+
+    // Publish the change.
+    trackChangeSubject.send()
   }
-  
+
   /// Creates and adds a track to the sequence for the specified instrument. Posts a
   /// `didUpdate` notification for the sequence after the new track has been added.
   /// - Throws: Any error encountered creating the track with `instrument`.
@@ -259,17 +244,13 @@ public final class Sequence
   public func insertTrack(instrument: Instrument) throws
   {
     // Create a new track for the sequence that uses the specified instrument.
-    let track = try InstrumentTrack(sequence: self, instrument: instrument)
-    
+    let track = try InstrumentTrack(index: instrumentTracks.count + 1,
+                                    instrument: instrument)
+
     // Add the track to the sequence.
     add(track: track)
-    
-    logi("posting 'DidUpdate'")
-    
-    // Post notification that the sequence has been updated.
-    postNotification(name: .sequenceDidUpdate, object: self)
   }
-  
+
   /// Appends `track` to the collection of instrument tracks, registers to receive
   /// notifications from `track`, posts a `didAddTrack` notification, and selects `track`
   /// as the current track when `currentTrack` is `nil`.
@@ -277,34 +258,56 @@ public final class Sequence
   {
     // Check that the sequence has not already added the track.
     precondition(!instrumentTracks.contains(track))
-    
+
     // Append `track` to the collection of instrument tracks.
     instrumentTracks.append(track)
-    
+
     // Subscribe to track notifications.
     var subscriptions: Set<AnyCancellable> = []
 
-    subscriptions.store {
-      NotificationCenter.default
-        .publisher(for: .trackDidUpdate, object: track)
-        .sink(receiveValue: { self.trackDidUpdate(notification: $0) })
-      NotificationCenter.default
-        .publisher(for: .trackSoloStatusDidChange, object: track)
-        .sink { self.trackSoloStatusDidChange(notification: $0) }
+    subscriptions.store
+    {
+      track.didUpdatePublisher.sink { self.trackDidUpdate() }
+      track.$isSoloed.sink
+      {
+        [self] isSoloed in
+        // Ensure there was a value change.
+        let modified = track.isSoloed != isSoloed
+
+        // Get the latest solo group.
+        let soloTracks = self.soloTracks
+
+        if modified, isSoloed, soloTracks.isEmpty
+        {
+          // This is the first track to join the solo group.
+          for trackʹ in instrumentTracks where trackʹ !== track
+          {
+            trackʹ.isForceMuted = true
+          }
+        }
+
+        else if modified, !isSoloed, soloTracks.count == 1
+        {
+          // This is the last track being removed from the solo group.
+          for trackʹ in instrumentTracks where trackʹ !== track
+          {
+            trackʹ.isForceMuted = false
+          }
+        }
+      }
     }
 
     trackSubscriptions[track] = subscriptions
-    
+
+    // Publish the added track.
+    trackAdditionSubject.send(track)
+
     logi("track added: \(track.name)")
-    
-    // Post notification that the track was added to the sequence.
-    postNotification(name: .sequenceDidAddTrack, object: self,
-                     userInfo: ["addedTrackIndex": instrumentTracks.count - 1])
-    
+
     // Update `currentTrack` when `nil`.
     if currentTrack == nil { currentTrack = track }
   }
-  
+
   /// Removes the track at the specified position from `instrumentTracks`, removing any
   /// MIDI nodes belonging to the track from the MIDI node player, and posting
   /// `didRemoveTrack` and `didUpdate` notifications for the sequence.
@@ -312,59 +315,39 @@ public final class Sequence
   {
     // Get the instrument track, removing it from the collection.
     let track = instrumentTracks.remove(at: index)
-    
+
     // Stop and remove all the track's MIDI nodes.
     track.nodeManager.stopNodes(remove: true)
-    
+
     // Cancel notification subscriptions for the track.
     trackSubscriptions[track]?.forEach { $0.cancel() }
-    
+
+    // Publish the removed track.
+    trackRemovalSubject.send(track)
+
     logi("track removed: \(track.name)")
-    
-    // Post notification that the track has been removed from the sequence.
-    postNotification(name: .sequenceDidRemoveTrack, object: self,
-                     userInfo: ["removedTrackIndex": index, "removedTrack": track])
-    
-    logi("posting 'DidUpdate'")
-    
-    // Post notification that the sequence has been updated.
-    postNotification(name: .sequenceDidUpdate, object: self)
+
   }
 }
 
-// MARK: NotificationDispatching
+// MARK: - Publishers
 
-extension Sequence: NotificationDispatching
+public extension Sequence
 {
-  public static let didAddTrackNotification = Notification.Name("didAddTrack")
-  public static let didRemoveTrackNotification = Notification.Name("didRemoveTrack")
-  public static let didChangeTrackNotification = Notification.Name("didChangeTrack")
-  public static let didUpdateNotification = Notification.Name("didUpdate")
-}
+  var trackAdditionPublisher: AnyPublisher<InstrumentTrack, Never>
+  {
+    trackAdditionSubject.eraseToAnyPublisher()
+  }
 
-public extension Notification.Name
-{
-  static let sequenceDidAddTrack = Sequence.didUpdateNotification
-  static let sequenceDidRemoveTrack = Sequence.didRemoveTrackNotification
-  static let sequenceDidChangeTrack = Sequence.didChangeTrackNotification
-  static let sequenceDidUpdate = Sequence.didUpdateNotification
-}
+  var trackRemovalPublisher: AnyPublisher<InstrumentTrack, Never>
+  {
+    trackRemovalSubject.eraseToAnyPublisher()
+  }
 
-public extension Notification
-{
-  /// The postion in the sequence's collection of instrument tracks from which a track
-  /// has been removed or `nil` when the notification is not a `didRemoveTrack` notificaiton
-  /// posted by a sequence. The removed track is made available via `removedTrack`.
-  var removedTrackIndex: Int? { userInfo?["removedTrackIndex"] as? Int }
-  
-  /// The postion in the sequence's collection of instrument tracks containing a newly
-  /// added track or `nil` when the notification is a `didAddTrack` notification posted
-  /// by a sequence.
-  var addedTrackIndex: Int? { userInfo?["addedTrackIndex"] as? Int }
-  
-  /// The instrument track removed by a sequence or `nil` when the notification is not a
-  /// `didRemoveTrack` notification posted by a sequence.
-  var removedTrack: InstrumentTrack? { userInfo?["removedTrack"] as? InstrumentTrack }
+  var trackChangePublisher: AnyPublisher<Void, Never>
+  {
+    trackChangeSubject.eraseToAnyPublisher()
+  }
 }
 
 public extension MIDI.File
@@ -374,10 +357,11 @@ public extension MIDI.File
   {
     // Initialize `tracks` by mapping the tracks in the sequence to their generated chunks.
     let tracks = sequence.tracks.map { $0.chunk }
-    
+
     // Initialize `header` to a chunk using default values and the number of tracks.
     let header = HeaderChunk(numberOfTracks: UInt16(tracks.count))
-    
+
     self.init(tracks: tracks, header: header)
   }
 }
+

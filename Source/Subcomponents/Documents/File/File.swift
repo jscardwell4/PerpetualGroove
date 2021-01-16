@@ -8,7 +8,7 @@
 import Common
 import Foundation
 import MIDI
-import MoonKit
+import MoonDev
 import Sequencer
 
 // MARK: - File
@@ -157,10 +157,10 @@ public extension Sequencer.Sequence
     tempoTrack.add(events: tempoEvents)
     
     // Iterate through the file's instrument track data.
-    for trackData in file.tracks
+    for (index, trackData) in file.tracks.enumerated()
     {
       // Initialize a new track using `trackData`.
-      guard let track = try? InstrumentTrack(sequence: self,
+      guard let track = try? InstrumentTrack(index: index + 1,
                                              grooveTrack: trackData)
       else { continue }
       
@@ -205,17 +205,17 @@ public extension Sequencer.Loop
 
 public extension InstrumentTrack
 {
-  /// Initializing with a sequence and track data from a Groove file. An instrument is
+  /// Initializing with an index and track data from a Groove file. An instrument is
   /// created for the track using the preset data specified by `grooveTrack`, any loop
   /// data provided by `grooveTrack` is used to add loops to the track, and any node data
   /// provided by `grooveTrack` is used to generate MIDI node events for the track.
   ///
   /// - Parameters:
-  ///   - sequence: The `Sequence` that owns the created track.
+  ///   - index: The track's index.
   ///   - grooveTrack: The instrument and event data used to initialize the track.
   /// - Throws: Any error encountered creating the track's instrument, any error
   ///           encountered creating the MIDI client/ports.
-  convenience init(sequence: Sequencer.Sequence, grooveTrack: Documents.File.Track) throws
+  convenience init(index: Int, grooveTrack: Documents.File.Track) throws
   {
     // Create an array for accumulating MIDI events.
     var events: [Event] = []
@@ -240,7 +240,7 @@ public extension InstrumentTrack
       }
     }
     
-    try self.init(sequence: sequence,
+    try self.init(index: index,
                   preset: Instrument.Preset(grooveTrack.instrument.jsonValue),
                   color: grooveTrack.color,
                   name: grooveTrack.name,

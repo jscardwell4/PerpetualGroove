@@ -2,65 +2,127 @@
 //  AnySoundFont.swift
 //  SoundFont
 //
-//  Created by Jason Cardwell on 1/7/21.
+//  Created by Jason Cardwell on 1/15/21.
 //  Copyright © 2021 Moondeer Studios. All rights reserved.
 //
 import Foundation
-import MoonKit
+import MoonDev
 import class UIKit.UIImage
 
 // MARK: - AnySoundFont
 
-/// A structure for creating a sound font with only a URL.
-public struct AnySoundFont: SoundFont2
+/// A wrapper for types that implement the `SoundFont2` protocol.
+public enum AnySoundFont: SoundFont2
 {
-  /// The URL for the file containing the sound font's data.
-  public let url: URL
-  
-  /// The image to display in the user interface for the sound font.
-  public var image: UIImage { #imageLiteral(resourceName: "theremin") }
-  
-  /// Whether the sound font contains general midi percussion presets.
-  public let isPercussion: Bool
-  
-  /// The base name of the file located at `url`.
-  public var fileName: String { url.path.baseNameExt.baseName }
-  
-  /// The user-facing name of the sound font.
-  public var displayName: String { fileName }
-  
-  /// Initializing with a URL.
-  /// - Parameters:
-  ///   - url: The url for the sound font file.
-  ///   - isPercussion: Whether the file contains percussion.
-  /// - Requires: `url` is reachable.
-  /// - Throws: `ErrorMessage` when `url` is not reachable.
-  public init(url: URL, isPercussion: Bool = false) throws
+  /// A case for wrapping instances of `EmaxSoundFont`.
+  case emax(EmaxSoundFont)
+
+  /// A case for wrapping instances of `CustomSoundFont`.
+  case custom(CustomSoundFont)
+
+  /// The `SoundFont2` type being wrapped by this enumeration.
+  private var underlyingFont: SoundFont2
   {
-    // Check that the url is reachable.
-    guard try url.checkResourceIsReachable() else { throw Error.InvalidURL }
-    
-    // Initialize `url` with the specified URL.
-    self.url = url
-    
-    // Initialize the percussion flag.
-    self.isPercussion = isPercussion
+    switch self
+    {
+      case let .emax(underlyingFont):
+        return underlyingFont
+      case let .custom(underlyingFont):
+        return underlyingFont
+    }
   }
-  
-  /// Initializing with a URL. The `isPercussion` flag will be set to `false`.
-  /// - Parameter url: The url for the sound font file.
-  /// - Requires: `url` is reachable.
-  /// - Throws: `ErrorMessage` when `url` is not reachable.
-  public init(url: URL) throws { try self.init(url: url, isPercussion: false) }
+
+  /// The URL of the file that defines the sound font.
+  public var url: URL { underlyingFont.url }
+
+  /// Whether the sound font contains general midi percussion presets.
+  public var isPercussion: Bool { underlyingFont.isPercussion }
+
+  /// The name to display in the user interface for the sound font.
+  public var displayName: String { underlyingFont.displayName }
+
+  /// The sound font file's base name without the extension.
+  public var fileName: String { underlyingFont.fileName }
+
+  /// The image to display in the user interface for the sound font.
+  public var image: UIImage { underlyingFont.image }
+
+  /// Initialize a sound font using it's file location.
+  public init(url: URL) throws
+  {
+    do
+    {
+      self = .emax(try EmaxSoundFont(url: url))
+    }
+    catch
+    {
+      self = .custom(try CustomSoundFont(url: url))
+    }
+  }
 }
 
-extension AnySoundFont
+public extension AnySoundFont
 {
-  /// Enumeration of the possible errors thrown by `SoundFont` types.
-  enum Error: String, Swift.Error, CustomStringConvertible
+  /// Derived array holding all the fonts stored as static properties below.
+  static var bundledFonts: [AnySoundFont]
   {
-    case InvalidURL = "Invalid URL"
+    [
+      .brassAndWoodwinds,
+      .keyboardsAndSynths,
+      .guitarsAndBasses,
+      .worldInstruments,
+      .drumsAndPercussions,
+      .orchestral,
+      .spyro
+    ]
+  }
 
-    var description: String { rawValue }
+  /// Emax Volume 1
+  static let brassAndWoodwinds: AnySoundFont = .emax(EmaxSoundFont(.brassAndWoodwinds))
+
+  /// Emax Volume 2
+  static let keyboardsAndSynths: AnySoundFont = .emax(EmaxSoundFont(.keyboardsAndSynths))
+
+  /// Emax Volume 3
+  static let guitarsAndBasses: AnySoundFont = .emax(EmaxSoundFont(.guitarsAndBasses))
+
+  /// Emax Volume 4
+  static let worldInstruments: AnySoundFont = .emax(EmaxSoundFont(.worldInstruments))
+
+  /// Emax Volume 5
+  static let drumsAndPercussions: AnySoundFont = .emax(EmaxSoundFont(.drumsAndPercussion))
+
+  /// Emax Volume 6
+  static let orchestral: AnySoundFont = .emax(EmaxSoundFont(.orchestral))
+
+  /// SPYRO's Pure Oscillators
+  static let spyro: AnySoundFont = tryOrDie
+  {
+    .custom(
+      try CustomSoundFont(
+        url: unwrapOrDie(
+          Bundle(identifier: "com.moondeerstudios.SoundFont")!
+            .url(forResource: "SPYRO's Pure Oscillators", withExtension: "sf2")
+        )
+      )
+    )
+  }
+}
+
+// MARK: Equatable
+
+extension AnySoundFont: Equatable
+{
+  public static func == (lhs: AnySoundFont, rhs: AnySoundFont) -> Bool
+  {
+    switch (lhs, rhs)
+    {
+      case let (.emax(first), .emax(second)):
+        return first.volume == second.volume
+      case let (.custom(first), .custom(second)):
+        return first.fileName == second.fileName
+      default:
+        return false
+    }
   }
 }

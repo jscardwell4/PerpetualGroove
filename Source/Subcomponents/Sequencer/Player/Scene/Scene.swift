@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Moondeer Studios. All rights reserved.
 //
 import Common
-import MoonKit
+import MoonDev
 import SpriteKit
 
 /// `SKScene` subclass whose content is an instance of `PlayerNode`.

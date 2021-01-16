@@ -8,7 +8,7 @@
 import class AVFoundation.AVAudioUnitSampler
 import Foundation
 import MIDI
-import MoonKit
+import MoonDev
 
 /// A class that plays a note at the start of each beat.
 public final class Metronome

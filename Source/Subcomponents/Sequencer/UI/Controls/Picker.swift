@@ -7,7 +7,7 @@
 //
 import Foundation
 import MIDI
-import MoonKit
+import MoonDev
 import SoundFont
 import UIKit
 
@@ -143,7 +143,7 @@ public class Picker: UIControl, InlinePickerDelegate
 
   /// The index of the selected item in `items`. This is a derived property
   /// wrapping the property accessors of `picker.selection`.
-  @WritablePassThrough(\InlinePickerView.selection) public var selection: Int
+  @WritablePassthrough(\InlinePickerView.selection) public var selection: Int
 
   /// Selects the item at the specified index.
   /// - Parameter item: The index of the item to select.

@@ -6,18 +6,18 @@
 //  Copyright © 2021 Moondeer Studios. All rights reserved.
 //
 import Combine
-import MoonKit
+import MoonDev
 import SwiftUI
 import Common
 
 // MARK: - VolumeSlider
 
-/// A view wrapping a hosted instance of `MoonKit.Slider` for controlling the
+/// A view wrapping a hosted instance of `MoonDev.Slider` for controlling the
 /// transport's tempo setting.
 struct VolumeSlider: View
 {
   /// The bus volume.
-  @Binding var volume: Float
+  @State var volume: Float
 
   /// The view's body is composed of the slider host constrained to a width of `100`
   /// and a "VOL" label.
@@ -34,7 +34,7 @@ struct VolumeSlider: View
 
       SliderHost(value: $volume, valueChangedAction: UIAction
       {
-        self.volume = ($0.sender as! MoonKit.Slider).value
+        self.volume = ($0.sender as! MoonDev.Slider).value
       })
     }
     .frame(height: 300)
@@ -43,7 +43,7 @@ struct VolumeSlider: View
 
 // MARK: - SliderHost
 
-/// A wrapper for an instance of `MoonKit.Slider` configured for use as a volume slider.
+/// A wrapper for an instance of `MoonDev.Slider` configured for use as a volume slider.
 private struct SliderHost: UIViewRepresentable
 {
   /// The backing value for the slider.
@@ -66,9 +66,9 @@ private struct SliderHost: UIViewRepresentable
   ///
   /// - Parameter context: This parameter is ignored.
   /// - Returns: The hosted slider.
-  func makeUIView(context: Context) -> MoonKit.Slider
+  func makeUIView(context: Context) -> MoonDev.Slider
   {
-    let slider = MoonKit.Slider()
+    let slider = MoonDev.Slider()
     slider.backgroundColor = .clear
     slider.isVertical = true
     slider.addAction(valueChangedAction, for: .valueChanged)
@@ -90,7 +90,7 @@ private struct SliderHost: UIViewRepresentable
   /// - Parameters:
   ///   - uiView: The hosted slider.
   ///   - context: This parameter is ignored.
-  func updateUIView(_ uiView: MoonKit.Slider, context: Context)
+  func updateUIView(_ uiView: MoonDev.Slider, context: Context)
   {
     uiView.value = value
   }
@@ -100,10 +100,9 @@ private struct SliderHost: UIViewRepresentable
 
 struct VolumeSlider_Previews: PreviewProvider
 {
-  @State private static var volume: Float = 7
   static var previews: some View
   {
-    VolumeSlider(volume: $volume)
+    VolumeSlider(volume: 7)
       .previewLayout(.sizeThatFits)
       .preferredColorScheme(.dark)
       .fixedSize()

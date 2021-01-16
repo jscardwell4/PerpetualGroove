@@ -9,7 +9,7 @@ import class AVFoundation.AVAudioUnitSampler
 import Combine
 import Foundation
 import MIDI
-import MoonKit
+import MoonDev
 import os
 import SoundFont
 
@@ -53,12 +53,9 @@ internal let log = os.Logger(subsystem: "com.moondeerstudios.groove.sequencer",
 // MARK: - Controller
 
 /// A class for overseeing the creation and playback of a sequence in the MIDI node player.
-public final class Controller
+public final class Controller: ObservableObject
 {
   // MARK: Stored Properties
-
-  /// The shared singleton instance.
-//  public static let shared = Controller()
 
   /// The sequencer's node player.
   @usableFromInline internal let player: Player
@@ -91,7 +88,28 @@ public final class Controller
   /// resets the transport currently in use.
   @Published public private(set) var sequence: Sequence?
   {
-    didSet { reconfigure(for: sequence) }
+    willSet
+    {
+      subscriptions.forEach { $0.cancel() }
+      transport.reset()
+    }
+    didSet
+    {
+      // Unwrap the new sequence or return.
+      guard let sequence = sequence else { return }
+
+      subscriptions.store
+      {
+        sequence.trackRemovalPublisher.sink
+        {
+          self.loops[ObjectIdentifier($0)] = nil
+          self.updateNodeDispatch()
+        }
+        sequence.trackChangePublisher.sink { _ in self.updateNodeDispatch() }
+      }
+
+      updateNodeDispatch()
+    }
   }
 
   /// The time signature currently in use. The default is 4/4. Changes to the value of
@@ -120,11 +138,8 @@ public final class Controller
   /// The end time for active loops.
   public private(set) var loopEnd: BarBeatTime = .zero
 
-  /// Subscriber for track removals from the current sequence.
-  private var trackRemovalSubscription: Cancellable?
-
-  /// Subscriber for track changes from the current sequence.
-  private var trackChangeSubscription: Cancellable?
+  /// Sequence subscriptions.
+  private var subscriptions: Set<AnyCancellable> = []
 
   // MARK: Initializer
 
@@ -135,15 +150,13 @@ public final class Controller
     let audioEngine = tryOrDie { try AudioEngine() }
 
     // Get the first sound font.
-    let soundFont = SoundFont.bundledFonts[0]
+    let soundFont = AnySoundFont.bundledFonts[0]
 
     // Get the first preset header of the first sound font.
-    let presetHeader = soundFont.presetHeaders[0]
+    let header = soundFont.presetHeaders[0]
 
     // Create a preset for the audition instrument.
-    let preset = Instrument.Preset(soundFont: soundFont,
-                                   presetHeader: presetHeader,
-                                   channel: UInt8(0))
+    let preset = Instrument.Preset(font: soundFont, header: header, channel: 0)
 
     // Create the audition instrument.
     auditionInstrument = tryOrDie { try Instrument(preset: preset,
@@ -183,37 +196,6 @@ public final class Controller
       // Update the sequence's `tempo` property if the current transport is recording.
       if transport.recording { sequence?.tempo = tempo }
     }
-  }
-
-  // MARK: Sequence Management
-
-  /// Performs any necessary steps to reconfigure the sequencer for the specified
-  /// sequence.
-  ///
-  /// - Parameter sequence: The sequence being loaded or `nil` if unloading.
-  private func reconfigure(for sequence: Sequence?)
-  {
-    // Reset the transport.
-    transport.reset()
-
-    trackRemovalSubscription = nil
-    trackChangeSubscription = nil
-
-    guard let sequence = sequence else { return }
-
-    trackRemovalSubscription = NotificationCenter.default
-      .publisher(for: .sequenceDidRemoveTrack, object: sequence)
-      .sink(receiveValue: { [self] notification in
-        guard let track = notification.removedTrack else { return }
-        loops[ObjectIdentifier(track)] = nil
-        updateNodeDispatch()
-      })
-
-    trackChangeSubscription = NotificationCenter.default
-      .publisher(for: .sequenceDidChangeTrack, object: sequence)
-      .sink(receiveValue: { [self] _ in updateNodeDispatch() })
-
-    updateNodeDispatch()
   }
 
   // MARK: Mode Management
@@ -298,7 +280,7 @@ public final class Controller
       loop.track.add(loop: loop)
     }
   }
-  
+
   /// Updates `loopStart` with the current value of `time.barBeatTime`.
   public func markLoopStart() { loopStart = time.barBeatTime }
 

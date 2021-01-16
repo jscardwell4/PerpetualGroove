@@ -7,17 +7,17 @@
 //
 import Combine
 import Common
-import MoonKit
+import MoonDev
 import SwiftUI
 
 // MARK: - PanKnob
 
-/// A view wrapping a hosted instance of `MoonKit.Slider` for controlling the
+/// A view wrapping a hosted instance of `MoonDev.Slider` for controlling the
 /// transport's tempo setting.
 struct PanKnob: View
 {
   /// The tempo value kept in sync with `transport.tempo`.
-  @Binding var pan: Float
+  @State var pan: Float
 
   /// The view's body is composed of the slider host constrained to 330w x 44h.
   var body: some View
@@ -32,7 +32,7 @@ struct PanKnob: View
 
       KnobHost(value: $pan, valueChangedAction: UIAction
       {
-        self.pan = ($0.sender as! MoonKit.Knob).value
+        self.pan = ($0.sender as! MoonDev.Knob).value
       }).frame(width: 74, height: 74)
     }
   }
@@ -40,7 +40,7 @@ struct PanKnob: View
 
 // MARK: - KnobHost
 
-/// A wrapper for an instance of `MoonKit.Slider` configured for use as a volume slider.
+/// A wrapper for an instance of `MoonDev.Slider` configured for use as a volume slider.
 private struct KnobHost: UIViewRepresentable
 {
   /// The backing value for the slider.
@@ -68,9 +68,9 @@ private struct KnobHost: UIViewRepresentable
   ///
   /// - Parameter context: This parameter is ignored.
   /// - Returns: The hosted slider.
-  func makeUIView(context: Context) -> MoonKit.Knob
+  func makeUIView(context: Context) -> MoonDev.Knob
   {
-    let knob = MoonKit.Knob(frame: CGRect(size: CGSize(width: 74, height: 74)))
+    let knob = MoonDev.Knob(frame: CGRect(size: CGSize(width: 74, height: 74)))
     knob.minimumValue = -1
     knob.maximumValue = 1
     knob.value = value
@@ -90,7 +90,7 @@ private struct KnobHost: UIViewRepresentable
   /// - Parameters:
   ///   - uiView: The hosted slider.
   ///   - context: This parameter is ignored.
-  func updateUIView(_ uiView: MoonKit.Knob, context: Context)
+  func updateUIView(_ uiView: MoonDev.Knob, context: Context)
   {
     uiView.value = value
   }
@@ -100,10 +100,9 @@ private struct KnobHost: UIViewRepresentable
 
 struct PanKnob_Previews: PreviewProvider
 {
-  @State private static var pan: Float = 0
   static var previews: some View
   {
-    PanKnob(pan: $pan)
+    PanKnob(pan: 0)
       .previewLayout(.sizeThatFits)
       .preferredColorScheme(.dark)
       .padding()

@@ -8,7 +8,7 @@
 
 import XCTest
 import Nimble
-import MoonKit
+import MoonDev
 @testable import Groove
 @testable import SoundFont
 
@@ -127,7 +127,7 @@ class SoundFontTests: XCTestCase {
   }
 
   func testImages() {
-    expect(AnySoundFont.spyro.image) == SoundFontTests.spyroImage
+    expect(CustomSoundFont.spyro.image) == SoundFontTests.spyroImage
     expect(EmaxSoundFont(.brassAndWoodwinds).image) == SoundFontTests.emax1Image
     expect(EmaxSoundFont(.keyboardsAndSynths).image) == SoundFontTests.emax2Image
     expect(EmaxSoundFont(.guitarsAndBasses).image) == SoundFontTests.emax3Image
@@ -138,7 +138,7 @@ class SoundFontTests: XCTestCase {
 
   func testPresets() {
     let spyroPresets = SoundFontTests.spyroJSON.value.compactMap(PresetHeader.init)
-    expect(AnySoundFont.spyro.presetHeaders) == spyroPresets
+    expect(CustomSoundFont.spyro.presetHeaders) == spyroPresets
     let emax1Presets = SoundFontTests.emax1JSON.value.compactMap(PresetHeader.init)
     expect(EmaxSoundFont(.brassAndWoodwinds).presetHeaders) == emax1Presets
     let emax2Presets = SoundFontTests.emax2JSON.value.compactMap(PresetHeader.init)
@@ -154,7 +154,7 @@ class SoundFontTests: XCTestCase {
   }
 
   func testURLs() {
-    expect(AnySoundFont.spyro.url) == SoundFontTests.spyroURL
+    expect(CustomSoundFont.spyro.url) == SoundFontTests.spyroURL
     expect(EmaxSoundFont(.brassAndWoodwinds).url) == SoundFontTests.emax1URL
     expect(EmaxSoundFont(.keyboardsAndSynths).url) == SoundFontTests.emax2URL
     expect(EmaxSoundFont(.guitarsAndBasses).url) == SoundFontTests.emax3URL
@@ -173,7 +173,7 @@ class SoundFontTests: XCTestCase {
   func testEquality() {
     expect(EmaxSoundFont(.brassAndWoodwinds).isEqualTo(EmaxSoundFont(.brassAndWoodwinds))) == true
     expect(EmaxSoundFont(.brassAndWoodwinds).isEqualTo(EmaxSoundFont(.keyboardsAndSynths))) == false
-    expect(AnySoundFont.spyro.isEqualTo(AnySoundFont.spyro)) == true
+    expect(CustomSoundFont.spyro.isEqualTo(CustomSoundFont.spyro)) == true
   }
 
 }

@@ -7,7 +7,7 @@
 //
 import Foundation
 import MIDI
-import MoonKit
+import MoonDev
 import class UIKit.UIColor
 
 // MARK: - Track
@@ -16,9 +16,6 @@ import class UIKit.UIColor
 public class Track: Named, EventDispatch, CustomStringConvertible
 {
   // MARK: Stored Properties
-
-  /// The sequence to which the track belongs.
-  public unowned let sequence: Sequence
 
   /// Dispatch queue for generating MIDI events.
   public let eventQueue: DispatchQueue
@@ -49,19 +46,17 @@ public class Track: Named, EventDispatch, CustomStringConvertible
 
   // MARK: Initializing
 
-  /// Initializing with a sequence. Initializes the new track with the specified sequence.
-  /// Also creates the event queue for the new track with a label formed by appending
-  /// the number of tracks in `sequence` to 'Track'.
+  /// Initializing with an index. Creates the event queue for the new track
+  /// with a label formed by appending the `index` to 'Track'.
   ///
-  /// - Parameter sequence: The sequence to which the intialized track belongs.
-  public init(sequence: Sequence)
+  /// - Parameter index: The index to assign the track.
+  public init(index: Int)
   {
-    // Initialize `sequence` using the specified sequence.
-    self.sequence = sequence
+    self.index = index
 
     // Create the dispatch queue with a label derived from the number of tracks in the
     // sequence.
-    eventQueue = DispatchQueue(label: "Track\(sequence.tracks.count)")
+    eventQueue = DispatchQueue(label: "Track\(index)")
   }
 
   // MARK: Computed Properties
@@ -72,10 +67,7 @@ public class Track: Named, EventDispatch, CustomStringConvertible
   public var endOfTrack: BarBeatTime { eventContainer.maxTime ?? BarBeatTime.zero }
 
   /// The position of the track's MIDI file chunk within all track chunks for `sequence`.
-  public var chunkIndex: Int
-  {
-    unwrapOrDie { sequence.tracks.firstIndex(where: { $0 === self }) }
-  }
+  public var index: Int
 
   /// A comprehensive description of the track.
   public var description: String
@@ -126,7 +118,7 @@ public class Track: Named, EventDispatch, CustomStringConvertible
   public var headEvents: [Event]
   {
     // Determine the name to specify in the track name event.
-    let trackName = name.isEmpty ? "Track\(chunkIndex)" : name
+    let trackName = name.isEmpty ? "Track\(index)" : name
 
     // Create the data for the track name MIDI event.
     let trackNameEventData: MetaEvent.Data = .sequenceTrackName(name: trackName)

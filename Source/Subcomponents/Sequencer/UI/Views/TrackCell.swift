@@ -6,7 +6,7 @@
 //  Copyright (c) 2021 Moondeer Studios. All rights reserved.
 //
 import UIKit
-import MoonKit
+import MoonDev
 import Combine
 
 // MARK: - TrackCell
@@ -37,7 +37,7 @@ public final class TrackCell: MixerCell
   override public var isSelected: Bool { didSet { trackColor.isSelected = isSelected } }
 
   /// The action attached to `soloButton`. Toggles `track.solo`.
-  @IBAction public func solo() { track?.solo.toggle() }
+  @IBAction public func solo() { track?.isSoloed.toggle() }
 
   /// Flag indicating whether the mute button has been disabled.
   private var muteDisengaged = false
@@ -46,7 +46,7 @@ public final class TrackCell: MixerCell
   }
 
   /// Action attached to `muteButton`. Toggles `track.mute`.
-  @IBAction public func mute() { track?.mute.toggle() }
+  @IBAction public func mute() { track?.isMuted.toggle() }
 
   /// Action attached to `volumeSlider`. Updates `track.volume` using `volume`.
   @IBAction public func volumeDidChange() { track?.volume = volume }
@@ -74,21 +74,21 @@ public final class TrackCell: MixerCell
       soundSetImage.image = track?.instrument.soundFont.image
       trackLabel.text = track?.displayName ?? ""
       trackColor.normalTintColor = track?.color.value
-      muteButton.isSelected = track?.isMuted ?? false
-      soloButton.isSelected = track?.solo ?? false
+      muteButton.isSelected = track?.isMute ?? false
+      soloButton.isSelected = track?.isSoloed ?? false
 
       if let track = track
       {
-        muteStatusSubscription = track.$isMuted.sink { self.muteButton.isSelected = $0 }
-        forceMuteStatusSubscription = track.$forceMute.sink
-        {
-          self.muteDisengaged = $0 || (self.track?.solo == true)
-        }
-        soloStatusSubscription = track.$solo.sink
-        {
-          self.soloButton.isSelected = $0
-          self.muteDisengaged = $0 || (self.track?.forceMute == true)
-        }
+        muteStatusSubscription = track.$isMute.sink { self.muteButton.isSelected = $0 }
+//        forceMuteStatusSubscription = track.$forceMute.sink
+//        {
+//          self.muteDisengaged = $0 || (self.track?.solo == true)
+//        }
+//        soloStatusSubscription = track.$isSoloed.sink
+//        {
+//          self.soloButton.isSelected = $0
+//          self.muteDisengaged = $0 || (self.track?.forceMute == true)
+//        }
         nameChangeSubscription = NotificationCenter.default
           .publisher(for: .trackDidChangeName, object: track)
           .sink { _ in self.trackLabel.text = self.track?.displayName ?? "" }

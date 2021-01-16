@@ -12,23 +12,18 @@ import SwiftUI
 
 struct MainBus: View
 {
-  @State var volume: Float = 5
-
-  @State var pan: Float = 0
-
-  @State private var label = "Main"
+  @ObservedObject private var model = MainBusModel()
 
   var body: some View
   {
     VStack
     {
-      VolumeSlider(volume: $volume)
-      PanKnob(pan: $pan)
+      VolumeSlider(volume: model.volume)
+      PanKnob(pan: model.pan)
       Spacer()
-      BusLabel(label: $label).padding()
+      BusLabel(label: "Main").padding()
       Spacer()
         .frame(height: 22)
-//        .padding()
     }
   }
 }

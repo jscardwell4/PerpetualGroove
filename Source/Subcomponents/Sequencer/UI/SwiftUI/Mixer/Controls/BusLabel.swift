@@ -6,14 +6,14 @@
 //  Copyright © 2021 Moondeer Studios. All rights reserved.
 //
 import Common
-import MoonKit
+import MoonDev
 import SwiftUI
 
 // MARK: - BusLabel
 
 struct BusLabel: View
 {
-  @Binding var label: String
+  @State var label: String = "Bus 1"
 
   var body: some View
   {
@@ -28,7 +28,7 @@ private struct MarqueeHost: UIViewRepresentable
 {
   @Binding var text: String
 
-  func makeUIView(context: Context) -> MoonKit.MarqueeField
+  func makeUIView(context: Context) -> MoonDev.MarqueeField
   {
     let marquee = MarqueeField(frame: CGRect(size: CGSize(width: 84, height: 14)))
     marquee.identifier = "BusLabel"
@@ -46,7 +46,7 @@ private struct MarqueeHost: UIViewRepresentable
     return marquee
   }
 
-  func updateUIView(_ uiView: MoonKit.MarqueeField, context: Context)
+  func updateUIView(_ uiView: MoonDev.MarqueeField, context: Context)
   {}
 }
 
@@ -57,7 +57,7 @@ struct BusLabel_Previews: PreviewProvider
   @State static var label: String = "Bus 1"
   static var previews: some View
   {
-    BusLabel(label: $label)
+    BusLabel(label: label)
       .previewLayout(.sizeThatFits)
       .preferredColorScheme(.dark)
       .padding()
