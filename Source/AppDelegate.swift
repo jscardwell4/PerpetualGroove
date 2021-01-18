@@ -12,6 +12,7 @@ import Sequencer
 import UIKit
 
 /// The delegate for the application.
+@available(macCatalyst 14.0, *)
 @UIApplicationMain final class AppDelegate: UIResponder, UIApplicationDelegate
 {
   /// The main window of the application.

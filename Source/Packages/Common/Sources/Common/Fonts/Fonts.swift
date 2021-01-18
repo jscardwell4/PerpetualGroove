@@ -1,0 +1,136 @@
+//
+//  Fonts.swift
+//  PerpetualGroove
+//
+//  Created by Jason Cardwell on 10/12/16.
+//  Copyright © 2016 Moondeer Studios. All rights reserved.
+//
+import Foundation
+import MoonDev
+import SwiftUI
+
+#if os(iOS)
+import class UIKit.UIFont
+
+/// Extend `UIFont` with `FontStyle` convenience initializer and static properties.
+public extension UIFont
+{
+  /// Initializing with a font style configuration.
+  ///
+  /// - Parameter fontStyle: The style with which to configure the font.
+  convenience init(fontStyle: FontStyle)
+  {
+    // Ensure `fontStyle` is valid by using it to create a font.
+    guard let font = UIFont(name: fontStyle.postscriptName, size: fontStyle.size)
+    else
+    {
+      fatalError("""
+      \(#fileID) \(#function) \
+      Failed to create font using postscript name '\(fontStyle.postscriptName)'
+      """)
+    }
+    // Initialize using the font descriptor.
+    self.init(descriptor: font.fontDescriptor, size: fontStyle.size)
+  }
+
+  /// The font created using `FontStyle.label`.
+  static let label = UIFont(fontStyle: .label)
+
+  /// The font created using `FontStyle.largeLabel`.
+  static let largeLabel = UIFont(fontStyle: .largeLabel)
+
+  /// The font created using `FontStyle.control`.
+  static let control = UIFont(fontStyle: .control)
+
+  /// The font created using `FontStyle.largeControl`.
+  static let largeControl = UIFont(fontStyle: .largeControl)
+
+  /// The font created using `FontStyle.controlSelected`.
+  static let controlSelected = UIFont(fontStyle: .controlSelected)
+
+  /// The font created using `FontStyle.largeControlSelected`.
+  static let largeControlSelected = UIFont(fontStyle: .largeControlSelected)
+
+  /// The font created using `FontStyle.compressedControl`.
+  @available(iOS 14.0, *)
+  static let compressedControl = UIFont(fontStyle: .compressedControl)
+
+  /// The font created using `FontStyle.compressedControlEditing`.
+  @available(iOS 14.0, *)
+  static let compressedControlEditing = UIFont(fontStyle: .compressedControlEditing)
+
+  /// The font created using `FontStyle.largeControlEditing`.
+  static let largeControlEditing = UIFont(fontStyle: .largeControlEditing)
+
+  /// The font created using `FontStyle.clock`.
+  static let clock = UIFont(fontStyle: .clock)
+
+  /// The font created using `FontStyle.listItem`.
+  static let listItem = UIFont(fontStyle: .listItem)
+}
+#endif
+
+/// Extend `Font` with `FontStyle` convenience initializer and static properties.
+@available(OSX 10.15, *)
+@available(iOS 14.0, *)
+public extension Font
+{
+  /// Generates a new `Font` instance using the specified configuration. This
+  /// method invokes `Font.custom(_:size:relativeTo:)` using the values held
+  /// by `style`.
+  ///
+  /// - Parameter style: The style with which to configure the font.
+  /// - Returns: The font configured using `style`.
+  @available(OSX 11.0, *)
+  static func style(_ style: FontStyle) -> Font
+  {
+    Font.custom(style.postscriptName, size: style.size, relativeTo: style.style)
+  }
+
+  /// The font created using `FontStyle.label`.
+  @available(OSX 11.0, *)
+  static let label = Font.style(.label)
+
+  /// The font created using `FontStyle.largeLabel`.
+  @available(OSX 11.0, *)
+  static let largeLabel = Font.style(.largeLabel)
+
+  /// The font created using `FontStyle.control`.
+  @available(OSX 11.0, *)
+  static let control = Font.style(.control)
+
+  /// The font created using `FontStyle.largeControl`.
+  @available(OSX 11.0, *)
+  static let largeControl = Font.style(.largeControl)
+
+  /// The font created using `FontStyle.controlSelected`.
+  @available(OSX 11.0, *)
+  static let controlSelected = Font.style(.controlSelected)
+
+  /// The font created using `FontStyle.largeControlSelected`.
+  @available(OSX 11.0, *)
+  static let largeControlSelected = Font.style(.largeControlSelected)
+
+  /// The font created using `FontStyle.compressedControl`.
+  @available(OSX 11.0, *)
+  @available(OSX 11.0, *)
+  static let compressedControl = Font.style(.compressedControl)
+
+  /// The font created using `FontStyle.compressedControlEditing`.
+  @available(OSX 11.0, *)
+  @available(OSX 11.0, *)
+  static let compressedControlEditing = Font.style(.compressedControlEditing)
+
+  /// The font created using `FontStyle.largeControlEditing`.
+  @available(OSX 11.0, *)
+  static let largeControlEditing = Font.style(.largeControlEditing)
+
+  /// The font created using `FontStyle.clock`.
+  @available(OSX 11.0, *)
+  static let clock = Font.style(.clock)
+
+  /// The font created using `FontStyle.listItem`.
+  @available(OSX 11.0, *)
+  static let listItem = Font.style(.listItem)
+
+}

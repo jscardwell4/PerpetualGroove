@@ -31,50 +31,7 @@
       "target" : {
         "containerPath" : "container:PerpetualGroove.xcodeproj",
         "identifier" : "C252C830259D21E5000A0BA2",
-        "name" : "GrooveTests"
-      }
-    },
-    {
-      "parallelizable" : true,
-      "target" : {
-        "containerPath" : "container:PerpetualGroove.xcodeproj",
-        "identifier" : "C252C867259D2E73000A0BA2",
-        "name" : "SoundFontTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:PerpetualGroove.xcodeproj",
-        "identifier" : "C2F43C3A25A377EF002DA417",
-        "name" : "AudioEngineTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:PerpetualGroove.xcodeproj",
-        "identifier" : "C2F43AF725A2ACE1002DA417",
-        "name" : "CommonTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:PerpetualGroove.xcodeproj",
-        "identifier" : "C2F43BDC25A376F1002DA417",
-        "name" : "DocumentsTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:PerpetualGroove.xcodeproj",
-        "identifier" : "C2E98C2325A1087300FE1560",
-        "name" : "MIDITests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:PerpetualGroove.xcodeproj",
-        "identifier" : "C2F43B8825A37658002DA417",
-        "name" : "NodePlayerTests"
+        "name" : "PerpetualGrooveTests"
       }
     }
   ],
