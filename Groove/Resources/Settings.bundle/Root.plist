@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>StringsTable</key>
+	<string>Root</string>
+	<key>PreferenceSpecifiers</key>
+	<array>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>Files</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Use iCloud</string>
+			<key>Key</key>
+			<string>iCloudStorage</string>
+			<key>DefaultValue</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Confirm Document Deletion</string>
+			<key>Key</key>
+			<string>confirmDeleteDocument</string>
+			<key>DefaultValue</key>
+			<true/>
+		</dict>
+    <dict>
+      <key>Type</key>
+      <string>PSGroupSpecifier</string>
+      <key>Title</key>
+      <string>Mixer</string>
+    </dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Confirm Track Deletion</string>
+			<key>Key</key>
+			<string>confirmDeleteTrack</string>
+			<key>DefaultValue</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Enable Track Label Scrolling</string>
+			<key>Key</key>
+			<string>scrollTrackLabels</string>
+			<key>DefaultValue</key>
+			<true/>
+		</dict>
+    <dict>
+      <key>Type</key>
+      <string>PSToggleSwitchSpecifier</string>
+      <key>Title</key>
+      <string>Make New Track Current</string>
+      <key>Key</key>
+      <string>makeNewTrackCurrent</string>
+      <key>DefaultValue</key>
+      <true/>
+      </dict>
+	</array>
+</dict>
+</plist>
