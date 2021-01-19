@@ -27,7 +27,7 @@ public final class Player
   @Published public var currentDispatch: NodeDispatch?
 
   /// Reference to the view controller owning the player scene.
-  public weak var playerContainer: PlayerContainer?
+//  public weak var playerContainer: PlayerContainer?
 
   /// Reference to the player node in the player scene. Setting this property to
   /// a non-nil value triggers the creation of the player's tools.
@@ -79,7 +79,7 @@ public final class Player
       guard (currentTool.tool as? PresentingTool)?.isShowingContent == true else { return }
 
       // Dismiss the current tool's content.
-      playerContainer?.dismiss(completion: { _ in })
+//      playerContainer?.dismiss(completion: { _ in })
     }
 
     didSet

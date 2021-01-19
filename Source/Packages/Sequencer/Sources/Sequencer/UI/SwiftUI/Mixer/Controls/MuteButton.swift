@@ -32,7 +32,7 @@ struct MuteButton: View
                             : (isEnabled
                                 ? "engagedTintColor"
                                 : "disabledTintColor")),
-                       bundle: bundle))
+                       bundle: Bundle.module))
   }
 }
 

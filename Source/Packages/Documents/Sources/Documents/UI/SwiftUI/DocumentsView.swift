@@ -8,9 +8,6 @@
 import MoonDev
 import SwiftUI
 
-/// The `Documents` bundle.
-internal let bundle = unwrapOrDie(Bundle(identifier: "com.moondeerstudios.Documents"))
-
 // MARK: - DocumentsView
 
 @available(macCatalyst 14.0, *)

@@ -19,8 +19,8 @@ struct ColorButton: View
 
   @State var isSelected: Bool
 
-  private static let normalImage = Image("color_swatch", bundle: bundle)
-  private static let selectedImage = Image("color_swatch-selected", bundle: bundle)
+  private static let normalImage = Image("color_swatch", bundle: Bundle.module)
+  private static let selectedImage = Image("color_swatch-selected", bundle: Bundle.module)
 
   var body: some View
   {

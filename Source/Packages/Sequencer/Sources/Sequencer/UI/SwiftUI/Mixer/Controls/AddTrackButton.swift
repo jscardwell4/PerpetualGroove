@@ -19,7 +19,7 @@ struct AddTrackButton: View
       VStack
       {
       Spacer()
-      Image("add-selected", bundle: bundle)
+      Image("add-selected", bundle: Bundle.module)
         .resizable()
         .aspectRatio(contentMode: .fit)
         .frame(width: 34, alignment: .center)

@@ -13,11 +13,6 @@ import MoonDev
 import os
 import SoundFont
 
-// MARK: - Bundle
-
-/// The bundle for the `Sequencer` framework.
-internal let bundle = unwrapOrDie(Bundle(identifier: "com.moondeerstudios.Sequencer"))
-
 // MARK: - Shorthand
 
 /// The singleton instance of `Controller`.
@@ -160,7 +155,7 @@ public final class Controller: ObservableObject
     let audioEngine = tryOrDie { try AudioEngine() }
 
     // Get the first sound font.
-    let soundFont = AnySoundFont.bundledFonts[0]
+    let soundFont = SoundFont.bundledFonts[0]
 
     // Get the first preset header of the first sound font.
     let header = soundFont.presetHeaders[0]

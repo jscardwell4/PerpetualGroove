@@ -49,17 +49,17 @@ private struct KnobHost: UIViewRepresentable
 
   /// The image used for the base.
   private static let baseImage = UIImage(named: "knob",
-                                         in: bundle,
+                                         in: Bundle.module,
                                          with: nil)!
 
   /// The image used for indicator.
   private static let indicatorImage = UIImage(named: "indicator",
-                                              in: bundle,
+                                              in: Bundle.module,
                                               with: nil)
 
   /// The image used for indicator fill.
   private static let indicatorFillImage = UIImage(named: "indicator_fill",
-                                                  in: bundle,
+                                                  in: Bundle.module,
                                                   with: nil)
 
   /// The value change action for the hosted knob.

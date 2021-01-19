@@ -19,14 +19,14 @@ public final class GeneratorTool: PresentingNodeSelectionTool
 {
   /// Overridden to trigger secondary content presentation when `active && mode == .new`.
   /// - seealso: `NodeSelectionTool.active`
-  override public var active: Bool
-  {
-    didSet
-    {
-      guard active != oldValue, active, mode == .new else { return }
-      player.playerContainer?.presentContent(for: self, completion: { _ in })
-    }
-  }
+//  override public var active: Bool
+//  {
+//    didSet
+//    {
+//      guard active != oldValue, active, mode == .new else { return }
+//      player.playerContainer?.presentContent(for: self, completion: { _ in })
+//    }
+//  }
 
   /// Enumeration of the supported modes for which the tool can be configured.
   public enum Mode
@@ -218,22 +218,22 @@ final class GeneratorViewController: UIViewController, SecondaryContent
   var disabledActions: SecondaryControllerContainer.SupportedActions = .none
 
   /// Control for selecting the generator's pitch.
-  @IBOutlet var pitchSelector: PitchSelector!
+//  @IBOutlet var pitchSelector: PitchSelector!
 
   /// Control for selecting the generator's octave.
-  @IBOutlet var octaveSelector: OctaveSelector!
+//  @IBOutlet var octaveSelector: OctaveSelector!
 
   /// Control for selecting the generator's duration.
-  @IBOutlet var durationSelector: DurationSelector!
+//  @IBOutlet var durationSelector: DurationSelector!
 
   /// Control for selecting the generator's velocity.
-  @IBOutlet var velocitySelector: VelocitySelector!
+//  @IBOutlet var velocitySelector: VelocitySelector!
 
   /// Control for selecting the generator's pitch modifier.
-  @IBOutlet var modifierSelector: PitchModifierSelector!
+//  @IBOutlet var modifierSelector: PitchModifierSelector!
 
   /// Control for selecting the generator's chord.
-  @IBOutlet var chordSelector: ChordSelector!
+//  @IBOutlet var chordSelector: ChordSelector!
 
   /// Handler invoked whenever a change is made to `generator` unless the change is made
   /// via `loadGenerator(:)`.
@@ -266,91 +266,91 @@ final class GeneratorViewController: UIViewController, SecondaryContent
   @IBAction
   func didSelectPitch()
   {
-    generator.root.natural = Natural.allCases[pitchSelector.selection]
+//    generator.root.natural = Natural.allCases[pitchSelector.selection]
   }
 
   /// Updates `generator` with the selected octave.
   @IBAction
   func didSelectOctave()
   {
-    generator.octave = Octave.allCases[octaveSelector.selection]
+//    generator.octave = Octave.allCases[octaveSelector.selection]
   }
 
   /// Updates `generator` with the selected pitch modifier.
   @IBAction
   func didSelectModifier()
   {
-    switch modifierSelector.selection
-    {
-      case 0: generator.root.modifier = .flat
-      case 2: generator.root.modifier = .sharp
-      default: generator.root.modifier = nil
-    }
+//    switch modifierSelector.selection
+//    {
+//      case 0: generator.root.modifier = .flat
+//      case 2: generator.root.modifier = .sharp
+//      default: generator.root.modifier = nil
+//    }
   }
 
   /// Updates `generator` with the selected chord.
   @IBAction
   func didSelectChord()
   {
-    switch generator
-    {
-      case let .note(generator) where chordSelector.selection > 0:
-        let standardPattern = Chord.Pattern.Standard(index: chordSelector.selection - 1)
-        let chordPattern = Chord.Pattern(standardPattern)
-        self.generator = .chord(ChordGenerator(pattern: chordPattern,
-                                               generator: generator))
-
-      case var .chord(generator) where chordSelector.selection > 0:
-        let standardPattern = Chord.Pattern.Standard(index: chordSelector.selection - 1)
-        generator.chord.pattern = Chord.Pattern(standardPattern)
-        self.generator = AnyGenerator(generator)
-
-      case let .chord(generator):
-        self.generator = .note(NoteGenerator(generator: generator))
-
-      default:
-        break
-    }
+//    switch generator
+//    {
+//      case let .note(generator) where chordSelector.selection > 0:
+//        let standardPattern = Chord.Pattern.Standard(index: chordSelector.selection - 1)
+//        let chordPattern = Chord.Pattern(standardPattern)
+//        self.generator = .chord(ChordGenerator(pattern: chordPattern,
+//                                               generator: generator))
+//
+//      case var .chord(generator) where chordSelector.selection > 0:
+//        let standardPattern = Chord.Pattern.Standard(index: chordSelector.selection - 1)
+//        generator.chord.pattern = Chord.Pattern(standardPattern)
+//        self.generator = AnyGenerator(generator)
+//
+//      case let .chord(generator):
+//        self.generator = .note(NoteGenerator(generator: generator))
+//
+//      default:
+//        break
+//    }
   }
 
   /// Updates `generator` with the selected note duration.
   @IBAction
   func didSelectDuration()
   {
-    generator.duration = Duration.allCases[durationSelector.selection]
+//    generator.duration = Duration.allCases[durationSelector.selection]
   }
 
   /// Updates `generator` with the selected note velocity.
   @IBAction
   func didSelectVelocity()
   {
-    generator.velocity = Velocity.allCases[velocitySelector.selection]
+//    generator.velocity = Velocity.allCases[velocitySelector.selection]
   }
 
   /// Overridden to update controls with current values from `generator`.
-  override func viewDidAppear(_ animated: Bool)
-  {
-    super.viewDidAppear(animated)
-
-    pitchSelector.selection = generator.root.natural.index
-
-    switch generator.root.modifier
-    {
-      case (.flat)?: modifierSelector.selection = 0
-      case (.sharp)?: modifierSelector.selection = 2
-      default: modifierSelector.selection = 1
-    }
-
-    octaveSelector.selection = generator.octave.index
-    durationSelector.selection = generator.duration.index
-    velocitySelector.selection = generator.velocity.index
-
-    switch generator
-    {
-      case .note:
-        chordSelector.selection = 0
-      case let .chord(generator):
-        chordSelector.selection = generator.chord.pattern.standardIndex ?? 0
-    }
-  }
+//  override func viewDidAppear(_ animated: Bool)
+//  {
+//    super.viewDidAppear(animated)
+//
+//    pitchSelector.selection = generator.root.natural.index
+//
+//    switch generator.root.modifier
+//    {
+//      case (.flat)?: modifierSelector.selection = 0
+//      case (.sharp)?: modifierSelector.selection = 2
+//      default: modifierSelector.selection = 1
+//    }
+//
+//    octaveSelector.selection = generator.octave.index
+//    durationSelector.selection = generator.duration.index
+//    velocitySelector.selection = generator.velocity.index
+//
+//    switch generator
+//    {
+//      case .note:
+//        chordSelector.selection = 0
+//      case let .chord(generator):
+//        chordSelector.selection = generator.chord.pattern.standardIndex ?? 0
+//    }
+//  }
 }

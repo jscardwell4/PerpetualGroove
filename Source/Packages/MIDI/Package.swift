@@ -14,12 +14,17 @@ let package = Package(
   ],
   dependencies: [
     .package(path: "/Users/Moondeer/Projects/MoonDev"),
+    .package(path: "../SoundFont"),
+    .package(path: "../Common"),
     .package(url: "https://github.com/Quick/Nimble.git", from: "8.0.0")
   ],
   targets: [
     .target(
       name: "MIDI",
-      dependencies: ["MoonDev"]
+      dependencies: ["MoonDev", "SoundFont", "Common"],
+      resources: [
+        .process("Resources/Media.xcassets")
+      ]
     ),
     .testTarget(
       name: "MIDITests",

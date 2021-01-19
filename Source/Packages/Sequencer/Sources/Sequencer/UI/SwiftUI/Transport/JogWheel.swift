@@ -31,9 +31,9 @@ private struct ScrollWheelHost: UIViewRepresentable
   func makeUIView(context: Context) -> ScrollWheel
   {
     let scrollWheel = ScrollWheel(frame: CGRect(x: 0, y: 0, width: 150, height: 150))
-    scrollWheel.wheelImage = UIImage(named: "wheel", in: bundle, with: nil)
-    scrollWheel.dimpleImage = UIImage(named: "dimple", in: bundle, with: nil)
-    scrollWheel.dimpleFillImage = UIImage(named: "dimple_fill", in: bundle, with: nil)
+    scrollWheel.wheelImage = UIImage(named: "wheel", in: Bundle.module, with: nil)
+    scrollWheel.dimpleImage = UIImage(named: "dimple", in: Bundle.module, with: nil)
+    scrollWheel.dimpleFillImage = UIImage(named: "dimple_fill", in: Bundle.module, with: nil)
     scrollWheel.dimpleColor = .secondaryColor1
     scrollWheel.wheelColor = .secondaryColor2
     scrollWheel.dimpleStyle = .sourceAtop

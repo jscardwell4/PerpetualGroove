@@ -12,6 +12,8 @@ import SwiftUI
 
 /// A structuring for specifying font styles used by the application's UI.
 @available(OSX 10.15, *)
+@available(iOS 14.0, *)
+@available(macCatalyst 14.0, *)
 public struct FontStyle
 {
   /// The postscript name for the font specified by this style.
@@ -79,8 +81,6 @@ public struct FontStyle
   )
 
   /// A style with font `EvelethFont.thin`, size `12`, and style `.title2`.
-  @available(OSX 11.0, *)
-  @available(iOS 14.0, *)
   public static let compressedControl = FontStyle(
     font: EvelethFont.thin,
     size: 12,
@@ -88,8 +88,6 @@ public struct FontStyle
   )
 
   /// A style with font `TriumpFont.rock02`, size `17`, and style `.title2`.
-  @available(OSX 11.0, *)
-  @available(iOS 14.0, *)
   public static let compressedControlEditing = FontStyle(
     font: TriumpFont.rock02,
     size: 17,

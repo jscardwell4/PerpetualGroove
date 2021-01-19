@@ -21,7 +21,7 @@ struct LoopButton: View
   {
     Button(action: action.action)
     {
-      Image(action.imageName, bundle: bundle)
+      Image(action.imageName, bundle: Bundle.module)
         .resizable()
         .frame(width: 34, height: 34)
     }

@@ -25,7 +25,7 @@ struct PlayButton: View
       transport.playing = transport.playing ^ transport.paused
     })
     {
-      Image(transport.playing && !transport.paused ? "pause" : "play", bundle: bundle)
+      Image(transport.playing && !transport.paused ? "pause" : "play", bundle: Bundle.module)
         .accentColor(transport.paused ? .primaryColor2 : .primaryColor1)
     }
   }

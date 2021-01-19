@@ -11,6 +11,9 @@ import SwiftUI
 
 // MARK: - BusLabel
 
+@available(iOS 14.0, *)
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
 struct BusLabel: View
 {
   @State var label: String = "Bus 1"
@@ -24,6 +27,9 @@ struct BusLabel: View
 
 // MARK: - MarqueeHost
 
+@available(iOS 14.0, *)
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
 private struct MarqueeHost: UIViewRepresentable
 {
   @Binding var text: String
@@ -40,7 +46,7 @@ private struct MarqueeHost: UIViewRepresentable
     marquee.scrollEnabled = true
     marquee.verticalAlignment = .Top
     marquee.normalTintColor = UIColor(named: "trackLabelColor",
-                                      in: bundle,
+                                      in: Bundle.module,
                                       compatibleWith: nil)
 
     return marquee
@@ -52,6 +58,9 @@ private struct MarqueeHost: UIViewRepresentable
 
 // MARK: - BusLabel_Previews
 
+@available(iOS 14.0, *)
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
 struct BusLabel_Previews: PreviewProvider
 {
   @State static var label: String = "Bus 1"

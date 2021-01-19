@@ -88,15 +88,15 @@ public extension EmaxSoundFont
     public static let brassAndWoodwinds =
       Volume(1,
              "Brass & Woodwinds",
-             Image("brass", bundle: Bundle.module))
+             Image("brass", bundle: .module))
     public static let keyboardsAndSynths =
       Volume(2,
              "Keyboards & Synths",
-             Image("piano_keyboard", bundle: Bundle.module))
+             Image("piano_keyboard", bundle: .module))
     public static let guitarsAndBasses =
       Volume(3,
              "Guitars & Basses",
-             Image("guitar_bass", bundle: Bundle.module))
+             Image("guitar_bass", bundle: .module))
     public static let worldInstruments =
       Volume(4,
              "World Instruments",
@@ -104,12 +104,12 @@ public extension EmaxSoundFont
     public static let drumsAndPercussion =
       Volume(5,
              "Drums & Percussion",
-             Image("percussion", bundle: Bundle.module),
+             Image("percussion", bundle: .module),
              true)
     public static let orchestral =
       Volume(6,
              "Orchestral",
-             Image("orchestral", bundle: Bundle.module))
+             Image("orchestral", bundle: .module))
     
     private init(_ index: Int,
                  _ displayName: String,

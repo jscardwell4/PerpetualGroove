@@ -35,18 +35,18 @@ public final class TransportViewController: UIViewController
   @IBOutlet public var recordButton: ImageButtonView?
 
   /// Image for the play button.
-  private let playImage = unwrapOrDie(UIImage(named: "play", in: bundle, with: nil))
+  private let playImage = unwrapOrDie(UIImage(named: "play", in: Bundle.module, with: nil))
 
   /// Image for the play button when selected.
   private let playSelectedImage = unwrapOrDie(UIImage(named: "play-selected",
-                                                      in: bundle, with: nil))
+                                                      in: Bundle.module, with: nil))
 
   /// Image for the play button.
-  private let pauseImage = unwrapOrDie(UIImage(named: "pause", in: bundle, with: nil))
+  private let pauseImage = unwrapOrDie(UIImage(named: "pause", in: Bundle.module, with: nil))
 
   /// Image for the play button when selected.
   private let pauseSelectedImage = unwrapOrDie(UIImage(named: "pause-selected",
-                                                       in: bundle, with: nil))
+                                                       in: Bundle.module, with: nil))
 
   /// Subscription for `didStart` notifications.
   private var didStartSubscription: Cancellable?

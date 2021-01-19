@@ -64,62 +64,14 @@ public enum AnySoundFont: SoundFont2
   }
 }
 
-@available(iOS 14.0, *)
-@available(OSX 10.15, *)
-public extension AnySoundFont
-{
-  /// Derived array holding all the fonts stored as static properties below.
-  static var bundledFonts: [AnySoundFont]
-  {
-    [
-      .brassAndWoodwinds,
-      .keyboardsAndSynths,
-      .guitarsAndBasses,
-      .worldInstruments,
-      .drumsAndPercussions,
-      .orchestral,
-      .spyro
-    ]
-  }
-
-  /// Emax Volume 1
-  static let brassAndWoodwinds: AnySoundFont = .emax(EmaxSoundFont(.brassAndWoodwinds))
-
-  /// Emax Volume 2
-  static let keyboardsAndSynths: AnySoundFont = .emax(EmaxSoundFont(.keyboardsAndSynths))
-
-  /// Emax Volume 3
-  static let guitarsAndBasses: AnySoundFont = .emax(EmaxSoundFont(.guitarsAndBasses))
-
-  /// Emax Volume 4
-  static let worldInstruments: AnySoundFont = .emax(EmaxSoundFont(.worldInstruments))
-
-  /// Emax Volume 5
-  static let drumsAndPercussions: AnySoundFont = .emax(EmaxSoundFont(.drumsAndPercussion))
-
-  /// Emax Volume 6
-  static let orchestral: AnySoundFont = .emax(EmaxSoundFont(.orchestral))
-
-  /// SPYRO's Pure Oscillators
-  static let spyro: AnySoundFont = tryOrDie
-  {
-    .custom(
-      try CustomSoundFont(
-        url: unwrapOrDie(
-          Bundle.module
-            .url(forResource: "SPYRO's Pure Oscillators", withExtension: "sf2")
-        )
-      )
-    )
-  }
-}
-
-// MARK: Equatable
+// MARK: Hashable
 
 @available(iOS 14.0, *)
+@available(macCatalyst 14.0, *)
 @available(OSX 10.15, *)
-extension AnySoundFont: Equatable
+extension AnySoundFont: Hashable
 {
+  public func hash(into hasher: inout Hasher) { url.hash(into: &hasher) }
   public static func == (lhs: AnySoundFont, rhs: AnySoundFont) -> Bool
   {
     switch (lhs, rhs)

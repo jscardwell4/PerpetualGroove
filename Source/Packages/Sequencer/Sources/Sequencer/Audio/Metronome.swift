@@ -54,7 +54,7 @@ public final class Metronome
     /// Get the url for file to load into the sampler.
     let url = unwrapOrDie(
       message: "Failed to get url for 'Woodblock.wav'",
-      bundle.url(forResource: "Woodblock", withExtension: "wav")
+      Bundle.module.url(forResource: "Woodblock", withExtension: "wav")
     )
     
     /// Load the file into the sampler.

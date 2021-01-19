@@ -12,7 +12,6 @@
 		C243057625B3CE2200DFF954 /* SoundFont in Frameworks */ = {isa = PBXBuildFile; productRef = C243057525B3CE2200DFF954 /* SoundFont */; };
 		C249797725B3AA2100A54608 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C249766425B3AA1800A54608 /* Settings.bundle */; };
 		C249798325B3AA2900A54608 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C249767325B3AA1800A54608 /* Assets.xcassets */; };
-		C249798F25B3AA7B00A54608 /* Woodblock.wav in Resources */ = {isa = PBXBuildFile; fileRef = C249766225B3AA1800A54608 /* Woodblock.wav */; };
 		C2497A9F25B3C52D00A54608 /* Common in Frameworks */ = {isa = PBXBuildFile; productRef = C2497A9E25B3C52D00A54608 /* Common */; };
 		C2675FDB25B52C9E002BB892 /* MIDI in Frameworks */ = {isa = PBXBuildFile; productRef = C2675FDA25B52C9E002BB892 /* MIDI */; };
 		C267600525B54500002BB892 /* Documents in Frameworks */ = {isa = PBXBuildFile; productRef = C267600425B54500002BB892 /* Documents */; };
@@ -20,6 +19,55 @@
 		C267600A25B5466E002BB892 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C249765125B3A8EC00A54608 /* RootViewController.swift */; };
 		C267600B25B5466E002BB892 /* PurgatoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C249765225B3A8EC00A54608 /* PurgatoryViewController.swift */; };
 		C267600C25B5466E002BB892 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C249765325B3A8EC00A54608 /* AppDelegate.swift */; };
+		C2CF9AFC25B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Clean Shadow.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249757425B3A8EB00A54608 /* Yellow Design Studio - Eveleth Clean Shadow.otf */; };
+		C2CF9AFD25B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Clean Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249758325B3A8EC00A54608 /* Yellow Design Studio - Eveleth Clean Thin.otf */; };
+		C2CF9AFE25B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Slant Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249757F25B3A8EC00A54608 /* Yellow Design Studio - Eveleth Slant Light.otf */; };
+		C2CF9AFF25B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Shapes.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249757625B3A8EB00A54608 /* Yellow Design Studio - Eveleth Shapes.otf */; };
+		C2CF9B0025B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Clean Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249757525B3A8EB00A54608 /* Yellow Design Studio - Eveleth Clean Regular.otf */; };
+		C2CF9B0125B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249757C25B3A8EB00A54608 /* Yellow Design Studio - Eveleth Thin.otf */; };
+		C2CF9B0225B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Dot Regular Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249757B25B3A8EB00A54608 /* Yellow Design Studio - Eveleth Dot Regular Bold.otf */; };
+		C2CF9B0325B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Icons.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249757725B3A8EB00A54608 /* Yellow Design Studio - Eveleth Icons.otf */; };
+		C2CF9B0425B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Slant Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249757A25B3A8EB00A54608 /* Yellow Design Studio - Eveleth Slant Regular.otf */; };
+		C2CF9B0525B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Shadow.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249758025B3A8EC00A54608 /* Yellow Design Studio - Eveleth Shadow.otf */; };
+		C2CF9B0625B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249757E25B3A8EC00A54608 /* Yellow Design Studio - Eveleth Regular.otf */; };
+		C2CF9B0725B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Dot Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249758125B3A8EC00A54608 /* Yellow Design Studio - Eveleth Dot Regular.otf */; };
+		C2CF9B0825B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Regular Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249757D25B3A8EC00A54608 /* Yellow Design Studio - Eveleth Regular Bold.otf */; };
+		C2CF9B0925B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Dot Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249758225B3A8EC00A54608 /* Yellow Design Studio - Eveleth Dot Light.otf */; };
+		C2CF9B0A25B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249757925B3A8EB00A54608 /* Yellow Design Studio - Eveleth Light.otf */; };
+		C2CF9B0B25B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Slant Regular Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249757825B3A8EB00A54608 /* Yellow Design Studio - Eveleth Slant Regular Bold.otf */; };
+		C2CF9B0D25B5F8F200B68C4E /* Latinotype - Triump-Rg-Rock-03.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249758D25B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-03.otf */; };
+		C2CF9B0E25B5F8F200B68C4E /* Latinotype - Triump-Rg-Rock-05.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249758925B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-05.otf */; };
+		C2CF9B0F25B5F8F200B68C4E /* Latinotype - Triump-Rg-Blur-04.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249759225B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-04.otf */; };
+		C2CF9B1025B5F8F200B68C4E /* Latinotype - Triump-Rg-Blur-06.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249759725B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-06.otf */; };
+		C2CF9B1125B5F8F200B68C4E /* Latinotype - Triump-Rg-Rock-02.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249758E25B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-02.otf */; };
+		C2CF9B1225B5F8F200B68C4E /* Latinotype - Triump-Rg-Rock-06.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249758525B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-06.otf */; };
+		C2CF9B1325B5F8F200B68C4E /* Latinotype - Triump-Rg-Rock-09.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249759C25B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-09.otf */; };
+		C2CF9B1425B5F8F200B68C4E /* Latinotype - Triump-Rg-Blur-11.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249759425B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-11.otf */; };
+		C2CF9B1525B5F8F200B68C4E /* Latinotype - Triump-Rg-Blur-01.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249759B25B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-01.otf */; };
+		C2CF9B1625B5F8F200B68C4E /* Latinotype - Triump-Rg-Blur-03.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249759A25B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-03.otf */; };
+		C2CF9B1725B5F8F200B68C4E /* Latinotype - Triump-Rg-Ornaments.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249759D25B3A8EC00A54608 /* Latinotype - Triump-Rg-Ornaments.otf */; };
+		C2CF9B1825B5F8F200B68C4E /* Latinotype - Triump-Rg-Blur-10.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249759125B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-10.otf */; };
+		C2CF9B1925B5F8F200B68C4E /* Latinotype - Triump-Rg-Blur-02.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249759925B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-02.otf */; };
+		C2CF9B1A25B5F8F200B68C4E /* Latinotype - Triump-Rg-Blur-07.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249759525B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-07.otf */; };
+		C2CF9B1B25B5F8F200B68C4E /* Latinotype - Triump-Rg-Rock-01.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249758C25B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-01.otf */; };
+		C2CF9B1C25B5F8F200B68C4E /* Latinotype - Triump-Rg-Blur-12.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249759625B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-12.otf */; };
+		C2CF9B1D25B5F8F200B68C4E /* Latinotype - Triump-Rg-Rock-10.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249758B25B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-10.otf */; };
+		C2CF9B1E25B5F8F200B68C4E /* Latinotype - Triump-Rg-Rock-04.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249758A25B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-04.otf */; };
+		C2CF9B1F25B5F8F200B68C4E /* Latinotype - Triump-Rg-Rock-08.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249759E25B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-08.otf */; };
+		C2CF9B2025B5F8F200B68C4E /* Latinotype - Triump-Rg-Rock-07.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249758725B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-07.otf */; };
+		C2CF9B2125B5F8F200B68C4E /* Latinotype - Triump-Rg-Extras.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249759825B3A8EC00A54608 /* Latinotype - Triump-Rg-Extras.otf */; };
+		C2CF9B2225B5F8F200B68C4E /* Latinotype - Triump-Rg-Blur-09.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249759025B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-09.otf */; };
+		C2CF9B2325B5F8F200B68C4E /* Latinotype - Triump-Rg-Blur-08.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249758F25B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-08.otf */; };
+		C2CF9B2425B5F8F200B68C4E /* Latinotype - Triump-Rg-Blur-05.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249759325B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-05.otf */; };
+		C2CF9B2525B5F8F200B68C4E /* Latinotype - Triump-Rg-Rock-12.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249758625B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-12.otf */; };
+		C2CF9B2625B5F8F200B68C4E /* Latinotype - Triump-Rg-Rock-11.otf in Resources */ = {isa = PBXBuildFile; fileRef = C249758825B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-11.otf */; };
+		C2E2090625B5DC63002B6C86 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C249766C25B3AA1800A54608 /* Main.storyboard */; };
+		C2E2090925B5DC7B002B6C86 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C249766625B3AA1800A54608 /* LaunchScreen.storyboard */; };
+		C2E2090C25B5DC7B002B6C86 /* Instrument.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C249767025B3AA1800A54608 /* Instrument.storyboard */; };
+		C2E2090D25B5DC7B002B6C86 /* Generator.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C249767125B3AA1800A54608 /* Generator.storyboard */; };
+		C2E2090F25B5DC7B002B6C86 /* Mixer.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C249766725B3AA1800A54608 /* Mixer.storyboard */; };
+		C2E2091025B5DC7B002B6C86 /* Purgatory.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C249766925B3AA1800A54608 /* Purgatory.storyboard */; };
+		C2E2091125B5DC7B002B6C86 /* Transport.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C249767225B3AA1800A54608 /* Transport.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,19 +141,12 @@
 		C249765125B3A8EC00A54608 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		C249765225B3A8EC00A54608 /* PurgatoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurgatoryViewController.swift; sourceTree = "<group>"; };
 		C249765325B3A8EC00A54608 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		C249766225B3AA1800A54608 /* Woodblock.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Woodblock.wav; sourceTree = "<group>"; };
 		C249766325B3AA1800A54608 /* sf2Info.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = sf2Info.txt; sourceTree = "<group>"; };
 		C249766425B3AA1800A54608 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		C249766625B3AA1800A54608 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C249766725B3AA1800A54608 /* Mixer.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Mixer.storyboard; sourceTree = "<group>"; };
-		C249766825B3AA1800A54608 /* DocumentCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DocumentCell.xib; sourceTree = "<group>"; };
 		C249766925B3AA1800A54608 /* Purgatory.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Purgatory.storyboard; sourceTree = "<group>"; };
-		C249766A25B3AA1800A54608 /* MixerContainer.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MixerContainer.storyboard; sourceTree = "<group>"; };
-		C249766B25B3AA1800A54608 /* MIDINodePlayerContainer.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MIDINodePlayerContainer.storyboard; sourceTree = "<group>"; };
 		C249766C25B3AA1800A54608 /* Main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
-		C249766D25B3AA1800A54608 /* MIDINodePlayer.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MIDINodePlayer.storyboard; sourceTree = "<group>"; };
-		C249766E25B3AA1800A54608 /* Tempo.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Tempo.storyboard; sourceTree = "<group>"; };
-		C249766F25B3AA1800A54608 /* Rotate.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Rotate.storyboard; sourceTree = "<group>"; };
 		C249767025B3AA1800A54608 /* Instrument.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Instrument.storyboard; sourceTree = "<group>"; };
 		C249767125B3AA1800A54608 /* Generator.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Generator.storyboard; sourceTree = "<group>"; };
 		C249767225B3AA1800A54608 /* Transport.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Transport.storyboard; sourceTree = "<group>"; };
@@ -997,7 +1038,6 @@
 		C249766125B3AA1800A54608 /* Sound Sets */ = {
 			isa = PBXGroup;
 			children = (
-				C249766225B3AA1800A54608 /* Woodblock.wav */,
 				C249766325B3AA1800A54608 /* sf2Info.txt */,
 			);
 			path = "Sound Sets";
@@ -1008,14 +1048,8 @@
 			children = (
 				C249766625B3AA1800A54608 /* LaunchScreen.storyboard */,
 				C249766725B3AA1800A54608 /* Mixer.storyboard */,
-				C249766825B3AA1800A54608 /* DocumentCell.xib */,
 				C249766925B3AA1800A54608 /* Purgatory.storyboard */,
-				C249766A25B3AA1800A54608 /* MixerContainer.storyboard */,
-				C249766B25B3AA1800A54608 /* MIDINodePlayerContainer.storyboard */,
 				C249766C25B3AA1800A54608 /* Main.storyboard */,
-				C249766D25B3AA1800A54608 /* MIDINodePlayer.storyboard */,
-				C249766E25B3AA1800A54608 /* Tempo.storyboard */,
-				C249766F25B3AA1800A54608 /* Rotate.storyboard */,
 				C249767025B3AA1800A54608 /* Instrument.storyboard */,
 				C249767125B3AA1800A54608 /* Generator.storyboard */,
 				C249767225B3AA1800A54608 /* Transport.storyboard */,
@@ -2147,9 +2181,57 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C2CF9B0D25B5F8F200B68C4E /* Latinotype - Triump-Rg-Rock-03.otf in Resources */,
+				C2CF9B0325B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Icons.otf in Resources */,
+				C2CF9B0025B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Clean Regular.otf in Resources */,
+				C2CF9B1F25B5F8F200B68C4E /* Latinotype - Triump-Rg-Rock-08.otf in Resources */,
 				C249798325B3AA2900A54608 /* Assets.xcassets in Resources */,
-				C249798F25B3AA7B00A54608 /* Woodblock.wav in Resources */,
+				C2CF9B1525B5F8F200B68C4E /* Latinotype - Triump-Rg-Blur-01.otf in Resources */,
+				C2CF9B0825B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Regular Bold.otf in Resources */,
 				C249797725B3AA2100A54608 /* Settings.bundle in Resources */,
+				C2CF9B0B25B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Slant Regular Bold.otf in Resources */,
+				C2CF9AFF25B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Shapes.otf in Resources */,
+				C2CF9B1325B5F8F200B68C4E /* Latinotype - Triump-Rg-Rock-09.otf in Resources */,
+				C2E2090D25B5DC7B002B6C86 /* Generator.storyboard in Resources */,
+				C2CF9B2525B5F8F200B68C4E /* Latinotype - Triump-Rg-Rock-12.otf in Resources */,
+				C2CF9B2025B5F8F200B68C4E /* Latinotype - Triump-Rg-Rock-07.otf in Resources */,
+				C2CF9B0F25B5F8F200B68C4E /* Latinotype - Triump-Rg-Blur-04.otf in Resources */,
+				C2CF9B0525B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Shadow.otf in Resources */,
+				C2CF9B2225B5F8F200B68C4E /* Latinotype - Triump-Rg-Blur-09.otf in Resources */,
+				C2CF9B1825B5F8F200B68C4E /* Latinotype - Triump-Rg-Blur-10.otf in Resources */,
+				C2CF9B1625B5F8F200B68C4E /* Latinotype - Triump-Rg-Blur-03.otf in Resources */,
+				C2CF9B0625B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Regular.otf in Resources */,
+				C2CF9B1A25B5F8F200B68C4E /* Latinotype - Triump-Rg-Blur-07.otf in Resources */,
+				C2E2091125B5DC7B002B6C86 /* Transport.storyboard in Resources */,
+				C2CF9B1025B5F8F200B68C4E /* Latinotype - Triump-Rg-Blur-06.otf in Resources */,
+				C2CF9B0425B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Slant Regular.otf in Resources */,
+				C2CF9B1D25B5F8F200B68C4E /* Latinotype - Triump-Rg-Rock-10.otf in Resources */,
+				C2CF9B2625B5F8F200B68C4E /* Latinotype - Triump-Rg-Rock-11.otf in Resources */,
+				C2CF9B0125B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Thin.otf in Resources */,
+				C2CF9B0725B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Dot Regular.otf in Resources */,
+				C2CF9B1125B5F8F200B68C4E /* Latinotype - Triump-Rg-Rock-02.otf in Resources */,
+				C2E2090925B5DC7B002B6C86 /* LaunchScreen.storyboard in Resources */,
+				C2CF9B1E25B5F8F200B68C4E /* Latinotype - Triump-Rg-Rock-04.otf in Resources */,
+				C2E2090F25B5DC7B002B6C86 /* Mixer.storyboard in Resources */,
+				C2CF9B2125B5F8F200B68C4E /* Latinotype - Triump-Rg-Extras.otf in Resources */,
+				C2CF9AFD25B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Clean Thin.otf in Resources */,
+				C2CF9AFE25B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Slant Light.otf in Resources */,
+				C2CF9B2425B5F8F200B68C4E /* Latinotype - Triump-Rg-Blur-05.otf in Resources */,
+				C2CF9B2325B5F8F200B68C4E /* Latinotype - Triump-Rg-Blur-08.otf in Resources */,
+				C2CF9B0925B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Dot Light.otf in Resources */,
+				C2E2091025B5DC7B002B6C86 /* Purgatory.storyboard in Resources */,
+				C2CF9B1225B5F8F200B68C4E /* Latinotype - Triump-Rg-Rock-06.otf in Resources */,
+				C2CF9B1725B5F8F200B68C4E /* Latinotype - Triump-Rg-Ornaments.otf in Resources */,
+				C2CF9B0225B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Dot Regular Bold.otf in Resources */,
+				C2CF9B1B25B5F8F200B68C4E /* Latinotype - Triump-Rg-Rock-01.otf in Resources */,
+				C2CF9B1C25B5F8F200B68C4E /* Latinotype - Triump-Rg-Blur-12.otf in Resources */,
+				C2CF9AFC25B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Clean Shadow.otf in Resources */,
+				C2E2090625B5DC63002B6C86 /* Main.storyboard in Resources */,
+				C2CF9B1925B5F8F200B68C4E /* Latinotype - Triump-Rg-Blur-02.otf in Resources */,
+				C2E2090C25B5DC7B002B6C86 /* Instrument.storyboard in Resources */,
+				C2CF9B0A25B5F8EC00B68C4E /* Yellow Design Studio - Eveleth Light.otf in Resources */,
+				C2CF9B0E25B5F8F200B68C4E /* Latinotype - Triump-Rg-Rock-05.otf in Resources */,
+				C2CF9B1425B5F8F200B68C4E /* Latinotype - Triump-Rg-Blur-11.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

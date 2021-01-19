@@ -51,7 +51,7 @@ struct MixerView_Previews: PreviewProvider
     let sequence = Sequence()
     for index in 0 ..< 3
     {
-      let font = AnySoundFont.bundledFonts.randomElement()!
+      let font = SoundFont.bundledFonts.randomElement()!
       let header = font.presetHeaders.randomElement()!
       let preset = Instrument.Preset(font: font, header: header, channel: 0)
       let instrument = try! Instrument(preset: preset, audioEngine: audioEngine)

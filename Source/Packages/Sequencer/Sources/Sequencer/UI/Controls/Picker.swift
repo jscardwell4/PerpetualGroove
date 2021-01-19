@@ -15,7 +15,9 @@ import UIKit
 
 /// An abstract subclass of `UIControl` that wraps an instance of `InlinePickerView`
 /// to provide application-specific customization.
-@IBDesignable
+@available(iOS 14.0, *)
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
 public class Picker: UIControl, InlinePickerDelegate
 {
   // MARK: Stored Properties
@@ -45,9 +47,6 @@ public class Picker: UIControl, InlinePickerDelegate
   /// Configures the inline picker container.
   private func setup()
   {
-    // Connect the property wrapper.
-    $selection = picker
-
     // Assign `self` as the picker view's delegate.
     picker.delegate = self
 
@@ -68,17 +67,8 @@ public class Picker: UIControl, InlinePickerDelegate
     // across the container.
     constrain(𝗛∶|[picker]|, 𝗩∶|[picker]|)
 
-    #if TARGET_INTERFACE_BUILDER
-
-    // Assign the interface builder content to `items`.
-    items = type(of: self).contentForInterfaceBuilder
-
-    #else
-
     // Assign items via a refresh.
     refreshItems()
-
-    #endif
 
     // Make the default selection.
     picker.selection = type(of: self).initialSelection
@@ -143,7 +133,11 @@ public class Picker: UIControl, InlinePickerDelegate
 
   /// The index of the selected item in `items`. This is a derived property
   /// wrapping the property accessors of `picker.selection`.
-  @WritablePassthrough(\InlinePickerView.selection) public var selection: Int
+  public var selection: Int
+  {
+    get { picker.selection }
+    set { picker.selection = newValue }
+  }
 
   /// Selects the item at the specified index.
   /// - Parameter item: The index of the item to select.

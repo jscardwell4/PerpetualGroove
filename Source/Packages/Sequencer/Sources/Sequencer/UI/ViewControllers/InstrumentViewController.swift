@@ -33,7 +33,7 @@ public final class InstrumentViewController: UIViewController, SecondaryContent
     guard let instrument = instrument else { return }
 
     // Get the selected sound font.
-    let soundFont = AnySoundFont.bundledFonts[soundFontSelector.selection]
+    let soundFont = SoundFont.bundledFonts[soundFontSelector.selection]
 
     // Create a preset specifying the selected sound font's first program.
     let preset = Instrument.Preset(font: soundFont, header: soundFont[0], channel: 0)
@@ -131,7 +131,7 @@ public final class InstrumentViewController: UIViewController, SecondaryContent
       // Check that there is an instrument, that the view is loaded, and that indexes
       // may be retrieved for the sound font and the program.
       guard let instrument = instrument,
-            let soundFontIndex = AnySoundFont.bundledFonts
+            let soundFontIndex = SoundFont.bundledFonts
               .firstIndex(where: { instrument.soundFont.isEqualTo($0) }),
             let programIndex = instrument.soundFont.presetHeaders
               .firstIndex(of: instrument.preset.header),

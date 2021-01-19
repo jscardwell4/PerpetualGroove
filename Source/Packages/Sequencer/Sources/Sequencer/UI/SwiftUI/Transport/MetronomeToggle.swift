@@ -19,7 +19,7 @@ struct MetronomeToggle: View
   {
     Button(action: { metronome.isOn.toggle() })
     {
-      Image("metronome", bundle: bundle)
+      Image("metronome", bundle: Bundle.module)
     }
     .accentColor(metronome.isOn ? .highlightColor : .primaryColor1)
   }

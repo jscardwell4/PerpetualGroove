@@ -57,26 +57,26 @@ private struct SliderHost: UIViewRepresentable
   /// - Returns: The hosted slider.
   func makeUIView(context: Context) -> MoonDev.Slider
   {
-    let thumbImage = UIImage(named: "horizontal_thumb", in: bundle, with: nil)!
+    let thumbImage = UIImage(named: "horizontal_thumb", in: Bundle.module, with: nil)!
     let height = thumbImage.size.height
     let slider = MoonDev.Slider(frame: CGRect(size: CGSize(width: 300, height: height)))
     slider.backgroundColor = .clear
     slider.addAction(valueChangedAction, for: .valueChanged)
     slider.thumbImage = thumbImage
-    slider.trackMinImage = UIImage(named: "horizontal_track", in: bundle, with: nil)
-    slider.trackMaxImage = UIImage(named: "horizontal_track", in: bundle, with: nil)
-    slider.thumbColor = UIColor(named: "thumbColor", in: bundle, compatibleWith: nil)!
+    slider.trackMinImage = UIImage(named: "horizontal_track", in: Bundle.module, with: nil)
+    slider.trackMaxImage = UIImage(named: "horizontal_track", in: Bundle.module, with: nil)
+    slider.thumbColor = UIColor(named: "thumbColor", in: Bundle.module, compatibleWith: nil)!
     slider.trackMinColor = UIColor(named: "trackMinColor",
-                                   in: bundle,
+                                   in: Bundle.module,
                                    compatibleWith: nil)!
     slider.trackMaxColor = UIColor(named: "trackMaxColor",
-                                   in: bundle,
+                                   in: Bundle.module,
                                    compatibleWith: nil)!
     slider.minimumValue = 24
     slider.maximumValue = 400
     slider.value = Float(value)
     slider.valueLabelTextColor = UIColor(named: "valueLabelTextColor",
-                                         in: bundle,
+                                         in: Bundle.module,
                                          compatibleWith: nil)!
     slider.showsValueLabel = true
     slider.valueLabelPrecision = 0

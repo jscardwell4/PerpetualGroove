@@ -17,7 +17,7 @@ struct RecordToggle: View
   {
     Button(action: { transport.recording.toggle() })
     {
-      Image("record", bundle: bundle)
+      Image("record", bundle: Bundle.module)
     }
     .accentColor(transport.recording ? .highlightColor : .primaryColor2)
   }

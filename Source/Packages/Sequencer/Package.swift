@@ -23,13 +23,22 @@ let package = Package(
     .target(
       name: "Sequencer",
       dependencies: ["MoonDev", "Common", "MIDI", "SoundFont"],
+      exclude: [
+        "UI/ViewControllers",
+        "UI/Views/MixerLayout.swift",
+        "UI/Views/Cells",
+        "UI/Controls",
+        "UI/Containers"
+      ],
       resources: [
-        .process("Media.xcassets")
+        .process("Resources/Media.xcassets"),
+        .process("Resources/Woodblock.wav"),
+        .copy("Resources/Fonts")
       ]
     ),
     .testTarget(
       name: "SequencerTests",
-      dependencies: ["Sequencer", "MoonDev", "Nimble", "Common", "MIDI", "SoundFont"]
+      dependencies: ["MoonDev", "Sequencer", "Nimble", "Common", "MIDI", "SoundFont"]
     )
   ]
 )

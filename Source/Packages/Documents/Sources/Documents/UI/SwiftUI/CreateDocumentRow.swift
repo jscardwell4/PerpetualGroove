@@ -18,7 +18,7 @@ struct CreateDocumentRow: View
   var body: some View
   {
     HStack {
-    Image("add-selected", bundle: bundle)
+    Image("add-selected", bundle: Bundle.module)
       .resizable(resizingMode: .stretch)
       .aspectRatio(contentMode: .fit)
       .frame(width: FontStyle.listItem.size)

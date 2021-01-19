@@ -27,7 +27,7 @@ struct SoloButton: View
     .accentColor(Color(isEngaged
                         ? "engagedTintColor"
                         : "disengagedTintColor",
-                       bundle: bundle))
+                       bundle: Bundle.module))
   }
 }
 

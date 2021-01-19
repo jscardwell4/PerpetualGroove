@@ -27,7 +27,7 @@ struct SoundFontButton: View {
 @available(iOS 14.0, *)
 struct SoundFontButton_Previews: PreviewProvider {
     static var previews: some View {
-      SoundFontButton(soundFont: AnySoundFont.bundledFonts[0])
+      SoundFontButton(soundFont: SoundFont.bundledFonts[0])
           .previewLayout(.sizeThatFits)
           .preferredColorScheme(.dark)
           .padding()

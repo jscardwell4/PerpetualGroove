@@ -38,7 +38,7 @@ public struct ToolButton: View
     {
       Button(action: { player.currentTool = self.tool })
       {
-        Image(imageName, bundle: bundle)
+        Image(imageName, bundle: Bundle.module)
           .resizable()
           .frame(width: 34, height: 34)
       }

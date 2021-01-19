@@ -50,7 +50,7 @@ struct TrackBus: View
 struct TrackBus_Previews: PreviewProvider
 {
   static let previewTrack: InstrumentTrack = {
-    let font = AnySoundFont.bundledFonts.randomElement()!
+    let font = SoundFont.bundledFonts.randomElement()!
     let header =
       unwrapOrDie(font.presetHeaders.randomElement())
     let preset = Instrument.Preset(font: font, header: header, channel: 0)

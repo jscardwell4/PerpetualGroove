@@ -53,12 +53,12 @@ private struct SliderHost: UIViewRepresentable
 
   /// The image used for the thumb.
   private static let thumbImage = UIImage(named: "vertical_thumb",
-                                          in: bundle,
+                                          in: Bundle.module,
                                           with: nil)!
 
   /// The image used for both tracks.
   private static let trackImage = UIImage(named: "vertical_track",
-                                          in: bundle,
+                                          in: Bundle.module,
                                           with: nil)
 
   /// The value change action for the hosted slider.

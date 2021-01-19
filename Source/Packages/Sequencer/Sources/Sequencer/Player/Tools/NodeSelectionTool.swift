@@ -318,9 +318,9 @@ public class PresentingNodeSelectionTool: NodeSelectionTool, PresentingTool
   /// Overridden to present the tool's secondary content when `active == true`.
   override public func didSelectNode()
   {
-    guard active else { return }
-
-    player.playerContainer?.presentContent(for: self, completion: { _ in })
+//    guard active else { return }
+//
+//    player.playerContainer?.presentContent(for: self, completion: { _ in })
   }
 
   /// Overridden to clear the list of disabled actions when adding a second node

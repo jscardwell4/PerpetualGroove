@@ -19,7 +19,7 @@ struct StopButton: View
   {
     Button(action: { transport.reset() })
     {
-      Image("stop", bundle: bundle)
+      Image("stop", bundle: Bundle.module)
     }
     .disabled(!transport.playing)
     .accentColor(transport.playing ? .primaryColor1 : .disabledColor)

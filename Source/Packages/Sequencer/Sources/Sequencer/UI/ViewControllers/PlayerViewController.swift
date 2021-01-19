@@ -172,22 +172,21 @@ public final class PlayerViewController: UIViewController, UITextFieldDelegate
   {
     didSet
     {
-      guard let spinner = spinner,
-            let bundle = Bundle(identifier: "com.moondeerstudios.Sequencer")
+      guard let spinner = spinner
       else
       {
         return
       }
 
       spinner.animationImages = [
-        UIImage(named: "spinner1", in: bundle, with: nil)!,
-        UIImage(named: "spinner2", in: bundle, with: nil)!,
-        UIImage(named: "spinner3", in: bundle, with: nil)!,
-        UIImage(named: "spinner4", in: bundle, with: nil)!,
-        UIImage(named: "spinner5", in: bundle, with: nil)!,
-        UIImage(named: "spinner6", in: bundle, with: nil)!,
-        UIImage(named: "spinner7", in: bundle, with: nil)!,
-        UIImage(named: "spinner8", in: bundle, with: nil)!
+        UIImage(named: "spinner1", in: Bundle.module, with: nil)!,
+        UIImage(named: "spinner2", in: Bundle.module, with: nil)!,
+        UIImage(named: "spinner3", in: Bundle.module, with: nil)!,
+        UIImage(named: "spinner4", in: Bundle.module, with: nil)!,
+        UIImage(named: "spinner5", in: Bundle.module, with: nil)!,
+        UIImage(named: "spinner6", in: Bundle.module, with: nil)!,
+        UIImage(named: "spinner7", in: Bundle.module, with: nil)!,
+        UIImage(named: "spinner8", in: Bundle.module, with: nil)!
       ]
       .map { $0.image(withColor: .white) }
 
