@@ -5,7 +5,7 @@
 //  Created by Jason Cardwell on 1/13/21.
 //  Copyright © 2021 Moondeer Studios. All rights reserved.
 //
-import CoreText
+//import CoreText
 import Foundation
 import MoonDev
 
@@ -60,23 +60,23 @@ public struct EvelethFont
     self.family = family
     self.weight = weight
 
-    guard EvelethFont.registered ∌ postscriptName else { return }
-
-    guard let url = Bundle.module.url(forResource: postscriptName, withExtension: "otf")
-    else
-    {
-      logw("\(#fileID) \(#function) Unable to locate font '\(postscriptName)'.")
-      return
-    }
-
-    guard CTFontManagerRegisterFontsForURL(url as CFURL, .process, nil)
-    else
-    {
-      loge("\(#fileID) \(#function) Failed to register font '\(postscriptName)'.")
-      return
-    }
-
-    EvelethFont.registered.insert(postscriptName)
+//    guard EvelethFont.registered ∌ postscriptName else { return }
+//
+//    guard let url = Bundle.module.url(forResource: postscriptName, withExtension: "otf")
+//    else
+//    {
+//      logw("\(#fileID) \(#function) Unable to locate font '\(postscriptName)'.")
+//      return
+//    }
+//
+//    guard CTFontManagerRegisterFontsForURL(url as CFURL, .process, nil)
+//    else
+//    {
+//      loge("\(#fileID) \(#function) Failed to register font '\(postscriptName)'.")
+//      return
+//    }
+//
+//    EvelethFont.registered.insert(postscriptName)
   }
 
   /// `EvelethFont` instance for "Yellow Design Studio - Eveleth Clean Regular.otf"

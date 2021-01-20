@@ -129,10 +129,10 @@ public final class Loop: NodeDispatch
   // MARK: Node Dispatch
 
   /// Uses `track` to connect `node`.
-  public func connect(node: Node) throws { try track.connect(node: node) }
+  public func connect(node: MIDINode) throws { try track.connect(node: node) }
 
   /// Uses `track` to disconnect `node`.
-  public func disconnect(node: Node) throws { try track.disconnect(node: node) }
+  public func disconnect(node: MIDINode) throws { try track.disconnect(node: node) }
 
   /// Initializing with a track. The loop is assigned to the specified track. The
   /// loop is provided a new identifier and an empty event container.

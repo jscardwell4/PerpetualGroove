@@ -21,7 +21,7 @@ public extension File
     public typealias Identifier = NodeEvent.Identifier
     
     /// The type for encapsulating initial angle and velocity data.
-    public typealias Trajectory = Sequencer.Node.Trajectory
+    public typealias Trajectory = Sequencer.MIDINode.Trajectory
     
     /// Typealias for the midi event kind utilized by `Node`.
     public typealias Event = NodeEvent

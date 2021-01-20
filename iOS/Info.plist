@@ -39,48 +39,48 @@
 	<true/>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Yellow Design Studio - Eveleth Clean Regular.otf</string>
-		<string>Yellow Design Studio - Eveleth Clean Shadow.otf</string>
-		<string>Yellow Design Studio - Eveleth Clean Thin.otf</string>
-		<string>Yellow Design Studio - Eveleth Dot Light.otf</string>
-		<string>Yellow Design Studio - Eveleth Dot Regular Bold.otf</string>
-		<string>Yellow Design Studio - Eveleth Dot Regular.otf</string>
-		<string>Yellow Design Studio - Eveleth Icons.otf</string>
-		<string>Yellow Design Studio - Eveleth Light.otf</string>
-		<string>Yellow Design Studio - Eveleth Regular Bold.otf</string>
-		<string>Yellow Design Studio - Eveleth Regular.otf</string>
-		<string>Yellow Design Studio - Eveleth Shadow.otf</string>
-		<string>Yellow Design Studio - Eveleth Shapes.otf</string>
-		<string>Yellow Design Studio - Eveleth Slant Light.otf</string>
-		<string>Yellow Design Studio - Eveleth Slant Regular Bold.otf</string>
-		<string>Yellow Design Studio - Eveleth Slant Regular.otf</string>
-		<string>Yellow Design Studio - Eveleth Thin.otf</string>
-		<string>Latinotype - Triump-Rg-Blur-01.otf</string>
-		<string>Latinotype - Triump-Rg-Blur-02.otf</string>
-		<string>Latinotype - Triump-Rg-Blur-03.otf</string>
-		<string>Latinotype - Triump-Rg-Blur-04.otf</string>
-		<string>Latinotype - Triump-Rg-Blur-05.otf</string>
-		<string>Latinotype - Triump-Rg-Blur-06.otf</string>
-		<string>Latinotype - Triump-Rg-Blur-07.otf</string>
-		<string>Latinotype - Triump-Rg-Blur-08.otf</string>
-		<string>Latinotype - Triump-Rg-Blur-09.otf</string>
-		<string>Latinotype - Triump-Rg-Blur-10.otf</string>
-		<string>Latinotype - Triump-Rg-Blur-11.otf</string>
-		<string>Latinotype - Triump-Rg-Blur-12.otf</string>
-		<string>Latinotype - Triump-Rg-Extras.otf</string>
-		<string>Latinotype - Triump-Rg-Ornaments.otf</string>
-		<string>Latinotype - Triump-Rg-Rock-01.otf</string>
-		<string>Latinotype - Triump-Rg-Rock-02.otf</string>
-		<string>Latinotype - Triump-Rg-Rock-03.otf</string>
-		<string>Latinotype - Triump-Rg-Rock-04.otf</string>
-		<string>Latinotype - Triump-Rg-Rock-05.otf</string>
-		<string>Latinotype - Triump-Rg-Rock-06.otf</string>
-		<string>Latinotype - Triump-Rg-Rock-07.otf</string>
-		<string>Latinotype - Triump-Rg-Rock-08.otf</string>
-		<string>Latinotype - Triump-Rg-Rock-09.otf</string>
-		<string>Latinotype - Triump-Rg-Rock-10.otf</string>
-		<string>Latinotype - Triump-Rg-Rock-11.otf</string>
-		<string>Latinotype - Triump-Rg-Rock-12.otf</string>
+		<string>Eveleth-Clean-Regular.otf</string>
+		<string>Eveleth-Clean-Shadow.otf</string>
+		<string>Eveleth-Clean-Thin.otf</string>
+		<string>Eveleth-Dot-Light.otf</string>
+		<string>Eveleth-Dot-Regular-Bold.otf</string>
+		<string>Eveleth-Dot-Regular.otf</string>
+		<string>Eveleth-Icons.otf</string>
+		<string>Eveleth-Light.otf</string>
+		<string>Eveleth-Regular-Bold.otf</string>
+		<string>Eveleth-Regular.otf</string>
+		<string>Eveleth-Shadow.otf</string>
+		<string>Eveleth-Shapes.otf</string>
+		<string>Eveleth-Slant-Light.otf</string>
+		<string>Eveleth-Slant-Regular-Bold.otf</string>
+		<string>Eveleth-Slant-Regular.otf</string>
+		<string>Eveleth-Thin.otf</string>
+		<string>Triump-Rg-Blur-01.otf</string>
+		<string>Triump-Rg-Blur-02.otf</string>
+		<string>Triump-Rg-Blur-03.otf</string>
+		<string>Triump-Rg-Blur-04.otf</string>
+		<string>Triump-Rg-Blur-05.otf</string>
+		<string>Triump-Rg-Blur-06.otf</string>
+		<string>Triump-Rg-Blur-07.otf</string>
+		<string>Triump-Rg-Blur-08.otf</string>
+		<string>Triump-Rg-Blur-09.otf</string>
+		<string>Triump-Rg-Blur-10.otf</string>
+		<string>Triump-Rg-Blur-11.otf</string>
+		<string>Triump-Rg-Blur-12.otf</string>
+		<string>Triump-Rg-Extras.otf</string>
+		<string>Triump-Rg-Ornaments.otf</string>
+		<string>Triump-Rg-Rock-01.otf</string>
+		<string>Triump-Rg-Rock-02.otf</string>
+		<string>Triump-Rg-Rock-03.otf</string>
+		<string>Triump-Rg-Rock-04.otf</string>
+		<string>Triump-Rg-Rock-05.otf</string>
+		<string>Triump-Rg-Rock-06.otf</string>
+		<string>Triump-Rg-Rock-07.otf</string>
+		<string>Triump-Rg-Rock-08.otf</string>
+		<string>Triump-Rg-Rock-09.otf</string>
+		<string>Triump-Rg-Rock-10.otf</string>
+		<string>Triump-Rg-Rock-11.otf</string>
+		<string>Triump-Rg-Rock-12.otf</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>

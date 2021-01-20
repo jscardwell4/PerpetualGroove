@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C24841CF25B7BD1C00C42DAE /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24841CE25B7BD1C00C42DAE /* Tests_iOS.swift */; };
-		C24841DA25B7BD1C00C42DAE /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24841D925B7BD1C00C42DAE /* Tests_macOS.swift */; };
 		C24841DC25B7BD1C00C42DAE /* GrooveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24841B325B7BD1900C42DAE /* GrooveApp.swift */; };
 		C24841DD25B7BD1C00C42DAE /* GrooveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24841B325B7BD1900C42DAE /* GrooveApp.swift */; };
 		C24841E025B7BD1C00C42DAE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24841B525B7BD1900C42DAE /* ContentView.swift */; };
@@ -21,110 +19,93 @@
 		C248421325B7C00F00C42DAE /* MoonDev in Frameworks */ = {isa = PBXBuildFile; productRef = C248421225B7C00F00C42DAE /* MoonDev */; };
 		C248421525B7C00F00C42DAE /* Sequencer in Frameworks */ = {isa = PBXBuildFile; productRef = C248421425B7C00F00C42DAE /* Sequencer */; };
 		C248421725B7C00F00C42DAE /* SoundFont in Frameworks */ = {isa = PBXBuildFile; productRef = C248421625B7C00F00C42DAE /* SoundFont */; };
-		C2551A5525B7C52B0077E18F /* Yellow Design Studio - Eveleth Shadow.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AD25B75CC00008B514 /* Yellow Design Studio - Eveleth Shadow.otf */; };
-		C2551A5625B7C52B0077E18F /* Yellow Design Studio - Eveleth Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A625B75CC00008B514 /* Yellow Design Studio - Eveleth Light.otf */; };
-		C2551A5725B7C52B0077E18F /* Yellow Design Studio - Eveleth Slant Regular Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A525B75CC00008B514 /* Yellow Design Studio - Eveleth Slant Regular Bold.otf */; };
-		C2551A5825B7C52B0077E18F /* Yellow Design Studio - Eveleth Clean Shadow.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A125B75CC00008B514 /* Yellow Design Studio - Eveleth Clean Shadow.otf */; };
-		C2551A5925B7C52B0077E18F /* Yellow Design Studio - Eveleth Icons.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A425B75CC00008B514 /* Yellow Design Studio - Eveleth Icons.otf */; };
-		C2551A5A25B7C52B0077E18F /* Yellow Design Studio - Eveleth Regular Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AA25B75CC00008B514 /* Yellow Design Studio - Eveleth Regular Bold.otf */; };
-		C2551A5B25B7C52B0077E18F /* Yellow Design Studio - Eveleth Dot Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AF25B75CC00008B514 /* Yellow Design Studio - Eveleth Dot Light.otf */; };
-		C2551A5C25B7C52B0077E18F /* Yellow Design Studio - Eveleth Clean Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B025B75CC00008B514 /* Yellow Design Studio - Eveleth Clean Thin.otf */; };
-		C2551A5D25B7C52B0077E18F /* Yellow Design Studio - Eveleth Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A925B75CC00008B514 /* Yellow Design Studio - Eveleth Thin.otf */; };
-		C2551A5E25B7C52B0077E18F /* Yellow Design Studio - Eveleth Clean Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A225B75CC00008B514 /* Yellow Design Studio - Eveleth Clean Regular.otf */; };
-		C2551A5F25B7C52B0077E18F /* Yellow Design Studio - Eveleth Shapes.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A325B75CC00008B514 /* Yellow Design Studio - Eveleth Shapes.otf */; };
-		C2551A6025B7C52B0077E18F /* Yellow Design Studio - Eveleth Slant Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A725B75CC00008B514 /* Yellow Design Studio - Eveleth Slant Regular.otf */; };
-		C2551A6125B7C52B0077E18F /* Yellow Design Studio - Eveleth Slant Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AC25B75CC00008B514 /* Yellow Design Studio - Eveleth Slant Light.otf */; };
-		C2551A6225B7C52B0077E18F /* Yellow Design Studio - Eveleth Dot Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AE25B75CC00008B514 /* Yellow Design Studio - Eveleth Dot Regular.otf */; };
-		C2551A6325B7C52B0077E18F /* Yellow Design Studio - Eveleth Dot Regular Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A825B75CC00008B514 /* Yellow Design Studio - Eveleth Dot Regular Bold.otf */; };
-		C2551A6425B7C52B0077E18F /* Yellow Design Studio - Eveleth Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AB25B75CC00008B514 /* Yellow Design Studio - Eveleth Regular.otf */; };
-		C2551A6A25B7C52C0077E18F /* Yellow Design Studio - Eveleth Shadow.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AD25B75CC00008B514 /* Yellow Design Studio - Eveleth Shadow.otf */; };
-		C2551A6B25B7C52C0077E18F /* Yellow Design Studio - Eveleth Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A625B75CC00008B514 /* Yellow Design Studio - Eveleth Light.otf */; };
-		C2551A6C25B7C52C0077E18F /* Yellow Design Studio - Eveleth Slant Regular Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A525B75CC00008B514 /* Yellow Design Studio - Eveleth Slant Regular Bold.otf */; };
-		C2551A6D25B7C52C0077E18F /* Yellow Design Studio - Eveleth Clean Shadow.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A125B75CC00008B514 /* Yellow Design Studio - Eveleth Clean Shadow.otf */; };
-		C2551A6E25B7C52C0077E18F /* Yellow Design Studio - Eveleth Icons.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A425B75CC00008B514 /* Yellow Design Studio - Eveleth Icons.otf */; };
-		C2551A6F25B7C52C0077E18F /* Yellow Design Studio - Eveleth Regular Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AA25B75CC00008B514 /* Yellow Design Studio - Eveleth Regular Bold.otf */; };
-		C2551A7025B7C52C0077E18F /* Yellow Design Studio - Eveleth Dot Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AF25B75CC00008B514 /* Yellow Design Studio - Eveleth Dot Light.otf */; };
-		C2551A7125B7C52C0077E18F /* Yellow Design Studio - Eveleth Clean Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B025B75CC00008B514 /* Yellow Design Studio - Eveleth Clean Thin.otf */; };
-		C2551A7225B7C52C0077E18F /* Yellow Design Studio - Eveleth Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A925B75CC00008B514 /* Yellow Design Studio - Eveleth Thin.otf */; };
-		C2551A7325B7C52C0077E18F /* Yellow Design Studio - Eveleth Clean Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A225B75CC00008B514 /* Yellow Design Studio - Eveleth Clean Regular.otf */; };
-		C2551A7425B7C52C0077E18F /* Yellow Design Studio - Eveleth Shapes.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A325B75CC00008B514 /* Yellow Design Studio - Eveleth Shapes.otf */; };
-		C2551A7525B7C52C0077E18F /* Yellow Design Studio - Eveleth Slant Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A725B75CC00008B514 /* Yellow Design Studio - Eveleth Slant Regular.otf */; };
-		C2551A7625B7C52C0077E18F /* Yellow Design Studio - Eveleth Slant Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AC25B75CC00008B514 /* Yellow Design Studio - Eveleth Slant Light.otf */; };
-		C2551A7725B7C52C0077E18F /* Yellow Design Studio - Eveleth Dot Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AE25B75CC00008B514 /* Yellow Design Studio - Eveleth Dot Regular.otf */; };
-		C2551A7825B7C52C0077E18F /* Yellow Design Studio - Eveleth Dot Regular Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A825B75CC00008B514 /* Yellow Design Studio - Eveleth Dot Regular Bold.otf */; };
-		C2551A7925B7C52C0077E18F /* Yellow Design Studio - Eveleth Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AB25B75CC00008B514 /* Yellow Design Studio - Eveleth Regular.otf */; };
-		C2551A7F25B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-03.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C725B75CC00008B514 /* Latinotype - Triump-Rg-Blur-03.otf */; };
-		C2551A8025B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-02.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BB25B75CC00008B514 /* Latinotype - Triump-Rg-Rock-02.otf */; };
-		C2551A8125B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-11.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B525B75CC00008B514 /* Latinotype - Triump-Rg-Rock-11.otf */; };
-		C2551A8225B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-06.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B225B75CC00008B514 /* Latinotype - Triump-Rg-Rock-06.otf */; };
-		C2551A8325B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-01.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B925B75CC00008B514 /* Latinotype - Triump-Rg-Rock-01.otf */; };
-		C2551A8425B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-09.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BD25B75CC00008B514 /* Latinotype - Triump-Rg-Blur-09.otf */; };
-		C2551A8525B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-06.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C425B75CC00008B514 /* Latinotype - Triump-Rg-Blur-06.otf */; };
-		C2551A8625B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-01.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C825B75CC00008B514 /* Latinotype - Triump-Rg-Blur-01.otf */; };
-		C2551A8725B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-08.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2CB25B75CC00008B514 /* Latinotype - Triump-Rg-Rock-08.otf */; };
-		C2551A8825B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-11.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C125B75CC00008B514 /* Latinotype - Triump-Rg-Blur-11.otf */; };
-		C2551A8925B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-04.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BF25B75CC00008B514 /* Latinotype - Triump-Rg-Blur-04.otf */; };
-		C2551A8A25B7C53B0077E18F /* Latinotype - Triump-Rg-Ornaments.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2CA25B75CC00008B514 /* Latinotype - Triump-Rg-Ornaments.otf */; };
-		C2551A8B25B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-12.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C325B75CC00008B514 /* Latinotype - Triump-Rg-Blur-12.otf */; };
-		C2551A8C25B7C53B0077E18F /* Latinotype - Triump-Rg-Extras.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C525B75CC00008B514 /* Latinotype - Triump-Rg-Extras.otf */; };
-		C2551A8D25B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-09.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C925B75CC00008B514 /* Latinotype - Triump-Rg-Rock-09.otf */; };
-		C2551A8E25B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-03.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BA25B75CC00008B514 /* Latinotype - Triump-Rg-Rock-03.otf */; };
-		C2551A8F25B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-10.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BE25B75CC00008B514 /* Latinotype - Triump-Rg-Blur-10.otf */; };
-		C2551A9025B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-02.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C625B75CC00008B514 /* Latinotype - Triump-Rg-Blur-02.otf */; };
-		C2551A9125B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-12.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B325B75CC00008B514 /* Latinotype - Triump-Rg-Rock-12.otf */; };
-		C2551A9225B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-07.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B425B75CC00008B514 /* Latinotype - Triump-Rg-Rock-07.otf */; };
-		C2551A9325B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-10.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B825B75CC00008B514 /* Latinotype - Triump-Rg-Rock-10.otf */; };
-		C2551A9425B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-05.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C025B75CC00008B514 /* Latinotype - Triump-Rg-Blur-05.otf */; };
-		C2551A9525B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-04.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B725B75CC00008B514 /* Latinotype - Triump-Rg-Rock-04.otf */; };
-		C2551A9625B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-08.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BC25B75CC00008B514 /* Latinotype - Triump-Rg-Blur-08.otf */; };
-		C2551A9725B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-07.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C225B75CC00008B514 /* Latinotype - Triump-Rg-Blur-07.otf */; };
-		C2551A9825B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-05.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B625B75CC00008B514 /* Latinotype - Triump-Rg-Rock-05.otf */; };
-		C2551A9E25B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-03.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C725B75CC00008B514 /* Latinotype - Triump-Rg-Blur-03.otf */; };
-		C2551A9F25B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-02.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BB25B75CC00008B514 /* Latinotype - Triump-Rg-Rock-02.otf */; };
-		C2551AA025B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-11.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B525B75CC00008B514 /* Latinotype - Triump-Rg-Rock-11.otf */; };
-		C2551AA125B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-06.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B225B75CC00008B514 /* Latinotype - Triump-Rg-Rock-06.otf */; };
-		C2551AA225B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-01.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B925B75CC00008B514 /* Latinotype - Triump-Rg-Rock-01.otf */; };
-		C2551AA325B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-09.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BD25B75CC00008B514 /* Latinotype - Triump-Rg-Blur-09.otf */; };
-		C2551AA425B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-06.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C425B75CC00008B514 /* Latinotype - Triump-Rg-Blur-06.otf */; };
-		C2551AA525B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-01.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C825B75CC00008B514 /* Latinotype - Triump-Rg-Blur-01.otf */; };
-		C2551AA625B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-08.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2CB25B75CC00008B514 /* Latinotype - Triump-Rg-Rock-08.otf */; };
-		C2551AA725B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-11.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C125B75CC00008B514 /* Latinotype - Triump-Rg-Blur-11.otf */; };
-		C2551AA825B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-04.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BF25B75CC00008B514 /* Latinotype - Triump-Rg-Blur-04.otf */; };
-		C2551AA925B7C53B0077E18F /* Latinotype - Triump-Rg-Ornaments.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2CA25B75CC00008B514 /* Latinotype - Triump-Rg-Ornaments.otf */; };
-		C2551AAA25B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-12.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C325B75CC00008B514 /* Latinotype - Triump-Rg-Blur-12.otf */; };
-		C2551AAB25B7C53B0077E18F /* Latinotype - Triump-Rg-Extras.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C525B75CC00008B514 /* Latinotype - Triump-Rg-Extras.otf */; };
-		C2551AAC25B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-09.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C925B75CC00008B514 /* Latinotype - Triump-Rg-Rock-09.otf */; };
-		C2551AAD25B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-03.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BA25B75CC00008B514 /* Latinotype - Triump-Rg-Rock-03.otf */; };
-		C2551AAE25B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-10.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BE25B75CC00008B514 /* Latinotype - Triump-Rg-Blur-10.otf */; };
-		C2551AAF25B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-02.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C625B75CC00008B514 /* Latinotype - Triump-Rg-Blur-02.otf */; };
-		C2551AB025B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-12.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B325B75CC00008B514 /* Latinotype - Triump-Rg-Rock-12.otf */; };
-		C2551AB125B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-07.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B425B75CC00008B514 /* Latinotype - Triump-Rg-Rock-07.otf */; };
-		C2551AB225B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-10.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B825B75CC00008B514 /* Latinotype - Triump-Rg-Rock-10.otf */; };
-		C2551AB325B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-05.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C025B75CC00008B514 /* Latinotype - Triump-Rg-Blur-05.otf */; };
-		C2551AB425B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-04.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B725B75CC00008B514 /* Latinotype - Triump-Rg-Rock-04.otf */; };
-		C2551AB525B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-08.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BC25B75CC00008B514 /* Latinotype - Triump-Rg-Blur-08.otf */; };
-		C2551AB625B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-07.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C225B75CC00008B514 /* Latinotype - Triump-Rg-Blur-07.otf */; };
-		C2551AB725B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-05.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B625B75CC00008B514 /* Latinotype - Triump-Rg-Rock-05.otf */; };
-		C2551ABD25B7C5410077E18F /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C286EF9925B75CBF0008B514 /* Settings.bundle */; };
-		C2551AC325B7C5420077E18F /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C286EF9925B75CBF0008B514 /* Settings.bundle */; };
+		C25206A625B8A8BB00B1E0C5 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C249766425B3AA1800A54608 /* Settings.bundle */; };
+		C25206A925B8A8BC00B1E0C5 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C249766425B3AA1800A54608 /* Settings.bundle */; };
+		C252073825B8AF0600B1E0C5 /* Triump-Rg-Rock-07.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252070D25B8AF0600B1E0C5 /* Triump-Rg-Rock-07.otf */; };
+		C252073925B8AF0600B1E0C5 /* Triump-Rg-Rock-07.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252070D25B8AF0600B1E0C5 /* Triump-Rg-Rock-07.otf */; };
+		C252073A25B8AF0600B1E0C5 /* Triump-Rg-Rock-06.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252070E25B8AF0600B1E0C5 /* Triump-Rg-Rock-06.otf */; };
+		C252073B25B8AF0600B1E0C5 /* Triump-Rg-Rock-06.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252070E25B8AF0600B1E0C5 /* Triump-Rg-Rock-06.otf */; };
+		C252073C25B8AF0600B1E0C5 /* Triump-Rg-Rock-12.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252070F25B8AF0600B1E0C5 /* Triump-Rg-Rock-12.otf */; };
+		C252073D25B8AF0600B1E0C5 /* Triump-Rg-Rock-12.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252070F25B8AF0600B1E0C5 /* Triump-Rg-Rock-12.otf */; };
+		C252073E25B8AF0600B1E0C5 /* Triump-Rg-Rock-04.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071025B8AF0600B1E0C5 /* Triump-Rg-Rock-04.otf */; };
+		C252073F25B8AF0600B1E0C5 /* Triump-Rg-Rock-04.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071025B8AF0600B1E0C5 /* Triump-Rg-Rock-04.otf */; };
+		C252074025B8AF0600B1E0C5 /* Triump-Rg-Rock-10.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071125B8AF0600B1E0C5 /* Triump-Rg-Rock-10.otf */; };
+		C252074125B8AF0600B1E0C5 /* Triump-Rg-Rock-10.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071125B8AF0600B1E0C5 /* Triump-Rg-Rock-10.otf */; };
+		C252074225B8AF0600B1E0C5 /* Triump-Rg-Rock-11.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071225B8AF0600B1E0C5 /* Triump-Rg-Rock-11.otf */; };
+		C252074325B8AF0600B1E0C5 /* Triump-Rg-Rock-11.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071225B8AF0600B1E0C5 /* Triump-Rg-Rock-11.otf */; };
+		C252074425B8AF0600B1E0C5 /* Triump-Rg-Rock-05.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071325B8AF0600B1E0C5 /* Triump-Rg-Rock-05.otf */; };
+		C252074525B8AF0600B1E0C5 /* Triump-Rg-Rock-05.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071325B8AF0600B1E0C5 /* Triump-Rg-Rock-05.otf */; };
+		C252074625B8AF0600B1E0C5 /* Triump-Rg-Rock-01.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071425B8AF0600B1E0C5 /* Triump-Rg-Rock-01.otf */; };
+		C252074725B8AF0600B1E0C5 /* Triump-Rg-Rock-01.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071425B8AF0600B1E0C5 /* Triump-Rg-Rock-01.otf */; };
+		C252074825B8AF0600B1E0C5 /* Triump-Rg-Rock-02.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071525B8AF0600B1E0C5 /* Triump-Rg-Rock-02.otf */; };
+		C252074925B8AF0600B1E0C5 /* Triump-Rg-Rock-02.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071525B8AF0600B1E0C5 /* Triump-Rg-Rock-02.otf */; };
+		C252074A25B8AF0600B1E0C5 /* Triump-Rg-Rock-03.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071625B8AF0600B1E0C5 /* Triump-Rg-Rock-03.otf */; };
+		C252074B25B8AF0600B1E0C5 /* Triump-Rg-Rock-03.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071625B8AF0600B1E0C5 /* Triump-Rg-Rock-03.otf */; };
+		C252074C25B8AF0600B1E0C5 /* Triump-Rg-Blur-09.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071725B8AF0600B1E0C5 /* Triump-Rg-Blur-09.otf */; };
+		C252074D25B8AF0600B1E0C5 /* Triump-Rg-Blur-09.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071725B8AF0600B1E0C5 /* Triump-Rg-Blur-09.otf */; };
+		C252074E25B8AF0600B1E0C5 /* Triump-Rg-Blur-08.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071825B8AF0600B1E0C5 /* Triump-Rg-Blur-08.otf */; };
+		C252074F25B8AF0600B1E0C5 /* Triump-Rg-Blur-08.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071825B8AF0600B1E0C5 /* Triump-Rg-Blur-08.otf */; };
+		C252075025B8AF0600B1E0C5 /* Triump-Rg-Blur-05.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071925B8AF0600B1E0C5 /* Triump-Rg-Blur-05.otf */; };
+		C252075125B8AF0600B1E0C5 /* Triump-Rg-Blur-05.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071925B8AF0600B1E0C5 /* Triump-Rg-Blur-05.otf */; };
+		C252075225B8AF0600B1E0C5 /* Triump-Rg-Blur-11.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071A25B8AF0600B1E0C5 /* Triump-Rg-Blur-11.otf */; };
+		C252075325B8AF0600B1E0C5 /* Triump-Rg-Blur-11.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071A25B8AF0600B1E0C5 /* Triump-Rg-Blur-11.otf */; };
+		C252075425B8AF0600B1E0C5 /* Triump-Rg-Blur-10.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071B25B8AF0600B1E0C5 /* Triump-Rg-Blur-10.otf */; };
+		C252075525B8AF0600B1E0C5 /* Triump-Rg-Blur-10.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071B25B8AF0600B1E0C5 /* Triump-Rg-Blur-10.otf */; };
+		C252075625B8AF0600B1E0C5 /* Triump-Rg-Blur-04.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071C25B8AF0600B1E0C5 /* Triump-Rg-Blur-04.otf */; };
+		C252075725B8AF0600B1E0C5 /* Triump-Rg-Blur-04.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071C25B8AF0600B1E0C5 /* Triump-Rg-Blur-04.otf */; };
+		C252075825B8AF0600B1E0C5 /* Triump-Rg-Blur-12.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071D25B8AF0600B1E0C5 /* Triump-Rg-Blur-12.otf */; };
+		C252075925B8AF0600B1E0C5 /* Triump-Rg-Blur-12.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071D25B8AF0600B1E0C5 /* Triump-Rg-Blur-12.otf */; };
+		C252075A25B8AF0600B1E0C5 /* Triump-Rg-Blur-06.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071E25B8AF0600B1E0C5 /* Triump-Rg-Blur-06.otf */; };
+		C252075B25B8AF0600B1E0C5 /* Triump-Rg-Blur-06.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071E25B8AF0600B1E0C5 /* Triump-Rg-Blur-06.otf */; };
+		C252075C25B8AF0600B1E0C5 /* Triump-Rg-Blur-07.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071F25B8AF0600B1E0C5 /* Triump-Rg-Blur-07.otf */; };
+		C252075D25B8AF0600B1E0C5 /* Triump-Rg-Blur-07.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252071F25B8AF0600B1E0C5 /* Triump-Rg-Blur-07.otf */; };
+		C252075E25B8AF0600B1E0C5 /* Triump-Rg-Extras.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072025B8AF0600B1E0C5 /* Triump-Rg-Extras.otf */; };
+		C252075F25B8AF0600B1E0C5 /* Triump-Rg-Extras.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072025B8AF0600B1E0C5 /* Triump-Rg-Extras.otf */; };
+		C252076025B8AF0600B1E0C5 /* Triump-Rg-Blur-03.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072125B8AF0600B1E0C5 /* Triump-Rg-Blur-03.otf */; };
+		C252076125B8AF0600B1E0C5 /* Triump-Rg-Blur-03.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072125B8AF0600B1E0C5 /* Triump-Rg-Blur-03.otf */; };
+		C252076225B8AF0600B1E0C5 /* Triump-Rg-Blur-02.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072225B8AF0600B1E0C5 /* Triump-Rg-Blur-02.otf */; };
+		C252076325B8AF0600B1E0C5 /* Triump-Rg-Blur-02.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072225B8AF0600B1E0C5 /* Triump-Rg-Blur-02.otf */; };
+		C252076425B8AF0600B1E0C5 /* Triump-Rg-Blur-01.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072325B8AF0600B1E0C5 /* Triump-Rg-Blur-01.otf */; };
+		C252076525B8AF0600B1E0C5 /* Triump-Rg-Blur-01.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072325B8AF0600B1E0C5 /* Triump-Rg-Blur-01.otf */; };
+		C252076625B8AF0600B1E0C5 /* Triump-Rg-Ornaments.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072425B8AF0600B1E0C5 /* Triump-Rg-Ornaments.otf */; };
+		C252076725B8AF0600B1E0C5 /* Triump-Rg-Ornaments.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072425B8AF0600B1E0C5 /* Triump-Rg-Ornaments.otf */; };
+		C252076825B8AF0600B1E0C5 /* Triump-Rg-Rock-08.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072525B8AF0600B1E0C5 /* Triump-Rg-Rock-08.otf */; };
+		C252076925B8AF0600B1E0C5 /* Triump-Rg-Rock-08.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072525B8AF0600B1E0C5 /* Triump-Rg-Rock-08.otf */; };
+		C252076A25B8AF0600B1E0C5 /* Triump-Rg-Rock-09.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072625B8AF0600B1E0C5 /* Triump-Rg-Rock-09.otf */; };
+		C252076B25B8AF0600B1E0C5 /* Triump-Rg-Rock-09.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072625B8AF0600B1E0C5 /* Triump-Rg-Rock-09.otf */; };
+		C252076C25B8AF0600B1E0C5 /* Eveleth-Shapes.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072825B8AF0600B1E0C5 /* Eveleth-Shapes.otf */; };
+		C252076D25B8AF0600B1E0C5 /* Eveleth-Shapes.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072825B8AF0600B1E0C5 /* Eveleth-Shapes.otf */; };
+		C252076E25B8AF0600B1E0C5 /* Eveleth-Regular-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072925B8AF0600B1E0C5 /* Eveleth-Regular-Bold.otf */; };
+		C252076F25B8AF0600B1E0C5 /* Eveleth-Regular-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072925B8AF0600B1E0C5 /* Eveleth-Regular-Bold.otf */; };
+		C252077025B8AF0600B1E0C5 /* Eveleth-Dot-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072A25B8AF0600B1E0C5 /* Eveleth-Dot-Regular.otf */; };
+		C252077125B8AF0600B1E0C5 /* Eveleth-Dot-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072A25B8AF0600B1E0C5 /* Eveleth-Dot-Regular.otf */; };
+		C252077225B8AF0600B1E0C5 /* Eveleth-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072B25B8AF0600B1E0C5 /* Eveleth-Thin.otf */; };
+		C252077325B8AF0600B1E0C5 /* Eveleth-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072B25B8AF0600B1E0C5 /* Eveleth-Thin.otf */; };
+		C252077425B8AF0600B1E0C5 /* Eveleth-Slant-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072C25B8AF0600B1E0C5 /* Eveleth-Slant-Light.otf */; };
+		C252077525B8AF0600B1E0C5 /* Eveleth-Slant-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072C25B8AF0600B1E0C5 /* Eveleth-Slant-Light.otf */; };
+		C252077625B8AF0600B1E0C5 /* Eveleth-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072D25B8AF0600B1E0C5 /* Eveleth-Light.otf */; };
+		C252077725B8AF0600B1E0C5 /* Eveleth-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072D25B8AF0600B1E0C5 /* Eveleth-Light.otf */; };
+		C252077825B8AF0600B1E0C5 /* Eveleth-Icons.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072E25B8AF0600B1E0C5 /* Eveleth-Icons.otf */; };
+		C252077925B8AF0600B1E0C5 /* Eveleth-Icons.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072E25B8AF0600B1E0C5 /* Eveleth-Icons.otf */; };
+		C252077A25B8AF0600B1E0C5 /* Eveleth-Slant-Regular-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072F25B8AF0600B1E0C5 /* Eveleth-Slant-Regular-Bold.otf */; };
+		C252077B25B8AF0600B1E0C5 /* Eveleth-Slant-Regular-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252072F25B8AF0600B1E0C5 /* Eveleth-Slant-Regular-Bold.otf */; };
+		C252077C25B8AF0600B1E0C5 /* Eveleth-Clean-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252073025B8AF0600B1E0C5 /* Eveleth-Clean-Regular.otf */; };
+		C252077D25B8AF0600B1E0C5 /* Eveleth-Clean-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252073025B8AF0600B1E0C5 /* Eveleth-Clean-Regular.otf */; };
+		C252077E25B8AF0600B1E0C5 /* Eveleth-Clean-Shadow.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252073125B8AF0600B1E0C5 /* Eveleth-Clean-Shadow.otf */; };
+		C252077F25B8AF0600B1E0C5 /* Eveleth-Clean-Shadow.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252073125B8AF0600B1E0C5 /* Eveleth-Clean-Shadow.otf */; };
+		C252078025B8AF0600B1E0C5 /* Eveleth-Dot-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252073225B8AF0600B1E0C5 /* Eveleth-Dot-Light.otf */; };
+		C252078125B8AF0600B1E0C5 /* Eveleth-Dot-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252073225B8AF0600B1E0C5 /* Eveleth-Dot-Light.otf */; };
+		C252078225B8AF0600B1E0C5 /* Eveleth-Shadow.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252073325B8AF0600B1E0C5 /* Eveleth-Shadow.otf */; };
+		C252078325B8AF0600B1E0C5 /* Eveleth-Shadow.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252073325B8AF0600B1E0C5 /* Eveleth-Shadow.otf */; };
+		C252078425B8AF0600B1E0C5 /* Eveleth-Slant-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252073425B8AF0600B1E0C5 /* Eveleth-Slant-Regular.otf */; };
+		C252078525B8AF0600B1E0C5 /* Eveleth-Slant-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252073425B8AF0600B1E0C5 /* Eveleth-Slant-Regular.otf */; };
+		C252078625B8AF0600B1E0C5 /* Eveleth-Dot-Regular-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252073525B8AF0600B1E0C5 /* Eveleth-Dot-Regular-Bold.otf */; };
+		C252078725B8AF0600B1E0C5 /* Eveleth-Dot-Regular-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252073525B8AF0600B1E0C5 /* Eveleth-Dot-Regular-Bold.otf */; };
+		C252078825B8AF0600B1E0C5 /* Eveleth-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252073625B8AF0600B1E0C5 /* Eveleth-Regular.otf */; };
+		C252078925B8AF0600B1E0C5 /* Eveleth-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252073625B8AF0600B1E0C5 /* Eveleth-Regular.otf */; };
+		C252078A25B8AF0600B1E0C5 /* Eveleth-Clean-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252073725B8AF0600B1E0C5 /* Eveleth-Clean-Thin.otf */; };
+		C252078B25B8AF0600B1E0C5 /* Eveleth-Clean-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252073725B8AF0600B1E0C5 /* Eveleth-Clean-Thin.otf */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		C24841CB25B7BD1C00C42DAE /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C2E043291B72F4DC005F0675 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C24841BA25B7BD1B00C42DAE;
-			remoteInfo = "Groove (iOS)";
-		};
-		C24841D625B7BD1C00C42DAE /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C2E043291B72F4DC005F0675 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C24841C125B7BD1B00C42DAE;
-			remoteInfo = "Groove (macOS)";
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		C217EE381DB435E40076B6E7 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -159,54 +140,6 @@
 		C24841C225B7BD1B00C42DAE /* Groove.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Groove.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C24841C425B7BD1C00C42DAE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C24841C525B7BD1C00C42DAE /* macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macOS.entitlements; sourceTree = "<group>"; };
-		C24841CA25B7BD1C00C42DAE /* Tests iOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests iOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		C24841CE25B7BD1C00C42DAE /* Tests_iOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_iOS.swift; sourceTree = "<group>"; };
-		C24841D025B7BD1C00C42DAE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C24841D525B7BD1C00C42DAE /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		C24841D925B7BD1C00C42DAE /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
-		C24841DB25B7BD1C00C42DAE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C249757425B3A8EB00A54608 /* Yellow Design Studio - Eveleth Clean Shadow.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Clean Shadow.otf"; sourceTree = "<group>"; };
-		C249757525B3A8EB00A54608 /* Yellow Design Studio - Eveleth Clean Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Clean Regular.otf"; sourceTree = "<group>"; };
-		C249757625B3A8EB00A54608 /* Yellow Design Studio - Eveleth Shapes.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Shapes.otf"; sourceTree = "<group>"; };
-		C249757725B3A8EB00A54608 /* Yellow Design Studio - Eveleth Icons.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Icons.otf"; sourceTree = "<group>"; };
-		C249757825B3A8EB00A54608 /* Yellow Design Studio - Eveleth Slant Regular Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Slant Regular Bold.otf"; sourceTree = "<group>"; };
-		C249757925B3A8EB00A54608 /* Yellow Design Studio - Eveleth Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Light.otf"; sourceTree = "<group>"; };
-		C249757A25B3A8EB00A54608 /* Yellow Design Studio - Eveleth Slant Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Slant Regular.otf"; sourceTree = "<group>"; };
-		C249757B25B3A8EB00A54608 /* Yellow Design Studio - Eveleth Dot Regular Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Dot Regular Bold.otf"; sourceTree = "<group>"; };
-		C249757C25B3A8EB00A54608 /* Yellow Design Studio - Eveleth Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Thin.otf"; sourceTree = "<group>"; };
-		C249757D25B3A8EC00A54608 /* Yellow Design Studio - Eveleth Regular Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Regular Bold.otf"; sourceTree = "<group>"; };
-		C249757E25B3A8EC00A54608 /* Yellow Design Studio - Eveleth Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Regular.otf"; sourceTree = "<group>"; };
-		C249757F25B3A8EC00A54608 /* Yellow Design Studio - Eveleth Slant Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Slant Light.otf"; sourceTree = "<group>"; };
-		C249758025B3A8EC00A54608 /* Yellow Design Studio - Eveleth Shadow.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Shadow.otf"; sourceTree = "<group>"; };
-		C249758125B3A8EC00A54608 /* Yellow Design Studio - Eveleth Dot Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Dot Regular.otf"; sourceTree = "<group>"; };
-		C249758225B3A8EC00A54608 /* Yellow Design Studio - Eveleth Dot Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Dot Light.otf"; sourceTree = "<group>"; };
-		C249758325B3A8EC00A54608 /* Yellow Design Studio - Eveleth Clean Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Clean Thin.otf"; sourceTree = "<group>"; };
-		C249758525B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-06.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Rock-06.otf"; sourceTree = "<group>"; };
-		C249758625B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-12.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Rock-12.otf"; sourceTree = "<group>"; };
-		C249758725B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-07.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Rock-07.otf"; sourceTree = "<group>"; };
-		C249758825B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-11.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Rock-11.otf"; sourceTree = "<group>"; };
-		C249758925B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-05.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Rock-05.otf"; sourceTree = "<group>"; };
-		C249758A25B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-04.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Rock-04.otf"; sourceTree = "<group>"; };
-		C249758B25B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-10.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Rock-10.otf"; sourceTree = "<group>"; };
-		C249758C25B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-01.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Rock-01.otf"; sourceTree = "<group>"; };
-		C249758D25B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-03.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Rock-03.otf"; sourceTree = "<group>"; };
-		C249758E25B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-02.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Rock-02.otf"; sourceTree = "<group>"; };
-		C249758F25B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-08.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Blur-08.otf"; sourceTree = "<group>"; };
-		C249759025B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-09.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Blur-09.otf"; sourceTree = "<group>"; };
-		C249759125B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-10.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Blur-10.otf"; sourceTree = "<group>"; };
-		C249759225B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-04.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Blur-04.otf"; sourceTree = "<group>"; };
-		C249759325B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-05.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Blur-05.otf"; sourceTree = "<group>"; };
-		C249759425B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-11.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Blur-11.otf"; sourceTree = "<group>"; };
-		C249759525B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-07.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Blur-07.otf"; sourceTree = "<group>"; };
-		C249759625B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-12.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Blur-12.otf"; sourceTree = "<group>"; };
-		C249759725B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-06.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Blur-06.otf"; sourceTree = "<group>"; };
-		C249759825B3A8EC00A54608 /* Latinotype - Triump-Rg-Extras.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Extras.otf"; sourceTree = "<group>"; };
-		C249759925B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-02.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Blur-02.otf"; sourceTree = "<group>"; };
-		C249759A25B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-03.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Blur-03.otf"; sourceTree = "<group>"; };
-		C249759B25B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-01.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Blur-01.otf"; sourceTree = "<group>"; };
-		C249759C25B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-09.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Rock-09.otf"; sourceTree = "<group>"; };
-		C249759D25B3A8EC00A54608 /* Latinotype - Triump-Rg-Ornaments.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Ornaments.otf"; sourceTree = "<group>"; };
-		C249759E25B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-08.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Rock-08.otf"; sourceTree = "<group>"; };
 		C249765125B3A8EC00A54608 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		C249765225B3A8EC00A54608 /* PurgatoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurgatoryViewController.swift; sourceTree = "<group>"; };
 		C249766425B3AA1800A54608 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
@@ -218,8 +151,6 @@
 		C249767125B3AA1800A54608 /* Generator.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Generator.storyboard; sourceTree = "<group>"; };
 		C249767225B3AA1800A54608 /* Transport.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Transport.storyboard; sourceTree = "<group>"; };
 		C249767325B3AA1800A54608 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		C249767425B3AA1800A54608 /* test.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = test.mid; sourceTree = "<group>"; };
-		C249767525B3AA1800A54608 /* test_morse_code_a.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = test_morse_code_a.mid; sourceTree = "<group>"; };
 		C249767825B3AA1800A54608 /* Balls_ball_eveleth9.ai */ = {isa = PBXFileReference; lastKnownFileType = text; path = Balls_ball_eveleth9.ai; sourceTree = "<group>"; };
 		C249767925B3AA1800A54608 /* parchment@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "parchment@2x.png"; sourceTree = "<group>"; };
 		C249767A25B3AA1800A54608 /* Balls_ball_diamondplate.ai */ = {isa = PBXFileReference; lastKnownFileType = text; path = Balls_ball_diamondplate.ai; sourceTree = "<group>"; };
@@ -963,14 +894,53 @@
 		C249797225B3AA1A00A54608 /* MusicSymbols_P.ai */ = {isa = PBXFileReference; lastKnownFileType = text; path = MusicSymbols_P.ai; sourceTree = "<group>"; };
 		C249797325B3AA1A00A54608 /* MusicSymbols_Dotted Quarter Note.ai */ = {isa = PBXFileReference; lastKnownFileType = text; path = "MusicSymbols_Dotted Quarter Note.ai"; sourceTree = "<group>"; };
 		C249797425B3AA1A00A54608 /* MusicSymbols_MP.ai */ = {isa = PBXFileReference; lastKnownFileType = text; path = MusicSymbols_MP.ai; sourceTree = "<group>"; };
-		C249797525B3AA1A00A54608 /* morse_code_a.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = morse_code_a.mid; sourceTree = "<group>"; };
-		C249797625B3AA1A00A54608 /* Ping Puh Ping.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = "Ping Puh Ping.mid"; sourceTree = "<group>"; };
+		C252070D25B8AF0600B1E0C5 /* Triump-Rg-Rock-07.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Triump-Rg-Rock-07.otf"; sourceTree = "<group>"; };
+		C252070E25B8AF0600B1E0C5 /* Triump-Rg-Rock-06.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Triump-Rg-Rock-06.otf"; sourceTree = "<group>"; };
+		C252070F25B8AF0600B1E0C5 /* Triump-Rg-Rock-12.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Triump-Rg-Rock-12.otf"; sourceTree = "<group>"; };
+		C252071025B8AF0600B1E0C5 /* Triump-Rg-Rock-04.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Triump-Rg-Rock-04.otf"; sourceTree = "<group>"; };
+		C252071125B8AF0600B1E0C5 /* Triump-Rg-Rock-10.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Triump-Rg-Rock-10.otf"; sourceTree = "<group>"; };
+		C252071225B8AF0600B1E0C5 /* Triump-Rg-Rock-11.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Triump-Rg-Rock-11.otf"; sourceTree = "<group>"; };
+		C252071325B8AF0600B1E0C5 /* Triump-Rg-Rock-05.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Triump-Rg-Rock-05.otf"; sourceTree = "<group>"; };
+		C252071425B8AF0600B1E0C5 /* Triump-Rg-Rock-01.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Triump-Rg-Rock-01.otf"; sourceTree = "<group>"; };
+		C252071525B8AF0600B1E0C5 /* Triump-Rg-Rock-02.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Triump-Rg-Rock-02.otf"; sourceTree = "<group>"; };
+		C252071625B8AF0600B1E0C5 /* Triump-Rg-Rock-03.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Triump-Rg-Rock-03.otf"; sourceTree = "<group>"; };
+		C252071725B8AF0600B1E0C5 /* Triump-Rg-Blur-09.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Triump-Rg-Blur-09.otf"; sourceTree = "<group>"; };
+		C252071825B8AF0600B1E0C5 /* Triump-Rg-Blur-08.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Triump-Rg-Blur-08.otf"; sourceTree = "<group>"; };
+		C252071925B8AF0600B1E0C5 /* Triump-Rg-Blur-05.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Triump-Rg-Blur-05.otf"; sourceTree = "<group>"; };
+		C252071A25B8AF0600B1E0C5 /* Triump-Rg-Blur-11.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Triump-Rg-Blur-11.otf"; sourceTree = "<group>"; };
+		C252071B25B8AF0600B1E0C5 /* Triump-Rg-Blur-10.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Triump-Rg-Blur-10.otf"; sourceTree = "<group>"; };
+		C252071C25B8AF0600B1E0C5 /* Triump-Rg-Blur-04.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Triump-Rg-Blur-04.otf"; sourceTree = "<group>"; };
+		C252071D25B8AF0600B1E0C5 /* Triump-Rg-Blur-12.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Triump-Rg-Blur-12.otf"; sourceTree = "<group>"; };
+		C252071E25B8AF0600B1E0C5 /* Triump-Rg-Blur-06.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Triump-Rg-Blur-06.otf"; sourceTree = "<group>"; };
+		C252071F25B8AF0600B1E0C5 /* Triump-Rg-Blur-07.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Triump-Rg-Blur-07.otf"; sourceTree = "<group>"; };
+		C252072025B8AF0600B1E0C5 /* Triump-Rg-Extras.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Triump-Rg-Extras.otf"; sourceTree = "<group>"; };
+		C252072125B8AF0600B1E0C5 /* Triump-Rg-Blur-03.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Triump-Rg-Blur-03.otf"; sourceTree = "<group>"; };
+		C252072225B8AF0600B1E0C5 /* Triump-Rg-Blur-02.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Triump-Rg-Blur-02.otf"; sourceTree = "<group>"; };
+		C252072325B8AF0600B1E0C5 /* Triump-Rg-Blur-01.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Triump-Rg-Blur-01.otf"; sourceTree = "<group>"; };
+		C252072425B8AF0600B1E0C5 /* Triump-Rg-Ornaments.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Triump-Rg-Ornaments.otf"; sourceTree = "<group>"; };
+		C252072525B8AF0600B1E0C5 /* Triump-Rg-Rock-08.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Triump-Rg-Rock-08.otf"; sourceTree = "<group>"; };
+		C252072625B8AF0600B1E0C5 /* Triump-Rg-Rock-09.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Triump-Rg-Rock-09.otf"; sourceTree = "<group>"; };
+		C252072825B8AF0600B1E0C5 /* Eveleth-Shapes.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Eveleth-Shapes.otf"; sourceTree = "<group>"; };
+		C252072925B8AF0600B1E0C5 /* Eveleth-Regular-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Eveleth-Regular-Bold.otf"; sourceTree = "<group>"; };
+		C252072A25B8AF0600B1E0C5 /* Eveleth-Dot-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Eveleth-Dot-Regular.otf"; sourceTree = "<group>"; };
+		C252072B25B8AF0600B1E0C5 /* Eveleth-Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Eveleth-Thin.otf"; sourceTree = "<group>"; };
+		C252072C25B8AF0600B1E0C5 /* Eveleth-Slant-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Eveleth-Slant-Light.otf"; sourceTree = "<group>"; };
+		C252072D25B8AF0600B1E0C5 /* Eveleth-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Eveleth-Light.otf"; sourceTree = "<group>"; };
+		C252072E25B8AF0600B1E0C5 /* Eveleth-Icons.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Eveleth-Icons.otf"; sourceTree = "<group>"; };
+		C252072F25B8AF0600B1E0C5 /* Eveleth-Slant-Regular-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Eveleth-Slant-Regular-Bold.otf"; sourceTree = "<group>"; };
+		C252073025B8AF0600B1E0C5 /* Eveleth-Clean-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Eveleth-Clean-Regular.otf"; sourceTree = "<group>"; };
+		C252073125B8AF0600B1E0C5 /* Eveleth-Clean-Shadow.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Eveleth-Clean-Shadow.otf"; sourceTree = "<group>"; };
+		C252073225B8AF0600B1E0C5 /* Eveleth-Dot-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Eveleth-Dot-Light.otf"; sourceTree = "<group>"; };
+		C252073325B8AF0600B1E0C5 /* Eveleth-Shadow.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Eveleth-Shadow.otf"; sourceTree = "<group>"; };
+		C252073425B8AF0600B1E0C5 /* Eveleth-Slant-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Eveleth-Slant-Regular.otf"; sourceTree = "<group>"; };
+		C252073525B8AF0600B1E0C5 /* Eveleth-Dot-Regular-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Eveleth-Dot-Regular-Bold.otf"; sourceTree = "<group>"; };
+		C252073625B8AF0600B1E0C5 /* Eveleth-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Eveleth-Regular.otf"; sourceTree = "<group>"; };
+		C252073725B8AF0600B1E0C5 /* Eveleth-Clean-Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Eveleth-Clean-Thin.otf"; sourceTree = "<group>"; };
 		C252C842259D23DE000A0BA2 /* Nimble.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Nimble.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C263FD00259D4250002B3377 /* Nimble.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Nimble.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C286EDFC25B758010008B514 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C286EDFF25B758010008B514 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C286EE0125B758010008B514 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C286EF9925B75CBF0008B514 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		C286EF9B25B75CBF0008B514 /* test.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = test.mid; sourceTree = "<group>"; };
 		C286EF9C25B75CBF0008B514 /* test_morse_code_a.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = test_morse_code_a.mid; sourceTree = "<group>"; };
 		C286EF9D25B75CBF0008B514 /* morse_code_a.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = morse_code_a.mid; sourceTree = "<group>"; };
@@ -1718,48 +1688,6 @@
 		C286F29C25B75CC00008B514 /* MusicSymbols_P.ai */ = {isa = PBXFileReference; lastKnownFileType = text; path = MusicSymbols_P.ai; sourceTree = "<group>"; };
 		C286F29D25B75CC00008B514 /* MusicSymbols_Dotted Quarter Note.ai */ = {isa = PBXFileReference; lastKnownFileType = text; path = "MusicSymbols_Dotted Quarter Note.ai"; sourceTree = "<group>"; };
 		C286F29E25B75CC00008B514 /* MusicSymbols_MP.ai */ = {isa = PBXFileReference; lastKnownFileType = text; path = MusicSymbols_MP.ai; sourceTree = "<group>"; };
-		C286F2A125B75CC00008B514 /* Yellow Design Studio - Eveleth Clean Shadow.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Clean Shadow.otf"; sourceTree = "<group>"; };
-		C286F2A225B75CC00008B514 /* Yellow Design Studio - Eveleth Clean Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Clean Regular.otf"; sourceTree = "<group>"; };
-		C286F2A325B75CC00008B514 /* Yellow Design Studio - Eveleth Shapes.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Shapes.otf"; sourceTree = "<group>"; };
-		C286F2A425B75CC00008B514 /* Yellow Design Studio - Eveleth Icons.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Icons.otf"; sourceTree = "<group>"; };
-		C286F2A525B75CC00008B514 /* Yellow Design Studio - Eveleth Slant Regular Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Slant Regular Bold.otf"; sourceTree = "<group>"; };
-		C286F2A625B75CC00008B514 /* Yellow Design Studio - Eveleth Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Light.otf"; sourceTree = "<group>"; };
-		C286F2A725B75CC00008B514 /* Yellow Design Studio - Eveleth Slant Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Slant Regular.otf"; sourceTree = "<group>"; };
-		C286F2A825B75CC00008B514 /* Yellow Design Studio - Eveleth Dot Regular Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Dot Regular Bold.otf"; sourceTree = "<group>"; };
-		C286F2A925B75CC00008B514 /* Yellow Design Studio - Eveleth Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Thin.otf"; sourceTree = "<group>"; };
-		C286F2AA25B75CC00008B514 /* Yellow Design Studio - Eveleth Regular Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Regular Bold.otf"; sourceTree = "<group>"; };
-		C286F2AB25B75CC00008B514 /* Yellow Design Studio - Eveleth Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Regular.otf"; sourceTree = "<group>"; };
-		C286F2AC25B75CC00008B514 /* Yellow Design Studio - Eveleth Slant Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Slant Light.otf"; sourceTree = "<group>"; };
-		C286F2AD25B75CC00008B514 /* Yellow Design Studio - Eveleth Shadow.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Shadow.otf"; sourceTree = "<group>"; };
-		C286F2AE25B75CC00008B514 /* Yellow Design Studio - Eveleth Dot Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Dot Regular.otf"; sourceTree = "<group>"; };
-		C286F2AF25B75CC00008B514 /* Yellow Design Studio - Eveleth Dot Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Dot Light.otf"; sourceTree = "<group>"; };
-		C286F2B025B75CC00008B514 /* Yellow Design Studio - Eveleth Clean Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Clean Thin.otf"; sourceTree = "<group>"; };
-		C286F2B225B75CC00008B514 /* Latinotype - Triump-Rg-Rock-06.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Rock-06.otf"; sourceTree = "<group>"; };
-		C286F2B325B75CC00008B514 /* Latinotype - Triump-Rg-Rock-12.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Rock-12.otf"; sourceTree = "<group>"; };
-		C286F2B425B75CC00008B514 /* Latinotype - Triump-Rg-Rock-07.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Rock-07.otf"; sourceTree = "<group>"; };
-		C286F2B525B75CC00008B514 /* Latinotype - Triump-Rg-Rock-11.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Rock-11.otf"; sourceTree = "<group>"; };
-		C286F2B625B75CC00008B514 /* Latinotype - Triump-Rg-Rock-05.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Rock-05.otf"; sourceTree = "<group>"; };
-		C286F2B725B75CC00008B514 /* Latinotype - Triump-Rg-Rock-04.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Rock-04.otf"; sourceTree = "<group>"; };
-		C286F2B825B75CC00008B514 /* Latinotype - Triump-Rg-Rock-10.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Rock-10.otf"; sourceTree = "<group>"; };
-		C286F2B925B75CC00008B514 /* Latinotype - Triump-Rg-Rock-01.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Rock-01.otf"; sourceTree = "<group>"; };
-		C286F2BA25B75CC00008B514 /* Latinotype - Triump-Rg-Rock-03.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Rock-03.otf"; sourceTree = "<group>"; };
-		C286F2BB25B75CC00008B514 /* Latinotype - Triump-Rg-Rock-02.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Rock-02.otf"; sourceTree = "<group>"; };
-		C286F2BC25B75CC00008B514 /* Latinotype - Triump-Rg-Blur-08.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Blur-08.otf"; sourceTree = "<group>"; };
-		C286F2BD25B75CC00008B514 /* Latinotype - Triump-Rg-Blur-09.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Blur-09.otf"; sourceTree = "<group>"; };
-		C286F2BE25B75CC00008B514 /* Latinotype - Triump-Rg-Blur-10.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Blur-10.otf"; sourceTree = "<group>"; };
-		C286F2BF25B75CC00008B514 /* Latinotype - Triump-Rg-Blur-04.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Blur-04.otf"; sourceTree = "<group>"; };
-		C286F2C025B75CC00008B514 /* Latinotype - Triump-Rg-Blur-05.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Blur-05.otf"; sourceTree = "<group>"; };
-		C286F2C125B75CC00008B514 /* Latinotype - Triump-Rg-Blur-11.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Blur-11.otf"; sourceTree = "<group>"; };
-		C286F2C225B75CC00008B514 /* Latinotype - Triump-Rg-Blur-07.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Blur-07.otf"; sourceTree = "<group>"; };
-		C286F2C325B75CC00008B514 /* Latinotype - Triump-Rg-Blur-12.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Blur-12.otf"; sourceTree = "<group>"; };
-		C286F2C425B75CC00008B514 /* Latinotype - Triump-Rg-Blur-06.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Blur-06.otf"; sourceTree = "<group>"; };
-		C286F2C525B75CC00008B514 /* Latinotype - Triump-Rg-Extras.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Extras.otf"; sourceTree = "<group>"; };
-		C286F2C625B75CC00008B514 /* Latinotype - Triump-Rg-Blur-02.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Blur-02.otf"; sourceTree = "<group>"; };
-		C286F2C725B75CC00008B514 /* Latinotype - Triump-Rg-Blur-03.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Blur-03.otf"; sourceTree = "<group>"; };
-		C286F2C825B75CC00008B514 /* Latinotype - Triump-Rg-Blur-01.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Blur-01.otf"; sourceTree = "<group>"; };
-		C286F2C925B75CC00008B514 /* Latinotype - Triump-Rg-Rock-09.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Rock-09.otf"; sourceTree = "<group>"; };
-		C286F2CA25B75CC00008B514 /* Latinotype - Triump-Rg-Ornaments.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Ornaments.otf"; sourceTree = "<group>"; };
-		C286F2CB25B75CC00008B514 /* Latinotype - Triump-Rg-Rock-08.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Latinotype - Triump-Rg-Rock-08.otf"; sourceTree = "<group>"; };
 		C286F30025B75E3E0008B514 /* MIDI */ = {isa = PBXFileReference; lastKnownFileType = folder; path = MIDI; sourceTree = "<group>"; };
 		C286F30225B75E470008B514 /* Documents */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Documents; sourceTree = "<group>"; };
 		C286F30325B75E4A0008B514 /* SoundFont */ = {isa = PBXFileReference; lastKnownFileType = folder; path = SoundFont; sourceTree = "<group>"; };
@@ -1798,20 +1726,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C24841BF25B7BD1B00C42DAE /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C24841C725B7BD1C00C42DAE /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C24841D225B7BD1C00C42DAE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1859,11 +1773,9 @@
 		C24841B225B7BD1900C42DAE /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				C286F29F25B75CC00008B514 /* Fonts */,
 				C286EE1925B75CBE0008B514 /* Packages */,
 				C24841B325B7BD1900C42DAE /* GrooveApp.swift */,
 				C24841B525B7BD1900C42DAE /* ContentView.swift */,
-				C286EF9925B75CBF0008B514 /* Settings.bundle */,
 				C24841B625B7BD1B00C42DAE /* Assets.xcassets */,
 			);
 			path = Shared;
@@ -1886,93 +1798,18 @@
 			path = macOS;
 			sourceTree = "<group>";
 		};
-		C24841CD25B7BD1C00C42DAE /* Tests iOS */ = {
-			isa = PBXGroup;
-			children = (
-				C24841CE25B7BD1C00C42DAE /* Tests_iOS.swift */,
-				C24841D025B7BD1C00C42DAE /* Info.plist */,
-			);
-			path = "Tests iOS";
-			sourceTree = "<group>";
-		};
-		C24841D825B7BD1C00C42DAE /* Tests macOS */ = {
-			isa = PBXGroup;
-			children = (
-				C24841D925B7BD1C00C42DAE /* Tests_macOS.swift */,
-				C24841DB25B7BD1C00C42DAE /* Info.plist */,
-			);
-			path = "Tests macOS";
-			sourceTree = "<group>";
-		};
 		C249757225B3A8EB00A54608 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
-				C249757325B3A8EB00A54608 /* Eveleth */,
-				C249758425B3A8EC00A54608 /* Triump */,
+				C252072725B8AF0600B1E0C5 /* Eveleth */,
+				C252070C25B8AF0600B1E0C5 /* Triump */,
 			);
 			path = Fonts;
-			sourceTree = "<group>";
-		};
-		C249757325B3A8EB00A54608 /* Eveleth */ = {
-			isa = PBXGroup;
-			children = (
-				C249757425B3A8EB00A54608 /* Yellow Design Studio - Eveleth Clean Shadow.otf */,
-				C249757525B3A8EB00A54608 /* Yellow Design Studio - Eveleth Clean Regular.otf */,
-				C249757625B3A8EB00A54608 /* Yellow Design Studio - Eveleth Shapes.otf */,
-				C249757725B3A8EB00A54608 /* Yellow Design Studio - Eveleth Icons.otf */,
-				C249757825B3A8EB00A54608 /* Yellow Design Studio - Eveleth Slant Regular Bold.otf */,
-				C249757925B3A8EB00A54608 /* Yellow Design Studio - Eveleth Light.otf */,
-				C249757A25B3A8EB00A54608 /* Yellow Design Studio - Eveleth Slant Regular.otf */,
-				C249757B25B3A8EB00A54608 /* Yellow Design Studio - Eveleth Dot Regular Bold.otf */,
-				C249757C25B3A8EB00A54608 /* Yellow Design Studio - Eveleth Thin.otf */,
-				C249757D25B3A8EC00A54608 /* Yellow Design Studio - Eveleth Regular Bold.otf */,
-				C249757E25B3A8EC00A54608 /* Yellow Design Studio - Eveleth Regular.otf */,
-				C249757F25B3A8EC00A54608 /* Yellow Design Studio - Eveleth Slant Light.otf */,
-				C249758025B3A8EC00A54608 /* Yellow Design Studio - Eveleth Shadow.otf */,
-				C249758125B3A8EC00A54608 /* Yellow Design Studio - Eveleth Dot Regular.otf */,
-				C249758225B3A8EC00A54608 /* Yellow Design Studio - Eveleth Dot Light.otf */,
-				C249758325B3A8EC00A54608 /* Yellow Design Studio - Eveleth Clean Thin.otf */,
-			);
-			path = Eveleth;
-			sourceTree = "<group>";
-		};
-		C249758425B3A8EC00A54608 /* Triump */ = {
-			isa = PBXGroup;
-			children = (
-				C249758525B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-06.otf */,
-				C249758625B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-12.otf */,
-				C249758725B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-07.otf */,
-				C249758825B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-11.otf */,
-				C249758925B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-05.otf */,
-				C249758A25B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-04.otf */,
-				C249758B25B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-10.otf */,
-				C249758C25B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-01.otf */,
-				C249758D25B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-03.otf */,
-				C249758E25B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-02.otf */,
-				C249758F25B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-08.otf */,
-				C249759025B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-09.otf */,
-				C249759125B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-10.otf */,
-				C249759225B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-04.otf */,
-				C249759325B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-05.otf */,
-				C249759425B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-11.otf */,
-				C249759525B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-07.otf */,
-				C249759625B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-12.otf */,
-				C249759725B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-06.otf */,
-				C249759825B3A8EC00A54608 /* Latinotype - Triump-Rg-Extras.otf */,
-				C249759925B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-02.otf */,
-				C249759A25B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-03.otf */,
-				C249759B25B3A8EC00A54608 /* Latinotype - Triump-Rg-Blur-01.otf */,
-				C249759C25B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-09.otf */,
-				C249759D25B3A8EC00A54608 /* Latinotype - Triump-Rg-Ornaments.otf */,
-				C249759E25B3A8EC00A54608 /* Latinotype - Triump-Rg-Rock-08.otf */,
-			);
-			path = Triump;
 			sourceTree = "<group>";
 		};
 		C249766025B3AA1800A54608 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				C286EDA325B756540008B514 /* MIDI */,
 				C249757225B3A8EB00A54608 /* Fonts */,
 				C249766425B3AA1800A54608 /* Settings.bundle */,
 				C249767325B3AA1800A54608 /* Assets.xcassets */,
@@ -2930,15 +2767,60 @@
 			path = PDF;
 			sourceTree = "<group>";
 		};
-		C286EDA325B756540008B514 /* MIDI */ = {
+		C252070C25B8AF0600B1E0C5 /* Triump */ = {
 			isa = PBXGroup;
 			children = (
-				C249767525B3AA1800A54608 /* test_morse_code_a.mid */,
-				C249767425B3AA1800A54608 /* test.mid */,
-				C249797525B3AA1A00A54608 /* morse_code_a.mid */,
-				C249797625B3AA1A00A54608 /* Ping Puh Ping.mid */,
+				C252070D25B8AF0600B1E0C5 /* Triump-Rg-Rock-07.otf */,
+				C252070E25B8AF0600B1E0C5 /* Triump-Rg-Rock-06.otf */,
+				C252070F25B8AF0600B1E0C5 /* Triump-Rg-Rock-12.otf */,
+				C252071025B8AF0600B1E0C5 /* Triump-Rg-Rock-04.otf */,
+				C252071125B8AF0600B1E0C5 /* Triump-Rg-Rock-10.otf */,
+				C252071225B8AF0600B1E0C5 /* Triump-Rg-Rock-11.otf */,
+				C252071325B8AF0600B1E0C5 /* Triump-Rg-Rock-05.otf */,
+				C252071425B8AF0600B1E0C5 /* Triump-Rg-Rock-01.otf */,
+				C252071525B8AF0600B1E0C5 /* Triump-Rg-Rock-02.otf */,
+				C252071625B8AF0600B1E0C5 /* Triump-Rg-Rock-03.otf */,
+				C252071725B8AF0600B1E0C5 /* Triump-Rg-Blur-09.otf */,
+				C252071825B8AF0600B1E0C5 /* Triump-Rg-Blur-08.otf */,
+				C252071925B8AF0600B1E0C5 /* Triump-Rg-Blur-05.otf */,
+				C252071A25B8AF0600B1E0C5 /* Triump-Rg-Blur-11.otf */,
+				C252071B25B8AF0600B1E0C5 /* Triump-Rg-Blur-10.otf */,
+				C252071C25B8AF0600B1E0C5 /* Triump-Rg-Blur-04.otf */,
+				C252071D25B8AF0600B1E0C5 /* Triump-Rg-Blur-12.otf */,
+				C252071E25B8AF0600B1E0C5 /* Triump-Rg-Blur-06.otf */,
+				C252071F25B8AF0600B1E0C5 /* Triump-Rg-Blur-07.otf */,
+				C252072025B8AF0600B1E0C5 /* Triump-Rg-Extras.otf */,
+				C252072125B8AF0600B1E0C5 /* Triump-Rg-Blur-03.otf */,
+				C252072225B8AF0600B1E0C5 /* Triump-Rg-Blur-02.otf */,
+				C252072325B8AF0600B1E0C5 /* Triump-Rg-Blur-01.otf */,
+				C252072425B8AF0600B1E0C5 /* Triump-Rg-Ornaments.otf */,
+				C252072525B8AF0600B1E0C5 /* Triump-Rg-Rock-08.otf */,
+				C252072625B8AF0600B1E0C5 /* Triump-Rg-Rock-09.otf */,
 			);
-			path = MIDI;
+			path = Triump;
+			sourceTree = "<group>";
+		};
+		C252072725B8AF0600B1E0C5 /* Eveleth */ = {
+			isa = PBXGroup;
+			children = (
+				C252072825B8AF0600B1E0C5 /* Eveleth-Shapes.otf */,
+				C252072925B8AF0600B1E0C5 /* Eveleth-Regular-Bold.otf */,
+				C252072A25B8AF0600B1E0C5 /* Eveleth-Dot-Regular.otf */,
+				C252072B25B8AF0600B1E0C5 /* Eveleth-Thin.otf */,
+				C252072C25B8AF0600B1E0C5 /* Eveleth-Slant-Light.otf */,
+				C252072D25B8AF0600B1E0C5 /* Eveleth-Light.otf */,
+				C252072E25B8AF0600B1E0C5 /* Eveleth-Icons.otf */,
+				C252072F25B8AF0600B1E0C5 /* Eveleth-Slant-Regular-Bold.otf */,
+				C252073025B8AF0600B1E0C5 /* Eveleth-Clean-Regular.otf */,
+				C252073125B8AF0600B1E0C5 /* Eveleth-Clean-Shadow.otf */,
+				C252073225B8AF0600B1E0C5 /* Eveleth-Dot-Light.otf */,
+				C252073325B8AF0600B1E0C5 /* Eveleth-Shadow.otf */,
+				C252073425B8AF0600B1E0C5 /* Eveleth-Slant-Regular.otf */,
+				C252073525B8AF0600B1E0C5 /* Eveleth-Dot-Regular-Bold.otf */,
+				C252073625B8AF0600B1E0C5 /* Eveleth-Regular.otf */,
+				C252073725B8AF0600B1E0C5 /* Eveleth-Clean-Thin.otf */,
+			);
+			path = Eveleth;
 			sourceTree = "<group>";
 		};
 		C286EDF725B757FF0008B514 /* Groove_ Old */ = {
@@ -3928,71 +3810,6 @@
 			path = PDF;
 			sourceTree = "<group>";
 		};
-		C286F29F25B75CC00008B514 /* Fonts */ = {
-			isa = PBXGroup;
-			children = (
-				C286F2A025B75CC00008B514 /* Eveleth */,
-				C286F2B125B75CC00008B514 /* Triump */,
-			);
-			path = Fonts;
-			sourceTree = "<group>";
-		};
-		C286F2A025B75CC00008B514 /* Eveleth */ = {
-			isa = PBXGroup;
-			children = (
-				C286F2A125B75CC00008B514 /* Yellow Design Studio - Eveleth Clean Shadow.otf */,
-				C286F2A225B75CC00008B514 /* Yellow Design Studio - Eveleth Clean Regular.otf */,
-				C286F2A325B75CC00008B514 /* Yellow Design Studio - Eveleth Shapes.otf */,
-				C286F2A425B75CC00008B514 /* Yellow Design Studio - Eveleth Icons.otf */,
-				C286F2A525B75CC00008B514 /* Yellow Design Studio - Eveleth Slant Regular Bold.otf */,
-				C286F2A625B75CC00008B514 /* Yellow Design Studio - Eveleth Light.otf */,
-				C286F2A725B75CC00008B514 /* Yellow Design Studio - Eveleth Slant Regular.otf */,
-				C286F2A825B75CC00008B514 /* Yellow Design Studio - Eveleth Dot Regular Bold.otf */,
-				C286F2A925B75CC00008B514 /* Yellow Design Studio - Eveleth Thin.otf */,
-				C286F2AA25B75CC00008B514 /* Yellow Design Studio - Eveleth Regular Bold.otf */,
-				C286F2AB25B75CC00008B514 /* Yellow Design Studio - Eveleth Regular.otf */,
-				C286F2AC25B75CC00008B514 /* Yellow Design Studio - Eveleth Slant Light.otf */,
-				C286F2AD25B75CC00008B514 /* Yellow Design Studio - Eveleth Shadow.otf */,
-				C286F2AE25B75CC00008B514 /* Yellow Design Studio - Eveleth Dot Regular.otf */,
-				C286F2AF25B75CC00008B514 /* Yellow Design Studio - Eveleth Dot Light.otf */,
-				C286F2B025B75CC00008B514 /* Yellow Design Studio - Eveleth Clean Thin.otf */,
-			);
-			path = Eveleth;
-			sourceTree = "<group>";
-		};
-		C286F2B125B75CC00008B514 /* Triump */ = {
-			isa = PBXGroup;
-			children = (
-				C286F2B225B75CC00008B514 /* Latinotype - Triump-Rg-Rock-06.otf */,
-				C286F2B325B75CC00008B514 /* Latinotype - Triump-Rg-Rock-12.otf */,
-				C286F2B425B75CC00008B514 /* Latinotype - Triump-Rg-Rock-07.otf */,
-				C286F2B525B75CC00008B514 /* Latinotype - Triump-Rg-Rock-11.otf */,
-				C286F2B625B75CC00008B514 /* Latinotype - Triump-Rg-Rock-05.otf */,
-				C286F2B725B75CC00008B514 /* Latinotype - Triump-Rg-Rock-04.otf */,
-				C286F2B825B75CC00008B514 /* Latinotype - Triump-Rg-Rock-10.otf */,
-				C286F2B925B75CC00008B514 /* Latinotype - Triump-Rg-Rock-01.otf */,
-				C286F2BA25B75CC00008B514 /* Latinotype - Triump-Rg-Rock-03.otf */,
-				C286F2BB25B75CC00008B514 /* Latinotype - Triump-Rg-Rock-02.otf */,
-				C286F2BC25B75CC00008B514 /* Latinotype - Triump-Rg-Blur-08.otf */,
-				C286F2BD25B75CC00008B514 /* Latinotype - Triump-Rg-Blur-09.otf */,
-				C286F2BE25B75CC00008B514 /* Latinotype - Triump-Rg-Blur-10.otf */,
-				C286F2BF25B75CC00008B514 /* Latinotype - Triump-Rg-Blur-04.otf */,
-				C286F2C025B75CC00008B514 /* Latinotype - Triump-Rg-Blur-05.otf */,
-				C286F2C125B75CC00008B514 /* Latinotype - Triump-Rg-Blur-11.otf */,
-				C286F2C225B75CC00008B514 /* Latinotype - Triump-Rg-Blur-07.otf */,
-				C286F2C325B75CC00008B514 /* Latinotype - Triump-Rg-Blur-12.otf */,
-				C286F2C425B75CC00008B514 /* Latinotype - Triump-Rg-Blur-06.otf */,
-				C286F2C525B75CC00008B514 /* Latinotype - Triump-Rg-Extras.otf */,
-				C286F2C625B75CC00008B514 /* Latinotype - Triump-Rg-Blur-02.otf */,
-				C286F2C725B75CC00008B514 /* Latinotype - Triump-Rg-Blur-03.otf */,
-				C286F2C825B75CC00008B514 /* Latinotype - Triump-Rg-Blur-01.otf */,
-				C286F2C925B75CC00008B514 /* Latinotype - Triump-Rg-Rock-09.otf */,
-				C286F2CA25B75CC00008B514 /* Latinotype - Triump-Rg-Ornaments.otf */,
-				C286F2CB25B75CC00008B514 /* Latinotype - Triump-Rg-Rock-08.otf */,
-			);
-			path = Triump;
-			sourceTree = "<group>";
-		};
 		C286F2CC25B75CCE0008B514 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -4063,8 +3880,6 @@
 				C24841B225B7BD1900C42DAE /* Shared */,
 				C24841BC25B7BD1B00C42DAE /* iOS */,
 				C24841C325B7BD1C00C42DAE /* macOS */,
-				C24841CD25B7BD1C00C42DAE /* Tests iOS */,
-				C24841D825B7BD1C00C42DAE /* Tests macOS */,
 				C2E043321B72F4DC005F0675 /* Products */,
 				C28A0F511D99DE650011F706 /* Frameworks */,
 			);
@@ -4075,8 +3890,6 @@
 			children = (
 				C24841BB25B7BD1B00C42DAE /* Groove.app */,
 				C24841C225B7BD1B00C42DAE /* Groove.app */,
-				C24841CA25B7BD1C00C42DAE /* Tests iOS.xctest */,
-				C24841D525B7BD1C00C42DAE /* Tests macOS.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -4126,42 +3939,6 @@
 			productReference = C24841C225B7BD1B00C42DAE /* Groove.app */;
 			productType = "com.apple.product-type.application";
 		};
-		C24841C925B7BD1C00C42DAE /* Tests iOS */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = C24841EE25B7BD1C00C42DAE /* Build configuration list for PBXNativeTarget "Tests iOS" */;
-			buildPhases = (
-				C24841C625B7BD1C00C42DAE /* Sources */,
-				C24841C725B7BD1C00C42DAE /* Frameworks */,
-				C24841C825B7BD1C00C42DAE /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				C24841CC25B7BD1C00C42DAE /* PBXTargetDependency */,
-			);
-			name = "Tests iOS";
-			productName = "Tests iOS";
-			productReference = C24841CA25B7BD1C00C42DAE /* Tests iOS.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
-		C24841D425B7BD1C00C42DAE /* Tests macOS */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = C24841F325B7BD1C00C42DAE /* Build configuration list for PBXNativeTarget "Tests macOS" */;
-			buildPhases = (
-				C24841D125B7BD1C00C42DAE /* Sources */,
-				C24841D225B7BD1C00C42DAE /* Frameworks */,
-				C24841D325B7BD1C00C42DAE /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				C24841D725B7BD1C00C42DAE /* PBXTargetDependency */,
-			);
-			name = "Tests macOS";
-			productName = "Tests macOS";
-			productReference = C24841D525B7BD1C00C42DAE /* Tests macOS.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -4178,14 +3955,6 @@
 					};
 					C24841C125B7BD1B00C42DAE = {
 						CreatedOnToolsVersion = 12.3;
-					};
-					C24841C925B7BD1C00C42DAE = {
-						CreatedOnToolsVersion = 12.3;
-						TestTargetID = C24841BA25B7BD1B00C42DAE;
-					};
-					C24841D425B7BD1C00C42DAE = {
-						CreatedOnToolsVersion = 12.3;
-						TestTargetID = C24841C125B7BD1B00C42DAE;
 					};
 				};
 			};
@@ -4206,8 +3975,6 @@
 			targets = (
 				C24841BA25B7BD1B00C42DAE /* Groove (iOS) */,
 				C24841C125B7BD1B00C42DAE /* Groove (macOS) */,
-				C24841C925B7BD1C00C42DAE /* Tests iOS */,
-				C24841D425B7BD1C00C42DAE /* Tests macOS */,
 			);
 		};
 /* End PBXProject section */
@@ -4217,50 +3984,50 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C2551A8425B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-09.otf in Resources */,
-				C2551A5525B7C52B0077E18F /* Yellow Design Studio - Eveleth Shadow.otf in Resources */,
-				C2551A8C25B7C53B0077E18F /* Latinotype - Triump-Rg-Extras.otf in Resources */,
-				C2551A9025B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-02.otf in Resources */,
-				C2551A9725B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-07.otf in Resources */,
-				C2551A6125B7C52B0077E18F /* Yellow Design Studio - Eveleth Slant Light.otf in Resources */,
-				C2551A8625B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-01.otf in Resources */,
-				C2551A5D25B7C52B0077E18F /* Yellow Design Studio - Eveleth Thin.otf in Resources */,
-				C2551A9525B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-04.otf in Resources */,
-				C2551A6425B7C52B0077E18F /* Yellow Design Studio - Eveleth Regular.otf in Resources */,
-				C2551A6025B7C52B0077E18F /* Yellow Design Studio - Eveleth Slant Regular.otf in Resources */,
-				C2551A8D25B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-09.otf in Resources */,
-				C2551A5E25B7C52B0077E18F /* Yellow Design Studio - Eveleth Clean Regular.otf in Resources */,
-				C2551A5A25B7C52B0077E18F /* Yellow Design Studio - Eveleth Regular Bold.otf in Resources */,
-				C2551A9425B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-05.otf in Resources */,
-				C2551A8925B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-04.otf in Resources */,
-				C2551A9625B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-08.otf in Resources */,
-				C2551A5C25B7C52B0077E18F /* Yellow Design Studio - Eveleth Clean Thin.otf in Resources */,
-				C2551A8325B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-01.otf in Resources */,
-				C2551A9225B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-07.otf in Resources */,
-				C2551ABD25B7C5410077E18F /* Settings.bundle in Resources */,
-				C2551A7F25B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-03.otf in Resources */,
-				C2551A5B25B7C52B0077E18F /* Yellow Design Studio - Eveleth Dot Light.otf in Resources */,
-				C2551A8F25B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-10.otf in Resources */,
-				C2551A8E25B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-03.otf in Resources */,
-				C2551A8025B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-02.otf in Resources */,
-				C2551A8825B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-11.otf in Resources */,
-				C2551A9325B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-10.otf in Resources */,
-				C2551A5725B7C52B0077E18F /* Yellow Design Studio - Eveleth Slant Regular Bold.otf in Resources */,
-				C2551A5825B7C52B0077E18F /* Yellow Design Studio - Eveleth Clean Shadow.otf in Resources */,
-				C2551A8A25B7C53B0077E18F /* Latinotype - Triump-Rg-Ornaments.otf in Resources */,
-				C2551A9825B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-05.otf in Resources */,
-				C2551A5F25B7C52B0077E18F /* Yellow Design Studio - Eveleth Shapes.otf in Resources */,
+				C252078025B8AF0600B1E0C5 /* Eveleth-Dot-Light.otf in Resources */,
+				C252078225B8AF0600B1E0C5 /* Eveleth-Shadow.otf in Resources */,
+				C252074025B8AF0600B1E0C5 /* Triump-Rg-Rock-10.otf in Resources */,
+				C25206A625B8A8BB00B1E0C5 /* Settings.bundle in Resources */,
+				C252076825B8AF0600B1E0C5 /* Triump-Rg-Rock-08.otf in Resources */,
+				C252077E25B8AF0600B1E0C5 /* Eveleth-Clean-Shadow.otf in Resources */,
+				C252076E25B8AF0600B1E0C5 /* Eveleth-Regular-Bold.otf in Resources */,
+				C252076425B8AF0600B1E0C5 /* Triump-Rg-Blur-01.otf in Resources */,
+				C252077025B8AF0600B1E0C5 /* Eveleth-Dot-Regular.otf in Resources */,
+				C252077625B8AF0600B1E0C5 /* Eveleth-Light.otf in Resources */,
+				C252075E25B8AF0600B1E0C5 /* Triump-Rg-Extras.otf in Resources */,
+				C252074E25B8AF0600B1E0C5 /* Triump-Rg-Blur-08.otf in Resources */,
+				C252078825B8AF0600B1E0C5 /* Eveleth-Regular.otf in Resources */,
+				C252074425B8AF0600B1E0C5 /* Triump-Rg-Rock-05.otf in Resources */,
+				C252078A25B8AF0600B1E0C5 /* Eveleth-Clean-Thin.otf in Resources */,
+				C252075225B8AF0600B1E0C5 /* Triump-Rg-Blur-11.otf in Resources */,
+				C252075C25B8AF0600B1E0C5 /* Triump-Rg-Blur-07.otf in Resources */,
+				C252074C25B8AF0600B1E0C5 /* Triump-Rg-Blur-09.otf in Resources */,
 				C24841E225B7BD1C00C42DAE /* Assets.xcassets in Resources */,
-				C2551A6325B7C52B0077E18F /* Yellow Design Studio - Eveleth Dot Regular Bold.otf in Resources */,
-				C2551A8225B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-06.otf in Resources */,
-				C2551A5625B7C52B0077E18F /* Yellow Design Studio - Eveleth Light.otf in Resources */,
-				C2551A8125B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-11.otf in Resources */,
-				C2551A9125B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-12.otf in Resources */,
-				C2551A5925B7C52B0077E18F /* Yellow Design Studio - Eveleth Icons.otf in Resources */,
-				C2551A8725B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-08.otf in Resources */,
-				C2551A6225B7C52B0077E18F /* Yellow Design Studio - Eveleth Dot Regular.otf in Resources */,
-				C2551A8B25B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-12.otf in Resources */,
-				C2551A8525B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-06.otf in Resources */,
+				C252073E25B8AF0600B1E0C5 /* Triump-Rg-Rock-04.otf in Resources */,
+				C252076C25B8AF0600B1E0C5 /* Eveleth-Shapes.otf in Resources */,
+				C252073C25B8AF0600B1E0C5 /* Triump-Rg-Rock-12.otf in Resources */,
+				C252073A25B8AF0600B1E0C5 /* Triump-Rg-Rock-06.otf in Resources */,
+				C252074225B8AF0600B1E0C5 /* Triump-Rg-Rock-11.otf in Resources */,
+				C252073825B8AF0600B1E0C5 /* Triump-Rg-Rock-07.otf in Resources */,
+				C252075A25B8AF0600B1E0C5 /* Triump-Rg-Blur-06.otf in Resources */,
+				C252077225B8AF0600B1E0C5 /* Eveleth-Thin.otf in Resources */,
+				C252074825B8AF0600B1E0C5 /* Triump-Rg-Rock-02.otf in Resources */,
+				C252075825B8AF0600B1E0C5 /* Triump-Rg-Blur-12.otf in Resources */,
+				C252074625B8AF0600B1E0C5 /* Triump-Rg-Rock-01.otf in Resources */,
+				C252075625B8AF0600B1E0C5 /* Triump-Rg-Blur-04.otf in Resources */,
+				C252078625B8AF0600B1E0C5 /* Eveleth-Dot-Regular-Bold.otf in Resources */,
+				C252076A25B8AF0600B1E0C5 /* Triump-Rg-Rock-09.otf in Resources */,
+				C252074A25B8AF0600B1E0C5 /* Triump-Rg-Rock-03.otf in Resources */,
+				C252076225B8AF0600B1E0C5 /* Triump-Rg-Blur-02.otf in Resources */,
+				C252077C25B8AF0600B1E0C5 /* Eveleth-Clean-Regular.otf in Resources */,
+				C252075025B8AF0600B1E0C5 /* Triump-Rg-Blur-05.otf in Resources */,
+				C252077A25B8AF0600B1E0C5 /* Eveleth-Slant-Regular-Bold.otf in Resources */,
+				C252078425B8AF0600B1E0C5 /* Eveleth-Slant-Regular.otf in Resources */,
+				C252076025B8AF0600B1E0C5 /* Triump-Rg-Blur-03.otf in Resources */,
+				C252075425B8AF0600B1E0C5 /* Triump-Rg-Blur-10.otf in Resources */,
+				C252077425B8AF0600B1E0C5 /* Eveleth-Slant-Light.otf in Resources */,
+				C252077825B8AF0600B1E0C5 /* Eveleth-Icons.otf in Resources */,
+				C252076625B8AF0600B1E0C5 /* Triump-Rg-Ornaments.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4268,64 +4035,50 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C2551AA325B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-09.otf in Resources */,
-				C2551A6A25B7C52C0077E18F /* Yellow Design Studio - Eveleth Shadow.otf in Resources */,
-				C2551AAB25B7C53B0077E18F /* Latinotype - Triump-Rg-Extras.otf in Resources */,
-				C2551AAF25B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-02.otf in Resources */,
-				C2551AB625B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-07.otf in Resources */,
-				C2551A7625B7C52C0077E18F /* Yellow Design Studio - Eveleth Slant Light.otf in Resources */,
-				C2551AA525B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-01.otf in Resources */,
-				C2551A7225B7C52C0077E18F /* Yellow Design Studio - Eveleth Thin.otf in Resources */,
-				C2551AB425B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-04.otf in Resources */,
-				C2551A7925B7C52C0077E18F /* Yellow Design Studio - Eveleth Regular.otf in Resources */,
-				C2551A7525B7C52C0077E18F /* Yellow Design Studio - Eveleth Slant Regular.otf in Resources */,
-				C2551AAC25B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-09.otf in Resources */,
-				C2551A7325B7C52C0077E18F /* Yellow Design Studio - Eveleth Clean Regular.otf in Resources */,
-				C2551A6F25B7C52C0077E18F /* Yellow Design Studio - Eveleth Regular Bold.otf in Resources */,
-				C2551AB325B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-05.otf in Resources */,
-				C2551AA825B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-04.otf in Resources */,
-				C2551AB525B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-08.otf in Resources */,
-				C2551A7125B7C52C0077E18F /* Yellow Design Studio - Eveleth Clean Thin.otf in Resources */,
-				C2551AA225B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-01.otf in Resources */,
-				C2551AB125B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-07.otf in Resources */,
-				C2551AC325B7C5420077E18F /* Settings.bundle in Resources */,
-				C2551A9E25B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-03.otf in Resources */,
-				C2551A7025B7C52C0077E18F /* Yellow Design Studio - Eveleth Dot Light.otf in Resources */,
-				C2551AAE25B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-10.otf in Resources */,
-				C2551AAD25B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-03.otf in Resources */,
-				C2551A9F25B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-02.otf in Resources */,
-				C2551AA725B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-11.otf in Resources */,
-				C2551AB225B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-10.otf in Resources */,
-				C2551A6C25B7C52C0077E18F /* Yellow Design Studio - Eveleth Slant Regular Bold.otf in Resources */,
-				C2551A6D25B7C52C0077E18F /* Yellow Design Studio - Eveleth Clean Shadow.otf in Resources */,
-				C2551AA925B7C53B0077E18F /* Latinotype - Triump-Rg-Ornaments.otf in Resources */,
-				C2551AB725B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-05.otf in Resources */,
-				C2551A7425B7C52C0077E18F /* Yellow Design Studio - Eveleth Shapes.otf in Resources */,
+				C252078125B8AF0600B1E0C5 /* Eveleth-Dot-Light.otf in Resources */,
+				C252078325B8AF0600B1E0C5 /* Eveleth-Shadow.otf in Resources */,
+				C252074125B8AF0600B1E0C5 /* Triump-Rg-Rock-10.otf in Resources */,
+				C25206A925B8A8BC00B1E0C5 /* Settings.bundle in Resources */,
+				C252076925B8AF0600B1E0C5 /* Triump-Rg-Rock-08.otf in Resources */,
+				C252077F25B8AF0600B1E0C5 /* Eveleth-Clean-Shadow.otf in Resources */,
+				C252076F25B8AF0600B1E0C5 /* Eveleth-Regular-Bold.otf in Resources */,
+				C252076525B8AF0600B1E0C5 /* Triump-Rg-Blur-01.otf in Resources */,
+				C252077125B8AF0600B1E0C5 /* Eveleth-Dot-Regular.otf in Resources */,
+				C252077725B8AF0600B1E0C5 /* Eveleth-Light.otf in Resources */,
+				C252075F25B8AF0600B1E0C5 /* Triump-Rg-Extras.otf in Resources */,
+				C252074F25B8AF0600B1E0C5 /* Triump-Rg-Blur-08.otf in Resources */,
+				C252078925B8AF0600B1E0C5 /* Eveleth-Regular.otf in Resources */,
+				C252074525B8AF0600B1E0C5 /* Triump-Rg-Rock-05.otf in Resources */,
+				C252078B25B8AF0600B1E0C5 /* Eveleth-Clean-Thin.otf in Resources */,
+				C252075325B8AF0600B1E0C5 /* Triump-Rg-Blur-11.otf in Resources */,
+				C252075D25B8AF0600B1E0C5 /* Triump-Rg-Blur-07.otf in Resources */,
+				C252074D25B8AF0600B1E0C5 /* Triump-Rg-Blur-09.otf in Resources */,
 				C24841E325B7BD1C00C42DAE /* Assets.xcassets in Resources */,
-				C2551A7825B7C52C0077E18F /* Yellow Design Studio - Eveleth Dot Regular Bold.otf in Resources */,
-				C2551AA125B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-06.otf in Resources */,
-				C2551A6B25B7C52C0077E18F /* Yellow Design Studio - Eveleth Light.otf in Resources */,
-				C2551AA025B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-11.otf in Resources */,
-				C2551AB025B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-12.otf in Resources */,
-				C2551A6E25B7C52C0077E18F /* Yellow Design Studio - Eveleth Icons.otf in Resources */,
-				C2551AA625B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-08.otf in Resources */,
-				C2551A7725B7C52C0077E18F /* Yellow Design Studio - Eveleth Dot Regular.otf in Resources */,
-				C2551AAA25B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-12.otf in Resources */,
-				C2551AA425B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-06.otf in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C24841C825B7BD1C00C42DAE /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C24841D325B7BD1C00C42DAE /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				C252073F25B8AF0600B1E0C5 /* Triump-Rg-Rock-04.otf in Resources */,
+				C252076D25B8AF0600B1E0C5 /* Eveleth-Shapes.otf in Resources */,
+				C252073D25B8AF0600B1E0C5 /* Triump-Rg-Rock-12.otf in Resources */,
+				C252073B25B8AF0600B1E0C5 /* Triump-Rg-Rock-06.otf in Resources */,
+				C252074325B8AF0600B1E0C5 /* Triump-Rg-Rock-11.otf in Resources */,
+				C252073925B8AF0600B1E0C5 /* Triump-Rg-Rock-07.otf in Resources */,
+				C252075B25B8AF0600B1E0C5 /* Triump-Rg-Blur-06.otf in Resources */,
+				C252077325B8AF0600B1E0C5 /* Eveleth-Thin.otf in Resources */,
+				C252074925B8AF0600B1E0C5 /* Triump-Rg-Rock-02.otf in Resources */,
+				C252075925B8AF0600B1E0C5 /* Triump-Rg-Blur-12.otf in Resources */,
+				C252074725B8AF0600B1E0C5 /* Triump-Rg-Rock-01.otf in Resources */,
+				C252075725B8AF0600B1E0C5 /* Triump-Rg-Blur-04.otf in Resources */,
+				C252078725B8AF0600B1E0C5 /* Eveleth-Dot-Regular-Bold.otf in Resources */,
+				C252076B25B8AF0600B1E0C5 /* Triump-Rg-Rock-09.otf in Resources */,
+				C252074B25B8AF0600B1E0C5 /* Triump-Rg-Rock-03.otf in Resources */,
+				C252076325B8AF0600B1E0C5 /* Triump-Rg-Blur-02.otf in Resources */,
+				C252077D25B8AF0600B1E0C5 /* Eveleth-Clean-Regular.otf in Resources */,
+				C252075125B8AF0600B1E0C5 /* Triump-Rg-Blur-05.otf in Resources */,
+				C252077B25B8AF0600B1E0C5 /* Eveleth-Slant-Regular-Bold.otf in Resources */,
+				C252078525B8AF0600B1E0C5 /* Eveleth-Slant-Regular.otf in Resources */,
+				C252076125B8AF0600B1E0C5 /* Triump-Rg-Blur-03.otf in Resources */,
+				C252075525B8AF0600B1E0C5 /* Triump-Rg-Blur-10.otf in Resources */,
+				C252077525B8AF0600B1E0C5 /* Eveleth-Slant-Light.otf in Resources */,
+				C252077925B8AF0600B1E0C5 /* Eveleth-Icons.otf in Resources */,
+				C252076725B8AF0600B1E0C5 /* Triump-Rg-Ornaments.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4350,36 +4103,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C24841C625B7BD1C00C42DAE /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C24841CF25B7BD1C00C42DAE /* Tests_iOS.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C24841D125B7BD1C00C42DAE /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C24841DA25B7BD1C00C42DAE /* Tests_macOS.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		C24841CC25B7BD1C00C42DAE /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = C24841BA25B7BD1B00C42DAE /* Groove (iOS) */;
-			targetProxy = C24841CB25B7BD1C00C42DAE /* PBXContainerItemProxy */;
-		};
-		C24841D725B7BD1C00C42DAE /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = C24841C125B7BD1B00C42DAE /* Groove (macOS) */;
-			targetProxy = C24841D625B7BD1C00C42DAE /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		C24841E525B7BD1C00C42DAE /* Debug */ = {
@@ -4640,246 +4364,6 @@
 			};
 			name = Release;
 		};
-		C24841EF25B7BD1C00C42DAE /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = JT6STF4SHA;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "Tests iOS/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.moondeerstudios.Tests-iOS";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = "Groove (iOS)";
-			};
-			name = Debug;
-		};
-		C24841F025B7BD1C00C42DAE /* Debug-Verbose */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = JT6STF4SHA;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "Tests iOS/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.moondeerstudios.Tests-iOS";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = "Groove (iOS)";
-			};
-			name = "Debug-Verbose";
-		};
-		C24841F125B7BD1C00C42DAE /* Profile */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = JT6STF4SHA;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "Tests iOS/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.moondeerstudios.Tests-iOS";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = "Groove (iOS)";
-			};
-			name = Profile;
-		};
-		C24841F225B7BD1C00C42DAE /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = JT6STF4SHA;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "Tests iOS/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.moondeerstudios.Tests-iOS";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = "Groove (iOS)";
-			};
-			name = Release;
-		};
-		C24841F425B7BD1C00C42DAE /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = JT6STF4SHA;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "Tests macOS/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 11.1;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.moondeerstudios.Tests-macOS";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = "Groove (macOS)";
-			};
-			name = Debug;
-		};
-		C24841F525B7BD1C00C42DAE /* Debug-Verbose */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = JT6STF4SHA;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "Tests macOS/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 11.1;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.moondeerstudios.Tests-macOS";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = "Groove (macOS)";
-			};
-			name = "Debug-Verbose";
-		};
-		C24841F625B7BD1C00C42DAE /* Profile */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = JT6STF4SHA;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "Tests macOS/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 11.1;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.moondeerstudios.Tests-macOS";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = "Groove (macOS)";
-			};
-			name = Profile;
-		};
-		C24841F725B7BD1C00C42DAE /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = JT6STF4SHA;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "Tests macOS/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 11.1;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.moondeerstudios.Tests-macOS";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = "Groove (macOS)";
-			};
-			name = Release;
-		};
 		C2562CEC1C63A3C30086789D /* Debug-Verbose */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -5120,28 +4604,6 @@
 				C24841EB25B7BD1C00C42DAE /* Debug-Verbose */,
 				C24841EC25B7BD1C00C42DAE /* Profile */,
 				C24841ED25B7BD1C00C42DAE /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		C24841EE25B7BD1C00C42DAE /* Build configuration list for PBXNativeTarget "Tests iOS" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				C24841EF25B7BD1C00C42DAE /* Debug */,
-				C24841F025B7BD1C00C42DAE /* Debug-Verbose */,
-				C24841F125B7BD1C00C42DAE /* Profile */,
-				C24841F225B7BD1C00C42DAE /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		C24841F325B7BD1C00C42DAE /* Build configuration list for PBXNativeTarget "Tests macOS" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				C24841F425B7BD1C00C42DAE /* Debug */,
-				C24841F525B7BD1C00C42DAE /* Debug-Verbose */,
-				C24841F625B7BD1C00C42DAE /* Profile */,
-				C24841F725B7BD1C00C42DAE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

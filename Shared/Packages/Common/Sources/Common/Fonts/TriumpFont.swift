@@ -6,7 +6,7 @@
 //  Copyright © 2021 Moondeer Studios. All rights reserved.
 //
 import Foundation
-import CoreText
+//import CoreTexts
 import MoonDev
 
 // MARK: - TriumpFont
@@ -61,23 +61,23 @@ public struct TriumpFont
     self.family = family
     self.volume = volume
 
-    guard TriumpFont.registered ∌ postscriptName else { return }
-
-    guard let url = Bundle.module.url(forResource: postscriptName, withExtension: "otf")
-    else
-    {
-      logw("\(#fileID) \(#function) Unable to locate font '\(postscriptName)'.")
-      return
-    }
-
-    guard CTFontManagerRegisterFontsForURL(url as CFURL, .process, nil)
-    else
-    {
-      loge("\(#fileID) \(#function) Failed to register font '\(postscriptName)'.")
-      return
-    }
-
-    TriumpFont.registered.insert(postscriptName)
+//    guard TriumpFont.registered ∌ postscriptName else { return }
+//
+//    guard let url = Bundle.module.url(forResource: postscriptName, withExtension: "otf")
+//    else
+//    {
+//      logw("\(#fileID) \(#function) Unable to locate font '\(postscriptName)'.")
+//      return
+//    }
+//
+//    guard CTFontManagerRegisterFontsForURL(url as CFURL, .process, nil)
+//    else
+//    {
+//      loge("\(#fileID) \(#function) Failed to register font '\(postscriptName)'.")
+//      return
+//    }
+//
+//    TriumpFont.registered.insert(postscriptName)
   }
 
   /// `TriumpFont` instance for file "Latinotype - Triump-Rg-Blur-01.otf"

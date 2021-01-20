@@ -37,17 +37,17 @@ public final class PlayerNode: SKShapeNode
   override public func addChild(_ node: SKNode)
   {
     super.addChild(node)
-    if let midiNode = node as? Node { midiNodes.append(midiNode) }
+    if let midiNode = node as? MIDINode { midiNodes.append(midiNode) }
   }
 
   /// Collection containing references to any `Node` instances added as children.
-  public private(set) var midiNodes: WeakArray<Node> = []
+  public private(set) var midiNodes: WeakArray<MIDINode> = []
 
   /// The collection of midi nodes for default mode.
-  var linearNodes: [Node] { midiNodes(forMode: .linear) }
+  var linearNodes: [MIDINode] { midiNodes(forMode: .linear) }
 
   /// The collection of midi nodes for loop mode.
-  var loopNodes: [Node] { midiNodes(forMode: .loop) }
+  var loopNodes: [MIDINode] { midiNodes(forMode: .loop) }
 
   /// The object currently handling touches received by the player node.
   public weak var receiver: TouchReceiver?
@@ -57,9 +57,9 @@ public final class PlayerNode: SKShapeNode
 
   /// Returns the collection of midi nodes for `mode` via a search on the names of
   /// the player node's children.
-  private func midiNodes(forMode mode: Mode) -> [Node]
+  private func midiNodes(forMode mode: Mode) -> [MIDINode]
   {
-    self["<\(mode.rawValue)>*"].compactMap { $0 as? Node }
+    self["<\(mode.rawValue)>*"].compactMap { $0 as? MIDINode }
   }
 
   /// Overridden to bounce invocation to `touchReceiver`.

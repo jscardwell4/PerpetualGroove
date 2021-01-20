@@ -45,7 +45,9 @@ struct ContentView: View
       .padding()
     }
     .padding()
-    .preferredColorScheme(.dark)
+    .background(Color.backgroundColor1)
+    .navigationBarHidden(true)
+    .statusBar(hidden: true)
   }
 
   /// Initializing with a groove document. This initializer loads the sequence

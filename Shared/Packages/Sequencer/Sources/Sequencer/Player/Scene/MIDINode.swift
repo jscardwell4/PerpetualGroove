@@ -1,5 +1,5 @@
 //
-//  Node.swift
+//  MIDINode.swift
 //  PerpetualGroove
 //
 //  Created by Jason Cardwell on 8/12/15.
@@ -15,7 +15,7 @@ import UIKit
 // MARK: - Node
 
 @available(iOS 14.0, *)
-public final class Node: SKSpriteNode
+public final class MIDINode: SKSpriteNode
 {
   public typealias Trajectory = NodeEvent.Trajectory
 
@@ -273,13 +273,13 @@ public final class Node: SKSpriteNode
   public static let texture = SKTexture(image: UIImage(named: "ball", in: Bundle.module, compatibleWith: nil)!)
 
   /// The normal map used by all `Node` instances.
-  private static let normalMap = Node.texture.generatingNormalMap()
+  private static let normalMap = MIDINode.texture.generatingNormalMap()
 
   /// The size of a node when it has no active notes.
-  public static let defaultSize: CGSize = Node.texture.size() * 0.75
+  public static let defaultSize: CGSize = MIDINode.texture.size() * 0.75
 
   /// The size of a node when it has at least one active note.
-  public static let playingSize: CGSize = Node.texture.size()
+  public static let playingSize: CGSize = MIDINode.texture.size()
 
   /// Subscription for `.transportDidBeginJogging` notifications.
   private var transportDidBeginJoggingSubscription: Cancellable?
@@ -331,9 +331,9 @@ public final class Node: SKSpriteNode
     path = Path(trajectory: trajectory, playerSize: playerSize, time: initTime)
 
     // Invoke `super` now that properties have been initialized.
-    super.init(texture: Node.texture,
+    super.init(texture: MIDINode.texture,
                color: dispatch.color.value,
-               size: Node.texture.size() * 0.75)
+               size: MIDINode.texture.size() * 0.75)
 
     // Subscribe to transport notifications from the currently assigned transport.
     transportDidBeginJoggingSubscription = NotificationCenter.default
@@ -370,7 +370,7 @@ public final class Node: SKSpriteNode
     self.name = name
     colorBlendFactor = 1
     position = trajectory.position
-    normalTexture = Node.normalMap
+    normalTexture = MIDINode.normalMap
 
     // Start the node's movement.
     moveAction.run()
@@ -407,7 +407,7 @@ public final class Node: SKSpriteNode
 }
 
 @available(iOS 14.0, *)
-extension Node
+extension MIDINode
 {
   /// Type for representing MIDI-related node actions
   private struct Action
@@ -439,7 +439,7 @@ extension Node
     let key: Key
 
     /// The node upon which the action runs.
-    unowned let node: Node
+    unowned let node: MIDINode
 
     /// The `SKAction` object generator for the action.
     var action: SKAction
@@ -484,16 +484,16 @@ extension Node
             .seconds(withBPM: sequencer.tempo) * 0.5
 
           // Scale up to playing size for half the action.
-          let scaleUp = SKAction.resize(toWidth: Node.playingSize.width,
-                                        height: Node.playingSize.height,
+          let scaleUp = SKAction.resize(toWidth: MIDINode.playingSize.width,
+                                        height: MIDINode.playingSize.height,
                                         duration: halfDuration)
 
           // Send the 'note on' event.
           let noteOn = SKAction.run { [unowned node] in node.sendNoteOn() }
 
           // Scale down to default size for half the action.
-          let scaleDown = SKAction.resize(toWidth: Node.defaultSize.width,
-                                          height: Node.defaultSize.height,
+          let scaleDown = SKAction.resize(toWidth: MIDINode.defaultSize.width,
+                                          height: MIDINode.defaultSize.height,
                                           duration: halfDuration)
 
           // Send the 'note off' event
@@ -549,7 +549,7 @@ extension Node
 }
 
 @available(iOS 14.0, *)
-public extension Node
+public extension MIDINode
 {
   /// Type for generating consecutive line segments.
   final class Path: CustomStringConvertible, CustomDebugStringConvertible
@@ -579,7 +579,7 @@ public extension Node
     public init(trajectory: Trajectory, playerSize: CGSize, time: BarBeatTime = .zero)
     {
       // Calculate bounds by insetting a rect with origin zero and a size of `playerSize`.
-      bounds = UIEdgeInsets(*(Node.texture.size() * 0.375))
+      bounds = UIEdgeInsets(*(MIDINode.texture.size() * 0.375))
         .inset(CGRect(size: playerSize))
 
       // Create the initial segment.
@@ -694,13 +694,13 @@ public extension Node
 }
 
 @available(iOS 14.0, *)
-public extension Node.Path
+public extension MIDINode.Path
 {
   /// A struct representing a line segment within a path.
   struct Segment: Comparable, CustomStringConvertible
   {
     /// The position, angle and velocity describing the segment.
-    public let trajectory: Node.Trajectory
+    public let trajectory: MIDINode.Trajectory
 
     /// The start and stop time of the segment expressed as a bar-beat time interval.
     public let timeInterval: Range<BarBeatTime>
@@ -768,7 +768,7 @@ public extension Node.Path
     /// - Parameter trajectory: The segment's postion, velocity and angle.
     /// - Parameter time: The total elapsed time at the start of the segment.
     /// - Parameter bounds: The bounding rectangle for the segment.
-    public init(trajectory: Node.Trajectory, time: BarBeatTime, bounds: CGRect)
+    public init(trajectory: MIDINode.Trajectory, time: BarBeatTime, bounds: CGRect)
     {
       self.trajectory = trajectory
 

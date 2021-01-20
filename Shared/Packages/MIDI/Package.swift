@@ -23,7 +23,11 @@ let package = Package(
       name: "MIDI",
       dependencies: ["MoonDev", "SoundFont", "Common"],
       resources: [
-        .process("Resources/Media.xcassets")
+        .process("Resources/Media.xcassets"),
+        .copy("Resources/morse_code_a.mid"),
+        .copy("Resources/Ping Puh Ping.mid"),
+        .copy("Resources/test_morse_code_a.mid"),
+        .copy("Resources/test.mid")
       ]
     ),
     .testTarget(

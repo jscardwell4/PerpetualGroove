@@ -395,7 +395,7 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
   /// - Throws: `NodeDispatchError.nodeAlreadyConnected` when the track has already
   ///           connected the node's `endPoint`. Any error encountered connecting the
   ///           node's `endPoint` with the track's `inputPort`.
-  public func connect(node: Node) throws
+  public func connect(node: MIDINode) throws
   {
     // Check that the node's `endPoint` has not already been connected by the track.
     guard connectedEndPoints ∌ node.endPoint
@@ -420,7 +420,7 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
   /// - Throws: `NodeDispatchError.nodeNotFound` when the node has not been connected
   ///            to the track. Any error encountered disconnecting the node's `endPoint`
   ///            from the track's `inputPort`.
-  public func disconnect(node: Node) throws
+  public func disconnect(node: MIDINode) throws
   {
     // Check that the node's endpoint was previously connected by the track.
     guard connectedEndPoints ∋ node.endPoint

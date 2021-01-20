@@ -6,10 +6,11 @@
 //  Copyright © 2021 Moondeer Studios. All rights reserved.
 //
 import SwiftUI
+import SpriteKit
 
 // MARK: - PlayerHost
 
-/// A view for hosting the `SpriteKit` scene used to drive the sequencer.
+/// A view for hosting the `SKView` presenting the scene used to drive the sequencer.
 @available(iOS 14.0, *)
 public struct PlayerHost: View
 {
@@ -28,9 +29,16 @@ public struct PlayerHost: View
 private struct _PlayerHost: UIViewRepresentable
 {
   /// Creates the hosted instance of `PlayerSKView`.
-  public func makeUIView(context: Context) -> PlayerSKView
+  public func makeUIView(context: Context) -> SKView
   {
-    PlayerSKView(frame: CGRect(x: 0, y: 0, width: 447, height: 447))
+    let scene = PlayerScene(size: CGSize(width: 447, height: 447))
+    let view  = SKView(frame: CGRect(size: CGSize(width: 447, height: 447)))
+    view.ignoresSiblingOrder = true
+    view.shouldCullNonVisibleNodes = false
+    view.showsFPS = true
+    view.showsNodeCount = true
+    view.presentScene(scene)
+    return view
   }
   
   /// Updates the hosted instance of `PlayerSKView`.
@@ -40,7 +48,7 @@ private struct _PlayerHost: UIViewRepresentable
   /// - Parameters:
   ///   - uiView: The hosted view.
   ///   - context: This parameter is ignored.
-  public func updateUIView(_ uiView: PlayerSKView, context: Context) {}
+  public func updateUIView(_ uiView: SKView, context: Context) {}
 }
 
 // MARK: - PlayerHost_Previews

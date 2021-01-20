@@ -14,7 +14,7 @@ import Nimble
 @available(iOS 14.0, *)
 final class NodePathTests: XCTestCase {
 
-  typealias Trajectory = Node.Trajectory
+  typealias Trajectory = MIDINode.Trajectory
 
   let startTime: BarBeatTime = 3∶3.54
   let initialPoint = CGPoint(x: 206.8070373535156, y: 143.28111267089841)
@@ -44,7 +44,7 @@ final class NodePathTests: XCTestCase {
 
 
   func testSegment() {
-    let path = Node.Path(trajectory: initialTrajectory, playerSize: playerSize, time: startTime)
+    let path = MIDINode.Path(trajectory: initialTrajectory, playerSize: playerSize, time: startTime)
     let segment = path.initialSegment
 //    expect(segment.endLocation.x).to(equalWithAccuracy(CGFloat(286.156655407142), 0.0001))
     expect(segment.endLocation.y) == 21
@@ -52,7 +52,7 @@ final class NodePathTests: XCTestCase {
   }
 
   func testCreation() {
-    let path = Node.Path(trajectory: initialTrajectory, playerSize: playerSize, time: startTime)
+    let path = MIDINode.Path(trajectory: initialTrajectory, playerSize: playerSize, time: startTime)
 //    expect(path.min) == CGPoint(x: 21, y: 21)
 //    expect(path.max) == CGPoint(x: 426, y: 426)
     expect(path.startTime) == startTime
@@ -60,7 +60,7 @@ final class NodePathTests: XCTestCase {
   }
 
   func testSegmentForTime() {
-    let path = Node.Path(trajectory: initialTrajectory, playerSize: playerSize, time: startTime)
+    let path = MIDINode.Path(trajectory: initialTrajectory, playerSize: playerSize, time: startTime)
     let time1: BarBeatTime = 10∶1.250
     let segment1 = path.segmentIndex(for: time1)
     expect(segment1).toNot(beNil())

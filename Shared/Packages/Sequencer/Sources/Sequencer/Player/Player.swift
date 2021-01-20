@@ -120,7 +120,7 @@ public final class Player
 
   /// Creates a new `Node` object using the specified parameters and adds it
   /// to `playerNode`.
-  public func placeNew(_ trajectory: Node.Trajectory,
+  public func placeNew(_ trajectory: MIDINode.Trajectory,
                        target: NodeDispatch,
                        generator: AnyGenerator,
                        identifier: UUID = UUID())
@@ -142,7 +142,7 @@ public final class Player
         let name = "<\(sequencer.mode.rawValue)> \(target.nextNodeName)"
 
         // Create and add the node to the player node.
-        let node = try Node(trajectory: trajectory,
+        let node = try MIDINode(trajectory: trajectory,
                             name: name,
                             dispatch: target,
                             generator: generator,
@@ -174,7 +174,7 @@ public final class Player
   }
 
   /// Removes `node` from the player node.
-  public func remove(node: Node)
+  public func remove(node: MIDINode)
   {
     dispatchToMain
     { [self] in
@@ -209,7 +209,7 @@ public extension Notification.Name
 @available(iOS 14.0, *)
 public extension Notification
 {
-  var addedNode: Node? { userInfo?["addedNode"] as? Node }
+  var addedNode: MIDINode? { userInfo?["addedNode"] as? MIDINode }
 
   var addedNodeDispatch: NodeDispatch?
   {
