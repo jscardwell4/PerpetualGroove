@@ -17,21 +17,21 @@
                BlueprintIdentifier = "Common"
                BuildableName = "Common"
                BlueprintName = "Common"
-               ReferencedContainer = "container:Groove/Packages/Common">
+               ReferencedContainer = "container:Shared/Packages/Common">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
             buildForTesting = "YES"
             buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "CommonTests"
                BuildableName = "CommonTests"
                BlueprintName = "CommonTests"
-               ReferencedContainer = "container:Groove/Packages/Common">
+               ReferencedContainer = "container:Shared/Packages/Common">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -67,7 +67,7 @@
             BlueprintIdentifier = "Common"
             BuildableName = "Common"
             BlueprintName = "Common"
-            ReferencedContainer = "container:Groove/Packages/Common">
+            ReferencedContainer = "container:Shared/Packages/Common">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

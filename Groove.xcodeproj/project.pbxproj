@@ -7,60 +7,124 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C286EDF925B757FF0008B514 /* GrooveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C286EDF825B757FF0008B514 /* GrooveApp.swift */; };
-		C286EDFB25B757FF0008B514 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C286EDFA25B757FF0008B514 /* ContentView.swift */; };
-		C286EDFD25B758010008B514 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C286EDFC25B758010008B514 /* Assets.xcassets */; };
-		C286EE0025B758010008B514 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C286EDFF25B758010008B514 /* Preview Assets.xcassets */; };
-		C286EE1025B758E90008B514 /* MoonDev in Frameworks */ = {isa = PBXBuildFile; productRef = C286EE0F25B758E90008B514 /* MoonDev */; };
-		C286F2CD25B75D530008B514 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C286EF9925B75CBF0008B514 /* Settings.bundle */; };
-		C286F2D025B75D5D0008B514 /* Yellow Design Studio - Eveleth Clean Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B025B75CC00008B514 /* Yellow Design Studio - Eveleth Clean Thin.otf */; };
-		C286F2D125B75D5D0008B514 /* Yellow Design Studio - Eveleth Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A625B75CC00008B514 /* Yellow Design Studio - Eveleth Light.otf */; };
-		C286F2D225B75D5D0008B514 /* Yellow Design Studio - Eveleth Dot Regular Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A825B75CC00008B514 /* Yellow Design Studio - Eveleth Dot Regular Bold.otf */; };
-		C286F2D325B75D5D0008B514 /* Yellow Design Studio - Eveleth Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AB25B75CC00008B514 /* Yellow Design Studio - Eveleth Regular.otf */; };
-		C286F2D425B75D5D0008B514 /* Yellow Design Studio - Eveleth Slant Regular Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A525B75CC00008B514 /* Yellow Design Studio - Eveleth Slant Regular Bold.otf */; };
-		C286F2D525B75D5D0008B514 /* Yellow Design Studio - Eveleth Slant Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AC25B75CC00008B514 /* Yellow Design Studio - Eveleth Slant Light.otf */; };
-		C286F2D625B75D5D0008B514 /* Yellow Design Studio - Eveleth Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A925B75CC00008B514 /* Yellow Design Studio - Eveleth Thin.otf */; };
-		C286F2D725B75D5D0008B514 /* Yellow Design Studio - Eveleth Shapes.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A325B75CC00008B514 /* Yellow Design Studio - Eveleth Shapes.otf */; };
-		C286F2D825B75D5D0008B514 /* Yellow Design Studio - Eveleth Shadow.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AD25B75CC00008B514 /* Yellow Design Studio - Eveleth Shadow.otf */; };
-		C286F2D925B75D5D0008B514 /* Yellow Design Studio - Eveleth Dot Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AE25B75CC00008B514 /* Yellow Design Studio - Eveleth Dot Regular.otf */; };
-		C286F2DA25B75D5D0008B514 /* Yellow Design Studio - Eveleth Dot Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AF25B75CC00008B514 /* Yellow Design Studio - Eveleth Dot Light.otf */; };
-		C286F2DB25B75D5D0008B514 /* Yellow Design Studio - Eveleth Clean Shadow.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A125B75CC00008B514 /* Yellow Design Studio - Eveleth Clean Shadow.otf */; };
-		C286F2DC25B75D5D0008B514 /* Yellow Design Studio - Eveleth Regular Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AA25B75CC00008B514 /* Yellow Design Studio - Eveleth Regular Bold.otf */; };
-		C286F2DD25B75D5D0008B514 /* Yellow Design Studio - Eveleth Slant Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A725B75CC00008B514 /* Yellow Design Studio - Eveleth Slant Regular.otf */; };
-		C286F2DE25B75D5D0008B514 /* Yellow Design Studio - Eveleth Icons.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A425B75CC00008B514 /* Yellow Design Studio - Eveleth Icons.otf */; };
-		C286F2DF25B75D5D0008B514 /* Yellow Design Studio - Eveleth Clean Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A225B75CC00008B514 /* Yellow Design Studio - Eveleth Clean Regular.otf */; };
-		C286F2E225B75D630008B514 /* Latinotype - Triump-Rg-Blur-11.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C125B75CC00008B514 /* Latinotype - Triump-Rg-Blur-11.otf */; };
-		C286F2E325B75D630008B514 /* Latinotype - Triump-Rg-Blur-04.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BF25B75CC00008B514 /* Latinotype - Triump-Rg-Blur-04.otf */; };
-		C286F2E425B75D630008B514 /* Latinotype - Triump-Rg-Blur-01.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C825B75CC00008B514 /* Latinotype - Triump-Rg-Blur-01.otf */; };
-		C286F2E525B75D630008B514 /* Latinotype - Triump-Rg-Rock-08.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2CB25B75CC00008B514 /* Latinotype - Triump-Rg-Rock-08.otf */; };
-		C286F2E625B75D630008B514 /* Latinotype - Triump-Rg-Blur-02.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C625B75CC00008B514 /* Latinotype - Triump-Rg-Blur-02.otf */; };
-		C286F2E725B75D630008B514 /* Latinotype - Triump-Rg-Rock-11.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B525B75CC00008B514 /* Latinotype - Triump-Rg-Rock-11.otf */; };
-		C286F2E825B75D630008B514 /* Latinotype - Triump-Rg-Rock-09.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C925B75CC00008B514 /* Latinotype - Triump-Rg-Rock-09.otf */; };
-		C286F2E925B75D630008B514 /* Latinotype - Triump-Rg-Blur-07.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C225B75CC00008B514 /* Latinotype - Triump-Rg-Blur-07.otf */; };
-		C286F2EA25B75D630008B514 /* Latinotype - Triump-Rg-Ornaments.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2CA25B75CC00008B514 /* Latinotype - Triump-Rg-Ornaments.otf */; };
-		C286F2EB25B75D630008B514 /* Latinotype - Triump-Rg-Blur-03.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C725B75CC00008B514 /* Latinotype - Triump-Rg-Blur-03.otf */; };
-		C286F2EC25B75D630008B514 /* Latinotype - Triump-Rg-Extras.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C525B75CC00008B514 /* Latinotype - Triump-Rg-Extras.otf */; };
-		C286F2ED25B75D630008B514 /* Latinotype - Triump-Rg-Rock-06.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B225B75CC00008B514 /* Latinotype - Triump-Rg-Rock-06.otf */; };
-		C286F2EE25B75D630008B514 /* Latinotype - Triump-Rg-Rock-01.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B925B75CC00008B514 /* Latinotype - Triump-Rg-Rock-01.otf */; };
-		C286F2EF25B75D630008B514 /* Latinotype - Triump-Rg-Rock-05.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B625B75CC00008B514 /* Latinotype - Triump-Rg-Rock-05.otf */; };
-		C286F2F025B75D630008B514 /* Latinotype - Triump-Rg-Blur-09.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BD25B75CC00008B514 /* Latinotype - Triump-Rg-Blur-09.otf */; };
-		C286F2F125B75D630008B514 /* Latinotype - Triump-Rg-Blur-05.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C025B75CC00008B514 /* Latinotype - Triump-Rg-Blur-05.otf */; };
-		C286F2F225B75D630008B514 /* Latinotype - Triump-Rg-Blur-12.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C325B75CC00008B514 /* Latinotype - Triump-Rg-Blur-12.otf */; };
-		C286F2F325B75D630008B514 /* Latinotype - Triump-Rg-Blur-10.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BE25B75CC00008B514 /* Latinotype - Triump-Rg-Blur-10.otf */; };
-		C286F2F425B75D630008B514 /* Latinotype - Triump-Rg-Rock-03.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BA25B75CC00008B514 /* Latinotype - Triump-Rg-Rock-03.otf */; };
-		C286F2F525B75D630008B514 /* Latinotype - Triump-Rg-Rock-04.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B725B75CC00008B514 /* Latinotype - Triump-Rg-Rock-04.otf */; };
-		C286F2F625B75D630008B514 /* Latinotype - Triump-Rg-Blur-08.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BC25B75CC00008B514 /* Latinotype - Triump-Rg-Blur-08.otf */; };
-		C286F2F725B75D630008B514 /* Latinotype - Triump-Rg-Rock-02.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BB25B75CC00008B514 /* Latinotype - Triump-Rg-Rock-02.otf */; };
-		C286F2F825B75D630008B514 /* Latinotype - Triump-Rg-Rock-12.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B325B75CC00008B514 /* Latinotype - Triump-Rg-Rock-12.otf */; };
-		C286F2F925B75D630008B514 /* Latinotype - Triump-Rg-Blur-06.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C425B75CC00008B514 /* Latinotype - Triump-Rg-Blur-06.otf */; };
-		C286F2FA25B75D630008B514 /* Latinotype - Triump-Rg-Rock-07.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B425B75CC00008B514 /* Latinotype - Triump-Rg-Rock-07.otf */; };
-		C286F2FB25B75D630008B514 /* Latinotype - Triump-Rg-Rock-10.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B825B75CC00008B514 /* Latinotype - Triump-Rg-Rock-10.otf */; };
-		C297E58C25B75FA20023B701 /* Common in Frameworks */ = {isa = PBXBuildFile; productRef = C297E58B25B75FA20023B701 /* Common */; };
-		C297E58E25B75FA20023B701 /* Documents in Frameworks */ = {isa = PBXBuildFile; productRef = C297E58D25B75FA20023B701 /* Documents */; };
-		C297E59025B75FA20023B701 /* MIDI in Frameworks */ = {isa = PBXBuildFile; productRef = C297E58F25B75FA20023B701 /* MIDI */; };
-		C297E59225B75FA20023B701 /* Sequencer in Frameworks */ = {isa = PBXBuildFile; productRef = C297E59125B75FA20023B701 /* Sequencer */; };
-		C297E59425B75FA20023B701 /* SoundFont in Frameworks */ = {isa = PBXBuildFile; productRef = C297E59325B75FA20023B701 /* SoundFont */; };
+		C24841CF25B7BD1C00C42DAE /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24841CE25B7BD1C00C42DAE /* Tests_iOS.swift */; };
+		C24841DA25B7BD1C00C42DAE /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24841D925B7BD1C00C42DAE /* Tests_macOS.swift */; };
+		C24841DC25B7BD1C00C42DAE /* GrooveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24841B325B7BD1900C42DAE /* GrooveApp.swift */; };
+		C24841DD25B7BD1C00C42DAE /* GrooveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24841B325B7BD1900C42DAE /* GrooveApp.swift */; };
+		C24841E025B7BD1C00C42DAE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24841B525B7BD1900C42DAE /* ContentView.swift */; };
+		C24841E125B7BD1C00C42DAE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24841B525B7BD1900C42DAE /* ContentView.swift */; };
+		C24841E225B7BD1C00C42DAE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C24841B625B7BD1B00C42DAE /* Assets.xcassets */; };
+		C24841E325B7BD1C00C42DAE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C24841B625B7BD1B00C42DAE /* Assets.xcassets */; };
+		C248420D25B7C00F00C42DAE /* Common in Frameworks */ = {isa = PBXBuildFile; productRef = C248420C25B7C00F00C42DAE /* Common */; };
+		C248420F25B7C00F00C42DAE /* Documents in Frameworks */ = {isa = PBXBuildFile; productRef = C248420E25B7C00F00C42DAE /* Documents */; };
+		C248421125B7C00F00C42DAE /* MIDI in Frameworks */ = {isa = PBXBuildFile; productRef = C248421025B7C00F00C42DAE /* MIDI */; };
+		C248421325B7C00F00C42DAE /* MoonDev in Frameworks */ = {isa = PBXBuildFile; productRef = C248421225B7C00F00C42DAE /* MoonDev */; };
+		C248421525B7C00F00C42DAE /* Sequencer in Frameworks */ = {isa = PBXBuildFile; productRef = C248421425B7C00F00C42DAE /* Sequencer */; };
+		C248421725B7C00F00C42DAE /* SoundFont in Frameworks */ = {isa = PBXBuildFile; productRef = C248421625B7C00F00C42DAE /* SoundFont */; };
+		C2551A5525B7C52B0077E18F /* Yellow Design Studio - Eveleth Shadow.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AD25B75CC00008B514 /* Yellow Design Studio - Eveleth Shadow.otf */; };
+		C2551A5625B7C52B0077E18F /* Yellow Design Studio - Eveleth Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A625B75CC00008B514 /* Yellow Design Studio - Eveleth Light.otf */; };
+		C2551A5725B7C52B0077E18F /* Yellow Design Studio - Eveleth Slant Regular Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A525B75CC00008B514 /* Yellow Design Studio - Eveleth Slant Regular Bold.otf */; };
+		C2551A5825B7C52B0077E18F /* Yellow Design Studio - Eveleth Clean Shadow.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A125B75CC00008B514 /* Yellow Design Studio - Eveleth Clean Shadow.otf */; };
+		C2551A5925B7C52B0077E18F /* Yellow Design Studio - Eveleth Icons.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A425B75CC00008B514 /* Yellow Design Studio - Eveleth Icons.otf */; };
+		C2551A5A25B7C52B0077E18F /* Yellow Design Studio - Eveleth Regular Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AA25B75CC00008B514 /* Yellow Design Studio - Eveleth Regular Bold.otf */; };
+		C2551A5B25B7C52B0077E18F /* Yellow Design Studio - Eveleth Dot Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AF25B75CC00008B514 /* Yellow Design Studio - Eveleth Dot Light.otf */; };
+		C2551A5C25B7C52B0077E18F /* Yellow Design Studio - Eveleth Clean Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B025B75CC00008B514 /* Yellow Design Studio - Eveleth Clean Thin.otf */; };
+		C2551A5D25B7C52B0077E18F /* Yellow Design Studio - Eveleth Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A925B75CC00008B514 /* Yellow Design Studio - Eveleth Thin.otf */; };
+		C2551A5E25B7C52B0077E18F /* Yellow Design Studio - Eveleth Clean Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A225B75CC00008B514 /* Yellow Design Studio - Eveleth Clean Regular.otf */; };
+		C2551A5F25B7C52B0077E18F /* Yellow Design Studio - Eveleth Shapes.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A325B75CC00008B514 /* Yellow Design Studio - Eveleth Shapes.otf */; };
+		C2551A6025B7C52B0077E18F /* Yellow Design Studio - Eveleth Slant Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A725B75CC00008B514 /* Yellow Design Studio - Eveleth Slant Regular.otf */; };
+		C2551A6125B7C52B0077E18F /* Yellow Design Studio - Eveleth Slant Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AC25B75CC00008B514 /* Yellow Design Studio - Eveleth Slant Light.otf */; };
+		C2551A6225B7C52B0077E18F /* Yellow Design Studio - Eveleth Dot Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AE25B75CC00008B514 /* Yellow Design Studio - Eveleth Dot Regular.otf */; };
+		C2551A6325B7C52B0077E18F /* Yellow Design Studio - Eveleth Dot Regular Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A825B75CC00008B514 /* Yellow Design Studio - Eveleth Dot Regular Bold.otf */; };
+		C2551A6425B7C52B0077E18F /* Yellow Design Studio - Eveleth Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AB25B75CC00008B514 /* Yellow Design Studio - Eveleth Regular.otf */; };
+		C2551A6A25B7C52C0077E18F /* Yellow Design Studio - Eveleth Shadow.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AD25B75CC00008B514 /* Yellow Design Studio - Eveleth Shadow.otf */; };
+		C2551A6B25B7C52C0077E18F /* Yellow Design Studio - Eveleth Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A625B75CC00008B514 /* Yellow Design Studio - Eveleth Light.otf */; };
+		C2551A6C25B7C52C0077E18F /* Yellow Design Studio - Eveleth Slant Regular Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A525B75CC00008B514 /* Yellow Design Studio - Eveleth Slant Regular Bold.otf */; };
+		C2551A6D25B7C52C0077E18F /* Yellow Design Studio - Eveleth Clean Shadow.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A125B75CC00008B514 /* Yellow Design Studio - Eveleth Clean Shadow.otf */; };
+		C2551A6E25B7C52C0077E18F /* Yellow Design Studio - Eveleth Icons.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A425B75CC00008B514 /* Yellow Design Studio - Eveleth Icons.otf */; };
+		C2551A6F25B7C52C0077E18F /* Yellow Design Studio - Eveleth Regular Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AA25B75CC00008B514 /* Yellow Design Studio - Eveleth Regular Bold.otf */; };
+		C2551A7025B7C52C0077E18F /* Yellow Design Studio - Eveleth Dot Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AF25B75CC00008B514 /* Yellow Design Studio - Eveleth Dot Light.otf */; };
+		C2551A7125B7C52C0077E18F /* Yellow Design Studio - Eveleth Clean Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B025B75CC00008B514 /* Yellow Design Studio - Eveleth Clean Thin.otf */; };
+		C2551A7225B7C52C0077E18F /* Yellow Design Studio - Eveleth Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A925B75CC00008B514 /* Yellow Design Studio - Eveleth Thin.otf */; };
+		C2551A7325B7C52C0077E18F /* Yellow Design Studio - Eveleth Clean Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A225B75CC00008B514 /* Yellow Design Studio - Eveleth Clean Regular.otf */; };
+		C2551A7425B7C52C0077E18F /* Yellow Design Studio - Eveleth Shapes.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A325B75CC00008B514 /* Yellow Design Studio - Eveleth Shapes.otf */; };
+		C2551A7525B7C52C0077E18F /* Yellow Design Studio - Eveleth Slant Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A725B75CC00008B514 /* Yellow Design Studio - Eveleth Slant Regular.otf */; };
+		C2551A7625B7C52C0077E18F /* Yellow Design Studio - Eveleth Slant Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AC25B75CC00008B514 /* Yellow Design Studio - Eveleth Slant Light.otf */; };
+		C2551A7725B7C52C0077E18F /* Yellow Design Studio - Eveleth Dot Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AE25B75CC00008B514 /* Yellow Design Studio - Eveleth Dot Regular.otf */; };
+		C2551A7825B7C52C0077E18F /* Yellow Design Studio - Eveleth Dot Regular Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2A825B75CC00008B514 /* Yellow Design Studio - Eveleth Dot Regular Bold.otf */; };
+		C2551A7925B7C52C0077E18F /* Yellow Design Studio - Eveleth Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2AB25B75CC00008B514 /* Yellow Design Studio - Eveleth Regular.otf */; };
+		C2551A7F25B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-03.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C725B75CC00008B514 /* Latinotype - Triump-Rg-Blur-03.otf */; };
+		C2551A8025B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-02.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BB25B75CC00008B514 /* Latinotype - Triump-Rg-Rock-02.otf */; };
+		C2551A8125B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-11.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B525B75CC00008B514 /* Latinotype - Triump-Rg-Rock-11.otf */; };
+		C2551A8225B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-06.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B225B75CC00008B514 /* Latinotype - Triump-Rg-Rock-06.otf */; };
+		C2551A8325B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-01.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B925B75CC00008B514 /* Latinotype - Triump-Rg-Rock-01.otf */; };
+		C2551A8425B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-09.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BD25B75CC00008B514 /* Latinotype - Triump-Rg-Blur-09.otf */; };
+		C2551A8525B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-06.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C425B75CC00008B514 /* Latinotype - Triump-Rg-Blur-06.otf */; };
+		C2551A8625B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-01.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C825B75CC00008B514 /* Latinotype - Triump-Rg-Blur-01.otf */; };
+		C2551A8725B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-08.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2CB25B75CC00008B514 /* Latinotype - Triump-Rg-Rock-08.otf */; };
+		C2551A8825B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-11.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C125B75CC00008B514 /* Latinotype - Triump-Rg-Blur-11.otf */; };
+		C2551A8925B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-04.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BF25B75CC00008B514 /* Latinotype - Triump-Rg-Blur-04.otf */; };
+		C2551A8A25B7C53B0077E18F /* Latinotype - Triump-Rg-Ornaments.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2CA25B75CC00008B514 /* Latinotype - Triump-Rg-Ornaments.otf */; };
+		C2551A8B25B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-12.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C325B75CC00008B514 /* Latinotype - Triump-Rg-Blur-12.otf */; };
+		C2551A8C25B7C53B0077E18F /* Latinotype - Triump-Rg-Extras.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C525B75CC00008B514 /* Latinotype - Triump-Rg-Extras.otf */; };
+		C2551A8D25B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-09.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C925B75CC00008B514 /* Latinotype - Triump-Rg-Rock-09.otf */; };
+		C2551A8E25B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-03.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BA25B75CC00008B514 /* Latinotype - Triump-Rg-Rock-03.otf */; };
+		C2551A8F25B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-10.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BE25B75CC00008B514 /* Latinotype - Triump-Rg-Blur-10.otf */; };
+		C2551A9025B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-02.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C625B75CC00008B514 /* Latinotype - Triump-Rg-Blur-02.otf */; };
+		C2551A9125B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-12.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B325B75CC00008B514 /* Latinotype - Triump-Rg-Rock-12.otf */; };
+		C2551A9225B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-07.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B425B75CC00008B514 /* Latinotype - Triump-Rg-Rock-07.otf */; };
+		C2551A9325B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-10.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B825B75CC00008B514 /* Latinotype - Triump-Rg-Rock-10.otf */; };
+		C2551A9425B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-05.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C025B75CC00008B514 /* Latinotype - Triump-Rg-Blur-05.otf */; };
+		C2551A9525B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-04.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B725B75CC00008B514 /* Latinotype - Triump-Rg-Rock-04.otf */; };
+		C2551A9625B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-08.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BC25B75CC00008B514 /* Latinotype - Triump-Rg-Blur-08.otf */; };
+		C2551A9725B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-07.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C225B75CC00008B514 /* Latinotype - Triump-Rg-Blur-07.otf */; };
+		C2551A9825B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-05.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B625B75CC00008B514 /* Latinotype - Triump-Rg-Rock-05.otf */; };
+		C2551A9E25B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-03.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C725B75CC00008B514 /* Latinotype - Triump-Rg-Blur-03.otf */; };
+		C2551A9F25B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-02.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BB25B75CC00008B514 /* Latinotype - Triump-Rg-Rock-02.otf */; };
+		C2551AA025B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-11.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B525B75CC00008B514 /* Latinotype - Triump-Rg-Rock-11.otf */; };
+		C2551AA125B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-06.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B225B75CC00008B514 /* Latinotype - Triump-Rg-Rock-06.otf */; };
+		C2551AA225B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-01.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B925B75CC00008B514 /* Latinotype - Triump-Rg-Rock-01.otf */; };
+		C2551AA325B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-09.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BD25B75CC00008B514 /* Latinotype - Triump-Rg-Blur-09.otf */; };
+		C2551AA425B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-06.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C425B75CC00008B514 /* Latinotype - Triump-Rg-Blur-06.otf */; };
+		C2551AA525B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-01.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C825B75CC00008B514 /* Latinotype - Triump-Rg-Blur-01.otf */; };
+		C2551AA625B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-08.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2CB25B75CC00008B514 /* Latinotype - Triump-Rg-Rock-08.otf */; };
+		C2551AA725B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-11.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C125B75CC00008B514 /* Latinotype - Triump-Rg-Blur-11.otf */; };
+		C2551AA825B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-04.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BF25B75CC00008B514 /* Latinotype - Triump-Rg-Blur-04.otf */; };
+		C2551AA925B7C53B0077E18F /* Latinotype - Triump-Rg-Ornaments.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2CA25B75CC00008B514 /* Latinotype - Triump-Rg-Ornaments.otf */; };
+		C2551AAA25B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-12.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C325B75CC00008B514 /* Latinotype - Triump-Rg-Blur-12.otf */; };
+		C2551AAB25B7C53B0077E18F /* Latinotype - Triump-Rg-Extras.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C525B75CC00008B514 /* Latinotype - Triump-Rg-Extras.otf */; };
+		C2551AAC25B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-09.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C925B75CC00008B514 /* Latinotype - Triump-Rg-Rock-09.otf */; };
+		C2551AAD25B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-03.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BA25B75CC00008B514 /* Latinotype - Triump-Rg-Rock-03.otf */; };
+		C2551AAE25B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-10.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BE25B75CC00008B514 /* Latinotype - Triump-Rg-Blur-10.otf */; };
+		C2551AAF25B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-02.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C625B75CC00008B514 /* Latinotype - Triump-Rg-Blur-02.otf */; };
+		C2551AB025B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-12.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B325B75CC00008B514 /* Latinotype - Triump-Rg-Rock-12.otf */; };
+		C2551AB125B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-07.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B425B75CC00008B514 /* Latinotype - Triump-Rg-Rock-07.otf */; };
+		C2551AB225B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-10.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B825B75CC00008B514 /* Latinotype - Triump-Rg-Rock-10.otf */; };
+		C2551AB325B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-05.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C025B75CC00008B514 /* Latinotype - Triump-Rg-Blur-05.otf */; };
+		C2551AB425B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-04.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B725B75CC00008B514 /* Latinotype - Triump-Rg-Rock-04.otf */; };
+		C2551AB525B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-08.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2BC25B75CC00008B514 /* Latinotype - Triump-Rg-Blur-08.otf */; };
+		C2551AB625B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-07.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2C225B75CC00008B514 /* Latinotype - Triump-Rg-Blur-07.otf */; };
+		C2551AB725B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-05.otf in Resources */ = {isa = PBXBuildFile; fileRef = C286F2B625B75CC00008B514 /* Latinotype - Triump-Rg-Rock-05.otf */; };
+		C2551ABD25B7C5410077E18F /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C286EF9925B75CBF0008B514 /* Settings.bundle */; };
+		C2551AC325B7C5420077E18F /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C286EF9925B75CBF0008B514 /* Settings.bundle */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		C24841CB25B7BD1C00C42DAE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2E043291B72F4DC005F0675 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C24841BA25B7BD1B00C42DAE;
+			remoteInfo = "Groove (iOS)";
+		};
+		C24841D625B7BD1C00C42DAE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2E043291B72F4DC005F0675 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C24841C125B7BD1B00C42DAE;
+			remoteInfo = "Groove (macOS)";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		C217EE381DB435E40076B6E7 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -87,6 +151,20 @@
 		C24841A525B77A0F00C42DAE /* NodeSelectionTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeSelectionTool.swift; sourceTree = "<group>"; };
 		C24841A625B77A0F00C42DAE /* NudgeTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NudgeTool.swift; sourceTree = "<group>"; };
 		C24841A725B77A0F00C42DAE /* ThrottleTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrottleTool.swift; sourceTree = "<group>"; };
+		C24841B325B7BD1900C42DAE /* GrooveApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrooveApp.swift; sourceTree = "<group>"; };
+		C24841B525B7BD1900C42DAE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		C24841B625B7BD1B00C42DAE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C24841BB25B7BD1B00C42DAE /* Groove.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Groove.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C24841BD25B7BD1B00C42DAE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C24841C225B7BD1B00C42DAE /* Groove.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Groove.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C24841C425B7BD1C00C42DAE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C24841C525B7BD1C00C42DAE /* macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macOS.entitlements; sourceTree = "<group>"; };
+		C24841CA25B7BD1C00C42DAE /* Tests iOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests iOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C24841CE25B7BD1C00C42DAE /* Tests_iOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_iOS.swift; sourceTree = "<group>"; };
+		C24841D025B7BD1C00C42DAE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C24841D525B7BD1C00C42DAE /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C24841D925B7BD1C00C42DAE /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
+		C24841DB25B7BD1C00C42DAE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C249757425B3A8EB00A54608 /* Yellow Design Studio - Eveleth Clean Shadow.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Clean Shadow.otf"; sourceTree = "<group>"; };
 		C249757525B3A8EB00A54608 /* Yellow Design Studio - Eveleth Clean Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Clean Regular.otf"; sourceTree = "<group>"; };
 		C249757625B3A8EB00A54608 /* Yellow Design Studio - Eveleth Shapes.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Yellow Design Studio - Eveleth Shapes.otf"; sourceTree = "<group>"; };
@@ -889,13 +967,9 @@
 		C249797625B3AA1A00A54608 /* Ping Puh Ping.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = "Ping Puh Ping.mid"; sourceTree = "<group>"; };
 		C252C842259D23DE000A0BA2 /* Nimble.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Nimble.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C263FD00259D4250002B3377 /* Nimble.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Nimble.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C286EDF625B757FF0008B514 /* Groove.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Groove.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		C286EDF825B757FF0008B514 /* GrooveApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrooveApp.swift; sourceTree = "<group>"; };
-		C286EDFA25B757FF0008B514 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		C286EDFC25B758010008B514 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C286EDFF25B758010008B514 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C286EE0125B758010008B514 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C286EE0825B7581B0008B514 /* Groove.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Groove.entitlements; sourceTree = "<group>"; };
 		C286EF9925B75CBF0008B514 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		C286EF9B25B75CBF0008B514 /* test.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = test.mid; sourceTree = "<group>"; };
 		C286EF9C25B75CBF0008B514 /* test_morse_code_a.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = test_morse_code_a.mid; sourceTree = "<group>"; };
@@ -1710,16 +1784,37 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		C286EDF325B757FF0008B514 /* Frameworks */ = {
+		C24841B825B7BD1B00C42DAE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C286EE1025B758E90008B514 /* MoonDev in Frameworks */,
-				C297E58C25B75FA20023B701 /* Common in Frameworks */,
-				C297E58E25B75FA20023B701 /* Documents in Frameworks */,
-				C297E59225B75FA20023B701 /* Sequencer in Frameworks */,
-				C297E59025B75FA20023B701 /* MIDI in Frameworks */,
-				C297E59425B75FA20023B701 /* SoundFont in Frameworks */,
+				C248420D25B7C00F00C42DAE /* Common in Frameworks */,
+				C248420F25B7C00F00C42DAE /* Documents in Frameworks */,
+				C248421125B7C00F00C42DAE /* MIDI in Frameworks */,
+				C248421525B7C00F00C42DAE /* Sequencer in Frameworks */,
+				C248421325B7C00F00C42DAE /* MoonDev in Frameworks */,
+				C248421725B7C00F00C42DAE /* SoundFont in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C24841BF25B7BD1B00C42DAE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C24841C725B7BD1C00C42DAE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C24841D225B7BD1C00C42DAE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1759,6 +1854,54 @@
 				C24841A725B77A0F00C42DAE /* ThrottleTool.swift */,
 			);
 			path = Tools;
+			sourceTree = "<group>";
+		};
+		C24841B225B7BD1900C42DAE /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				C286F29F25B75CC00008B514 /* Fonts */,
+				C286EE1925B75CBE0008B514 /* Packages */,
+				C24841B325B7BD1900C42DAE /* GrooveApp.swift */,
+				C24841B525B7BD1900C42DAE /* ContentView.swift */,
+				C286EF9925B75CBF0008B514 /* Settings.bundle */,
+				C24841B625B7BD1B00C42DAE /* Assets.xcassets */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		C24841BC25B7BD1B00C42DAE /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				C24841BD25B7BD1B00C42DAE /* Info.plist */,
+			);
+			path = iOS;
+			sourceTree = "<group>";
+		};
+		C24841C325B7BD1C00C42DAE /* macOS */ = {
+			isa = PBXGroup;
+			children = (
+				C24841C425B7BD1C00C42DAE /* Info.plist */,
+				C24841C525B7BD1C00C42DAE /* macOS.entitlements */,
+			);
+			path = macOS;
+			sourceTree = "<group>";
+		};
+		C24841CD25B7BD1C00C42DAE /* Tests iOS */ = {
+			isa = PBXGroup;
+			children = (
+				C24841CE25B7BD1C00C42DAE /* Tests_iOS.swift */,
+				C24841D025B7BD1C00C42DAE /* Info.plist */,
+			);
+			path = "Tests iOS";
+			sourceTree = "<group>";
+		};
+		C24841D825B7BD1C00C42DAE /* Tests macOS */ = {
+			isa = PBXGroup;
+			children = (
+				C24841D925B7BD1C00C42DAE /* Tests_macOS.swift */,
+				C24841DB25B7BD1C00C42DAE /* Info.plist */,
+			);
+			path = "Tests macOS";
 			sourceTree = "<group>";
 		};
 		C249757225B3A8EB00A54608 /* Fonts */ = {
@@ -2798,18 +2941,15 @@
 			path = MIDI;
 			sourceTree = "<group>";
 		};
-		C286EDF725B757FF0008B514 /* Groove */ = {
+		C286EDF725B757FF0008B514 /* Groove_ Old */ = {
 			isa = PBXGroup;
 			children = (
 				C286F2CC25B75CCE0008B514 /* Supporting Files */,
 				C286EDFE25B758010008B514 /* Preview Content */,
 				C286EF9825B75CBF0008B514 /* Resources */,
 				C2DDD58525B752FE00E55A1D /* Old UI */,
-				C286EE1925B75CBE0008B514 /* Packages */,
-				C286EDF825B757FF0008B514 /* GrooveApp.swift */,
-				C286EDFA25B757FF0008B514 /* ContentView.swift */,
 			);
-			path = Groove;
+			path = "Groove_ Old";
 			sourceTree = "<group>";
 		};
 		C286EDFE25B758010008B514 /* Preview Content */ = {
@@ -2837,10 +2977,8 @@
 			children = (
 				C297E59625B761B00023B701 /* sf2Info.txt */,
 				C286EDFC25B758010008B514 /* Assets.xcassets */,
-				C286EF9925B75CBF0008B514 /* Settings.bundle */,
 				C286EF9A25B75CBF0008B514 /* MIDI */,
 				C286EFA025B75CBF0008B514 /* Illustrator */,
-				C286F29F25B75CC00008B514 /* Fonts */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -3859,7 +3997,6 @@
 			isa = PBXGroup;
 			children = (
 				C286EE0125B758010008B514 /* Info.plist */,
-				C286EE0825B7581B0008B514 /* Groove.entitlements */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -3922,7 +4059,12 @@
 			isa = PBXGroup;
 			children = (
 				C249766025B3AA1800A54608 /* Resources */,
-				C286EDF725B757FF0008B514 /* Groove */,
+				C286EDF725B757FF0008B514 /* Groove_ Old */,
+				C24841B225B7BD1900C42DAE /* Shared */,
+				C24841BC25B7BD1B00C42DAE /* iOS */,
+				C24841C325B7BD1C00C42DAE /* macOS */,
+				C24841CD25B7BD1C00C42DAE /* Tests iOS */,
+				C24841D825B7BD1C00C42DAE /* Tests macOS */,
 				C2E043321B72F4DC005F0675 /* Products */,
 				C28A0F511D99DE650011F706 /* Frameworks */,
 			);
@@ -3931,7 +4073,10 @@
 		C2E043321B72F4DC005F0675 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C286EDF625B757FF0008B514 /* Groove.app */,
+				C24841BB25B7BD1B00C42DAE /* Groove.app */,
+				C24841C225B7BD1B00C42DAE /* Groove.app */,
+				C24841CA25B7BD1C00C42DAE /* Tests iOS.xctest */,
+				C24841D525B7BD1C00C42DAE /* Tests macOS.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3939,30 +4084,83 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		C286EDF525B757FF0008B514 /* Groove */ = {
+		C24841BA25B7BD1B00C42DAE /* Groove (iOS) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C286EE0225B758010008B514 /* Build configuration list for PBXNativeTarget "Groove" */;
+			buildConfigurationList = C24841E425B7BD1C00C42DAE /* Build configuration list for PBXNativeTarget "Groove (iOS)" */;
 			buildPhases = (
-				C286EDF225B757FF0008B514 /* Sources */,
-				C286EDF325B757FF0008B514 /* Frameworks */,
-				C286EDF425B757FF0008B514 /* Resources */,
+				C24841B725B7BD1B00C42DAE /* Sources */,
+				C24841B825B7BD1B00C42DAE /* Frameworks */,
+				C24841B925B7BD1B00C42DAE /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = Groove;
+			name = "Groove (iOS)";
 			packageProductDependencies = (
-				C286EE0F25B758E90008B514 /* MoonDev */,
-				C297E58B25B75FA20023B701 /* Common */,
-				C297E58D25B75FA20023B701 /* Documents */,
-				C297E58F25B75FA20023B701 /* MIDI */,
-				C297E59125B75FA20023B701 /* Sequencer */,
-				C297E59325B75FA20023B701 /* SoundFont */,
+				C248420C25B7C00F00C42DAE /* Common */,
+				C248420E25B7C00F00C42DAE /* Documents */,
+				C248421025B7C00F00C42DAE /* MIDI */,
+				C248421225B7C00F00C42DAE /* MoonDev */,
+				C248421425B7C00F00C42DAE /* Sequencer */,
+				C248421625B7C00F00C42DAE /* SoundFont */,
 			);
-			productName = Groove;
-			productReference = C286EDF625B757FF0008B514 /* Groove.app */;
+			productName = "Groove (iOS)";
+			productReference = C24841BB25B7BD1B00C42DAE /* Groove.app */;
 			productType = "com.apple.product-type.application";
+		};
+		C24841C125B7BD1B00C42DAE /* Groove (macOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C24841E925B7BD1C00C42DAE /* Build configuration list for PBXNativeTarget "Groove (macOS)" */;
+			buildPhases = (
+				C24841BE25B7BD1B00C42DAE /* Sources */,
+				C24841BF25B7BD1B00C42DAE /* Frameworks */,
+				C24841C025B7BD1B00C42DAE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Groove (macOS)";
+			productName = "Groove (macOS)";
+			productReference = C24841C225B7BD1B00C42DAE /* Groove.app */;
+			productType = "com.apple.product-type.application";
+		};
+		C24841C925B7BD1C00C42DAE /* Tests iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C24841EE25B7BD1C00C42DAE /* Build configuration list for PBXNativeTarget "Tests iOS" */;
+			buildPhases = (
+				C24841C625B7BD1C00C42DAE /* Sources */,
+				C24841C725B7BD1C00C42DAE /* Frameworks */,
+				C24841C825B7BD1C00C42DAE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C24841CC25B7BD1C00C42DAE /* PBXTargetDependency */,
+			);
+			name = "Tests iOS";
+			productName = "Tests iOS";
+			productReference = C24841CA25B7BD1C00C42DAE /* Tests iOS.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		C24841D425B7BD1C00C42DAE /* Tests macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C24841F325B7BD1C00C42DAE /* Build configuration list for PBXNativeTarget "Tests macOS" */;
+			buildPhases = (
+				C24841D125B7BD1C00C42DAE /* Sources */,
+				C24841D225B7BD1C00C42DAE /* Frameworks */,
+				C24841D325B7BD1C00C42DAE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C24841D725B7BD1C00C42DAE /* PBXTargetDependency */,
+			);
+			name = "Tests macOS";
+			productName = "Tests macOS";
+			productReference = C24841D525B7BD1C00C42DAE /* Tests macOS.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
@@ -3975,8 +4173,19 @@
 				LastUpgradeCheck = 1230;
 				ORGANIZATIONNAME = "Moondeer Studios";
 				TargetAttributes = {
-					C286EDF525B757FF0008B514 = {
+					C24841BA25B7BD1B00C42DAE = {
 						CreatedOnToolsVersion = 12.3;
+					};
+					C24841C125B7BD1B00C42DAE = {
+						CreatedOnToolsVersion = 12.3;
+					};
+					C24841C925B7BD1C00C42DAE = {
+						CreatedOnToolsVersion = 12.3;
+						TestTargetID = C24841BA25B7BD1B00C42DAE;
+					};
+					C24841D425B7BD1C00C42DAE = {
+						CreatedOnToolsVersion = 12.3;
+						TestTargetID = C24841C125B7BD1B00C42DAE;
 					};
 				};
 			};
@@ -3995,79 +4204,682 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C286EDF525B757FF0008B514 /* Groove */,
+				C24841BA25B7BD1B00C42DAE /* Groove (iOS) */,
+				C24841C125B7BD1B00C42DAE /* Groove (macOS) */,
+				C24841C925B7BD1C00C42DAE /* Tests iOS */,
+				C24841D425B7BD1C00C42DAE /* Tests macOS */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		C286EDF425B757FF0008B514 /* Resources */ = {
+		C24841B925B7BD1B00C42DAE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C286F2EE25B75D630008B514 /* Latinotype - Triump-Rg-Rock-01.otf in Resources */,
-				C286F2D225B75D5D0008B514 /* Yellow Design Studio - Eveleth Dot Regular Bold.otf in Resources */,
-				C286F2F425B75D630008B514 /* Latinotype - Triump-Rg-Rock-03.otf in Resources */,
-				C286F2EF25B75D630008B514 /* Latinotype - Triump-Rg-Rock-05.otf in Resources */,
-				C286F2EB25B75D630008B514 /* Latinotype - Triump-Rg-Blur-03.otf in Resources */,
-				C286F2DC25B75D5D0008B514 /* Yellow Design Studio - Eveleth Regular Bold.otf in Resources */,
-				C286F2D625B75D5D0008B514 /* Yellow Design Studio - Eveleth Thin.otf in Resources */,
-				C286F2E625B75D630008B514 /* Latinotype - Triump-Rg-Blur-02.otf in Resources */,
-				C286F2E225B75D630008B514 /* Latinotype - Triump-Rg-Blur-11.otf in Resources */,
-				C286F2DB25B75D5D0008B514 /* Yellow Design Studio - Eveleth Clean Shadow.otf in Resources */,
-				C286F2FA25B75D630008B514 /* Latinotype - Triump-Rg-Rock-07.otf in Resources */,
-				C286F2DA25B75D5D0008B514 /* Yellow Design Studio - Eveleth Dot Light.otf in Resources */,
-				C286F2F925B75D630008B514 /* Latinotype - Triump-Rg-Blur-06.otf in Resources */,
-				C286F2E725B75D630008B514 /* Latinotype - Triump-Rg-Rock-11.otf in Resources */,
-				C286F2F825B75D630008B514 /* Latinotype - Triump-Rg-Rock-12.otf in Resources */,
-				C286F2EA25B75D630008B514 /* Latinotype - Triump-Rg-Ornaments.otf in Resources */,
-				C286F2D825B75D5D0008B514 /* Yellow Design Studio - Eveleth Shadow.otf in Resources */,
-				C286F2FB25B75D630008B514 /* Latinotype - Triump-Rg-Rock-10.otf in Resources */,
-				C286F2F325B75D630008B514 /* Latinotype - Triump-Rg-Blur-10.otf in Resources */,
-				C286F2F525B75D630008B514 /* Latinotype - Triump-Rg-Rock-04.otf in Resources */,
-				C286F2F725B75D630008B514 /* Latinotype - Triump-Rg-Rock-02.otf in Resources */,
-				C286F2D425B75D5D0008B514 /* Yellow Design Studio - Eveleth Slant Regular Bold.otf in Resources */,
-				C286F2D125B75D5D0008B514 /* Yellow Design Studio - Eveleth Light.otf in Resources */,
-				C286F2EC25B75D630008B514 /* Latinotype - Triump-Rg-Extras.otf in Resources */,
-				C286F2F225B75D630008B514 /* Latinotype - Triump-Rg-Blur-12.otf in Resources */,
-				C286F2D325B75D5D0008B514 /* Yellow Design Studio - Eveleth Regular.otf in Resources */,
-				C286F2E825B75D630008B514 /* Latinotype - Triump-Rg-Rock-09.otf in Resources */,
-				C286F2D725B75D5D0008B514 /* Yellow Design Studio - Eveleth Shapes.otf in Resources */,
-				C286F2DD25B75D5D0008B514 /* Yellow Design Studio - Eveleth Slant Regular.otf in Resources */,
-				C286F2DE25B75D5D0008B514 /* Yellow Design Studio - Eveleth Icons.otf in Resources */,
-				C286F2E525B75D630008B514 /* Latinotype - Triump-Rg-Rock-08.otf in Resources */,
-				C286F2D525B75D5D0008B514 /* Yellow Design Studio - Eveleth Slant Light.otf in Resources */,
-				C286EE0025B758010008B514 /* Preview Assets.xcassets in Resources */,
-				C286F2CD25B75D530008B514 /* Settings.bundle in Resources */,
-				C286F2E425B75D630008B514 /* Latinotype - Triump-Rg-Blur-01.otf in Resources */,
-				C286F2ED25B75D630008B514 /* Latinotype - Triump-Rg-Rock-06.otf in Resources */,
-				C286F2E325B75D630008B514 /* Latinotype - Triump-Rg-Blur-04.otf in Resources */,
-				C286F2D025B75D5D0008B514 /* Yellow Design Studio - Eveleth Clean Thin.otf in Resources */,
-				C286F2F625B75D630008B514 /* Latinotype - Triump-Rg-Blur-08.otf in Resources */,
-				C286F2DF25B75D5D0008B514 /* Yellow Design Studio - Eveleth Clean Regular.otf in Resources */,
-				C286F2D925B75D5D0008B514 /* Yellow Design Studio - Eveleth Dot Regular.otf in Resources */,
-				C286F2E925B75D630008B514 /* Latinotype - Triump-Rg-Blur-07.otf in Resources */,
-				C286F2F025B75D630008B514 /* Latinotype - Triump-Rg-Blur-09.otf in Resources */,
-				C286F2F125B75D630008B514 /* Latinotype - Triump-Rg-Blur-05.otf in Resources */,
-				C286EDFD25B758010008B514 /* Assets.xcassets in Resources */,
+				C2551A8425B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-09.otf in Resources */,
+				C2551A5525B7C52B0077E18F /* Yellow Design Studio - Eveleth Shadow.otf in Resources */,
+				C2551A8C25B7C53B0077E18F /* Latinotype - Triump-Rg-Extras.otf in Resources */,
+				C2551A9025B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-02.otf in Resources */,
+				C2551A9725B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-07.otf in Resources */,
+				C2551A6125B7C52B0077E18F /* Yellow Design Studio - Eveleth Slant Light.otf in Resources */,
+				C2551A8625B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-01.otf in Resources */,
+				C2551A5D25B7C52B0077E18F /* Yellow Design Studio - Eveleth Thin.otf in Resources */,
+				C2551A9525B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-04.otf in Resources */,
+				C2551A6425B7C52B0077E18F /* Yellow Design Studio - Eveleth Regular.otf in Resources */,
+				C2551A6025B7C52B0077E18F /* Yellow Design Studio - Eveleth Slant Regular.otf in Resources */,
+				C2551A8D25B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-09.otf in Resources */,
+				C2551A5E25B7C52B0077E18F /* Yellow Design Studio - Eveleth Clean Regular.otf in Resources */,
+				C2551A5A25B7C52B0077E18F /* Yellow Design Studio - Eveleth Regular Bold.otf in Resources */,
+				C2551A9425B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-05.otf in Resources */,
+				C2551A8925B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-04.otf in Resources */,
+				C2551A9625B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-08.otf in Resources */,
+				C2551A5C25B7C52B0077E18F /* Yellow Design Studio - Eveleth Clean Thin.otf in Resources */,
+				C2551A8325B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-01.otf in Resources */,
+				C2551A9225B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-07.otf in Resources */,
+				C2551ABD25B7C5410077E18F /* Settings.bundle in Resources */,
+				C2551A7F25B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-03.otf in Resources */,
+				C2551A5B25B7C52B0077E18F /* Yellow Design Studio - Eveleth Dot Light.otf in Resources */,
+				C2551A8F25B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-10.otf in Resources */,
+				C2551A8E25B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-03.otf in Resources */,
+				C2551A8025B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-02.otf in Resources */,
+				C2551A8825B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-11.otf in Resources */,
+				C2551A9325B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-10.otf in Resources */,
+				C2551A5725B7C52B0077E18F /* Yellow Design Studio - Eveleth Slant Regular Bold.otf in Resources */,
+				C2551A5825B7C52B0077E18F /* Yellow Design Studio - Eveleth Clean Shadow.otf in Resources */,
+				C2551A8A25B7C53B0077E18F /* Latinotype - Triump-Rg-Ornaments.otf in Resources */,
+				C2551A9825B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-05.otf in Resources */,
+				C2551A5F25B7C52B0077E18F /* Yellow Design Studio - Eveleth Shapes.otf in Resources */,
+				C24841E225B7BD1C00C42DAE /* Assets.xcassets in Resources */,
+				C2551A6325B7C52B0077E18F /* Yellow Design Studio - Eveleth Dot Regular Bold.otf in Resources */,
+				C2551A8225B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-06.otf in Resources */,
+				C2551A5625B7C52B0077E18F /* Yellow Design Studio - Eveleth Light.otf in Resources */,
+				C2551A8125B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-11.otf in Resources */,
+				C2551A9125B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-12.otf in Resources */,
+				C2551A5925B7C52B0077E18F /* Yellow Design Studio - Eveleth Icons.otf in Resources */,
+				C2551A8725B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-08.otf in Resources */,
+				C2551A6225B7C52B0077E18F /* Yellow Design Studio - Eveleth Dot Regular.otf in Resources */,
+				C2551A8B25B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-12.otf in Resources */,
+				C2551A8525B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-06.otf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C24841C025B7BD1B00C42DAE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2551AA325B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-09.otf in Resources */,
+				C2551A6A25B7C52C0077E18F /* Yellow Design Studio - Eveleth Shadow.otf in Resources */,
+				C2551AAB25B7C53B0077E18F /* Latinotype - Triump-Rg-Extras.otf in Resources */,
+				C2551AAF25B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-02.otf in Resources */,
+				C2551AB625B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-07.otf in Resources */,
+				C2551A7625B7C52C0077E18F /* Yellow Design Studio - Eveleth Slant Light.otf in Resources */,
+				C2551AA525B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-01.otf in Resources */,
+				C2551A7225B7C52C0077E18F /* Yellow Design Studio - Eveleth Thin.otf in Resources */,
+				C2551AB425B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-04.otf in Resources */,
+				C2551A7925B7C52C0077E18F /* Yellow Design Studio - Eveleth Regular.otf in Resources */,
+				C2551A7525B7C52C0077E18F /* Yellow Design Studio - Eveleth Slant Regular.otf in Resources */,
+				C2551AAC25B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-09.otf in Resources */,
+				C2551A7325B7C52C0077E18F /* Yellow Design Studio - Eveleth Clean Regular.otf in Resources */,
+				C2551A6F25B7C52C0077E18F /* Yellow Design Studio - Eveleth Regular Bold.otf in Resources */,
+				C2551AB325B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-05.otf in Resources */,
+				C2551AA825B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-04.otf in Resources */,
+				C2551AB525B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-08.otf in Resources */,
+				C2551A7125B7C52C0077E18F /* Yellow Design Studio - Eveleth Clean Thin.otf in Resources */,
+				C2551AA225B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-01.otf in Resources */,
+				C2551AB125B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-07.otf in Resources */,
+				C2551AC325B7C5420077E18F /* Settings.bundle in Resources */,
+				C2551A9E25B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-03.otf in Resources */,
+				C2551A7025B7C52C0077E18F /* Yellow Design Studio - Eveleth Dot Light.otf in Resources */,
+				C2551AAE25B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-10.otf in Resources */,
+				C2551AAD25B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-03.otf in Resources */,
+				C2551A9F25B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-02.otf in Resources */,
+				C2551AA725B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-11.otf in Resources */,
+				C2551AB225B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-10.otf in Resources */,
+				C2551A6C25B7C52C0077E18F /* Yellow Design Studio - Eveleth Slant Regular Bold.otf in Resources */,
+				C2551A6D25B7C52C0077E18F /* Yellow Design Studio - Eveleth Clean Shadow.otf in Resources */,
+				C2551AA925B7C53B0077E18F /* Latinotype - Triump-Rg-Ornaments.otf in Resources */,
+				C2551AB725B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-05.otf in Resources */,
+				C2551A7425B7C52C0077E18F /* Yellow Design Studio - Eveleth Shapes.otf in Resources */,
+				C24841E325B7BD1C00C42DAE /* Assets.xcassets in Resources */,
+				C2551A7825B7C52C0077E18F /* Yellow Design Studio - Eveleth Dot Regular Bold.otf in Resources */,
+				C2551AA125B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-06.otf in Resources */,
+				C2551A6B25B7C52C0077E18F /* Yellow Design Studio - Eveleth Light.otf in Resources */,
+				C2551AA025B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-11.otf in Resources */,
+				C2551AB025B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-12.otf in Resources */,
+				C2551A6E25B7C52C0077E18F /* Yellow Design Studio - Eveleth Icons.otf in Resources */,
+				C2551AA625B7C53B0077E18F /* Latinotype - Triump-Rg-Rock-08.otf in Resources */,
+				C2551A7725B7C52C0077E18F /* Yellow Design Studio - Eveleth Dot Regular.otf in Resources */,
+				C2551AAA25B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-12.otf in Resources */,
+				C2551AA425B7C53B0077E18F /* Latinotype - Triump-Rg-Blur-06.otf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C24841C825B7BD1C00C42DAE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C24841D325B7BD1C00C42DAE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		C286EDF225B757FF0008B514 /* Sources */ = {
+		C24841B725B7BD1B00C42DAE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C286EDFB25B757FF0008B514 /* ContentView.swift in Sources */,
-				C286EDF925B757FF0008B514 /* GrooveApp.swift in Sources */,
+				C24841DC25B7BD1C00C42DAE /* GrooveApp.swift in Sources */,
+				C24841E025B7BD1C00C42DAE /* ContentView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C24841BE25B7BD1B00C42DAE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C24841DD25B7BD1C00C42DAE /* GrooveApp.swift in Sources */,
+				C24841E125B7BD1C00C42DAE /* ContentView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C24841C625B7BD1C00C42DAE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C24841CF25B7BD1C00C42DAE /* Tests_iOS.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C24841D125B7BD1C00C42DAE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C24841DA25B7BD1C00C42DAE /* Tests_macOS.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		C24841CC25B7BD1C00C42DAE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C24841BA25B7BD1B00C42DAE /* Groove (iOS) */;
+			targetProxy = C24841CB25B7BD1C00C42DAE /* PBXContainerItemProxy */;
+		};
+		C24841D725B7BD1C00C42DAE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C24841C125B7BD1B00C42DAE /* Groove (macOS) */;
+			targetProxy = C24841D625B7BD1C00C42DAE /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		C24841E525B7BD1C00C42DAE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				ENABLE_PREVIEWS = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = iOS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Groove;
+				PRODUCT_NAME = Groove;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C24841E625B7BD1C00C42DAE /* Debug-Verbose */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				ENABLE_PREVIEWS = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = iOS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Groove;
+				PRODUCT_NAME = Groove;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = "Debug-Verbose";
+		};
+		C24841E725B7BD1C00C42DAE /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				ENABLE_PREVIEWS = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = iOS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Groove;
+				PRODUCT_NAME = Groove;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Profile;
+		};
+		C24841E825B7BD1C00C42DAE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				ENABLE_PREVIEWS = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = iOS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Groove;
+				PRODUCT_NAME = Groove;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		C24841EA25B7BD1C00C42DAE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = macOS/macOS.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = macOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Groove;
+				PRODUCT_NAME = Groove;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		C24841EB25B7BD1C00C42DAE /* Debug-Verbose */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = macOS/macOS.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = macOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Groove;
+				PRODUCT_NAME = Groove;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+			};
+			name = "Debug-Verbose";
+		};
+		C24841EC25B7BD1C00C42DAE /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = macOS/macOS.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = macOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Groove;
+				PRODUCT_NAME = Groove;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Profile;
+		};
+		C24841ED25B7BD1C00C42DAE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = macOS/macOS.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = macOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Groove;
+				PRODUCT_NAME = Groove;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		C24841EF25B7BD1C00C42DAE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = "Tests iOS/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.moondeerstudios.Tests-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Groove (iOS)";
+			};
+			name = Debug;
+		};
+		C24841F025B7BD1C00C42DAE /* Debug-Verbose */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = "Tests iOS/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.moondeerstudios.Tests-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Groove (iOS)";
+			};
+			name = "Debug-Verbose";
+		};
+		C24841F125B7BD1C00C42DAE /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = "Tests iOS/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.moondeerstudios.Tests-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Groove (iOS)";
+			};
+			name = Profile;
+		};
+		C24841F225B7BD1C00C42DAE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = "Tests iOS/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.moondeerstudios.Tests-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Groove (iOS)";
+			};
+			name = Release;
+		};
+		C24841F425B7BD1C00C42DAE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = "Tests macOS/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.1;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.moondeerstudios.Tests-macOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = "Groove (macOS)";
+			};
+			name = Debug;
+		};
+		C24841F525B7BD1C00C42DAE /* Debug-Verbose */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = "Tests macOS/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.1;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.moondeerstudios.Tests-macOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = "Groove (macOS)";
+			};
+			name = "Debug-Verbose";
+		};
+		C24841F625B7BD1C00C42DAE /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = "Tests macOS/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.1;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.moondeerstudios.Tests-macOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = "Groove (macOS)";
+			};
+			name = Profile;
+		};
+		C24841F725B7BD1C00C42DAE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = "Tests macOS/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.1;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.moondeerstudios.Tests-macOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = "Groove (macOS)";
+			};
+			name = Release;
+		};
 		C2562CEC1C63A3C30086789D /* Debug-Verbose */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -4180,142 +4992,6 @@
 			};
 			name = Profile;
 		};
-		C286EE0325B758010008B514 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = "Groove/Supporting Files/Groove.entitlements";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"Groove/Preview Content\"";
-				DEVELOPMENT_TEAM = JT6STF4SHA;
-				ENABLE_PREVIEWS = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "Groove/Supporting Files/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				"IPHONEOS_DEPLOYMENT_TARGET[sdk=macosx*]" = 13.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Groove;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTS_MACCATALYST = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		C286EE0425B758010008B514 /* Debug-Verbose */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = "Groove/Supporting Files/Groove.entitlements";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"Groove/Preview Content\"";
-				DEVELOPMENT_TEAM = JT6STF4SHA;
-				ENABLE_PREVIEWS = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "Groove/Supporting Files/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				"IPHONEOS_DEPLOYMENT_TARGET[sdk=macosx*]" = 13.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Groove;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTS_MACCATALYST = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = "Debug-Verbose";
-		};
-		C286EE0525B758010008B514 /* Profile */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = "Groove/Supporting Files/Groove.entitlements";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"Groove/Preview Content\"";
-				DEVELOPMENT_TEAM = JT6STF4SHA;
-				ENABLE_PREVIEWS = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "Groove/Supporting Files/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				"IPHONEOS_DEPLOYMENT_TARGET[sdk=macosx*]" = 13.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Groove;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTS_MACCATALYST = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Profile;
-		};
-		C286EE0625B758010008B514 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = "Groove/Supporting Files/Groove.entitlements";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"Groove/Preview Content\"";
-				DEVELOPMENT_TEAM = JT6STF4SHA;
-				ENABLE_PREVIEWS = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "Groove/Supporting Files/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				"IPHONEOS_DEPLOYMENT_TARGET[sdk=macosx*]" = 13.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Groove;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTS_MACCATALYST = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 		C2E043451B72F4DC005F0675 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -4426,13 +5102,46 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C286EE0225B758010008B514 /* Build configuration list for PBXNativeTarget "Groove" */ = {
+		C24841E425B7BD1C00C42DAE /* Build configuration list for PBXNativeTarget "Groove (iOS)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				C286EE0325B758010008B514 /* Debug */,
-				C286EE0425B758010008B514 /* Debug-Verbose */,
-				C286EE0525B758010008B514 /* Profile */,
-				C286EE0625B758010008B514 /* Release */,
+				C24841E525B7BD1C00C42DAE /* Debug */,
+				C24841E625B7BD1C00C42DAE /* Debug-Verbose */,
+				C24841E725B7BD1C00C42DAE /* Profile */,
+				C24841E825B7BD1C00C42DAE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C24841E925B7BD1C00C42DAE /* Build configuration list for PBXNativeTarget "Groove (macOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C24841EA25B7BD1C00C42DAE /* Debug */,
+				C24841EB25B7BD1C00C42DAE /* Debug-Verbose */,
+				C24841EC25B7BD1C00C42DAE /* Profile */,
+				C24841ED25B7BD1C00C42DAE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C24841EE25B7BD1C00C42DAE /* Build configuration list for PBXNativeTarget "Tests iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C24841EF25B7BD1C00C42DAE /* Debug */,
+				C24841F025B7BD1C00C42DAE /* Debug-Verbose */,
+				C24841F125B7BD1C00C42DAE /* Profile */,
+				C24841F225B7BD1C00C42DAE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C24841F325B7BD1C00C42DAE /* Build configuration list for PBXNativeTarget "Tests macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C24841F425B7BD1C00C42DAE /* Debug */,
+				C24841F525B7BD1C00C42DAE /* Debug-Verbose */,
+				C24841F625B7BD1C00C42DAE /* Profile */,
+				C24841F725B7BD1C00C42DAE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -4451,27 +5160,27 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		C286EE0F25B758E90008B514 /* MoonDev */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = MoonDev;
-		};
-		C297E58B25B75FA20023B701 /* Common */ = {
+		C248420C25B7C00F00C42DAE /* Common */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Common;
 		};
-		C297E58D25B75FA20023B701 /* Documents */ = {
+		C248420E25B7C00F00C42DAE /* Documents */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Documents;
 		};
-		C297E58F25B75FA20023B701 /* MIDI */ = {
+		C248421025B7C00F00C42DAE /* MIDI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = MIDI;
 		};
-		C297E59125B75FA20023B701 /* Sequencer */ = {
+		C248421225B7C00F00C42DAE /* MoonDev */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MoonDev;
+		};
+		C248421425B7C00F00C42DAE /* Sequencer */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Sequencer;
 		};
-		C297E59325B75FA20023B701 /* SoundFont */ = {
+		C248421625B7C00F00C42DAE /* SoundFont */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SoundFont;
 		};

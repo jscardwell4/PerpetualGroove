@@ -17,7 +17,7 @@
                BlueprintIdentifier = "SoundFont"
                BuildableName = "SoundFont"
                BlueprintName = "SoundFont"
-               ReferencedContainer = "container:Groove/Packages/SoundFont">
+               ReferencedContainer = "container:Shared/Packages/SoundFont">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -31,7 +31,7 @@
                BlueprintIdentifier = "SoundFontTests"
                BuildableName = "SoundFontTests"
                BlueprintName = "SoundFontTests"
-               ReferencedContainer = "container:Groove/Packages/SoundFont">
+               ReferencedContainer = "container:Shared/Packages/SoundFont">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -67,7 +67,7 @@
             BlueprintIdentifier = "SoundFont"
             BuildableName = "SoundFont"
             BlueprintName = "SoundFont"
-            ReferencedContainer = "container:Groove/Packages/SoundFont">
+            ReferencedContainer = "container:Shared/Packages/SoundFont">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

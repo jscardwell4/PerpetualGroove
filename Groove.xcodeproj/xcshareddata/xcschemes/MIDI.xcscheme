@@ -17,7 +17,7 @@
                BlueprintIdentifier = "MIDI"
                BuildableName = "MIDI"
                BlueprintName = "MIDI"
-               ReferencedContainer = "container:Groove/Packages/MIDI">
+               ReferencedContainer = "container:Shared/Packages/MIDI">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -31,7 +31,7 @@
                BlueprintIdentifier = "MIDITests"
                BuildableName = "MIDITests"
                BlueprintName = "MIDITests"
-               ReferencedContainer = "container:Groove/Packages/MIDI">
+               ReferencedContainer = "container:Shared/Packages/MIDI">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -67,7 +67,7 @@
             BlueprintIdentifier = "MIDI"
             BuildableName = "MIDI"
             BlueprintName = "MIDI"
-            ReferencedContainer = "container:Groove/Packages/MIDI">
+            ReferencedContainer = "container:Shared/Packages/MIDI">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

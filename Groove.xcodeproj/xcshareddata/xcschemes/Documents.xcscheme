@@ -17,21 +17,21 @@
                BlueprintIdentifier = "Documents"
                BuildableName = "Documents"
                BlueprintName = "Documents"
-               ReferencedContainer = "container:Groove/Packages/Documents">
+               ReferencedContainer = "container:Shared/Packages/Documents">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
             buildForTesting = "YES"
             buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "DocumentsTests"
                BuildableName = "DocumentsTests"
                BlueprintName = "DocumentsTests"
-               ReferencedContainer = "container:Groove/Packages/Documents">
+               ReferencedContainer = "container:Shared/Packages/Documents">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -67,7 +67,7 @@
             BlueprintIdentifier = "Documents"
             BuildableName = "Documents"
             BlueprintName = "Documents"
-            ReferencedContainer = "container:Groove/Packages/Documents">
+            ReferencedContainer = "container:Shared/Packages/Documents">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
