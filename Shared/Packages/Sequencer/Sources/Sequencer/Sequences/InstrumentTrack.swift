@@ -38,7 +38,7 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
   public let instrument: Instrument
 
   /// The color used for this track.
-  @Published public var color: Color = .muddyWaters
+  @Published public var color: Color
 
   /// Flag indicating whether the track has had its output suppressed. This can
   /// happen when the user specifically mutes the track or when the user has at
@@ -180,8 +180,8 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
     """
     instrument: \(instrument)
     color: \(color)
-    \(super.description)
     """
+    //    \(super.description)
   }
 
   // MARK: Muting
@@ -465,12 +465,14 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
   ///
   /// - Parameters:
   ///   - index: The track's index.
+  ///   - color: The color to assign to the track.
   ///   - instrument: The `Instrument` to couple with the created track.
   /// - Throws: Any error encountered creating the MIDI client or MIDI ports for the track.
-  public init(index: Int, instrument: Instrument) throws
+  public init(index: Int, color: Color, instrument: Instrument) throws
   {
-    // Initialize `instrument` using the specified instrument.
+    // Initialize `color` and `instrument` using the specified values.
     self.instrument = instrument
+    self.color = color
 
     // Initialize using the specified sequence.
     super.init(index: index)
@@ -484,11 +486,6 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
                                      channel: instrument.channel,
                                      data1: instrument.program)
 
-    // Initialize `color` with the next available track color.
-    color = Color.nextColor(
-      currentColors: Set(sequencer.sequence?.instrumentTracks.map(\.color) ?? [])
-    )
-
     // Register for notifications and create MIDI client/ports. Must be called after
     // instrument initialization because notification registration requires the track's
     // instrument.
@@ -496,15 +493,14 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
   }
 
   public init(index: Int,
-              preset: Instrument.Preset?,
+              preset: Instrument.Preset,
               color: Color,
               name: String,
               events: [Event]) throws
   {
-    let preset = preset ?? sequencer.auditionInstrument.preset
     instrument = try Instrument(preset: preset, audioEngine: audioEngine)
-    super.init(index: index)
     self.color = color
+    super.init(index: index)
     self.name = name
     add(events: events)
     try setup()
@@ -548,16 +544,14 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
                                   audioEngine: audioEngine)
     }
 
+    // Use `index` to assign the track's color.
+    color = Track.Color[index]
+
     // Initialize with the specified index.
     super.init(index: index)
 
     // Add the MIDI events provided by the chunk to the track.
     add(events: trackChunk.events)
-
-    // Initialize `color` with the next available track color.
-    color =
-      .nextColor(currentColors: Set(sequencer.sequence?.instrumentTracks
-                                      .map(\.color) ?? []))
 
     // Register for notifications and create MIDI client/ports. Must be called after
     // instrument initialization because notification registration requires the track's
@@ -617,17 +611,17 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
 // MARK: - Publishers
 
 @available(iOS 14.0, *)
-public extension InstrumentTrack
+extension InstrumentTrack
 {
   /// Publisher for notification of track updates.
-  var didUpdatePublisher: AnyPublisher<Void, Never>
+  public var didUpdatePublisher: AnyPublisher<Void, Never>
   {
     didUpdateSubject
       .eraseToAnyPublisher()
   }
 
   /// Publisher for track volume changes.
-  var volumePublisher: AnyPublisher<Float, Never>
+  public var volumePublisher: AnyPublisher<Float, Never>
   {
     volumeSubject
       .removeDuplicates()
@@ -635,7 +629,7 @@ public extension InstrumentTrack
   }
 
   /// Publisher for track pan changes.
-  var panPublisher: AnyPublisher<Float, Never>
+  public var panPublisher: AnyPublisher<Float, Never>
   {
     panSubject
       .removeDuplicates()
@@ -643,7 +637,7 @@ public extension InstrumentTrack
   }
 
   /// Publisher for changes to current dispatch status.
-  var isCurrentDispatchPublisher: AnyPublisher<Bool, Never>
+  public var isCurrentDispatchPublisher: AnyPublisher<Bool, Never>
   {
     isCurrentDispatchSubject
       .removeDuplicates()
@@ -651,7 +645,7 @@ public extension InstrumentTrack
   }
 
   /// Publisher for changes to recording status.
-  var isRecordingPublisher: AnyPublisher<Bool, Never>
+  public var isRecordingPublisher: AnyPublisher<Bool, Never>
   {
     isRecordingSubject
       .removeDuplicates()
@@ -659,7 +653,7 @@ public extension InstrumentTrack
   }
 
   /// Publisher for display name changes.
-  var displayNamePublisher: AnyPublisher<String, Never>
+  public var displayNamePublisher: AnyPublisher<String, Never>
   {
     displayNameSubject
       .removeDuplicates()
@@ -667,7 +661,7 @@ public extension InstrumentTrack
   }
 
   /// Publisher for changes to the sound font.
-  var soundFontPublisher: AnyPublisher<AnySoundFont, Never>
+  public var soundFontPublisher: AnyPublisher<AnySoundFont, Never>
   {
     soundFontSubject
       .removeDuplicates()
@@ -689,5 +683,36 @@ extension InstrumentTrack: Hashable
   public static func == (lhs: InstrumentTrack, rhs: InstrumentTrack) -> Bool
   {
     ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
+  }
+}
+
+// MARK: Mock
+
+@available(iOS 14.0, *)
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
+extension InstrumentTrack: Mock
+{
+  public static var mock: InstrumentTrack
+  {
+    try! InstrumentTrack(index: 1, color: .muddyWaters, instrument: Instrument.mock)
+  }
+
+  public static func mocks(_ count: Int) -> [InstrumentTrack]
+  {
+    var result: [InstrumentTrack] = []
+    for (index, instrument) in Instrument.mocks(count).enumerated()
+    {
+      result.append(try! InstrumentTrack(
+        index: index,
+        color: Track.Color[index],
+        instrument: instrument
+      ))
+    }
+    logv("""
+    \(#fileID) \(#function) [
+      \(result.map(\.description).joined(separator: "\n  "))
+    """)
+    return result
   }
 }

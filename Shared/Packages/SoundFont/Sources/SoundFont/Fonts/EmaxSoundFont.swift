@@ -56,6 +56,27 @@ public struct EmaxSoundFont: SoundFont2
   ///
   /// - Parameter url: The url of the Emax Volume.
   /// - Throws: `ErrorMessage` when a `url` cannot be matched to a volume.
+  public init(fileName: String) throws
+  {
+    // Retrieve the volume via regular expression matching.
+    guard
+      fileName.hasPrefix("Emax"),
+      let volume = Int(String(fileName.last ?? "0"))
+    else
+    {
+      throw ErrorMessage(errorDescription: "EmaxSoundFont.Error",
+                         failureReason: "Invalid file name")
+    }
+    
+    // Initialize with the parsed volume number.
+    self.init(try Volume(index: volume))
+  }
+
+  /// Initializing with a URL. The sound font is initialized by matching `url.path`
+  /// against 'Emax Volume #` where '#' is a number between 1 and 6.
+  ///
+  /// - Parameter url: The url of the Emax Volume.
+  /// - Throws: `ErrorMessage` when a `url` cannot be matched to a volume.
   public init(url: URL) throws
   {
     // Retrieve the volume via regular expression matching.
@@ -67,7 +88,7 @@ public struct EmaxSoundFont: SoundFont2
       throw ErrorMessage(errorDescription: "EmaxSoundFont.Error",
                          failureReason: "Invalid URL")
     }
-    
+
     // Initialize with the parsed volume number.
     self.init(try Volume(index: volume))
   }

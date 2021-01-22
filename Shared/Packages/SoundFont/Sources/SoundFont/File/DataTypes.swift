@@ -197,7 +197,7 @@ public struct RawBytes: ChunkData
 /// A structure for representing a preset header parsed while decoding a sound font file.
 @available(iOS 14.0, *)
 @available(OSX 11.0, *)
-public struct PresetHeader
+public struct PresetHeader: Codable
 {
   /// The name of the preset.
   public let name: String
@@ -274,38 +274,39 @@ extension PresetHeader: CustomStringConvertible
     "PresetHeader {name: \(name); program: \(program); bank: \(bank)}"
   }
 }
-#if os(iOS)
-// MARK: JSONValueConvertible
 
-@available(iOS 14.0, *)
-extension PresetHeader: JSONValueConvertible
-{
-  /// The preset header converted to a JSON object.
-  public var jsonValue: JSONValue { ["name": name, "program": program, "bank": bank] }
-}
-
-// MARK: JSONValueInitializable
-
-@available(iOS 14.0, *)
-extension PresetHeader: JSONValueInitializable
-{
-  /// Initializing from a JSON value. To be successful, `jsonValue` needs to be
-  /// a JSON object with keys 'name', 'program', and 'bank' with values convertible
-  /// to `String`, `UInt8`, and `UInt8`.
-  public init?(_ jsonValue: JSONValue?)
-  {
-    // Retrieve the property values.
-    guard let dict = ObjectJSONValue(jsonValue),
-          let name = String(dict["name"]),
-          let program = UInt8(dict["program"]),
-          let bank = UInt8(dict["bank"])
-    else
-    {
-      return nil
-    }
-    
-    // Initialize using the retrieved property values.
-    self = PresetHeader(name: name, program: program, bank: bank)
-  }
-}
-#endif
+//#if os(iOS)
+//// MARK: JSONValueConvertible
+//
+//@available(iOS 14.0, *)
+//extension PresetHeader: JSONValueConvertible
+//{
+//  /// The preset header converted to a JSON object.
+//  public var jsonValue: JSONValue { ["name": name, "program": program, "bank": bank] }
+//}
+//
+//// MARK: JSONValueInitializable
+//
+//@available(iOS 14.0, *)
+//extension PresetHeader: JSONValueInitializable
+//{
+//  /// Initializing from a JSON value. To be successful, `jsonValue` needs to be
+//  /// a JSON object with keys 'name', 'program', and 'bank' with values convertible
+//  /// to `String`, `UInt8`, and `UInt8`.
+//  public init?(_ jsonValue: JSONValue?)
+//  {
+//    // Retrieve the property values.
+//    guard let dict = ObjectJSONValue(jsonValue),
+//          let name = String(dict["name"]),
+//          let program = UInt8(dict["program"]),
+//          let bank = UInt8(dict["bank"])
+//    else
+//    {
+//      return nil
+//    }
+//    
+//    // Initialize using the retrieved property values.
+//    self = PresetHeader(name: name, program: program, bank: bank)
+//  }
+//}
+//#endif

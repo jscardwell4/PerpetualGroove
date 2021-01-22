@@ -18,13 +18,13 @@ public struct Chord: RawRepresentable, Hashable, CustomStringConvertible
 {
   /// The root note of the chord.
   public var root = Note.natural(.c)
-  
+
   /// The pattern specifying which diationic major intervals are members of the chord.
   public var pattern = Pattern(.major)
-  
+
   /// The collection of notes of which the chord is composed.
   public var notes: [Note] { return pattern.notes(withRoot: root) }
-  
+
   /// Initializing with a root note and a pattern.
   /// - Parameters:
   ///   - root: The root note for the chord. The default is a natural 'C' note.
@@ -33,15 +33,15 @@ public struct Chord: RawRepresentable, Hashable, CustomStringConvertible
   {
     // Initialize root with the specified note.
     self.root = root
-    
+
     // Initialize pattern with the specified chord pattern.
     self.pattern = pattern
   }
-  
+
   /// The chord represented as a string formed by joining the raw values of `root` and
   /// `pattern` with ':'.
   public var rawValue: String { return "\(root.rawValue):\(pattern.rawValue)" }
-  
+
   /// Initializing with a string containing the raw chord value.
   /// - Parameter rawValue: To be successful, `rawValue` must hold a valid raw value
   ///                       for initializing `root` followed by a colon and ending with
@@ -50,7 +50,7 @@ public struct Chord: RawRepresentable, Hashable, CustomStringConvertible
   {
     // Get the elements from `rawValue` as a colon-separated list.
     let components = rawValue.split(separator: ":")
-    
+
     // Check that there was exactly one colon and create `Note` and `Pattern` values
     // from the two substrings.
     guard components.count == 2,
@@ -60,23 +60,23 @@ public struct Chord: RawRepresentable, Hashable, CustomStringConvertible
     {
       return nil
     }
-    
+
     // Initialize `root` with the note value created.
     self.root = root
-    
+
     // Initialize `pattern` with the pattern value created.
     self.pattern = pattern
   }
-  
+
   /// Returns `true` iff the two chords contain equal `root` and `pattern` values.
   public static func == (lhs: Chord, rhs: Chord) -> Bool
   {
     lhs.root == rhs.root && lhs.pattern == rhs.pattern
   }
-  
+
   /// A space-separated list of the chord's notes.
   public var description: String { " ".join(notes.map { $0.rawValue }) }
-  
+
   /// A structure for specifying how to derive the notes of a chord.
   public struct Pattern: RawRepresentable, Hashable
   {
@@ -85,12 +85,12 @@ public struct Chord: RawRepresentable, Hashable, CustomStringConvertible
     /// be present in `components` for it's note to be derived unless the value is equal
     /// the assumed degree of `one`.
     public let bass: Degree
-    
+
     /// The collection of 'notes' of which the chord consists. These are expressed as
     /// degrees. Each degree specifies an interval and, optionally, a pitch modifier.
     /// Degree `one` is always assumed and; therefore, is not an element of `components`.
     public let components: [Degree]
-    
+
     /// Initializing with a standard chord pattern.
     public init(_ standard: Standard)
     {
@@ -98,7 +98,7 @@ public struct Chord: RawRepresentable, Hashable, CustomStringConvertible
       // for a pattern. Initialize with the standard pattern's raw value.
       self.init(rawValue: standard.rawValue)!
     }
-    
+
     /// Initializing with pattern's degrees and, optionally, the bass degree.
     /// - Parameters:
     ///   - bass: The degree to set as the bass degree in the pattern or `nil`. When the
@@ -109,31 +109,31 @@ public struct Chord: RawRepresentable, Hashable, CustomStringConvertible
     {
       // Initialize `bass` with the specified degree, falling back to `one` when `nil`.
       self.bass = bass ?? .default(.one)
-      
+
       // Initialize `components` with the specified value.
       self.components = components
     }
-    
+
     /// The pattern's index in the array of all `Standard` cases or `nil` when the pattern
     /// does not represent one of the `Standard` patterns.
     public var standardIndex: Int? { return Standard(rawValue: rawValue)?.index }
-    
+
     /// Returns an array of all the notes in the pattern derived with `root`.
     public func notes(withRoot root: Note) -> [Note]
     {
       // Create an array for accumulating the dervied notes.
       var result: [Note] = []
-      
+
       // Get the root's natural.
       let natural = root.natural
-      
+
       // Get the root's modifier.
       let modifier = root.modifier
-      
+
       // Create the list of degrees for which notes shall be derived by appending
       // `components` to the assumed first degree.
       var degrees: [Degree] = [.default(.one)] + components
-      
+
       // Check whether `bass` is present in the list of degrees.
       if degrees.contains(bass)
       {
@@ -144,62 +144,62 @@ public struct Chord: RawRepresentable, Hashable, CustomStringConvertible
           degrees.append(degrees.removeFirst())
         }
       }
-      
+
       // Iterate the list of degrees.
       for degree in degrees
       {
         // Create a variable to hold the derived note.
         let note: Note
-        
+
         // Get the natural value corresponding to root's natural advanced by the degree's
         // interval, subtracting one from the raw interval value to convert for zero-based
         // arithmetic.
         let naturalʹ = natural.advanced(by: degree.interval.rawValue &- 1)
-        
+
         // Consider the modifier specified by the degree.
         switch degree.modifier
         {
           case let modifierʹ?:
             // Initialize the derived note using `naturalʹ` and `modifierʹ`.
-            
+
             note = .accidental(naturalʹ, modifierʹ)
-            
+
           case nil:
             // Initialize the derived note using `naturalʹ`.
-            
+
             note = .natural(naturalʹ)
         }
-        
+
         // Consider the root's modifier when appending the derived note to result.
         switch modifier
         {
           case .flat?:
             // Account for the flattened root by appending the derived note flattened.
-            
+
             result.append(note.flattened)
-            
+
           case .sharp?:
             // Account for the sharpened root by appending the derived note sharpened.
-            
+
             result.append(note.sharpened)
-            
+
           case .doubleFlat?:
             // Account for the twice flattened root by appending the derived note flattened
             // and flattened again.
-            
+
             result.append(note.flattened.flattened)
-            
+
           case nil:
             // The derived note is already correct, just append it to the result.
-            
+
             result.append(note)
         }
       }
-      
+
       // Return the array of derived notes.
       return result
     }
-    
+
     /// The raw string value of the pattern. The content of the string consists of a
     /// '(' followed by the raw values for the elements in `components` joined with ',',
     /// followed by ')'. If `bass` is not equal to the assumed degree of `one`; then,
@@ -209,17 +209,17 @@ public struct Chord: RawRepresentable, Hashable, CustomStringConvertible
       // Initialize the return value with raw values of each of the components joined
       // with a comma and wrapped in parentheses.
       var result = "(\(",".join(components.map { $0.rawValue })))"
-      
+
       // Check whether `bass` need be added.
       if bass != .default(.one)
       {
         // Add a forward slash followed by the raw value for bass.
         result += "/\(bass.rawValue)"
       }
-      
+
       return result
     }
-    
+
     /// Initializing with a string containing the pattern's raw value.
     /// - Parameter rawValue: To be successful, `rawValue` must begin with a comma-
     ///                       separated list of raw degree values that has been wrapped
@@ -233,18 +233,18 @@ public struct Chord: RawRepresentable, Hashable, CustomStringConvertible
       guard let captures = (~/"^\\(([^)]+)\\)(?:/(.+))?").firstMatch(in: rawValue),
             let componentsList = captures[1]?.substring
       else { return nil }
-      
+
       // Initialize `components` by mapping the list separated by a comma.
       components = String(componentsList).split(separator: ",")
         .compactMap { Degree(rawValue: String($0)) }
-      
+
       // Initialize `bass` with captured raw degree, falling back to assumed degree of
       // `one`.
       bass = Degree(rawValue: captures[2]?.substring != nil
                       ? String(captures[2]!.substring)
                       : "") ?? .default(.one)
     }
-    
+
     /// An enumeration for specifying a note's distance from the root in a
     /// [diationic scale](https://en.wikipedia.org/wiki/Diatonic_scale).
     /// For more, see the wikipedia entry for
@@ -254,18 +254,18 @@ public struct Chord: RawRepresentable, Hashable, CustomStringConvertible
       case one = 1, two, three, four, five, six, seven,
            eight, nine, ten, eleven, twelve, thirteen
     }
-    
+
     /// An enumeration for specifying an interval and an optional pitch modifier for
     /// altering the pitch class specified by that interval.
     public enum Degree: RawRepresentable, Hashable
     {
       /// Represents the note located by the associated interval.
       case `default`(Interval)
-      
+
       /// Represents the note located by the associated interval and modified by the
       /// associated pitch modifier.
       case modified(Interval, PitchModifier)
-      
+
       /// The interval value specified by the degree.
       public var interval: Interval
       {
@@ -275,11 +275,11 @@ public struct Chord: RawRepresentable, Hashable, CustomStringConvertible
                let
                 .modified(interval, _):
             // Return the associated interval value.
-            
+
             return interval
         }
       }
-      
+
       /// The pitch modifier value specified by the degree or `nil`.
       public var modifier: PitchModifier?
       {
@@ -287,16 +287,16 @@ public struct Chord: RawRepresentable, Hashable, CustomStringConvertible
         {
           case .default:
             // The degree has no modifier, return `nil`.
-            
+
             return nil
-            
+
           case let .modified(_, modifier):
             // Return the associated modifier value.
-            
+
             return modifier
         }
       }
-      
+
       /// The degree represented as a string composed of the associated interval's raw
       /// value and, if the degree is of case `modified`, the associated pitch modifier's
       /// raw value. When the string contains a pitch modifier it appears before the
@@ -307,17 +307,17 @@ public struct Chord: RawRepresentable, Hashable, CustomStringConvertible
         {
           case let .default(interval):
             // Return the string representation of the interval's raw value.
-            
+
             return String(interval.rawValue)
-            
+
           case let .modified(interval, modifier):
             // Return the pitch modifier's raw value followed by the string representation
             // of the interval's raw value.
-            
+
             return modifier.rawValue + String(interval.rawValue)
         }
       }
-      
+
       /// Initializing with a string representation of a degree.
       /// - Parameter rawValue: To be successful, `rawValue` must match the regular
       ///                       expression `^([♭♯𝄫])?(1?[0-9])`. The first group optionally
@@ -332,18 +332,18 @@ public struct Chord: RawRepresentable, Hashable, CustomStringConvertible
               let rawInterval = Int(String(captures[2]?.substring ?? "")),
               let interval = Interval(rawValue: rawInterval)
         else { return nil }
-        
+
         // Check whether `rawValue` specifies a pitch modifier.
         if let rawModifier = captures[1]?.substring, !rawModifier.isEmpty
         {
           // Create the pitch modifier using the raw value captured.
           guard let modifier = PitchModifier(rawValue: String(rawModifier))
           else { return nil }
-          
+
           // Intialize using the interval and modifier.
           self = .modified(interval, modifier)
         }
-        
+
         // Continue without a pitch modifier.
         else
         {
@@ -351,7 +351,7 @@ public struct Chord: RawRepresentable, Hashable, CustomStringConvertible
           self = .default(interval)
         }
       }
-      
+
       /// Returns `true` iff the two values are of the same case with equal associated
       /// values.
       public static func == (lhs: Degree, rhs: Degree) -> Bool
@@ -361,24 +361,24 @@ public struct Chord: RawRepresentable, Hashable, CustomStringConvertible
           case let (.default(interval1), .default(interval2))
                 where interval1 == interval2:
             // The two values are composed of the same interval. Return `true`.
-            
+
             return true
-            
+
           case let (.modified(interval1, modifer1), .modified(interval2, modifier2))
                 where interval1 == interval2 && modifer1 == modifier2:
             // The two values are composed of the same interval and modifer. Return `true`.
-            
+
             return true
-            
+
           default:
             // The two values are not of the same case or their associated values are not
             // equal.
-            
+
             return false
         }
       }
     } // Chord.Pattern.Degree
-    
+
     /// An enumeration of commonly used chord patterns. The raw string values are suitable
     /// for use in `Pattern.init?(rawValue:)`.
     public enum Standard: String, CaseIterable, Named
@@ -460,7 +460,7 @@ public struct Chord: RawRepresentable, Hashable, CustomStringConvertible
       case minorEleventhFlatFifth = "(♭3,♭5,♭7,9,11)"
       case minorEleventhMajorSeventh = "(♭3,5,7,9,11)"
       case seventhAltered = "(3,5,♭7,♭9,♯9,♯11,♭13)"
-      
+
       /// All standard chord patterns in unspecified order.
       public static let allCases: [Standard] = [
         .major, .minor, .augmented, .diminished, .suspendedFourth, .flatFifth,
@@ -488,7 +488,7 @@ public struct Chord: RawRepresentable, Hashable, CustomStringConvertible
         .minorThirteenth, .diminishedSeventhAddNinth, .minorEleventhFlatFifth,
         .minorEleventhMajorSeventh, .seventhAltered
       ]
-      
+
       /// A string describing the standard chord pattern using western musical notation.
       /// i.e. 'maj7♭5'
       public var name: String
@@ -578,6 +578,29 @@ public struct Chord: RawRepresentable, Hashable, CustomStringConvertible
   }
 }
 
-// MARK: LosslessJSONValueConvertible
+// MARK: Codable
 
-extension Chord: LosslessJSONValueConvertible {}
+extension Chord: Codable
+{
+  public enum Error: String, Swift.Error
+  {
+    case decodingError
+  }
+
+  public func encode(to encoder: Encoder) throws
+  {
+    var container = encoder.singleValueContainer()
+    try container.encode(rawValue)
+  }
+
+  public init(from decoder: Decoder) throws
+  {
+    let container = try decoder.singleValueContainer()
+    guard let chord = Chord(rawValue: try container.decode(String.self))
+    else
+    {
+      throw Error.decodingError
+    }
+    self = chord
+  }
+}

@@ -59,7 +59,7 @@ public enum AnySoundFont: SoundFont2
     }
     catch
     {
-      self = .custom(try CustomSoundFont(url: url))
+      self = SoundFont.spyro
     }
   }
 }
@@ -83,5 +83,23 @@ extension AnySoundFont: Hashable
       default:
         return false
     }
+  }
+}
+
+@available(iOS 14.0, *)
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
+extension AnySoundFont: Mock
+{
+
+  static public var mock: AnySoundFont { SoundFont.bundledFonts.randomElement()! }
+
+  static public func mocks(_ count: Int) -> [AnySoundFont] {
+    var result: [AnySoundFont] = []
+    for _ in 0 ..< count
+    {
+      result.append(SoundFont.bundledFonts.randomElement()!)
+    }
+    return result
   }
 }

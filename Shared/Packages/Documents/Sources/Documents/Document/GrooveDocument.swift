@@ -6,20 +6,23 @@
 //  Copyright © 2021 Moondeer Studios. All rights reserved.
 //
 import Combine
-import Foundation
-import Sequencer
-import MoonDev
-import MIDI
 import Common
+import Foundation
+import MIDI
+import MoonDev
+import Sequencer
 import SwiftUI
 import UniformTypeIdentifiers
 
 @available(iOS 14.0, *)
 @available(macCatalyst 14.0, *)
 @available(OSX 10.15, *)
-public extension UTType
+extension UTType
 {
-  static var groove: UTType { UTType(importedAs: "com.moondeerstudios.groove-document") }
+  public static var groove: UTType
+  {
+    UTType(importedAs: "com.moondeerstudios.groove-document")
+  }
 }
 
 // MARK: - GrooveDocument
@@ -27,13 +30,17 @@ public extension UTType
 @available(iOS 14.0, *)
 @available(macCatalyst 14.0, *)
 @available(OSX 10.15, *)
-public struct GrooveDocument: FileDocument
+public struct GrooveDocument: FileDocument, Identifiable
 {
   /// The type of which document's are comprised.
   public typealias Sequence = Sequencer.Sequence
 
   /// The sequence being persisted by the document.
   public private(set) var sequence: Sequence
+
+  public let id = UUID()
+
+  public var name = "Awesomesauce"
 
   /// Initializing with a sequence
   ///
@@ -63,6 +70,11 @@ public struct GrooveDocument: FileDocument
 
     // Initialize the document's sequence.
     sequence = Sequence(file: file)
+
+    logi("""
+    \(#fileID) \(#function)
+    loaded file with the following contents: \(String(data: data, encoding: .utf8)!)
+    """)
   }
 
   /// This method generates a file wrapper around the document's raw data representation.
@@ -72,6 +84,13 @@ public struct GrooveDocument: FileDocument
   /// - Returns: A file wrapper holding the document's raw data.
   public func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper
   {
-    .init(regularFileWithContents: File(sequence: sequence).data)
+    let data = File(sequence: sequence).data
+
+    logi("""
+    \(#fileID) \(#function)
+    saving file with the following contents: \(String(data: data, encoding: .utf8)!)
+    """)
+
+    return .init(regularFileWithContents: data)
   }
 }

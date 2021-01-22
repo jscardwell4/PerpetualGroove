@@ -15,14 +15,14 @@ import struct SwiftUI.Image
 /// A protocol specifying an interface for types wishing to serve as a sound font resource.
 @available(iOS 14.0, *)
 @available(OSX 10.15, *)
-public protocol SoundFont2: CustomStringConvertible
+public protocol SoundFont2: CustomStringConvertible, Codable
 {
   /// The sound font file's location.
   var url: URL { get }
   
   /// The sound font file's data.
   var data: Data { get }
-  
+
   /// The presets present in the sound font file.
   @available(OSX 11.0, *)
   var presetHeaders: [PresetHeader] { get }
@@ -30,10 +30,10 @@ public protocol SoundFont2: CustomStringConvertible
   /// Whether the sound font contains general midi percussion presets.
   var isPercussion: Bool { get }
   
-  /// The name to display in the user interface for the sound font.
+  /// The fileName to display in the user interface for the sound font.
   var displayName: String { get }
   
-  /// The sound font file's base name without the extension.
+  /// The sound font file's base fileName without the extension.
   var fileName: String { get }
   
   /// The image to display in the user interface for the sound font.
@@ -46,37 +46,41 @@ public protocol SoundFont2: CustomStringConvertible
   /// Accessor for retrieving a preset by its program and bank numbers.
   @available(OSX 11.0, *)
   subscript(program program: UInt8, bank bank: UInt8) -> PresetHeader? { get }
-  
+
+  /// Initializing with the name of a bundled file.
+  init(fileName: String) throws
+
   /// Initialize a sound font using it's file location.
   init(url: URL) throws
 }
+
+private enum CodingKeys: String, CodingKey { case fileName }
 
 @available(iOS 14.0, *)
 @available(OSX 10.15, *)
 public extension SoundFont2
 {
-  #if os(iOS)
-  /// A JSON object with an entry for 'url' containing the absolute string
-  /// representation of `url`.
-  var jsonValue: JSONValue { ["url": url.absoluteString] }
 
-  /// Initializing with a JSON value.
-  /// - Parameter jsonValue: To be successful, `jsonValue` must be a JSON object
-  ///                         with an entry for 'url` whose value is a string
-  ///                         representing a valid URL.
-  init?(_ jsonValue: JSONValue?)
-  {
-    // Get the url from the JSON value.
-    guard let url = URL(string: String(ObjectJSONValue(jsonValue)?["url"]) ?? "")
+  init(fileName: String) throws {
+    guard let url = Bundle.module.url(forResource: fileName, withExtension: "sf2")
+            ?? Bundle.main.url(forResource: fileName, withExtension: "sf2")
     else
     {
-      return nil
+      throw CustomSoundFont.Error.InvalidURL
     }
+    try self.init(url: url)
 
-    // Initialize with the url.
-    do { try self.init(url: url) } catch { return nil }
   }
-  #endif
+
+  func encode(to encoder: Encoder) throws {
+    var container = encoder.container(keyedBy: CodingKeys.self)
+    try container.encode(fileName, forKey: .fileName)
+  }
+
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    try self.init(fileName: try container.decode(String.self, forKey: .fileName))
+  }
 
   /// Returns the element in `presetHeaders` located at `position`.
   ///
@@ -97,25 +101,14 @@ public extension SoundFont2
     presetHeaders.first(where: { $0.program == program && $0.bank == bank })
   }
 
-  /// Returns `true` iff `other.url` is equal to `url`.
+  /// Returns `true` iff `other.fileName` is equal to `fileName`.
   /// - Parameter other: The sound font to which equality is being compared.
   /// - Returns: `true` if the sound font instances point to the same file
   ///            and `false` otherwise.
-  func isEqualTo(_ other: SoundFont2) -> Bool
-  {
-    // Get the two urls as file reference urls.
-    let lhs = (self.url as NSURL).fileReferenceURL()
-    let rhs = (other.url as NSURL).fileReferenceURL()
+  func isEqualTo(_ other: SoundFont2) -> Bool { fileName == other.fileName }
 
-    return (lhs == nil
-              ? false
-              : (rhs == nil
-                  ? lhs == nil
-                  : lhs!.isEqualToFileURL(rhs!)))
-  }
-
-  /// The contents of `url` as raw data.
-  /// - Requires: `url` is valid and reachable.
+  /// The contents of `fileName` as raw data.
+  /// - Requires: `fileName` is valid and reachable.
   var data: Data
   {
     tryOrDie(message: "Failed to retrieve data from disk.")

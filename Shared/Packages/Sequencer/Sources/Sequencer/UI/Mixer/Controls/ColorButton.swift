@@ -27,7 +27,7 @@ struct ColorButton: View
     Button(action: {}) {
       isSelected ? ColorButton.selectedImage : ColorButton.normalImage
     }
-    .accentColor(Color(color.value))
+    .accentColor(color.color)
     .frame(width: 68, height: 14)
   }
 }

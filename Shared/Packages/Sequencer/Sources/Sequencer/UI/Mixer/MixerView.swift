@@ -55,7 +55,11 @@ struct MixerView_Previews: PreviewProvider
       let header = font.presetHeaders.randomElement()!
       let preset = Instrument.Preset(font: font, header: header, channel: 0)
       let instrument = try! Instrument(preset: preset, audioEngine: audioEngine)
-      sequence.add(track: try! InstrumentTrack(index: index + 1, instrument: instrument))
+      sequence.add(track: try! InstrumentTrack(
+        index: index + 1,
+        color: Track.Color[index],
+        instrument: instrument
+      ))
     }
     return sequence
   }()

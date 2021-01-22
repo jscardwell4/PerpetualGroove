@@ -59,10 +59,10 @@ public struct NodeEvent: _Event, Hashable
   }
 
   /// Wrapper for the `nodeIdentifier` property of `identifier`.
-  public var nodeIdentifier: UUID { return identifier.nodeIdentifier }
+  public var nodeIdentifier: UUID { identifier.nodeIdentifier }
 
   /// Wrapper for the `loopIdentifier` property of `identifier`.
-  public var loopIdentifier: UUID? { return identifier.loopIdentifier }
+  public var loopIdentifier: UUID? { identifier.loopIdentifier }
 
   /// Initializing with data and a bar-beat time.
   ///
@@ -123,10 +123,10 @@ public struct NodeEvent: _Event, Hashable
   public var description: String { return "\(time) \(data)" }
 }
 
-public extension NodeEvent
+extension NodeEvent
 {
   /// Type to encode and decode the bytes used to identify a MIDI node.
-  struct Identifier: Hashable, LosslessJSONValueConvertible
+  public struct Identifier: Hashable, Codable
   {
     public let loopIdentifier: UUID?
     public let nodeIdentifier: UUID
@@ -222,34 +222,30 @@ public extension NodeEvent
       )
     }
 
-    public var jsonValue: JSONValue
+    private enum CodingKeys: String, CodingKey
     {
-      return ["nodeIdentifier": nodeIdentifier.uuidString.jsonValue,
-              "loopIdentifier": loopIdentifier?.uuidString.jsonValue]
+      case nodeIdentifier, loopIdentifier
     }
 
-    public init?(_ jsonValue: JSONValue?)
+    public func encode(to encoder: Encoder) throws
     {
-      guard
-        let dict = ObjectJSONValue(jsonValue),
-        let nodeIdentifierString = String(dict["nodeIdentifier"]),
-        let nodeIdentifier = UUID(uuidString: nodeIdentifierString)
-      else
+      var container = encoder.container(keyedBy: CodingKeys.self)
+      try container.encode(nodeIdentifier, forKey: .nodeIdentifier)
+      if let loopIdentifier = loopIdentifier
       {
-        return nil
-      }
-
-      self.nodeIdentifier = nodeIdentifier
-
-      if let loopIdentifierString = String(dict["loopIdentifier"]),
-         let loopIdentifier = UUID(uuidString: loopIdentifierString)
-      {
-        self.loopIdentifier = loopIdentifier
+        try container.encode(loopIdentifier, forKey: .loopIdentifier)
       }
       else
       {
-        loopIdentifier = nil
+        try container.encodeNil(forKey: .loopIdentifier)
       }
+    }
+
+    public init(from decoder: Decoder) throws
+    {
+      let container = try decoder.container(keyedBy: CodingKeys.self)
+      nodeIdentifier = try container.decode(UUID.self, forKey: .nodeIdentifier)
+      loopIdentifier = try container.decodeIfPresent(UUID.self, forKey: .loopIdentifier)
     }
 
     public func hash(into hasher: inout Hasher)
@@ -266,9 +262,9 @@ public extension NodeEvent
   }
 }
 
-public extension NodeEvent
+extension NodeEvent
 {
-  enum Data: Hashable, CustomStringConvertible
+  public enum Data: Hashable, CustomStringConvertible
   {
     case add(identifier: Identifier, trajectory: Trajectory, generator: AnyGenerator)
     case remove(identifier: Identifier)
@@ -396,11 +392,11 @@ public extension NodeEvent
   }
 }
 
-public extension NodeEvent
+extension NodeEvent
 {
   /// Type for expressing velocity and angle from a point.
-  struct Trajectory: Hashable, ByteArrayConvertible, LosslessJSONValueConvertible,
-                     CustomStringConvertible
+  public struct Trajectory: Hashable, ByteArrayConvertible,
+                            CustomStringConvertible, Codable
   {
     /// The constant used to adjust the velocity units when calculating times
     public static let modifier: Fraction = 1÷1_000
@@ -564,28 +560,23 @@ public extension NodeEvent
       self.velocity = velocity
     }
 
-    /// The json object for the trajectory.
-    public var jsonValue: JSONValue { return ["position": position, "velocity": velocity] }
+    private enum CodingKeys: String, CodingKey { case position, velocity }
 
-    /// Initializing with a json object containing keys 'position' and 'velocity' with appropriate values.
-    public init?(_ jsonValue: JSONValue?)
+    public func encode(to encoder: Encoder) throws
     {
-      guard let dict = ObjectJSONValue(jsonValue),
-            let position = CGPoint(dict["position"]),
-            let velocity = CGVector(dict["velocity"])
-      else
-      {
-        return nil
-      }
-
-      self.position = position
-      self.velocity = velocity
+      var container = encoder.container(keyedBy: CodingKeys.self)
+      try container.encode(position, forKey: .position)
+      try container.encode(velocity, forKey: .velocity)
     }
 
-    public var description: String
+    public init(from decoder: Decoder) throws
     {
-      return "{ velocity: \(velocity); position: \(position) }"
+      let container = try decoder.container(keyedBy: CodingKeys.self)
+      position = try container.decode(CGPoint.self, forKey: .position)
+      velocity = try container.decode(CGVector.self, forKey: .velocity)
     }
+
+    public var description: String { "{ velocity: \(velocity); position: \(position) }" }
 
     /// Type for specifiying the direction of a `Trajectory`.
     public enum Direction: Equatable, CustomStringConvertible

@@ -6,6 +6,7 @@
 //  Copyright © 2021 Moondeer Studios. All rights reserved.
 //
 import Combine
+import MoonDev
 import SwiftUI
 
 // MARK: - PlayerView
@@ -14,38 +15,20 @@ import SwiftUI
 @available(iOS 14.0, *)
 public struct PlayerView: View
 {
-  /// The backing string for the document name text field
-  @State private var documentName: String = "Awesome Sauce"
-
-  /// Flag indicating whether any of the views controls are currently editing.
-  @State private var isEditing = false
-
   /// The currently active tool or `.none` if no tool is currently active.
   @State private var currentTool = AnyTool.none
 
   /// The currently active mode.
   @State private var currentMode = sequencer.mode
 
-  /// Invoked when the text field bound to `documentName` commits a new value.
-  private func documentNameDidCommit()
-  {}
-
-  /// Invoked when the editing state of the text field bound to `documentName` changes.
-  ///
-  /// - Parameter newValue: The current editing state.
-  private func isEditingDidChange(newValue: Bool) { isEditing = newValue }
-
-  /// Subscription for the player's current tool.
-  private var currentToolSubscription: Cancellable?
-
-  /// Subscription for the controller's current mode.
-  private var currentModeSubscription: Cancellable?
+  /// Holds the view's subscriptions.
+  private var subscriptions: Set<AnyCancellable> = []
 
   /// Initializer simply configures the view's subscriptions.
   public init()
   {
-    currentToolSubscription = player.$currentTool.assign(to: \.currentTool, on: self)
-    currentModeSubscription = sequencer.$mode.assign(to: \.currentMode, on: self)
+    player.$currentTool.assign(to: \.currentTool, on: self).store(in: &subscriptions)
+    sequencer.$mode.assign(to: \.currentMode, on: self).store(in: &subscriptions)
   }
 
   /// The player view encapsulates the host for an instance of `PlayerSKView`,
@@ -55,17 +38,6 @@ public struct PlayerView: View
   {
     VStack
     {
-      TextField("Document Name",
-                text: $documentName,
-                onEditingChanged: isEditingDidChange(newValue:),
-                onCommit: documentNameDidCommit)
-        .autocapitalization(.none)
-        .disableAutocorrection(true)
-        .foregroundColor(isEditing ? .highlightColor : .primaryColor1)
-        .font(.largeControlEditing)
-        .multilineTextAlignment(.trailing)
-        .padding(.trailing)
-
       PlayerHost()
 
       HStack

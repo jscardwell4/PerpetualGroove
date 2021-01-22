@@ -5,6 +5,7 @@
 //  Created by Jason Cardwell on 1/19/21.
 //  Copyright © 2021 Moondeer Studios. All rights reserved.
 //
+import Combine
 import Common
 import Documents
 import MIDI
@@ -32,9 +33,13 @@ struct ContentView: View
           .padding()
           .fixedSize()
         Spacer()
-        PlayerView()
-          .padding()
-          .fixedSize()
+        VStack
+        {
+          DocumentNameField(documentName: $document.name)
+          PlayerView()
+            .padding()
+            .fixedSize()
+        }
       }
       Spacer()
       HStack
@@ -50,14 +55,6 @@ struct ContentView: View
     .statusBar(hidden: true)
   }
 
-  /// Initializing with a groove document. This initializer loads the sequence
-  /// from the specified document into the sequencer.
-  /// - Parameter document: The document to load.
-  init(document: Binding<GrooveDocument>)
-  {
-    _document = document
-    sequencer.sequence = document.wrappedValue.sequence
-  }
 }
 
 // MARK: - ContentView_Previews
@@ -75,7 +72,11 @@ struct ContentView_Previews: PreviewProvider
       let header = font.presetHeaders.randomElement()!
       let preset = Instrument.Preset(font: font, header: header, channel: 0)
       let instrument = try! Instrument(preset: preset, audioEngine: audioEngine)
-      sequence.add(track: try! InstrumentTrack(index: index + 1, instrument: instrument))
+      sequence.add(track: try! InstrumentTrack(
+        index: index + 1,
+        color: Track.Color[index],
+        instrument: instrument
+      ))
     }
     return GrooveDocument(sequence: sequence)
   }()
@@ -90,7 +91,6 @@ struct ContentView_Previews: PreviewProvider
       .padding()
       .preferredColorScheme(.dark)
       .previewLayout(.sizeThatFits)
-//      .fixedSize()
     PlayerView()
       .padding()
       .preferredColorScheme(.dark)

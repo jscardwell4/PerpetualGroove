@@ -18,26 +18,24 @@ import CoreMIDI
 public struct NoteGenerator
 {
   public var channel: UInt8 = 0
-  
-  public typealias Tone = MIDINote
-  
+
   /// The pitch and octave
-  public var tone: Tone
-  
+  public var tone: MIDINote
+
   /// The duration of the played note
   public var duration: Duration
-  
+
   /// The dynmamics for the note
   public var velocity: Velocity
-  
+
   /// The octave held by `tone`
-  public var octave: Octave { get { return tone.octave } set { tone.octave = newValue } }
-  
+  public var octave: Octave { get { tone.octave } set { tone.octave = newValue } }
+
   /// The pitch held by `tone`
-  public var root: Note { get { return tone.note } set { tone.note = newValue } }
-  
+  public var root: Note { get { tone.note } set { tone.note = newValue } }
+
   public init(
-    tone: Tone = Tone(midi: 60),
+    tone: MIDINote = MIDINote(midi: 60),
     duration: Duration = .eighth,
     velocity: Velocity = .𝑚𝑓
   )
@@ -46,44 +44,42 @@ public struct NoteGenerator
     self.duration = duration
     self.velocity = velocity
   }
-  
+
   public init(generator: ChordGenerator)
   {
-    self.init(tone: Tone(generator.chord.root, generator.octave),
+    self.init(tone: MIDINote(generator.chord.root, generator.octave),
               duration: generator.duration,
               velocity: generator.velocity)
   }
 }
 
-// MARK: LosslessJSONValueConvertible
+// MARK: Codable
 
-extension NoteGenerator: LosslessJSONValueConvertible
+extension NoteGenerator: Codable
 {
-  public var jsonValue: JSONValue
+  private enum CodingKeys: String, CodingKey
   {
-    return ObjectJSONValue([
-      "tone": tone.jsonValue,
-      "duration": duration.jsonValue,
-      "velocity": velocity.jsonValue,
-      "octave": octave.jsonValue,
-      "root": root.jsonValue
-    ]).jsonValue
+    case tone, duration, velocity, octave, root
   }
-  
-  public init?(_ jsonValue: JSONValue?)
+
+  public func encode(to encoder: Encoder) throws
   {
-    guard let dict = ObjectJSONValue(jsonValue),
-          let tone = Tone(dict["tone"]),
-          let duration = Duration(dict["duration"]),
-          let velocity = Velocity(dict["velocity"]),
-          let octave = Octave(dict["octave"]),
-          let root = Note(dict["root"])
-    else { return nil }
-    self.tone = tone
-    self.duration = duration
-    self.velocity = velocity
-    self.octave = octave
-    self.root = root
+    var container = encoder.container(keyedBy: CodingKeys.self)
+    try container.encode(tone, forKey: .tone)
+    try container.encode(duration, forKey: .duration)
+    try container.encode(velocity, forKey: .velocity)
+    try container.encode(octave, forKey: .octave)
+    try container.encode(root, forKey: .root)
+  }
+
+  public init(from decoder: Decoder) throws
+  {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    tone = try container.decode(MIDINote.self, forKey: .tone)
+    duration = try container.decode(Duration.self, forKey: .tone)
+    velocity = try container.decode(Velocity.self, forKey: .tone)
+    octave = try container.decode(Octave.self, forKey: .tone)
+    root = try container.decode(Note.self, forKey: .tone)
   }
 }
 
@@ -105,7 +101,7 @@ extension NoteGenerator: Generator
     var packetList = packet.packetList(ticks: ticks)
     try MIDIReceived(endPoint, &packetList) ➤ "Unable to send note on event"
   }
-  
+
   public func receiveNoteOff(
     endPoint: MIDIEndpointRef,
     identifier: UInt,
@@ -120,7 +116,7 @@ extension NoteGenerator: Generator
     var packetList = packet.packetList(ticks: ticks)
     try MIDIReceived(endPoint, &packetList) ➤ "Unable to send note off event"
   }
-  
+
   public func sendNoteOn(
     outPort: MIDIPortRef,
     endPoint: MIDIEndpointRef,
@@ -135,7 +131,7 @@ extension NoteGenerator: Generator
     var packetList = packet.packetList(ticks: ticks)
     try MIDISend(outPort, endPoint, &packetList) ➤ "Unable to send note on event"
   }
-  
+
   public func sendNoteOff(
     outPort: MIDIPortRef,
     endPoint: MIDIEndpointRef,
@@ -160,12 +156,12 @@ extension NoteGenerator: ByteArrayConvertible
   {
     return [channel, tone.midi, velocity.midi] + duration.rawValue.bytes
   }
-  
+
   public init(_ bytes: [UInt8])
   {
     guard bytes.count >= 7 else { self = NoteGenerator(); return }
     channel = bytes[0]
-    tone = Tone(midi: bytes[1])
+    tone = MIDINote(midi: bytes[1])
     velocity = Velocity(midi: bytes[2])
     duration = Duration(rawValue: String(bytes: bytes[3|->])) ?? .eighth
   }
@@ -192,7 +188,7 @@ extension NoteGenerator: Hashable
     velocity.hash(into: &hasher)
     tone.hash(into: &hasher)
   }
-  
+
   public static func == (lhs: NoteGenerator, rhs: NoteGenerator) -> Bool
   {
     return lhs.channel == rhs.channel

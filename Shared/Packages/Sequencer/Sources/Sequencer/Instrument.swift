@@ -160,7 +160,7 @@ public final class Instrument
 
       // Translate the generator's duration into nanoseconds.
       let nanoseconds = UInt64(generator.duration.seconds(withBPM: sequencer.tempo)
-        * Double(NSEC_PER_SEC))
+                                * Double(NSEC_PER_SEC))
 
       // Convert the nanosecond value into a dispatch time.
       let deadline = DispatchTime(uptimeNanoseconds: nanoseconds)
@@ -350,22 +350,22 @@ extension Instrument: CustomStringConvertible
 // MARK: - Publishers
 
 @available(iOS 14.0, *)
-public extension Instrument
+extension Instrument
 {
   /// `volumeSubject` type-erased.
-  var volumePublisher: AnyPublisher<Float, Never>
+  public var volumePublisher: AnyPublisher<Float, Never>
   {
     volumeSubject.eraseToAnyPublisher()
   }
 
   /// `panSubject` type-erased.
-  var panPublisher: AnyPublisher<Float, Never>
+  public var panPublisher: AnyPublisher<Float, Never>
   {
     panSubject.eraseToAnyPublisher()
   }
 
   /// `channelSubject` type-erased.
-  var channelPublisher: AnyPublisher<UInt8, Never>
+  public var channelPublisher: AnyPublisher<UInt8, Never>
   {
     channelSubject.eraseToAnyPublisher()
   }
@@ -374,12 +374,12 @@ public extension Instrument
 // MARK: - Preset
 
 @available(iOS 14.0, *)
-public extension Instrument
+extension Instrument
 {
   /// A struct for coupling a sound font, a preset header within the sound font,
   /// and a MIDI channel.
   @available(iOS 14.0, *)
-  struct Preset: Equatable, LosslessJSONValueConvertible
+  public struct Preset: Equatable, Codable
   {
     /// The sound font providing the source data for the preset.
     public let font: AnySoundFont
@@ -424,38 +424,22 @@ public extension Instrument
         && lhs.channel == rhs.channel
     }
 
-    /// A JSON object with entries for the preset's `soundFont`, `presetHeader`,
-    /// and `channel` properties.
-    public var jsonValue: JSONValue
+    private enum CodingKeys: String, CodingKey { case font, header, channel }
+
+    public func encode(to encoder: Encoder) throws
     {
-      .object(["soundFont": font.jsonValue,
-               "presetHeader": header.jsonValue,
-               "channel": channel.jsonValue])
+      var container = encoder.container(keyedBy: CodingKeys.self)
+      try container.encode(font, forKey: .font)
+      try container.encode(header, forKey: .header)
+      try container.encode(channel, forKey: .channel)
     }
 
-    /// Initializing with a JSON value.
-    /// - Parameter jsonValue: To be successful `jsonValue` must be a JSON object with
-    ///                        'soundFont', 'presetHeader', and 'channel' entries whose
-    ///                        values may be converted as appropriate for assigning to
-    ///                        the preset's properties.
-    public init?(_ jsonValue: JSONValue?)
+    public init(from decoder: Decoder) throws
     {
-      // Extract the property values from the JSON value.
-      guard let dict = ObjectJSONValue(jsonValue),
-            let filePath = dict["soundFont"]?.stringValue,
-            let url = URL(string: filePath),
-            let soundFont = try? AnySoundFont(url: url),
-            let presetHeader = PresetHeader(dict["presetHeader"]),
-            let channel = UInt8(dict["channel"])
-      else
-      {
-        return nil
-      }
-
-      // Initialize the properties with the extracted values.
-      self.font = soundFont
-      self.header = presetHeader
-      self.channel = channel
+      let container = try decoder.container(keyedBy: CodingKeys.self)
+      font = try container.decode(AnySoundFont.self, forKey: .font)
+      header = try container.decode(PresetHeader.self, forKey: .header)
+      channel = try container.decode(UInt8.self, forKey: .channel)
     }
   }
 }
@@ -463,10 +447,10 @@ public extension Instrument
 // MARK: - Error
 
 @available(iOS 14.0, *)
-public extension Instrument
+extension Instrument
 {
   /// An enumeration of the possible errors thrown by `Instrument`.
-  enum Error: String, Swift.Error
+  public enum Error: String, Swift.Error
   {
     case AttachNodeFailed = "Failed to attach sampler node to audio engine"
     case InvalidEvent = "Invalid MIDI event provided"
@@ -486,23 +470,56 @@ extension Instrument: NotificationDispatching
 }
 
 @available(iOS 14.0, *)
-public extension Notification.Name
+extension Notification.Name
 {
-  static let instrumentProgramDidChange = Instrument.programDidChangeNotification
-  static let instrumentSoundFontDidChange = Instrument.soundFontDidChangeNotification
+  public static let instrumentProgramDidChange = Instrument.programDidChangeNotification
+  public static let instrumentSoundFontDidChange = Instrument
+    .soundFontDidChangeNotification
 }
 
-public extension Notification
+extension Notification
 {
   /// The name of the program unloaded by the instrument that posted the notification.
-  var oldProgramName: String? { userInfo?["oldProgram"] as? String }
+  public var oldProgramName: String? { userInfo?["oldProgram"] as? String }
 
   /// The name of the program loaded by the instrument that posted the notification.
-  var newProgramName: String? { userInfo?["newProgram"] as? String }
+  public var newProgramName: String? { userInfo?["newProgram"] as? String }
 
   /// The name of the sound font unloaded by the instrument that posted the notification.
-  var oldSoundFontName: String? { userInfo?["oldSoundFont"] as? String }
+  public var oldSoundFontName: String? { userInfo?["oldSoundFont"] as? String }
 
   /// The name of the sound font loaded by the instrument that posted the notification.
-  var newSoundFontName: String? { userInfo?["newSoundFont"] as? String }
+  public var newSoundFontName: String? { userInfo?["newSoundFont"] as? String }
+}
+
+// MARK: - Instrument + Mock
+
+@available(iOS 14.0, *)
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
+extension Instrument: Mock
+{
+  public static var mock: Instrument
+  {
+    let font = AnySoundFont.mock
+    let header = font.presetHeaders.randomElement()!
+    let preset = Preset(font: font, header: header, channel: 0)
+    return try! Instrument(preset: preset, audioEngine: audioEngine)
+  }
+
+  public static func mocks(_ count: Int) -> [Instrument]
+  {
+    var result: [Instrument] = []
+    for font in AnySoundFont.mocks(count)
+    {
+      let header = font.presetHeaders.randomElement()!
+      let preset = Preset(font: font, header: header, channel: 0)
+      result.append(try! Instrument(preset: preset, audioEngine: audioEngine))
+    }
+    logv("""
+    \(#fileID) \(#function) [
+      \(result.map(\.description).joined(separator: "\n  "))
+    """)
+    return result
+  }
 }

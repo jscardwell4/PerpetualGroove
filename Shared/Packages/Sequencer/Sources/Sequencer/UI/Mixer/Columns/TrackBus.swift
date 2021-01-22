@@ -55,7 +55,10 @@ struct TrackBus_Previews: PreviewProvider
       unwrapOrDie(font.presetHeaders.randomElement())
     let preset = Instrument.Preset(font: font, header: header, channel: 0)
     let instrument = tryOrDie { try Instrument(preset: preset, audioEngine: audioEngine) }
-    return tryOrDie { try InstrumentTrack(index: 1, instrument: instrument) }
+    return tryOrDie
+    {
+      try InstrumentTrack(index: 1, color: .muddyWaters, instrument: instrument)
+    }
   }()
 
   static var previews: some View

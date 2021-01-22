@@ -527,6 +527,24 @@ extension BarBeatTime: Hashable
   }
 }
 
+extension BarBeatTime: Codable
+{
+  public enum Error: String, Swift.Error { case decodingError }
+
+  public func encode(to encoder: Encoder) throws {
+    var container = encoder.singleValueContainer()
+    try container.encode(rawValue)
+  }
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.singleValueContainer()
+    let string = try container.decode(String.self)
+    guard let barBeatTime = BarBeatTime(rawValue: string) else {
+      throw Error.decodingError
+    }
+    self = barBeatTime
+  }
+}
+
 // MARK: Comparable
 
 extension BarBeatTime: Comparable

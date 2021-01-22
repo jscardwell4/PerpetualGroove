@@ -32,28 +32,28 @@ public final class Player
   /// Reference to the player node in the player scene. Setting this property to
   /// a non-nil value triggers the creation of the player's tools.
   public internal(set) weak var playerNode: PlayerNode?
-//  {
-//    didSet
-//    {
-//      guard let node = playerNode else { return }
-//      addTool = AddTool(playerNode: node)
-//      removeTool = RemoveTool(playerNode: node, delete: false)
-//      deleteTool = RemoveTool(playerNode: node, delete: true)
+  {
+    didSet
+    {
+      guard let node = playerNode else { return }
+      addTool = AddTool(playerNode: node)
+      removeTool = RemoveTool(playerNode: node, delete: false)
+      deleteTool = RemoveTool(playerNode: node, delete: true)
 //      existingGeneratorTool = GeneratorTool(playerNode: node, mode: .existing)
 //      newGeneratorTool = GeneratorTool(playerNode: node, mode: .new)
 //      rotateTool = RotateTool(playerNode: node)
-//      currentTool = .none
-//    }
-//  }
+      currentTool = .none
+    }
+  }
 
   /// Tool for adding a new node to the player.
-//  public private(set) var addTool: AddTool?
+  public private(set) var addTool: AddTool?
 
   /// Tool for removing an existing node from the player
-//  public private(set) var removeTool: RemoveTool?
+  public private(set) var removeTool: RemoveTool?
 
   /// Tool for deleting any trace of a node from the player.
-//  public private(set) var deleteTool: RemoveTool?
+  public private(set) var deleteTool: RemoveTool?
 
   /// Tool for changing the generator attached to an existing node in the player.
 //  public private(set) var existingGeneratorTool: GeneratorTool?
@@ -66,38 +66,38 @@ public final class Player
 
   /// Tool currently handling user touches.
   @Published public var currentTool: AnyTool = .none
-//  {
-//    willSet
-//    {
-//      // Check that the current tool has not simply been reassigned.
-//      guard currentTool != newValue else { return }
-//
-//      // Close undo grouping if open.
-//      if undoManager.groupingLevel > 0 { undoManager.endUndoGrouping() }
-//
-//      // Check that the current tool is showing its content.
+  {
+    willSet
+    {
+      // Check that the current tool has not simply been reassigned.
+      guard currentTool != newValue else { return }
+
+      // Close undo grouping if open.
+      if undoManager.groupingLevel > 0 { undoManager.endUndoGrouping() }
+
+      // Check that the current tool is showing its content.
 //      guard (currentTool.tool as? PresentingTool)?.isShowingContent == true else { return }
-//
-//      // Dismiss the current tool's content.
-////      playerContainer?.dismiss(completion: { _ in })
-//    }
-//
-//    didSet
-//    {
-//      // Check that the previous tool was not simply reassigned.
-//      guard currentTool != oldValue else { return }
-//
-//      // Open a fresh undo grouping if a new tool has been assigned.
-//      if currentTool != .none { undoManager.beginUndoGrouping() }
-//
-//      // Toggle activation of the previous and current tools.
-//      oldValue.tool?.active = false
-//      currentTool.tool?.active = true
-//
-//      // Update the player node's touch handler.
-//      playerNode?.receiver = currentTool.tool
-//    }
-//  }
+
+      // Dismiss the current tool's content.
+//      playerContainer?.dismiss(completion: { _ in })
+    }
+
+    didSet
+    {
+      // Check that the previous tool was not simply reassigned.
+      guard currentTool != oldValue else { return }
+
+      // Open a fresh undo grouping if a new tool has been assigned.
+      if currentTool != .none { undoManager.beginUndoGrouping() }
+
+      // Toggle activation of the previous and current tools.
+      oldValue.tool?.active = false
+      currentTool.tool?.active = true
+
+      // Update the player node's touch handler.
+      playerNode?.receiver = currentTool.tool
+    }
+  }
 
   // MARK: Undo Support
 

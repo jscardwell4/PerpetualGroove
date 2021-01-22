@@ -38,7 +38,7 @@ struct VolumeSlider: View
         self.volume = ($0.sender as! MoonDev.Slider).value
       })
     }
-    .frame(height: 300)
+    .frame(height: 200)
   }
 }
 

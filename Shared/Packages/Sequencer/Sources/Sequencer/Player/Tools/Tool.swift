@@ -56,19 +56,19 @@ public enum AnyTool: Int
 
   /// The current corresponding instance of the tool. This is `nil` for
   /// `none` and one of the `Player` tools otherwise.
-  public var tool: Tool? { nil }
-//  {
-//    switch self
-//    {
-//      case .none: return nil
+  public var tool: Tool?
+  {
+    switch self
+    {
 //      case .newNodeGenerator: return player.newGeneratorTool
-//      case .addNode: return player.addTool
-//      case .removeNode: return player.removeTool
-//      case .deleteNode: return player.deleteTool
+      case .addNode: return player.addTool
+      case .removeNode: return player.removeTool
+      case .deleteNode: return player.deleteTool
 //      case .nodeGenerator: return player.existingGeneratorTool
 //      case .rotate: return player.rotateTool
-//    }
-//  }
+      default: return nil
+    }
+  }
 
   /// Whether the tool is player's current tool.
   public var isCurrentTool: Bool { player.currentTool == self }
@@ -82,22 +82,22 @@ public enum AnyTool: Int
   public init(_ tool: Tool?)
   {
     self = .none
-//    guard let tool = tool,
-//          player.playerNode != nil
-//    else
-//    {
-//      self = .none
-//      return
-//    }
-//
-//    switch ObjectIdentifier(tool)
-//    {
+    guard let tool = tool,
+          player.playerNode != nil
+    else
+    {
+      self = .none
+      return
+    }
+
+    switch ObjectIdentifier(tool)
+    {
 //      case ObjectIdentifier(player.newGeneratorTool!): self = .newNodeGenerator
-//      case ObjectIdentifier(player.addTool!): self = .addNode
-//      case ObjectIdentifier(player.removeTool!): self = .removeNode
-//      case ObjectIdentifier(player.deleteTool!): self = .deleteNode
+      case ObjectIdentifier(player.addTool!): self = .addNode
+      case ObjectIdentifier(player.removeTool!): self = .removeNode
+      case ObjectIdentifier(player.deleteTool!): self = .deleteNode
 //      case ObjectIdentifier(player.existingGeneratorTool!): self = .nodeGenerator
-//      default: self = .none
-//    }
+      default: self = .none
+    }
   }
 }

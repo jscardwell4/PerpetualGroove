@@ -13,7 +13,7 @@ import MoonDev
 
 /// An enumeration of the modifiers that lower or raise a note/chord by a number of half
 /// steps.
-public enum PitchModifier: String
+public enum PitchModifier: String, Codable
 {
   case flat = "♭", sharp = "♯", doubleFlat = "𝄫"
 }
@@ -21,7 +21,7 @@ public enum PitchModifier: String
 // MARK: - Natural
 
 /// An enumeration of the seven 'natural' note names in western tonal music.
-public enum Natural: String, CaseIterable, Strideable
+public enum Natural: String, CaseIterable, Strideable, Codable
 {
   case a = "A", b = "B", c = "C", d = "D", e = "E", f = "F", g = "G"
   
@@ -62,7 +62,7 @@ public enum Natural: String, CaseIterable, Strideable
 // MARK: - Octave
 
 /// An enumeration of the octaves representable with MIDI values.
-public enum Octave: Int, LosslessJSONValueConvertible, CaseIterable
+public enum Octave: Int, CaseIterable, Codable
 {
   case negativeOne = -1, zero, one, two, three, four, five, six, seven, eight, nine
   
@@ -81,7 +81,7 @@ public enum Octave: Int, LosslessJSONValueConvertible, CaseIterable
 // MARK: - Velocity
 
 /// An enumeration for musical dynamics.
-public enum Velocity: String, CaseIterable, CustomStringConvertible
+public enum Velocity: String, CaseIterable, CustomStringConvertible, Codable
 {
   case 𝑝𝑝𝑝, 𝑝𝑝, 𝑝, 𝑚𝑝, 𝑚𝑓, 𝑓, 𝑓𝑓, 𝑓𝑓𝑓
   
@@ -124,14 +124,14 @@ public enum Velocity: String, CaseIterable, CustomStringConvertible
   public var description: String { return rawValue }
 }
 
-// MARK: LosslessJSONValueConvertible, ImageAssetLiteralType
+// MARK: ImageAssetLiteralType
 
-extension Velocity: LosslessJSONValueConvertible, ImageAssetLiteralType {}
+extension Velocity: ImageAssetLiteralType {}
 
 // MARK: - Duration
 
 /// An enumeration for expressing the duration of musical note.
-public enum Duration: String, CaseIterable
+public enum Duration: String, CaseIterable, Codable
 {
   case doubleWhole, dottedWhole, whole, dottedHalf, half, dottedQuarter, quarter,
        dottedEighth, eighth, dottedSixteenth, sixteenth, dottedThirtySecond, thirtySecond,
@@ -174,6 +174,6 @@ public enum Duration: String, CaseIterable
   ]
 }
 
-// MARK: LosslessJSONValueConvertible, ImageAssetLiteralType
+// MARK: ImageAssetLiteralType
 
-extension Duration: LosslessJSONValueConvertible, ImageAssetLiteralType {}
+extension Duration: ImageAssetLiteralType {}

@@ -10,13 +10,14 @@ import Common
 import Foundation
 import MIDI
 import MoonDev
+import SoundFont
 
 // MARK: - Sequence
 
 /// The `Sequence` class manages a collection of tracks and serves as the top level
 /// object persisted by the `Document` class.
 @available(iOS 14.0, *)
-public class Sequence
+public final class Sequence
 {
   // MARK: Stored Properties
 
@@ -53,7 +54,7 @@ public class Sequence
   /// Initializing with MIDI file data. After the default
   /// initializer has been invoked passing `document`, the MIDI event data in `file` is
   /// used to generate the sequence's tempo and instrument tracks.
-  public convenience init(file: File)
+  public convenience init(file: MIDI.File)
   {
     // Invoke the default initializer with the specified document.
     self.init()
@@ -135,7 +136,7 @@ public class Sequence
       switch newValue
       {
         case let newTrack?
-              where currentTrackStack.peek?.reference !== newTrack:
+        where currentTrackStack.peek?.reference !== newTrack:
           // A new track has been selected, push it onto the stack of instrument tracks.
 
           currentTrackStack.push(Weak(newTrack))
@@ -246,6 +247,7 @@ public class Sequence
   {
     // Create a new track for the sequence that uses the specified instrument.
     let track = try InstrumentTrack(index: instrumentTracks.count + 1,
+                                    color: Track.Color[instrumentTracks.count],
                                     instrument: instrument)
 
     // Add the track to the sequence.
@@ -303,8 +305,6 @@ public class Sequence
     // Publish the added track.
     trackAdditionSubject.send(track)
 
-    logi("track added: \(track.name)")
-
     // Update `currentTrack` when `nil`.
     if currentTrack == nil { currentTrack = track }
   }
@@ -327,36 +327,35 @@ public class Sequence
     trackRemovalSubject.send(track)
 
     logi("track removed: \(track.name)")
-
   }
 }
 
 // MARK: - Publishers
 
 @available(iOS 14.0, *)
-public extension Sequence
+extension Sequence
 {
-  var trackAdditionPublisher: AnyPublisher<InstrumentTrack, Never>
+  public var trackAdditionPublisher: AnyPublisher<InstrumentTrack, Never>
   {
     trackAdditionSubject.eraseToAnyPublisher()
   }
 
-  var trackRemovalPublisher: AnyPublisher<InstrumentTrack, Never>
+  public var trackRemovalPublisher: AnyPublisher<InstrumentTrack, Never>
   {
     trackRemovalSubject.eraseToAnyPublisher()
   }
 
-  var trackChangePublisher: AnyPublisher<Void, Never>
+  public var trackChangePublisher: AnyPublisher<Void, Never>
   {
     trackChangeSubject.eraseToAnyPublisher()
   }
 }
 
 @available(iOS 14.0, *)
-public extension MIDI.File
+extension MIDI.File
 {
   /// Intializing with the tracks in a sequence.
-  init(sequence: Sequence)
+  public init(sequence: Sequence)
   {
     // Initialize `tracks` by mapping the tracks in the sequence to their generated chunks.
     let tracks = sequence.tracks.map { $0.chunk }
@@ -368,3 +367,37 @@ public extension MIDI.File
   }
 }
 
+// MARK: - Sequence + Mock
+
+@available(iOS 14.0, *)
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
+extension Sequence: Mock
+{
+  public static var mock: Sequence
+  {
+    let sequence = Sequence()
+    for track in InstrumentTrack.mocks(3) { sequence.add(track: track) }
+    logv("\(#fileID) \(#function) \(sequence)")
+    return sequence
+  }
+
+  public static func mocks(_ count: Int) -> [Sequence] { (0 ..< count).map { _ in mock } }
+}
+
+// MARK: - Sequence + CustomStringConvertible
+
+@available(iOS 14.0, *)
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
+extension Sequence: CustomStringConvertible
+{
+  public var description: String
+  {
+    """
+    [
+      \(tracks.map(\.description).joined(separator: "\n  "))
+    ]
+    """
+  }
+}

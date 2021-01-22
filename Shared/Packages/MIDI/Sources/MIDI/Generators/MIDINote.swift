@@ -14,7 +14,7 @@ import MoonDev
 // TODO: Review file
 
 /// A structure for specifying a note's pitch and octave
-public struct MIDINote
+public struct MIDINote: Codable
 {
   public var note: Note
   public var octave: Octave
@@ -107,7 +107,7 @@ public struct MIDINote
 
 // MARK: RawRepresentable, LosslessJSONValueConvertible
 
-extension MIDINote: RawRepresentable, LosslessJSONValueConvertible
+extension MIDINote: RawRepresentable
 {
   /// Initialize with string representation
   public init?(rawValue: String)

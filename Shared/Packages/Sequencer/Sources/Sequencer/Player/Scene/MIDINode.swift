@@ -332,7 +332,7 @@ public final class MIDINode: SKSpriteNode
 
     // Invoke `super` now that properties have been initialized.
     super.init(texture: MIDINode.texture,
-               color: dispatch.color.value,
+               color: dispatch.color.uiColor,
                size: MIDINode.texture.size() * 0.75)
 
     // Subscribe to transport notifications from the currently assigned transport.

@@ -38,18 +38,6 @@ final class MixerModel: ObservableObject
 
   private var sequencerSubscription: Cancellable?
 
-  /// Initializing without a sequence.
-  init()
-  {
-    trackCount = 0
-    sequence = EmptySequence()
-    sequencerSubscription = sequencer.$sequence.sink
-    {
-      if let sequence = $0 { self.sequence = sequence }
-      else { self.sequence = EmptySequence() }
-    }
-  }
-
   /// Initializing with a sequence.
   ///
   /// - Parameter sequence: The sequence loaded into the mixer.
@@ -60,7 +48,7 @@ final class MixerModel: ObservableObject
     sequencerSubscription = sequencer.$sequence.sink
     {
       if let sequence = $0 { self.sequence = sequence }
-      else { self.sequence = EmptySequence() }
+      else { self.sequence = Sequence() }
     }
     sequenceSubscriptions.store
     {

@@ -5,7 +5,6 @@
 //  Created by Jason Cardwell on 11/22/15.
 //  Copyright © 2015 Moondeer Studios. All rights reserved.
 //
-
 import CoreMIDI
 import Foundation
 import MoonDev
@@ -14,7 +13,7 @@ import MoonDev
 
 // TODO: Review file
 
-public struct ChordGenerator
+public struct ChordGenerator: Codable
 {
   public var chord: Chord
   public var octave: Octave
@@ -43,7 +42,7 @@ public struct ChordGenerator
           octave = self.octave
         }
         guard octave != nil else { continue }
-        let tone = NoteGenerator.Tone(note, octave!)
+        let tone = MIDINote(note, octave!)
         result.append(NoteGenerator(tone: tone, duration: duration, velocity: velocity))
       }
     }
@@ -58,7 +57,7 @@ public struct ChordGenerator
         else { return result }
         currentOctave = nextOctave
       }
-      let tone = NoteGenerator.Tone(note, currentOctave)
+      let tone = MIDINote(note, currentOctave)
       result.append(NoteGenerator(tone: tone, duration: duration, velocity: velocity))
       previousNote = note
     }
@@ -86,34 +85,34 @@ public struct ChordGenerator
   }
 }
 
-// MARK: LosslessJSONValueConvertible
-
-extension ChordGenerator: LosslessJSONValueConvertible
-{
-  public var jsonValue: JSONValue
-  {
-    return ObjectJSONValue([
-      "chord": chord.jsonValue,
-      "octave": octave.jsonValue,
-      "duration": duration.jsonValue,
-      "velocity": velocity.jsonValue
-    ]).jsonValue
-  }
-  
-  public init?(_ jsonValue: JSONValue?)
-  {
-    guard let dict = ObjectJSONValue(jsonValue),
-          let chord = Chord(dict["chord"]),
-          let octave = Octave(dict["octave"]),
-          let duration = Duration(dict["duration"]),
-          let velocity = Velocity(dict["velocity"])
-    else { return nil }
-    self.chord = chord
-    self.octave = octave
-    self.duration = duration
-    self.velocity = velocity
-  }
-}
+//// MARK: LosslessJSONValueConvertible
+//
+//extension ChordGenerator: LosslessJSONValueConvertible
+//{
+//  public var jsonValue: JSONValue
+//  {
+//    return ObjectJSONValue([
+//      "chord": chord.jsonValue,
+//      "octave": octave.jsonValue,
+//      "duration": duration.jsonValue,
+//      "velocity": velocity.jsonValue
+//    ]).jsonValue
+//  }
+//
+//  public init?(_ jsonValue: JSONValue?)
+//  {
+//    guard let dict = ObjectJSONValue(jsonValue),
+//          let chord = Chord(dict["chord"]),
+//          let octave = Octave(dict["octave"]),
+//          let duration = Duration(dict["duration"]),
+//          let velocity = Velocity(dict["velocity"])
+//    else { return nil }
+//    self.chord = chord
+//    self.octave = octave
+//    self.duration = duration
+//    self.velocity = velocity
+//  }
+//}
 
 // MARK: Generator
 

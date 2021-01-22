@@ -11,34 +11,34 @@
 /// The `EmptySequence` class is a specialized subclass of `Sequence` that
 /// never has any instrument tracks. Used as a standin when `sequencer.sequence == nil`.
 @available(iOS 14.0, *)
-public final class EmptySequence: Sequence
+public final class EmptySequence
 {
   // MARK: Stored Properties
 
   /// The collection of the EmptySequence's tracks excluding the tempo track.
-  public override var instrumentTracks: [InstrumentTrack] { [] }
+  public var instrumentTracks: [InstrumentTrack] { [] }
 
   // MARK: Initialization
 
   /// The default initializer.
-  public override init() {}
+  public init() {}
 
   // MARK: Computed Properties
 
-  public override var currentTrackIndex: Int? { get { nil } set {} }
-  public override var currentTrack: InstrumentTrack? { get { nil } set {} }
-  public override var tempo: Double { get { 0 } set { } }
-  public override var tracks: [Track] { [] }
-  public override var soloTracks: [InstrumentTrack] { [] }
+  public var currentTrackIndex: Int? { get { nil } set {} }
+  public var currentTrack: InstrumentTrack? { get { nil } set {} }
+  public var tempo: Double { get { 0 } set { } }
+  public var tracks: [Track] { [] }
+  public var soloTracks: [InstrumentTrack] { [] }
 
   // MARK: Track Management
 
-  public override func exchangeInstrumentTrack(at idx1: Int, with idx2: Int) { }
+  public func exchangeInstrumentTrack(at idx1: Int, with idx2: Int) { }
 
-  public override func insertTrack(instrument: Instrument) throws {}
+  public func insertTrack(instrument: Instrument) throws {}
 
-  public override func add(track: InstrumentTrack) {}
+  public func add(track: InstrumentTrack) {}
 
-  public override func removeTrack(at index: Int) {}
+  public func removeTrack(at index: Int) {}
 }
 

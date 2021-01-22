@@ -105,6 +105,20 @@
 		C252078925B8AF0600B1E0C5 /* Eveleth-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252073625B8AF0600B1E0C5 /* Eveleth-Regular.otf */; };
 		C252078A25B8AF0600B1E0C5 /* Eveleth-Clean-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252073725B8AF0600B1E0C5 /* Eveleth-Clean-Thin.otf */; };
 		C252078B25B8AF0600B1E0C5 /* Eveleth-Clean-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252073725B8AF0600B1E0C5 /* Eveleth-Clean-Thin.otf */; };
+		C2BAFFC525B915F000312A57 /* Emax Volume 3.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2BAFFBE25B915F000312A57 /* Emax Volume 3.sf2 */; };
+		C2BAFFC625B915F000312A57 /* Emax Volume 3.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2BAFFBE25B915F000312A57 /* Emax Volume 3.sf2 */; };
+		C2BAFFC725B915F000312A57 /* Emax Volume 1.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2BAFFBF25B915F000312A57 /* Emax Volume 1.sf2 */; };
+		C2BAFFC825B915F000312A57 /* Emax Volume 1.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2BAFFBF25B915F000312A57 /* Emax Volume 1.sf2 */; };
+		C2BAFFC925B915F000312A57 /* SPYRO's Pure Oscillators.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2BAFFC025B915F000312A57 /* SPYRO's Pure Oscillators.sf2 */; };
+		C2BAFFCA25B915F000312A57 /* SPYRO's Pure Oscillators.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2BAFFC025B915F000312A57 /* SPYRO's Pure Oscillators.sf2 */; };
+		C2BAFFCB25B915F000312A57 /* Emax Volume 4.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2BAFFC125B915F000312A57 /* Emax Volume 4.sf2 */; };
+		C2BAFFCC25B915F000312A57 /* Emax Volume 4.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2BAFFC125B915F000312A57 /* Emax Volume 4.sf2 */; };
+		C2BAFFCD25B915F000312A57 /* Emax Volume 2.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2BAFFC225B915F000312A57 /* Emax Volume 2.sf2 */; };
+		C2BAFFCE25B915F000312A57 /* Emax Volume 2.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2BAFFC225B915F000312A57 /* Emax Volume 2.sf2 */; };
+		C2BAFFCF25B915F000312A57 /* Emax Volume 6.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2BAFFC325B915F000312A57 /* Emax Volume 6.sf2 */; };
+		C2BAFFD025B915F000312A57 /* Emax Volume 6.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2BAFFC325B915F000312A57 /* Emax Volume 6.sf2 */; };
+		C2BAFFD125B915F000312A57 /* Emax Volume 5.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2BAFFC425B915F000312A57 /* Emax Volume 5.sf2 */; };
+		C2BAFFD225B915F000312A57 /* Emax Volume 5.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2BAFFC425B915F000312A57 /* Emax Volume 5.sf2 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -150,7 +164,6 @@
 		C249767025B3AA1800A54608 /* Instrument.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Instrument.storyboard; sourceTree = "<group>"; };
 		C249767125B3AA1800A54608 /* Generator.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Generator.storyboard; sourceTree = "<group>"; };
 		C249767225B3AA1800A54608 /* Transport.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Transport.storyboard; sourceTree = "<group>"; };
-		C249767325B3AA1800A54608 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C249767825B3AA1800A54608 /* Balls_ball_eveleth9.ai */ = {isa = PBXFileReference; lastKnownFileType = text; path = Balls_ball_eveleth9.ai; sourceTree = "<group>"; };
 		C249767925B3AA1800A54608 /* parchment@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "parchment@2x.png"; sourceTree = "<group>"; };
 		C249767A25B3AA1800A54608 /* Balls_ball_diamondplate.ai */ = {isa = PBXFileReference; lastKnownFileType = text; path = Balls_ball_diamondplate.ai; sourceTree = "<group>"; };
@@ -1695,6 +1708,13 @@
 		C286F30625B75E510008B514 /* Sequencer */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Sequencer; sourceTree = "<group>"; };
 		C297E59625B761B00023B701 /* sf2Info.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = sf2Info.txt; sourceTree = "<group>"; };
 		C2AF20A5259B9FE200EC084A /* MoonKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MoonKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2BAFFBE25B915F000312A57 /* Emax Volume 3.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Emax Volume 3.sf2"; path = "Shared/Packages/SoundFont/Sources/SoundFont/Resources/sf2/Emax Volume 3.sf2"; sourceTree = SOURCE_ROOT; };
+		C2BAFFBF25B915F000312A57 /* Emax Volume 1.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Emax Volume 1.sf2"; path = "Shared/Packages/SoundFont/Sources/SoundFont/Resources/sf2/Emax Volume 1.sf2"; sourceTree = SOURCE_ROOT; };
+		C2BAFFC025B915F000312A57 /* SPYRO's Pure Oscillators.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SPYRO's Pure Oscillators.sf2"; path = "Shared/Packages/SoundFont/Sources/SoundFont/Resources/sf2/SPYRO's Pure Oscillators.sf2"; sourceTree = SOURCE_ROOT; };
+		C2BAFFC125B915F000312A57 /* Emax Volume 4.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Emax Volume 4.sf2"; path = "Shared/Packages/SoundFont/Sources/SoundFont/Resources/sf2/Emax Volume 4.sf2"; sourceTree = SOURCE_ROOT; };
+		C2BAFFC225B915F000312A57 /* Emax Volume 2.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Emax Volume 2.sf2"; path = "Shared/Packages/SoundFont/Sources/SoundFont/Resources/sf2/Emax Volume 2.sf2"; sourceTree = SOURCE_ROOT; };
+		C2BAFFC325B915F000312A57 /* Emax Volume 6.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Emax Volume 6.sf2"; path = "Shared/Packages/SoundFont/Sources/SoundFont/Resources/sf2/Emax Volume 6.sf2"; sourceTree = SOURCE_ROOT; };
+		C2BAFFC425B915F000312A57 /* Emax Volume 5.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Emax Volume 5.sf2"; path = "Shared/Packages/SoundFont/Sources/SoundFont/Resources/sf2/Emax Volume 5.sf2"; sourceTree = SOURCE_ROOT; };
 		C2DDD58725B7532100E55A1D /* DocumentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentsViewController.swift; sourceTree = "<group>"; };
 		C2DDD58A25B7536200E55A1D /* Documents.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Documents.storyboard; sourceTree = "<group>"; };
 		C2DDD59025B7539200E55A1D /* Picker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Picker.swift; sourceTree = "<group>"; };
@@ -1776,7 +1796,6 @@
 				C286EE1925B75CBE0008B514 /* Packages */,
 				C24841B325B7BD1900C42DAE /* GrooveApp.swift */,
 				C24841B525B7BD1900C42DAE /* ContentView.swift */,
-				C24841B625B7BD1B00C42DAE /* Assets.xcassets */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -1810,9 +1829,10 @@
 		C249766025B3AA1800A54608 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C2BAFFBD25B915CD00312A57 /* SoundFonts */,
 				C249757225B3A8EB00A54608 /* Fonts */,
+				C24841B625B7BD1B00C42DAE /* Assets.xcassets */,
 				C249766425B3AA1800A54608 /* Settings.bundle */,
-				C249767325B3AA1800A54608 /* Assets.xcassets */,
 				C249767625B3AA1800A54608 /* Illustrator */,
 			);
 			path = Resources;
@@ -3832,6 +3852,20 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		C2BAFFBD25B915CD00312A57 /* SoundFonts */ = {
+			isa = PBXGroup;
+			children = (
+				C2BAFFBF25B915F000312A57 /* Emax Volume 1.sf2 */,
+				C2BAFFC225B915F000312A57 /* Emax Volume 2.sf2 */,
+				C2BAFFBE25B915F000312A57 /* Emax Volume 3.sf2 */,
+				C2BAFFC125B915F000312A57 /* Emax Volume 4.sf2 */,
+				C2BAFFC425B915F000312A57 /* Emax Volume 5.sf2 */,
+				C2BAFFC325B915F000312A57 /* Emax Volume 6.sf2 */,
+				C2BAFFC025B915F000312A57 /* SPYRO's Pure Oscillators.sf2 */,
+			);
+			path = SoundFonts;
+			sourceTree = "<group>";
+		};
 		C2DDD58525B752FE00E55A1D /* Old UI */ = {
 			isa = PBXGroup;
 			children = (
@@ -3989,6 +4023,7 @@
 				C252074025B8AF0600B1E0C5 /* Triump-Rg-Rock-10.otf in Resources */,
 				C25206A625B8A8BB00B1E0C5 /* Settings.bundle in Resources */,
 				C252076825B8AF0600B1E0C5 /* Triump-Rg-Rock-08.otf in Resources */,
+				C2BAFFD125B915F000312A57 /* Emax Volume 5.sf2 in Resources */,
 				C252077E25B8AF0600B1E0C5 /* Eveleth-Clean-Shadow.otf in Resources */,
 				C252076E25B8AF0600B1E0C5 /* Eveleth-Regular-Bold.otf in Resources */,
 				C252076425B8AF0600B1E0C5 /* Triump-Rg-Blur-01.otf in Resources */,
@@ -3997,8 +4032,12 @@
 				C252075E25B8AF0600B1E0C5 /* Triump-Rg-Extras.otf in Resources */,
 				C252074E25B8AF0600B1E0C5 /* Triump-Rg-Blur-08.otf in Resources */,
 				C252078825B8AF0600B1E0C5 /* Eveleth-Regular.otf in Resources */,
+				C2BAFFC925B915F000312A57 /* SPYRO's Pure Oscillators.sf2 in Resources */,
 				C252074425B8AF0600B1E0C5 /* Triump-Rg-Rock-05.otf in Resources */,
+				C2BAFFC525B915F000312A57 /* Emax Volume 3.sf2 in Resources */,
 				C252078A25B8AF0600B1E0C5 /* Eveleth-Clean-Thin.otf in Resources */,
+				C2BAFFCB25B915F000312A57 /* Emax Volume 4.sf2 in Resources */,
+				C2BAFFC725B915F000312A57 /* Emax Volume 1.sf2 in Resources */,
 				C252075225B8AF0600B1E0C5 /* Triump-Rg-Blur-11.otf in Resources */,
 				C252075C25B8AF0600B1E0C5 /* Triump-Rg-Blur-07.otf in Resources */,
 				C252074C25B8AF0600B1E0C5 /* Triump-Rg-Blur-09.otf in Resources */,
@@ -4013,6 +4052,7 @@
 				C252077225B8AF0600B1E0C5 /* Eveleth-Thin.otf in Resources */,
 				C252074825B8AF0600B1E0C5 /* Triump-Rg-Rock-02.otf in Resources */,
 				C252075825B8AF0600B1E0C5 /* Triump-Rg-Blur-12.otf in Resources */,
+				C2BAFFCF25B915F000312A57 /* Emax Volume 6.sf2 in Resources */,
 				C252074625B8AF0600B1E0C5 /* Triump-Rg-Rock-01.otf in Resources */,
 				C252075625B8AF0600B1E0C5 /* Triump-Rg-Blur-04.otf in Resources */,
 				C252078625B8AF0600B1E0C5 /* Eveleth-Dot-Regular-Bold.otf in Resources */,
@@ -4024,6 +4064,7 @@
 				C252077A25B8AF0600B1E0C5 /* Eveleth-Slant-Regular-Bold.otf in Resources */,
 				C252078425B8AF0600B1E0C5 /* Eveleth-Slant-Regular.otf in Resources */,
 				C252076025B8AF0600B1E0C5 /* Triump-Rg-Blur-03.otf in Resources */,
+				C2BAFFCD25B915F000312A57 /* Emax Volume 2.sf2 in Resources */,
 				C252075425B8AF0600B1E0C5 /* Triump-Rg-Blur-10.otf in Resources */,
 				C252077425B8AF0600B1E0C5 /* Eveleth-Slant-Light.otf in Resources */,
 				C252077825B8AF0600B1E0C5 /* Eveleth-Icons.otf in Resources */,
@@ -4040,6 +4081,7 @@
 				C252074125B8AF0600B1E0C5 /* Triump-Rg-Rock-10.otf in Resources */,
 				C25206A925B8A8BC00B1E0C5 /* Settings.bundle in Resources */,
 				C252076925B8AF0600B1E0C5 /* Triump-Rg-Rock-08.otf in Resources */,
+				C2BAFFD225B915F000312A57 /* Emax Volume 5.sf2 in Resources */,
 				C252077F25B8AF0600B1E0C5 /* Eveleth-Clean-Shadow.otf in Resources */,
 				C252076F25B8AF0600B1E0C5 /* Eveleth-Regular-Bold.otf in Resources */,
 				C252076525B8AF0600B1E0C5 /* Triump-Rg-Blur-01.otf in Resources */,
@@ -4048,8 +4090,12 @@
 				C252075F25B8AF0600B1E0C5 /* Triump-Rg-Extras.otf in Resources */,
 				C252074F25B8AF0600B1E0C5 /* Triump-Rg-Blur-08.otf in Resources */,
 				C252078925B8AF0600B1E0C5 /* Eveleth-Regular.otf in Resources */,
+				C2BAFFCA25B915F000312A57 /* SPYRO's Pure Oscillators.sf2 in Resources */,
 				C252074525B8AF0600B1E0C5 /* Triump-Rg-Rock-05.otf in Resources */,
+				C2BAFFC625B915F000312A57 /* Emax Volume 3.sf2 in Resources */,
 				C252078B25B8AF0600B1E0C5 /* Eveleth-Clean-Thin.otf in Resources */,
+				C2BAFFCC25B915F000312A57 /* Emax Volume 4.sf2 in Resources */,
+				C2BAFFC825B915F000312A57 /* Emax Volume 1.sf2 in Resources */,
 				C252075325B8AF0600B1E0C5 /* Triump-Rg-Blur-11.otf in Resources */,
 				C252075D25B8AF0600B1E0C5 /* Triump-Rg-Blur-07.otf in Resources */,
 				C252074D25B8AF0600B1E0C5 /* Triump-Rg-Blur-09.otf in Resources */,
@@ -4064,6 +4110,7 @@
 				C252077325B8AF0600B1E0C5 /* Eveleth-Thin.otf in Resources */,
 				C252074925B8AF0600B1E0C5 /* Triump-Rg-Rock-02.otf in Resources */,
 				C252075925B8AF0600B1E0C5 /* Triump-Rg-Blur-12.otf in Resources */,
+				C2BAFFD025B915F000312A57 /* Emax Volume 6.sf2 in Resources */,
 				C252074725B8AF0600B1E0C5 /* Triump-Rg-Rock-01.otf in Resources */,
 				C252075725B8AF0600B1E0C5 /* Triump-Rg-Blur-04.otf in Resources */,
 				C252078725B8AF0600B1E0C5 /* Eveleth-Dot-Regular-Bold.otf in Resources */,
@@ -4075,6 +4122,7 @@
 				C252077B25B8AF0600B1E0C5 /* Eveleth-Slant-Regular-Bold.otf in Resources */,
 				C252078525B8AF0600B1E0C5 /* Eveleth-Slant-Regular.otf in Resources */,
 				C252076125B8AF0600B1E0C5 /* Triump-Rg-Blur-03.otf in Resources */,
+				C2BAFFCE25B915F000312A57 /* Emax Volume 2.sf2 in Resources */,
 				C252075525B8AF0600B1E0C5 /* Triump-Rg-Blur-10.otf in Resources */,
 				C252077525B8AF0600B1E0C5 /* Eveleth-Slant-Light.otf in Resources */,
 				C252077925B8AF0600B1E0C5 /* Eveleth-Icons.otf in Resources */,

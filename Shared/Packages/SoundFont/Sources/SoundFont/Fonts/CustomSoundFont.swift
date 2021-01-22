@@ -54,6 +54,7 @@ public struct CustomSoundFont: SoundFont2
   /// - Requires: `url` is reachable.
   /// - Throws: `ErrorMessage` when `url` is not reachable.
   public init(url: URL) throws { try self.init(url: url, isPercussion: false) }
+
 }
 
 @available(iOS 14.0, *)

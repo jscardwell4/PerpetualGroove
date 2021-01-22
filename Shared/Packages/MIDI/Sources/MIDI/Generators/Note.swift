@@ -12,7 +12,7 @@ import MoonDev
 // MARK: - Note
 
 /// An enumeration for specifying an absolute pitch class value.
-public enum Note: RawRepresentable, Comparable, Hashable
+public enum Note: RawRepresentable, Comparable, Hashable, Codable
 {
   /// One of the seven natural notes.
   case natural(Natural)
@@ -287,7 +287,3 @@ public enum Note: RawRepresentable, Comparable, Hashable
     }
   }
 }
-
-// MARK: LosslessJSONValueConvertible
-
-extension Note: LosslessJSONValueConvertible {}
