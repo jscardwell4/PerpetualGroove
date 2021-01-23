@@ -6,30 +6,32 @@
 //
 import Common
 import SwiftUI
+import MoonDev
 
 // MARK: - Knob
 
 struct Knob: View
 {
+  var onDial: (Angle) -> Void
 
-  @State var angle = Angle(degrees: 0)
+  @GestureState private var state = DialState(angle: Angle(degrees: 0))
 
+  /// The rotation gesture used to work the knob.
   private var rotation: some Gesture
   {
-    RotationGesture()
-      .onChanged {
-        let degrees = min(max($0.degrees, -90), 90)
-        self.angle = Angle(degrees: degrees)
-        self.degreesOver90 = Float(degrees/90)
-      }
+    RotationGesture().updating($state)
+    {
+      a, s, _ in
+      s.update(for: a); self.onDial(s.angle)
+    }
   }
 
-  @Binding var degreesOver90: Float
+  @Binding var value: Float
 
-  init(degreesOver90: Binding<Float>)
+  init(value: Binding<Float>, onDial: @escaping (Angle) -> Void)
   {
-    _degreesOver90 = degreesOver90
-    angle.degrees += min(max(Double(self.degreesOver90) * 90, -90), 90)
+    _value = value
+    self.onDial = onDial
   }
 
   var body: some View
@@ -45,7 +47,7 @@ struct Knob: View
         Image("knob_indicator", bundle: .module)
           .foregroundColor(.black)
       }
-      .rotationEffect(angle)
+      .rotationEffect(state.angle)
     }
     .gesture(rotation)
   }
@@ -57,7 +59,7 @@ struct Knob_Previews: PreviewProvider
 {
   static var previews: some View
   {
-    Knob(degreesOver90: .constant(-0.5))
+    Knob(value: .constant(-0.5)){_ in}
       .padding()
       .preferredColorScheme(.dark)
       .previewLayout(.sizeThatFits)

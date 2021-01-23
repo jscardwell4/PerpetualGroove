@@ -31,7 +31,10 @@ struct PanKnob: View
                                style: .title3)))
         .foregroundColor(Color(#colorLiteral(red: 0.5725490451, green: 0.5294117928, blue: 0.470588237, alpha: 1)))
 
-      Knob(degreesOver90: $pan)
+      Knob(value: $pan)
+      {
+        angle in
+      }
         .frame(width: 74, height: 74)
     }
   }
