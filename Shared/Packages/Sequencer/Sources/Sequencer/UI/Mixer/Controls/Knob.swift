@@ -11,16 +11,15 @@ import SwiftUI
 
 struct Knob: View
 {
-  private static let rotationalOffset = -90.0
 
-  @State var angle = Angle(degrees: Knob.rotationalOffset)
+  @State var angle = Angle(degrees: 0)
 
   private var rotation: some Gesture
   {
     RotationGesture()
       .onChanged {
         let degrees = min(max($0.degrees, -90), 90)
-        self.angle = Angle(degrees: degrees + Knob.rotationalOffset)
+        self.angle = Angle(degrees: degrees)
         self.degreesOver90 = Float(degrees/90)
       }
   }
@@ -41,9 +40,9 @@ struct Knob: View
         .foregroundColor(Color(#colorLiteral(red: 0.499273628, green: 0.4559301734, blue: 0.3952253163, alpha: 1)))
       Group
       {
-        Image("indicator_fill", bundle: .module)
+        Image("knob_indicator_fill", bundle: .module)
           .foregroundColor(.black)
-        Image("indicator", bundle: .module)
+        Image("knob_indicator", bundle: .module)
           .foregroundColor(.black)
       }
       .rotationEffect(angle)

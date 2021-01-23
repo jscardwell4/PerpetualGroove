@@ -53,6 +53,7 @@ struct ContentView: View
     .background(Color.backgroundColor1)
     .navigationBarHidden(true)
     .statusBar(hidden: true)
+    .edgesIgnoringSafeArea(.all)
   }
 
 }
