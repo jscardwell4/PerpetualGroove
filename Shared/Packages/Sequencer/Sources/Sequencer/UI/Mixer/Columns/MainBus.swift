@@ -13,16 +13,16 @@ import SwiftUI
 @available(iOS 14.0, *)
 struct MainBus: View
 {
-  @ObservedObject private var model = MainBusModel()
+  @ObservedObject private var master = audioEngine
 
   var body: some View
   {
     VStack
     {
-      VolumeSlider(volume: model.volume)
-      PanKnob(pan: model.pan)
+      VolumeSlider(volume: $master.masterVolume)
+      PanKnob(pan: $master.masterPan)
       Spacer()
-      BusLabel(label: "Main").padding()
+      BusLabel(label: .constant("Main")).padding()
       Spacer()
         .frame(height: 22)
     }

@@ -16,9 +16,7 @@ import SwiftUI
 @available(iOS 14.0, *)
 struct TrackBus: View
 {
-  @ObservedObject var model: TrackBusModel
-
-  init(track: InstrumentTrack) { model = TrackBusModel(track: track) }
+  @StateObject var track: InstrumentTrack
 
   /*
    removal display
@@ -27,18 +25,16 @@ struct TrackBus: View
   {
     VStack
     {
-      VolumeSlider(volume: model.volume)
-      PanKnob(pan: model.pan)
-      SoloButton(isEngaged: model.isSoloed)
+      VolumeSlider(volume: $track.volume)
+      PanKnob(pan: $track.pan)
+      SoloButton(isEngaged: $track.isSoloed).padding()
+      MuteButton(isEngaged: $track.isMuted,
+                 isEnabled: !(track.isForceMuted || track.isSoloed))
         .padding()
-      MuteButton(isEngaged: model.isMute,
-                 isEnabled: model.isMuteEnabled)
-        .padding()
-      SoundFontButton(soundFont: model.soundFont)
-      BusLabel(label: model.displayName)
-        .padding(.top)
-      ColorButton(color: model.color,
-                  isSelected: model.isCurrent)
+      SoundFontButton(soundFont: track.instrument.soundFont)
+      BusLabel(label: $track.displayName).padding(.top)
+      ColorButton(color: $track.color,
+                  isSelected: player.currentDispatch as? InstrumentTrack === track)
         .padding(.bottom)
     }
   }

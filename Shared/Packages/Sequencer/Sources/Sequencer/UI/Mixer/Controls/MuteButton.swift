@@ -11,10 +11,13 @@ import SwiftUI
 // MARK: - MuteButton
 
 @available(iOS 14.0, *)
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
 struct MuteButton: View
 {
 
-  let isEngaged: Bool
+  @Binding var isEngaged: Bool
+
   let isEnabled: Bool
 
   var body: some View
@@ -43,7 +46,7 @@ struct MuteButton_Previews: PreviewProvider
 {
   static var previews: some View
   {
-    MuteButton(isEngaged: false, isEnabled: false)
+    MuteButton(isEngaged: .constant(false), isEnabled: false)
       .previewLayout(.sizeThatFits)
       .preferredColorScheme(.dark)
       .padding()

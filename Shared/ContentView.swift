@@ -9,6 +9,7 @@ import Combine
 import Common
 import Documents
 import MIDI
+import MoonDev
 import Sequencer
 import SoundFont
 import SwiftUI
@@ -21,7 +22,9 @@ import SwiftUI
 @available(OSX 10.15, *)
 struct ContentView: View
 {
-  @Binding var document: GrooveDocument
+  @EnvironmentObject var document: GrooveDocument
+
+  @Environment(\.scenePhase) private var scenePhase: ScenePhase
 
   var body: some View
   {
@@ -29,7 +32,7 @@ struct ContentView: View
     {
       HStack
       {
-        MixerView(sequence: document.sequence)
+        MixerView()
           .padding()
           .fixedSize()
         Spacer()
@@ -54,8 +57,22 @@ struct ContentView: View
     .navigationBarHidden(true)
     .statusBar(hidden: true)
     .edgesIgnoringSafeArea(.all)
+    .onChange(of: scenePhase)
+    {
+      phase in
+      switch phase
+      {
+        case .active:
+          logi("\(#fileID) \(#function) scenePhase = .active")
+        case .inactive:
+          logi("\(#fileID) \(#function) scenePhase = .inactive")
+        case .background:
+          logi("\(#fileID) \(#function) scenePhase = .background")
+        default:
+          logi("\(#fileID) \(#function) scenePhase = ???")
+      }
+    }
   }
-
 }
 
 // MARK: - ContentView_Previews
@@ -84,7 +101,8 @@ struct ContentView_Previews: PreviewProvider
 
   static var previews: some View
   {
-    MixerView(sequence: document.sequence)
+    MixerView()
+      .environmentObject(Sequence.mock)
       .preferredColorScheme(.dark)
       .previewLayout(.sizeThatFits)
       .fixedSize()
@@ -97,7 +115,8 @@ struct ContentView_Previews: PreviewProvider
       .preferredColorScheme(.dark)
       .previewLayout(.sizeThatFits)
       .fixedSize()
-    ContentView(document: .constant(document))
+    ContentView()
+      .environmentObject(document)
       .previewLayout(.fixed(width: 2_732 / 2, height: 2_048 / 2))
       .preferredColorScheme(.dark)
   }

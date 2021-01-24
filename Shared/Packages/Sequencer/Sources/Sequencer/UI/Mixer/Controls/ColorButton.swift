@@ -15,7 +15,7 @@ import SwiftUI
 struct ColorButton: View
 {
 
-  @State var color: Track.Color
+  @Binding var color: Track.Color
 
   @State var isSelected: Bool
 
@@ -39,7 +39,7 @@ struct ColorButton_Previews: PreviewProvider
 {
   static var previews: some View
   {
-    ColorButton(color: .muddyWaters, isSelected: false)
+    ColorButton(color: .constant(.muddyWaters), isSelected: false)
       .previewLayout(.sizeThatFits)
       .preferredColorScheme(.dark)
       .padding()

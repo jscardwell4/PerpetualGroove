@@ -10,7 +10,7 @@ import Common
 import Foundation
 import MIDI
 import MoonDev
-import Sequencer
+import class Sequencer.Sequence
 import SwiftUI
 import UniformTypeIdentifiers
 
@@ -30,16 +30,15 @@ extension UTType
 @available(iOS 14.0, *)
 @available(macCatalyst 14.0, *)
 @available(OSX 10.15, *)
-public struct GrooveDocument: FileDocument, Identifiable
+public final class GrooveDocument: FileDocument, Identifiable, ObservableObject
 {
-  /// The type of which document's are comprised.
-  public typealias Sequence = Sequencer.Sequence
-
   /// The sequence being persisted by the document.
   public private(set) var sequence: Sequence
 
+  /// The unique identifier for this document instance.
   public let id = UUID()
 
+  /// The document's display name.
   public var name = "Awesomesauce"
 
   /// Initializing with a sequence
@@ -71,10 +70,38 @@ public struct GrooveDocument: FileDocument, Identifiable
     // Initialize the document's sequence.
     sequence = Sequence(file: file)
 
-    logi("""
+    logv("""
     \(#fileID) \(#function)
     loaded file with the following contents: \(String(data: data, encoding: .utf8)!)
     """)
+  }
+
+  /// Initializing via a file read operation.
+  ///
+  /// - Parameter bookmark: The bookmark data with which to retrieve the file content.
+  /// - Throws: Any error encountered reading the bookmark data or the actual file.
+  public init(bookmark: Data) throws
+  {
+    var isStale = false
+    let fileURL = try URL(resolvingBookmarkData: bookmark,
+                          options: [],
+                          relativeTo: nil,
+                          bookmarkDataIsStale: &isStale)
+    let fileWrapper = try FileWrapper(url: fileURL, options: .immediate)
+    guard let data = fileWrapper.regularFileContents,
+          let file = File(data: data)
+    else
+    {
+      throw CocoaError(.fileReadCorruptFile)
+    }
+
+    // Grab the file name for display purposes.
+    name = fileURL.deletingPathExtension().lastPathComponent
+
+    // Initialize the document's sequence.
+    sequence = Sequence(file: file)
+
+    logi("\(#fileID) \(#function) loaded file '\(name)'")
   }
 
   /// This method generates a file wrapper around the document's raw data representation.
@@ -86,7 +113,7 @@ public struct GrooveDocument: FileDocument, Identifiable
   {
     let data = File(sequence: sequence).data
 
-    logi("""
+    logv("""
     \(#fileID) \(#function)
     saving file with the following contents: \(String(data: data, encoding: .utf8)!)
     """)

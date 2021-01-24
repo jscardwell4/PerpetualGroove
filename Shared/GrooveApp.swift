@@ -14,22 +14,35 @@ import SwiftUI
 @main
 final class GrooveApp: App
 {
+  @AppStorage("lastLoadedFile") var lastLoadedFile = Data()
+
   var openDocument: FileDocumentConfiguration<GrooveDocument>?
   {
     didSet
     {
       switch (openDocument, oldValue)
       {
-        case let (current?, old) where old == nil,
-             let (current?, old) where old != nil
-              && current.document.sequence !== old!.document.sequence:
-          // A document has been opened and possible another closed.
+        case let (currentDocument?, oldDocument) where oldDocument == nil,
+             let (currentDocument?, oldDocument) where oldDocument != nil
+               && currentDocument.document.sequence !== oldDocument!.document.sequence:
+          // A document has been opened and possibly another has been closed.
 
-          let name = current.fileURL!.deletingPathExtension().lastPathComponent
-          let oldName = old?.fileURL?.deletingPathExtension().lastPathComponent
+          let currentFileURL = currentDocument.fileURL!
+          let name = currentFileURL.deletingPathExtension().lastPathComponent
+          do
+          {
+            lastLoadedFile = try currentFileURL
+              .bookmarkData(options: .suitableForBookmarkFile)
+          }
+          catch
+          {
+            logw("\(#fileID) \(#function) Failed to generate bookmark for \(name).")
+          }
 
-          current.document.name = name
-          sequencer.sequence = current.document.sequence
+          let oldName = oldDocument?.fileURL?.deletingPathExtension().lastPathComponent
+
+          currentDocument.document.name = name
+          sequencer.sequence = currentDocument.document.sequence
 
           logi("""
           \(#fileID) \(#function) \
@@ -50,14 +63,23 @@ final class GrooveApp: App
     }
   }
 
+  private func newDocument() -> GrooveDocument
+  {
+    .init(sequence: ProcessInfo.processInfo.environment["ENABLE_MOCK_DATA"] == "true"
+      ? Sequence.mock
+      : Sequence())
+  }
+
+  private func contentView(_ file: FileDocumentConfiguration<GrooveDocument>) -> some View
+  {
+    openDocument = file
+    return ContentView()
+      .environmentObject(file.document)
+      .environmentObject(file.document.sequence)
+  }
+
   var body: some Scene
   {
-    DocumentGroup(newDocument: GrooveDocument(sequence: Sequence.mock))
-    {
-      (file: FileDocumentConfiguration<GrooveDocument>) -> ContentView in
-      self.openDocument = file
-      let contentView = ContentView(document: file.$document)
-      return contentView
-    }
+    DocumentGroup(newDocument: self.newDocument(), editor: contentView)
   }
 }

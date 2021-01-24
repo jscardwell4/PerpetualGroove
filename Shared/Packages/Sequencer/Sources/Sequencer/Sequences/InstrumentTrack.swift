@@ -172,7 +172,11 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
   /// 2. If the track has initialized such that the instrument is available, return
   ///    program name for the instrument's current preset.
   /// 3. Return the empty string.
-  public var displayName: String { name.isEmpty ? instrument.preset.programName : name }
+  public var displayName: String
+  {
+    get { name.isEmpty ? instrument.preset.programName : name }
+    set { name = newValue }
+  }
 
   /// Overridden to append `InstrumentTrack` specific information.
   override public var description: String
@@ -228,7 +232,7 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
   ///
   /// - Parameter events: The sequence containing the MIDI events to add to the track.
   override public func add<Source>(events: Source)
-  where Source: Swift.Sequence, Source.Element == Event
+    where Source: Swift.Sequence, Source.Element == Event
   {
     // Create an array for accumulating events to provide the default implementation.
     var filteredEvents: [Event] = []
@@ -245,7 +249,7 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
           switch metaEvent.data
           {
             case let .text(text)
-                  where text.hasPrefix("instrument:"):
+            where text.hasPrefix("instrument:"):
               // The event specifies the track's instrument.
 
               // Update `instrumentEvent` with `event`.
@@ -259,7 +263,7 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
           }
 
         case let .channel(channelEvent)
-              where channelEvent.status.kind == .programChange:
+        where channelEvent.status.kind == .programChange:
           // The event specifies the program for the instrument.
 
           // Update `programEvent` with `event`.
@@ -372,7 +376,7 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
   ///                     registered.
   /// - Returns: An array of bar-beat times to register for callbacks.
   override public func registrationTimes<Source>(forAdding events: Source) -> [BarBeatTime]
-  where Source: Swift.Sequence, Source.Iterator.Element == Event
+    where Source: Swift.Sequence, Source.Iterator.Element == Event
   {
     // Get the times for the MIDI node events in `events`.
     let nodeTimes = events.filter
@@ -527,14 +531,14 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
       else { return false }
       return true
     }),
-    let programIndex = trackChunk.events.firstIndex(where: {
-      guard case let .channel(channelEvent) = $0,
-            channelEvent.status.kind == .programChange
-      else { return false }
-      return true
-    }),
-    case let .meta(instrument) = trackChunk.events[instrumentIndex],
-    case let .channel(program) = trackChunk.events[programIndex]
+      let programIndex = trackChunk.events.firstIndex(where: {
+        guard case let .channel(channelEvent) = $0,
+              channelEvent.status.kind == .programChange
+        else { return false }
+        return true
+      }),
+      case let .meta(instrument) = trackChunk.events[instrumentIndex],
+      case let .channel(program) = trackChunk.events[programIndex]
     {
       self.instrument = try Instrument(instrument: instrument, program: program)
     }

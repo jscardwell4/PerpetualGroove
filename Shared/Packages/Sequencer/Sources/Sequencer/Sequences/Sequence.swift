@@ -12,12 +12,15 @@ import MIDI
 import MoonDev
 import SoundFont
 
+
 // MARK: - Sequence
 
 /// The `Sequence` class manages a collection of tracks and serves as the top level
 /// object persisted by the `Document` class.
 @available(iOS 14.0, *)
-public final class Sequence
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
+public final class Sequence: ObservableObject
 {
   // MARK: Stored Properties
 

@@ -12,26 +12,25 @@ import MoonDev
 
 struct Knob: View
 {
-  var onDial: (Angle) -> Void
 
-  @GestureState private var state = DialState(angle: Angle(degrees: 0))
+  @GestureState private var angle: Angle = .zero
 
   /// The rotation gesture used to work the knob.
   private var rotation: some Gesture
   {
-    RotationGesture().updating($state)
+    RotationGesture().updating($angle)
     {
       a, s, _ in
-      s.update(for: a); self.onDial(s.angle)
+      s = max(Angle(degrees: -180), min(a, Angle(degrees: 180)))
+      self.value = Float(s.degrees / 180)
     }
   }
 
-  @Binding var value: Float
+  @State private var value: Float = 0
 
-  init(value: Binding<Float>, onDial: @escaping (Angle) -> Void)
+  init(value: Float)
   {
-    _value = value
-    self.onDial = onDial
+    self.value = value
   }
 
   var body: some View
@@ -47,7 +46,7 @@ struct Knob: View
         Image("knob_indicator", bundle: .module)
           .foregroundColor(.black)
       }
-      .rotationEffect(state.angle)
+      .rotationEffect(angle + Angle(degrees: Double(value) * 90))
     }
     .gesture(rotation)
   }
@@ -59,7 +58,7 @@ struct Knob_Previews: PreviewProvider
 {
   static var previews: some View
   {
-    Knob(value: .constant(-0.5)){_ in}
+    Knob(value: -0.5)
       .padding()
       .preferredColorScheme(.dark)
       .previewLayout(.sizeThatFits)

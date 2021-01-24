@@ -43,38 +43,42 @@ class TrackBusModel: ObservableObject
   /// the represented track.
   @Published var isCurrent: Bool
 
+  let track: InstrumentTrack
+
   /// The set of subscriptions held by the model.
   private var cancellables: Set<AnyCancellable> = []
 
   /// Initializing with an instrument track.
   ///
-  /// - Parameter track: The track assigned to this bus in the mixer.
-  init(track: InstrumentTrack)
+  /// - Parameter instrumentTrack: The track assigned to this bus in the mixer.
+  init(instrumentTrack: InstrumentTrack)
   {
+    track = instrumentTrack
+
     // Capture the current values for the represented track.
-    isMuteEnabled = !track.isForceMuted
-    isMuted = track.isMuted
-    isSoloed = track.isSoloed
-    volume = track.volume
-    pan = track.pan
-    soundFont = track.instrument.soundFont
-    displayName = track.displayName
-    color = track.color
-    isCurrent = track.isCurrentDispatch
+    isMuteEnabled = !instrumentTrack.isForceMuted
+    isMuted = instrumentTrack.isMuted
+    isSoloed = instrumentTrack.isSoloed
+    volume = instrumentTrack.volume
+    pan = instrumentTrack.pan
+    soundFont = instrumentTrack.instrument.soundFont
+    displayName = instrumentTrack.displayName
+    color = instrumentTrack.color
+    isCurrent = instrumentTrack.isCurrentDispatch
 
     // Generate subscriptions to keep our published properties up to date.
     cancellables.store
     {
-      track.$isSoloed.assign(to: \.isSoloed, on: self)
-      track.$isForceMuted.sink { self.isMuteEnabled = !$0 }
-      track.$isMute.assign(to: \.isMute, on: self)
-      track.$isMuted.assign(to: \.isMuted, on: self)
-      track.volumePublisher.assign(to: \.volume, on: self)
-      track.panPublisher.assign(to: \.pan, on: self)
-      track.soundFontPublisher.assign(to: \.soundFont, on: self)
-      track.displayNamePublisher.assign(to: \.displayName, on: self)
-      track.$color.assign(to: \.color, on: self)
-      track.isCurrentDispatchPublisher.assign(to: \.isCurrent, on: self)
+      instrumentTrack.$isSoloed.assign(to: \.isSoloed, on: self)
+      instrumentTrack.$isForceMuted.sink { self.isMuteEnabled = !$0 }
+      instrumentTrack.$isMute.assign(to: \.isMute, on: self)
+      instrumentTrack.$isMuted.assign(to: \.isMuted, on: self)
+      instrumentTrack.volumePublisher.assign(to: \.volume, on: self)
+      instrumentTrack.panPublisher.assign(to: \.pan, on: self)
+      instrumentTrack.soundFontPublisher.assign(to: \.soundFont, on: self)
+      instrumentTrack.displayNamePublisher.assign(to: \.displayName, on: self)
+      instrumentTrack.$color.assign(to: \.color, on: self)
+      instrumentTrack.isCurrentDispatchPublisher.assign(to: \.isCurrent, on: self)
     }
   }
 }

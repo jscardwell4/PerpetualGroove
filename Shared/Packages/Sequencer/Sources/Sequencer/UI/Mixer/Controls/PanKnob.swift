@@ -18,7 +18,7 @@ import SwiftUI
 struct PanKnob: View
 {
   /// The tempo value kept in sync with `transport.tempo`.
-  @State var pan: Float
+  @Binding private var pan: Float
 
   /// The view's body is composed of the slider host constrained to 330w x 44h.
   var body: some View
@@ -31,13 +31,12 @@ struct PanKnob: View
                                style: .title3)))
         .foregroundColor(Color(#colorLiteral(red: 0.5725490451, green: 0.5294117928, blue: 0.470588237, alpha: 1)))
 
-      Knob(value: $pan)
-      {
-        angle in
-      }
+      Knob(value: pan)
         .frame(width: 74, height: 74)
     }
   }
+
+  init(pan: Binding<Float>) { _pan = pan }
 }
 
 // MARK: - PanKnob_Previews
@@ -47,7 +46,7 @@ struct PanKnob_Previews: PreviewProvider
 {
   static var previews: some View
   {
-    PanKnob(pan: 0)
+    PanKnob(pan: .constant(0))
       .previewLayout(.sizeThatFits)
       .preferredColorScheme(.dark)
       .padding()

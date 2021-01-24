@@ -16,7 +16,7 @@ import SwiftUI
 @available(OSX 10.15, *)
 struct BusLabel: View
 {
-  @State var label: String = "Bus 1"
+  @Binding var label: String
 
   var body: some View
   {
@@ -66,7 +66,7 @@ struct BusLabel_Previews: PreviewProvider
   @State static var label: String = "Bus 1"
   static var previews: some View
   {
-    BusLabel(label: label)
+    BusLabel(label: .constant(label))
       .previewLayout(.sizeThatFits)
       .preferredColorScheme(.dark)
       .padding()
