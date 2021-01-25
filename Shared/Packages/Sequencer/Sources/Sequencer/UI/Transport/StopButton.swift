@@ -29,7 +29,7 @@ struct StopButton: View
     {
       Image("stop", bundle: Bundle.module)
     }
-    .disabled(!transport.isPlaying)
+    .disabled(!(transport.isPlaying || transport.isPaused))
     .accentColor(transport.isPlaying ? .primaryColor1 : .disabledColor)
   }
 
