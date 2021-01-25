@@ -30,15 +30,16 @@ struct Clock: View
   /// the bar, beat, and subbeat values for `currentTime`.
   var body: some View
   {
-    HStack(alignment: .center, spacing: 2)
-    {
-      Digits(time: currentTime, component: .bar)
-      Divider(component: .barBeatDivider)
-      Digits(time: currentTime, component: .beat)
-      Divider(component: .beatSubbeatDivider)
-      Digits(time: currentTime, component: .subbeat)
-    }
-    .font(.clock)
+      HStack(alignment: .center, spacing: 2)
+      {
+        Digits(time: currentTime, component: .bar)
+        Divider(component: .barBeatDivider)
+        Digits(time: currentTime, component: .beat)
+        Divider(component: .beatSubbeatDivider)
+        Digits(time: currentTime, component: .subbeat)
+      }
+//    .frame(width: 400, height: 64)
+    .font(Font.custom("EvelethDotRegular-Bold", size: 64))
     .foregroundColor(.primaryColor1)
   }
 }
@@ -82,6 +83,9 @@ private struct Digits: View
     return String(value, radix: 10, minCount: minCount)
   }
 
+  /// The frame width for the represented component.
+  private var width: CGFloat { component == .beat ? 48 : 144 }
+
   /// The time of which these digits compose some portion.
   let time: BarBeatTime
 
@@ -92,6 +96,7 @@ private struct Digits: View
   var body: some View
   {
     Text(verbatim: digits)
+      .frame(width: width, height: 64)
   }
 }
 
@@ -113,9 +118,12 @@ private struct Divider: View
   /// The component to which the divider is assigned.
   let component: Component
 
+  /// A string containing the divider.
+  private var divider: String { component == .barBeatDivider ? ":" : "." }
+
   /// The view's body is simply some verbatim text set to ':' or '.' accordinglgy.
   var body: some View
   {
-    Text(verbatim: component == .barBeatDivider ? ":" : ".").baselineOffset(4.0)
+    Text(verbatim: divider).baselineOffset(4.0)
   }
 }

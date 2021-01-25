@@ -32,17 +32,37 @@ public final class Time: ObservableObject, Named, CustomStringConvertible, Hasha
     {
       case 0b1111_1000:
         // The packet contains a timing clock message, increment the bar beat time.
-        
+
+        var bar = barBeatTime.bar
+        var beat = barBeatTime.beat
+        var subbeat = barBeatTime.subbeat + 1
+        if subbeat == barBeatTime.subbeatDivisor
+        {
+          beat += 1
+          subbeat = 1
+        }
+        if beat > barBeatTime.beatsPerBar
+        {
+          beat = 1
+          bar += 1
+        }
+
         DispatchQueue.main.async
         {
-          [unowned self, increment = barBeatTime.subbeatUnitTime] in
-          self.barBeatTime = self.barBeatTime.advanced(by: increment)
+
+          self.barBeatTime = BarBeatTime(bar: bar,
+                                         beat: beat,
+                                         subbeat: subbeat,
+                                         beatsPerBar: self.barBeatTime.beatsPerBar,
+                                         beatsPerMinute: self.barBeatTime.beatsPerMinute,
+                                         subbeatDivisor: self.barBeatTime.subbeatDivisor,
+                                         isNegative: false)
         }
         
       case 0b1111_1010:
         // The packet contains a start message. Reset the bar beat time.
         
-        DispatchQueue.main.async { [unowned self] in self.barBeatTime = .zero }
+        DispatchQueue.main.async { self.barBeatTime = .zero }
         
       default:
         // The packet does not contain one of the messages handled by `Time`, ignore it.
