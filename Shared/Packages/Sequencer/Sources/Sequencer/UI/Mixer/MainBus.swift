@@ -11,9 +11,11 @@ import SwiftUI
 // MARK: - MainBus
 
 @available(iOS 14.0, *)
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
 struct MainBus: View
 {
-  @ObservedObject private var master = audioEngine
+  @StateObject private var master = audioEngine
 
   var body: some View
   {
@@ -22,23 +24,15 @@ struct MainBus: View
       VolumeSlider(volume: $master.masterVolume)
       PanKnob(pan: $master.masterPan)
       Spacer()
-      BusLabel(label: .constant("Main")).padding()
+      Text("Main").busLabel()
+        .frame(width: 80, height: 20, alignment: .leading)
+        .offset(x: 0, y: -9)
       Spacer()
-        .frame(height: 22)
+        .frame(width: ColorButton.buttonSize.width,
+               height: ColorButton.buttonSize.height,
+               alignment: .center)
+        .padding(.bottom)
     }
   }
 }
 
-// MARK: - MainBus_Previews
-
-@available(iOS 14.0, *)
-struct MainBus_Previews: PreviewProvider
-{
-  static var previews: some View
-  {
-    MainBus()
-      .previewLayout(.sizeThatFits)
-      .preferredColorScheme(.dark)
-      .fixedSize()
-  }
-}

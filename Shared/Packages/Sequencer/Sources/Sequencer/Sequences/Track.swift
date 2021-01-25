@@ -40,8 +40,6 @@ public class Track: Named, EventDispatch, CustomStringConvertible
       // Check that the value has actually changed.
       guard name != oldValue else { return }
 
-      logi("'\(oldValue)' ➞ '\(name)'")
-
       // Post notification that the track has been updated.
       postNotification(name: .trackDidUpdate, object: self)
 

@@ -32,7 +32,7 @@ struct TrackBus: View
                  isEnabled: !(track.isForceMuted || track.isSoloed))
         .padding()
       SoundFontButton(soundFont: track.instrument.soundFont)
-      BusLabel(label: $track.displayName).padding(.top)
+      Marquee(text: $track.displayName).frame(width: 100, height: 20).padding(.top)
       ColorButton(color: $track.color,
                   isSelected: player.currentDispatch as? InstrumentTrack === track)
         .padding(.bottom)
