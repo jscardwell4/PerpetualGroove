@@ -193,7 +193,7 @@ public final class Sequence: ObservableObject
   private func trackDidUpdate()
   {
     // If the transport is currently playing.
-    if transport.playing
+    if sequencer.transport.isPlaying
     {
       // Set the `hashChanges` flag to `true` to postpone posting a notification.
       hasChanges = true
@@ -211,7 +211,7 @@ public final class Sequence: ObservableObject
   private func toggleRecording(notification: Notification)
   {
     // Update the tempo track's recording flag.
-    tempoTrack.isRecording = sequencer.transport.recording
+    tempoTrack.isRecording = sequencer.transport.isRecording
   }
 
   /// Handler for `didReset` notifications received from the current transport. This method

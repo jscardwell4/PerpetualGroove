@@ -572,7 +572,7 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
     // Subscribe to notifications from `transport` and `instrument`.
     subscriptions.store
     {
-      transport.didResetPublisher.sink { if self.isModified { self.isModified = false } }
+      sequencer.transport.didResetPublisher.sink { if self.isModified { self.isModified = false } }
       instrument.volumePublisher.sink { self.volumeSubject.send($0) }
       instrument.panPublisher.sink { self.panSubject.send($0) }
       instrument.$preset.sink

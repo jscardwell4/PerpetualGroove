@@ -34,12 +34,12 @@ public final class Transport: ObservableObject
   /// notification and performing one of the following actions:
   /// * Resume the clock and set `isPaused` to `false` if the transport is paused.
   /// * Start the clock if the transport is not currently paused.
-  @Published public var playing = false
+  @Published public var isPlaying = false
   {
     didSet
     {
       // Check that the transport has started playing.
-      guard playing, !oldValue else { return }
+      guard isPlaying, !oldValue else { return }
 
       // Post notification that the transport has started playing.
       postNotification(name: .transportDidStart,
@@ -47,13 +47,13 @@ public final class Transport: ObservableObject
                        userInfo: ["time": time.barBeatTime])
 
       // Manage clock according to the current state of the transport.
-      switch paused
+      switch isPaused
       {
         case true:
           // Resume the clock and unset the pause flag.
 
           clock.resume()
-          paused = false
+          isPaused = false
 
         case false:
           // Start the clock.
@@ -67,19 +67,19 @@ public final class Transport: ObservableObject
   /// value of this property from `false` to `true` when the transport is playing causes
   /// the transport to stop its clock, set `isPlaying` to `false`, and post a `didPause`
   /// notification.
-  @Published public var paused = false
+  @Published public var isPaused = false
   {
     didSet
     {
       // Check that the transport is playing and that `isPaused` has toggled from
       // `false` to `true`.
-      guard playing, paused, !oldValue else { return }
+      guard isPlaying, isPaused, !oldValue else { return }
 
       // Stop the clock.
       clock.stop()
 
       // Unset the play flag.
-      playing = false
+      isPlaying = false
 
       // Post notification that the transport has been paused.
       postNotification(name: .transportDidPause,
@@ -95,11 +95,11 @@ public final class Transport: ObservableObject
   /// * The transport sets the current bar beat time to `jogTime`, sets `jogTime` to
   ///   `null`, resumes the clock if previously running, and posts a `didEndJogging`
   ///   notification when this property has been set to `false`.
-  @Published public var jogging = false
+  @Published public var isJogging = false
   {
     didSet
     {
-      switch (jogging, oldValue)
+      switch (isJogging, oldValue)
       {
         case (true, true),
              (false, false):
@@ -138,7 +138,7 @@ public final class Transport: ObservableObject
                            userInfo: ["time": time.barBeatTime.rawValue])
 
           // Check whether the clock needs to be resumed.
-          if !paused, clock.isPaused { clock.resume() }
+          if !isPaused, clock.isPaused { clock.resume() }
       }
     }
   }
@@ -150,7 +150,7 @@ public final class Transport: ObservableObject
   /// Hint for objects using the transport as to whether they should persist the data
   /// they generate. Changing this property causes the transport to post a
   /// `didToggleRecording` notification.
-  @Published public var recording = false
+  @Published public var isRecording = false
 
   private let didResetSubject = PassthroughSubject<Void, Never>()
   private let didJogSubject = PassthroughSubject<(time: BarBeatTime,
@@ -193,7 +193,7 @@ public final class Transport: ObservableObject
   public func jog(by revolutions: Double) throws
   {
     // Check that the transport is jogging.
-    guard jogging
+    guard isJogging
     else
     {
       throw Error.notPermitted("The transport is not jogging")
@@ -246,7 +246,7 @@ public final class Transport: ObservableObject
                      userInfo: ["time": currentTime, "jogTime": newTime])
 
     // Check whether the clock needs to be resumed.
-    if !paused, clock.isPaused { clock.resume() }
+    if !isPaused, clock.isPaused { clock.resume() }
   }
 
   /// Resets the transport's clock and time.
@@ -256,14 +256,14 @@ public final class Transport: ObservableObject
   public func reset()
   {
     // Check that the transport is either playing or paused.
-    guard playing || paused else { return }
+    guard isPlaying || isPaused else { return }
 
     // Stop the clock.
     clock.stop()
 
     // Unset the play and pause flags.
-    playing = false
-    paused = false
+    isPlaying = false
+    isPaused = false
 
     // Post notification that the transport has stopped.
     postNotification(

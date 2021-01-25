@@ -14,29 +14,23 @@ import SwiftUI
 /// A view wrapping a hosted instance of `MoonDev.Slider` for controlling the
 /// transport's tempo setting.
 @available(iOS 14.0, *)
-public struct TempoSlider: View
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
+struct TempoSlider: View
 {
-  /// The tempo value kept in sync with `transport.tempo`.
-  @State private var tempo: UInt16 = transport.tempo
+  /// The transport being controlled by the slider.
+  @EnvironmentObject private var transport: Transport
 
   /// The view's body is composed of the slider host constrained to 330w x 44h.
-  public var body: some View
+  var body: some View
   {
-    SliderHost(value: $tempo, valueChangedAction: UIAction
+    SliderHost(value: $transport.tempo, valueChangedAction: UIAction
     {
       transport.tempo = UInt16(($0.sender as! MoonDev.Slider).value)
     })
       .frame(width: 300, height: 44)
   }
 
-  /// Holds the subscription for tempo changes.
-  private var tempoSubscription: Cancellable?
-
-  /// Initializer configures the tempo value change subscription.
-  public init()
-  {
-    tempoSubscription = transport.$tempo.assign(to: \.tempo, on: self)
-  }
 }
 
 // MARK: - SliderHost
@@ -104,19 +98,5 @@ private struct SliderHost: UIViewRepresentable
   func updateUIView(_ uiView: MoonDev.Slider, context: Context)
   {
     uiView.value = Float(value)
-  }
-}
-
-// MARK: - TempoSlider_Previews
-
-@available(iOS 14.0, *)
-struct TempoSlider_Previews: PreviewProvider
-{
-  static var previews: some View
-  {
-    TempoSlider()
-      .previewLayout(.sizeThatFits)
-      .preferredColorScheme(.dark)
-      .padding()
   }
 }

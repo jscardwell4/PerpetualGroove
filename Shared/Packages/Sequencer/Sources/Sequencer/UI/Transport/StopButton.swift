@@ -11,32 +11,26 @@ import SwiftUI
 
 /// A view for stopping the transport's playback.
 @available(iOS 14.0, *)
-public struct StopButton: View
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
+struct StopButton: View
 {
+  /// The transport controlled by the button.
+  @EnvironmentObject private var transport: Transport
+
+  /// The button's action.
+  let action: () -> Void
+  
   /// The view's body is composed of a single button that reset's the transport.
   /// This button is only enabled when `transport.playing == true`.
-  public var body: some View
+  var body: some View
   {
-    Button(action: { transport.reset() })
+    Button(action: action)
     {
       Image("stop", bundle: Bundle.module)
     }
-    .disabled(!transport.playing)
-    .accentColor(transport.playing ? .primaryColor1 : .disabledColor)
+    .disabled(!transport.isPlaying)
+    .accentColor(transport.isPlaying ? .primaryColor1 : .disabledColor)
   }
-  public init() {}
-}
 
-// MARK: - StopButton_Previews
-
-@available(iOS 14.0, *)
-struct StopButton_Previews: PreviewProvider
-{
-  static var previews: some View
-  {
-    StopButton()
-      .previewLayout(.sizeThatFits)
-      .preferredColorScheme(.dark)
-      .padding()
-  }
 }

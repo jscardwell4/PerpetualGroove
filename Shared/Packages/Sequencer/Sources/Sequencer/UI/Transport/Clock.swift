@@ -16,17 +16,19 @@ import SwiftUI
 
 /// A view for displaying the transport's clock.
 @available(iOS 14.0, *)
-public struct Clock: View
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
+struct Clock: View
 {
-  /// The bar beat time backing the display of this view.
-  @State private var currentTime: BarBeatTime = transport.time.barBeatTime
+  /// The time being monitored by the clock.
+  @EnvironmentObject private var time: Time
 
-  /// Holds the subscription for `transport.time.barBeatTime` updates.
-  private var currentTimeSubscription: Cancellable?
+  /// The current time to display.
+  private var currentTime: BarBeatTime { time.barBeatTime }
 
   /// The view's body is composed of three groups of digits representing
   /// the bar, beat, and subbeat values for `currentTime`.
-  public var body: some View
+  var body: some View
   {
     HStack(alignment: .center, spacing: 2)
     {
@@ -38,15 +40,6 @@ public struct Clock: View
     }
     .font(.clock)
     .foregroundColor(.primaryColor1)
-  }
-
-  /// The initializer configures the subscription for `transport.time.$barBeatTime`.
-  public init()
-  {
-    currentTimeSubscription = transport.time.$barBeatTime.assign(
-      to: \.currentTime,
-      on: self
-    )
   }
 }
 
@@ -71,12 +64,22 @@ private struct Digits: View
   /// A string containing the component's digits.
   private var digits: String
   {
+    let value: UInt, minCount: Int
+
     switch component
     {
-      case .bar: return String(time.bar, radix: 10, minCount: 3)
-      case .beat: return String(time.beat)
-      case .subbeat: return String(time.subbeat, radix: 10, minCount: 3)
+      case .bar:
+        value = time.bar
+        minCount = 3
+      case .beat:
+        value = time.beat
+        minCount = 1
+      case .subbeat:
+        value = time.subbeat
+        minCount = 3
     }
+
+    return String(value, radix: 10, minCount: minCount)
   }
 
   /// The time of which these digits compose some portion.
@@ -114,19 +117,5 @@ private struct Divider: View
   var body: some View
   {
     Text(verbatim: component == .barBeatDivider ? ":" : ".").baselineOffset(4.0)
-  }
-}
-
-// MARK: - Clock_Previews
-
-@available(iOS 14.0, *)
-struct Clock_Previews: PreviewProvider
-{
-  static var previews: some View
-  {
-    Clock()
-      .previewLayout(.sizeThatFits)
-      .preferredColorScheme(.dark)
-      .padding()
   }
 }

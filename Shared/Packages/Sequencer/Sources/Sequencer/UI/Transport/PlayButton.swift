@@ -12,37 +12,30 @@ import SwiftUI
 
 /// A view for manipulating the transport's playback state.
 @available(iOS 14.0, *)
-public struct PlayButton: View
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
+struct PlayButton: View
 {
-  /// The view's body is composed of a single state sensitive button
-  /// that displays either a play or a pause symbol and is equipped
-  /// with an action that manipulates `transport.paused` and
-  /// `transport.playing` values
-  public var body: some View
+  /// The transport for which the button control's playback.
+  @EnvironmentObject private var transport: Transport
+
+  /// The button action.
+  let action: () -> Void
+
+  /// The name of the image appropriate for the current `transport` state.
+  private var imageName: String
   {
-    Button(action: {
-      transport.paused = transport.playing ^ transport.paused
-      transport.playing = transport.playing ^ transport.paused
-    })
-    {
-      Image(transport.playing && !transport.paused ? "pause" : "play", bundle: Bundle.module)
-        .accentColor(transport.paused ? .primaryColor2 : .primaryColor1)
-    }
+    transport.isPlaying && !transport.isPaused ? "pause" : "play"
   }
 
-  public init() {}
-}
-
-// MARK: - PlayButton_Previews
-
-@available(iOS 14.0, *)
-struct PlayButton_Previews: PreviewProvider
-{
-  static var previews: some View
+  /// The view's body is composed of a single state sensitive button
+  /// that displays either a play or a pause symbol.
+  var body: some View
   {
-    PlayButton()
-      .previewLayout(.sizeThatFits)
-      .preferredColorScheme(.dark)
-      .padding()
+    Button(action: action)
+    {
+      Image(imageName, bundle: .module)
+        .accentColor(.primaryColor1)
+    }
   }
 }

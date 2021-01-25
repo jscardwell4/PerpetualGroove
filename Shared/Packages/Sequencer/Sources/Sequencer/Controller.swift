@@ -33,7 +33,7 @@ public let sequencer = Controller()
 
 /// Shorthand for `sequencer.transport`.
 @available(iOS 14.0, *)
-@inlinable public var transport: Transport { sequencer.transport }
+//@inlinable public var transport: Transport { sequencer.transport }
 
 /// Shorthand for `sequencer.audioEngine`.
 @available(iOS 14.0, *)
@@ -41,7 +41,7 @@ public let sequencer = Controller()
 
 /// Shorthand for `sequencer.metronome`.
 @available(iOS 14.0, *)
-@inlinable public var metronome: Metronome { sequencer.metronome }
+//@inlinable public var metronome: Metronome { sequencer.metronome }
 
 /// Shorthand for `sequencer.audiotionInstrument`.
 @available(iOS 14.0, *)
@@ -199,7 +199,7 @@ public final class Controller: ObservableObject
       auxiliaryTransport.clock.beatsPerMinute = UInt16(newValue)
 
       // Update the sequence's `tempo` property if the current transport is recording.
-      if transport.recording { sequence?.tempo = tempo }
+      if transport.isRecording { sequence?.tempo = tempo }
     }
   }
 

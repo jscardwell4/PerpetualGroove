@@ -20,7 +20,7 @@ struct Wheel: View
   // MARK: Action
 
   /// Action to execute upon jogging.
-  var onJog: (Double) -> Void
+  let onJog: (Double) -> Void
 
   // MARK: Gesture
 

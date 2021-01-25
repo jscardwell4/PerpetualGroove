@@ -314,7 +314,7 @@ public final class MIDINode: SKSpriteNode
   {
     initTime = time.barBeatTime
     initialTrajectory = trajectory
-    jogging = sequencer.transport.jogging
+    jogging = sequencer.transport.isJogging
 
     self.dispatch = dispatch
     self.generator = generator

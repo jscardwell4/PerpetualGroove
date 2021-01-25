@@ -17,6 +17,8 @@ import SwiftUI
 @available(iOS 14.0, *)
 public struct TransportView: View
 {
+  @EnvironmentObject private var transport: Transport
+
   /// The view's body.
   public var body: some View
   {
@@ -25,18 +27,26 @@ public struct TransportView: View
       Group
       {
         RecordToggle()
-        PlayButton()
-        StopButton()
+        PlayButton
+        {
+               if transport.isPaused  { transport.isPaused = false }
+          else if transport.isPlaying { transport.isPaused = true  }
+          else                        { transport.isPlaying = true }
+        }
+        StopButton
+        {
+          transport.reset()
+        }
       }
-      Spacer()
-        .frame(width: 44)
-      JogWheel()
-      Spacer()
-        .frame(width: 88)
+      Spacer().frame(width: 44)
+      JogWheel
+      {
+        logi("\(#fileID) \(#function) revolutions (radians): \($0)")
+      }
+      Spacer().frame(width: 88)
       VStack
       {
-        Clock()
-          .fixedSize()
+        Clock().fixedSize()
         HStack
         {
           MetronomeToggle()
@@ -45,10 +55,10 @@ public struct TransportView: View
         .offset(x: 0, y: -20)
       }
     }
+    .environmentObject(transport.time)
   }
 
   public init() {}
-  
 }
 
 // MARK: - TransportView_Previews

@@ -10,37 +10,26 @@ import SwiftUI
 
 // MARK: - JogWheel
 
-/// A view for hosting an instance of `ScrollWheel` for jogging the transport.
+/// A view serving as a jog wheel control for the transport.
 @available(iOS 14.0, *)
 @available(macCatalyst 14.0, *)
 @available(OSX 10.15, *)
-public struct JogWheel: View
+struct JogWheel: View
 {
+  /// The transport being controlled by the wheel.
+  @EnvironmentObject private var transport: Transport
+
+  /// The wheel's action.
+  private let onJog: (Double) -> Void
 
   /// The view's body is simply the hosted scroll wheel.
-  public var body: some View
+  var body: some View
   {
-    Wheel { radians in
-      logi("\(#fileID) \(#function) radians = \(radians)")
-    }
+    Wheel(onJog: onJog)
       .frame(width: 150, height: 150)
   }
 
-  public init() {}
-}
-
-// MARK: - JogWheel_Previews
-
-@available(iOS 14.0, *)
-@available(macCatalyst 14.0, *)
-@available(OSX 10.15, *)
-struct JogWheel_Previews: PreviewProvider
-{
-  static var previews: some View
-  {
-    JogWheel()
-      .preferredColorScheme(.dark)
-      .previewLayout(.sizeThatFits)
-      .padding()
-  }
+  /// Default initializer.
+  /// - Parameter onJog: The action to perform upon jogging.
+  init(onJog: @escaping (Double) -> Void) { self.onJog = onJog }
 }

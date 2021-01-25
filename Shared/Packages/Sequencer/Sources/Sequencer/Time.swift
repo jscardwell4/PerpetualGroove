@@ -14,7 +14,7 @@ import MoonDev
 /// structure. An instance of this class represents a bar beat time value synchronized
 /// with a MIDI clock source. Additionally, callbacks may be registered with an instance
 /// of `Time` that are invoked when the bar beat time represented by the instance changes.
-public final class Time: Named, CustomStringConvertible, Hashable
+public final class Time: ObservableObject, Named, CustomStringConvertible, Hashable
 {
   /// Client for receiving MIDI clock messages.
   private var client = MIDIClientRef()
@@ -33,7 +33,7 @@ public final class Time: Named, CustomStringConvertible, Hashable
       case 0b1111_1000:
         // The packet contains a timing clock message, increment the bar beat time.
         
-        queue.async
+        DispatchQueue.main.async
         {
           [unowned self, increment = barBeatTime.subbeatUnitTime] in
           self.barBeatTime = self.barBeatTime.advanced(by: increment)
@@ -42,7 +42,7 @@ public final class Time: Named, CustomStringConvertible, Hashable
       case 0b1111_1010:
         // The packet contains a start message. Reset the bar beat time.
         
-        queue.async { [unowned self] in self.barBeatTime = .zero }
+        DispatchQueue.main.async { [unowned self] in self.barBeatTime = .zero }
         
       default:
         // The packet does not contain one of the messages handled by `Time`, ignore it.
@@ -50,9 +50,6 @@ public final class Time: Named, CustomStringConvertible, Hashable
         break
     }
   }
-  
-  /// The dispatch queue for working manipulating the time's bar beat time value.
-  private let queue: DispatchQueue
   
   /// The musical representation of the current time kept by the MIDI clock source. The
   /// value of this property updates as MIDI packets are read that originate with the MIDI
@@ -218,10 +215,7 @@ public final class Time: Named, CustomStringConvertible, Hashable
     
     // Initialize `clockName` using the name retrieved from the clock source.
     self.name = name
-    
-    // Initialize the dispatch queue.
-    queue = DispatchQueue(label: name, qos: .userInteractive)
-    
+
     do
     {
       // Initialize the time's MIDI client.
@@ -249,7 +243,7 @@ public final class Time: Named, CustomStringConvertible, Hashable
   {
     // Invoke code that updates `barBeatTime` on the time's dispatch queue for thread
     // safety.
-    queue.async
+    DispatchQueue.main.async
     {
       [unowned self] in
       
@@ -268,7 +262,7 @@ public final class Time: Named, CustomStringConvertible, Hashable
   {
     // Invoke code that updates `barBeatTime` on the time's dispatch queue for thread
     // safety.
-    queue.async
+    DispatchQueue.main.async
     {
       [unowned self] in
       

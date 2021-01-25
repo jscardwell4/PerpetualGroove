@@ -12,7 +12,7 @@ import MoonDev
 
 /// A class that plays a note at the start of each beat.
 @available(iOS 14.0, *)
-public final class Metronome
+public final class Metronome: ObservableObject
 {
   /// The instrument used to produce the metronome's sound.
   let sampler: AVAudioUnitSampler
@@ -24,7 +24,7 @@ public final class Metronome
   /// value of this property causes a callback to be registered with or removed
   /// from the current instance of `Time` according to whether the new value is
   /// `true` or `false`.
-  public var isOn = false
+  @Published public var isOn = false
   {
     didSet
     {
@@ -72,7 +72,7 @@ public final class Metronome
   private func click(_ time: BarBeatTime)
   {
     // Check that the transport is playing.
-    guard sequencer.transport.playing else { return }
+    guard sequencer.transport.isPlaying else { return }
     
     // Play a C4 or G3 over `channel` according to whether this is the first beat
     // of the bar.

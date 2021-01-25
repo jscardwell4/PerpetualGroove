@@ -9,29 +9,20 @@ import SwiftUI
 
 /// A view for toggling the state of recording for the transport.
 @available(iOS 14.0, *)
-public struct RecordToggle: View
+struct RecordToggle: View
 {
+  @EnvironmentObject private var transport: Transport
+
   /// The view's body is composed of a single button that toggle's the value
-  /// of `transport.recording` and styles the button accordingly. 
-  public var body: some View
+  /// of `transport.recording` and styles the button accordingly.
+  var body: some View
   {
-    Button(action: { transport.recording.toggle() })
+    Button(action: { transport.isRecording.toggle() })
     {
       Image("record", bundle: Bundle.module)
     }
-    .accentColor(transport.recording ? .highlightColor : .primaryColor2)
+    .accentColor(transport.isRecording ? .highlightColor : .primaryColor2)
   }
 
   public init() {}
-}
-
-@available(iOS 14.0, *)
-struct RecordToggle_Previews: PreviewProvider {
-  static var previews: some View {
-    RecordToggle()
-      .previewLayout(.sizeThatFits)
-      .preferredColorScheme(.dark)
-      .padding()
-  }
-  
 }

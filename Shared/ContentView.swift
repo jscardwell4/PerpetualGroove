@@ -49,6 +49,7 @@ struct ContentView: View
       {
         Spacer()
         TransportView()
+          .environmentObject(sequencer.transport)
       }
       .padding()
     }
