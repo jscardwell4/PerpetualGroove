@@ -27,8 +27,6 @@ struct SoundFontRow: View
       Spacer()
         .frame(width: 20)
       soundFont.image
-        .resizable()
-        .aspectRatio(contentMode: .fill)
         .frame(width: 54, height: 54, alignment: .center)
         .foregroundColor(Color(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)))
     }

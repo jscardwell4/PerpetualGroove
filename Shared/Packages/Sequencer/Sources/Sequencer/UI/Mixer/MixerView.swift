@@ -21,22 +21,12 @@ public struct MixerView: View
 
   public var body: some View
   {
-    // Generate the grid items.
-    let columns = Array(repeating: GridItem(.flexible(minimum: 100)),
-                        count: sequence.instrumentTracks.count)
-    HStack
+    HStack(spacing: 20)
     {
       MainBus()
-      LazyVGrid(columns: columns, alignment: .center)
-      {
-        ForEach(sequence.instrumentTracks)
-        {
-          TrackBus(track: $0)
-        }
-      }
+      ForEach(sequence.instrumentTracks) { TrackBus(track: $0) }
       AddTrackButton()
     }
-    .fixedSize()
   }
 
   public init() {}

@@ -7,7 +7,7 @@
 //
 import Foundation
 import MoonDev
-import struct SwiftUI.Image
+import SwiftUI
 
 // MARK: - EmaxSoundFont
 
@@ -18,12 +18,12 @@ import struct SwiftUI.Image
 public struct EmaxSoundFont: SoundFont2
 {
   // MARK: Stored Properties
-  
+
   /// The volume of the sound font.
   public let volume: Volume
-  
+
   // MARK: Computed Properties
-  
+
   /// The URL for the sound font within the application's main bundle.
   public var url: URL
   {
@@ -32,25 +32,25 @@ public struct EmaxSoundFont: SoundFont2
       Bundle.module.url(forResource: fileName, withExtension: "sf2")
     }
   }
-  
+
   /// Whether the sound font contains general midi percussion presets. This is `false`
   /// unless the sound font represents the 'drums and percussion' volume.
   public var isPercussion: Bool { volume.isPercussion }
-  
+
   /// The title-cased name of the sound font's volume.
   public var displayName: String { volume.displayName }
-  
+
   /// The name of the sound font file within the application's main bundle.
   public var fileName: String { "Emax Volume \(volume.index)" }
-  
+
   /// The image to display in the user interface for the sound font. Unique to `volume`.
-  public var image: Image { volume.image }
-  
+  public var image: AnyView { AnyView(volume.image.soundFont()) }
+
   // MARK: Initializing
-  
+
   /// Initializing with a volume.
   public init(_ volume: Volume) { self.volume = volume }
-  
+
   /// Initializing with a URL. The sound font is initialized by matching `url.path`
   /// against 'Emax Volume #` where '#' is a number between 1 and 6.
   ///
@@ -67,7 +67,7 @@ public struct EmaxSoundFont: SoundFont2
       throw ErrorMessage(errorDescription: "EmaxSoundFont.Error",
                          failureReason: "Invalid file name")
     }
-    
+
     // Initialize with the parsed volume number.
     self.init(try Volume(index: volume))
   }
@@ -96,16 +96,16 @@ public struct EmaxSoundFont: SoundFont2
 
 @available(iOS 14.0, *)
 @available(OSX 10.15, *)
-public extension EmaxSoundFont
+extension EmaxSoundFont
 {
   /// A structure for specifying volume data within the 'Emax' collection.
-  struct Volume: Equatable
+  public struct Volume: Equatable
   {
     public let index: Int
     public let displayName: String
     public let image: Image
     public let isPercussion: Bool
-    
+
     public static let brassAndWoodwinds =
       Volume(1,
              "Brass & Woodwinds",
@@ -131,7 +131,7 @@ public extension EmaxSoundFont
       Volume(6,
              "Orchestral",
              Image("orchestral", bundle: .module))
-    
+
     private init(_ index: Int,
                  _ displayName: String,
                  _ image: Image,
@@ -142,7 +142,7 @@ public extension EmaxSoundFont
       self.image = image
       self.isPercussion = isPercussion
     }
-    
+
     init(index: Int) throws
     {
       switch index

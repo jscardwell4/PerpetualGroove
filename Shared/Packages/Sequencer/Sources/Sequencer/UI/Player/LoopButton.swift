@@ -6,6 +6,7 @@
 //  Copyright © 2021 Moondeer Studios. All rights reserved.
 //
 import SwiftUI
+import func MoonDev.logi
 
 // MARK: - LoopButton
 
@@ -21,9 +22,9 @@ struct LoopButton: View
   {
     Button(action: action.action)
     {
-      Image(action.imageName, bundle: Bundle.module)
+      Image(action.imageName, bundle: .module)
         .resizable()
-        .frame(width: 34, height: 34)
+        .frame(width: 44, height: 44)
     }
     .accentColor(.primaryColor1)
   }
@@ -72,11 +73,31 @@ struct LoopButton: View
     {
       switch self
       {
-        case .beginRepeat: return { sequencer.markLoopStart() }
-        case .endRepeat: return { sequencer.markLoopEnd() }
-        case .cancelLoop: return { sequencer.exitLoopMode() }
-        case .confirmLoop: return { sequencer.exitLoopMode() }
-        case .toggleLoop: return { sequencer.enterLoopMode() }
+        case .beginRepeat: return
+          {
+            sequencer.markLoopStart()
+            logi("<\(#fileID) \(#function)> sequencer.markLoopStart()")
+          }
+        case .endRepeat: return
+          {
+            sequencer.markLoopEnd()
+            logi("<\(#fileID) \(#function)> sequencer.markLoopEnd()")
+          }
+        case .cancelLoop: return
+          {
+            sequencer.exitLoopMode()
+            logi("<\(#fileID) \(#function)> sequencer.exitLoopMode()")
+          }
+        case .confirmLoop: return
+          {
+            sequencer.exitLoopMode()
+            logi("<\(#fileID) \(#function)> sequencer.exitLoopMode()")
+          }
+        case .toggleLoop: return
+          {
+            sequencer.enterLoopMode()
+            logi("<\(#fileID) \(#function)> sequencer.enterLoopMode()")
+          }
       }
     }
   }

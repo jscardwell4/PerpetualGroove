@@ -88,7 +88,7 @@ public enum Event: Hashable, CustomStringConvertible
         // can be known because `_Event` is a private protocol, meaning declarations
         // of conformance appear within this file.
         
-        fatalError("\(#fileID) \(#function) Failed to downcast event.")
+        fatalError("<\(#fileID) \(#function)> Failed to downcast event.")
     }
   }
   

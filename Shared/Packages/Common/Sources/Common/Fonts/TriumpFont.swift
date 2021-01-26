@@ -6,7 +6,7 @@
 //  Copyright © 2021 Moondeer Studios. All rights reserved.
 //
 import Foundation
-//import CoreTexts
+import SwiftUI
 import MoonDev
 
 // MARK: - TriumpFont
@@ -47,37 +47,16 @@ public struct TriumpFont
     case twelve = "12"
   }
 
-  /// The set of postscript names registered with the font manager.
-  private static var registered: Set<String> = []
-
   /// Declare a private initializer to prevent the creation of invalid
   /// family/volume combinations.
   ///
   /// - Parameters:
   ///   - family: The family designation.
   ///   - volume: The volume designation.
-  private init(_ family: Family, _ volume: Volume)
+  public init(_ family: Family, _ volume: Volume)
   {
     self.family = family
     self.volume = volume
-
-//    guard TriumpFont.registered ∌ postscriptName else { return }
-//
-//    guard let url = Bundle.module.url(forResource: postscriptName, withExtension: "otf")
-//    else
-//    {
-//      logw("\(#fileID) \(#function) Unable to locate font '\(postscriptName)'.")
-//      return
-//    }
-//
-//    guard CTFontManagerRegisterFontsForURL(url as CFURL, .process, nil)
-//    else
-//    {
-//      loge("\(#fileID) \(#function) Failed to register font '\(postscriptName)'.")
-//      return
-//    }
-//
-//    TriumpFont.registered.insert(postscriptName)
   }
 
   /// `TriumpFont` instance for file "Latinotype - Triump-Rg-Blur-01.otf"
@@ -166,5 +145,25 @@ extension TriumpFont: PostscriptFont
   public var postscriptName: String
   {
     "Triump-Rg-\(family.rawValue)\(volume == .unspecified ? "" : "-\(volume.rawValue)")"
+  }
+}
+
+public struct TriumpFontStyle: ViewModifier
+{
+  public var font: TriumpFont
+  public var size: CGFloat
+  public func body(content: Content) -> some View {
+    content
+      .font(Font.custom(font.postscriptName, size: size))
+  }
+}
+
+extension View
+{
+  public func triumpFont(family: TriumpFont.Family,
+                          volume: TriumpFont.Volume,
+                          size: CGFloat) -> some View
+  {
+    modifier(TriumpFontStyle(font: TriumpFont(family, volume), size: size))
   }
 }

@@ -32,21 +32,32 @@ struct ContentView: View
     {
       HStack
       {
-        MixerView()
-          .padding()
-          .fixedSize()
+        MixerView().padding()
         Spacer()
-        VStack
+        VStack(alignment: .trailing)
         {
           DocumentNameField(documentName: $document.name)
           PlayerView()
-            .padding()
-            .fixedSize()
+            .environmentObject(sequencer)
+            .environmentObject(player)
         }
+        .padding()
       }
-      Spacer()
       HStack
       {
+        VStack
+        {
+          Spacer()
+          Button
+          {
+            logw("<\(#fileID) \(#function)> Back button not yet implemented.")
+          }
+          label:
+          {
+            Image(systemName: "chevron.left")
+          }
+          .accentColor(.primaryColor1)
+        }
         Spacer()
         TransportView()
           .environmentObject(sequencer.transport)
@@ -57,20 +68,20 @@ struct ContentView: View
     .background(Color.backgroundColor1)
     .navigationBarHidden(true)
     .statusBar(hidden: true)
-    .edgesIgnoringSafeArea(.all)
+    .edgesIgnoringSafeArea(.bottom)
     .onChange(of: scenePhase)
     {
       phase in
       switch phase
       {
         case .active:
-          logi("\(#fileID) \(#function) scenePhase = .active")
+          logi("<\(#fileID) \(#function)> scenePhase = .active")
         case .inactive:
-          logi("\(#fileID) \(#function) scenePhase = .inactive")
+          logi("<\(#fileID) \(#function)> scenePhase = .inactive")
         case .background:
-          logi("\(#fileID) \(#function) scenePhase = .background")
+          logi("<\(#fileID) \(#function)> scenePhase = .background")
         default:
-          logi("\(#fileID) \(#function) scenePhase = ???")
+          logi("<\(#fileID) \(#function)> scenePhase = ???")
       }
     }
   }
@@ -102,23 +113,10 @@ struct ContentView_Previews: PreviewProvider
 
   static var previews: some View
   {
-    MixerView()
-      .environmentObject(Sequence.mock)
+    ContentView()
+      .environmentObject(document)
+      .environmentObject(document.sequence)
+      .previewLayout(.fixed(width: 2_732 / 2, height: 2_048 / 2))
       .preferredColorScheme(.dark)
-      .previewLayout(.sizeThatFits)
-      .fixedSize()
-//    TransportView()
-//      .padding()
-//      .preferredColorScheme(.dark)
-//      .previewLayout(.sizeThatFits)
-//    PlayerView()
-//      .padding()
-//      .preferredColorScheme(.dark)
-//      .previewLayout(.sizeThatFits)
-//      .fixedSize()
-//    ContentView()
-//      .environmentObject(document)
-//      .previewLayout(.fixed(width: 2_732 / 2, height: 2_048 / 2))
-//      .preferredColorScheme(.dark)
   }
 }

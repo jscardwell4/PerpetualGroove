@@ -517,7 +517,7 @@ extension Instrument: Mock
       result.append(try! Instrument(preset: preset, audioEngine: audioEngine))
     }
     logv("""
-    \(#fileID) \(#function) [
+    <\(#fileID) \(#function)> [
       \(result.map(\.description).joined(separator: "\n  "))
     """)
     return result

@@ -7,7 +7,7 @@
 //
 import Foundation
 import MoonDev
-import struct SwiftUI.Image
+import SwiftUI
 
 // MARK: - AnySoundFont
 
@@ -48,19 +48,13 @@ public enum AnySoundFont: SoundFont2
   public var fileName: String { underlyingFont.fileName }
 
   /// The image to display in the user interface for the sound font.
-  public var image: Image { underlyingFont.image }
+  public var image: AnyView { underlyingFont.image }
 
   /// Initialize a sound font using it's file location.
   public init(url: URL) throws
   {
-    do
-    {
-      self = .emax(try EmaxSoundFont(url: url))
-    }
-    catch
-    {
-      self = SoundFont.spyro
-    }
+    do { self = .emax(try EmaxSoundFont(url: url)) }
+    catch { self = SoundFont.spyro }
   }
 }
 
@@ -86,15 +80,17 @@ extension AnySoundFont: Hashable
   }
 }
 
+// MARK: Mock
+
 @available(iOS 14.0, *)
 @available(macCatalyst 14.0, *)
 @available(OSX 10.15, *)
 extension AnySoundFont: Mock
 {
+  public static var mock: AnySoundFont { SoundFont.bundledFonts.randomElement()! }
 
-  static public var mock: AnySoundFont { SoundFont.bundledFonts.randomElement()! }
-
-  static public func mocks(_ count: Int) -> [AnySoundFont] {
+  public static func mocks(_ count: Int) -> [AnySoundFont]
+  {
     var result: [AnySoundFont] = []
     for _ in 0 ..< count
     {

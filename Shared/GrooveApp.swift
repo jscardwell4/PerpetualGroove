@@ -36,7 +36,7 @@ final class GrooveApp: App
           }
           catch
           {
-            logw("\(#fileID) \(#function) Failed to generate bookmark for \(name).")
+            logw("<\(#fileID) \(#function)> Failed to generate bookmark for \(name).")
           }
 
           let oldName = oldDocument?.fileURL?.deletingPathExtension().lastPathComponent
@@ -45,7 +45,7 @@ final class GrooveApp: App
           sequencer.sequence = currentDocument.document.sequence
 
           logi("""
-          \(#fileID) \(#function) \
+          <\(#fileID) \(#function)> \
           \(oldName == nil ? "" : "closed '\(oldName!)' and ")opened '\(name)'
           """)
 
@@ -53,7 +53,7 @@ final class GrooveApp: App
           // A document has been closed.
 
           logi("""
-          \(#fileID) \(#function) \
+          <\(#fileID) \(#function)> \
           closed '\(old.fileURL!.lastPathComponent)'
           """)
 

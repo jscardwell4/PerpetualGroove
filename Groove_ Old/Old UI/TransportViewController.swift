@@ -155,7 +155,7 @@ public final class TransportViewController: UIViewController
   @IBAction public func record() {
     transport.recording.toggle()
     logi("""
-      \(#fileID) \(#function) \
+      <\(#fileID) \(#function)> \
       transport.isRecording = \(self.transport.recording)
       """)
   }
@@ -166,11 +166,11 @@ public final class TransportViewController: UIViewController
   {
     if transport.playing {
       transport.paused = true
-      logi("\(#fileID) \(#function) transport.isPaused = true")
+      logi("<\(#fileID) \(#function)> transport.isPaused = true")
     }
     else {
       transport.playing = true
-      logi("\(#fileID) \(#function) transport.isPlaying = true")
+      logi("<\(#fileID) \(#function)> transport.isPlaying = true")
     }
   }
 
@@ -178,13 +178,13 @@ public final class TransportViewController: UIViewController
   /// If the transport is not playing or paused then this button is disabled.
   @IBAction public func stop() {
     transport.reset()
-    logi("\(#fileID) \(#function) transport has been reset.")
+    logi("<\(#fileID) \(#function)> transport has been reset.")
   }
 
   /// Handles touch down events for the jog wheel. Sets `transport.jogging` to `true`.
   @IBAction private func beginJog() {
     transport.jogging = true
-    logi("\(#fileID) \(#function) transport.jogging = true")
+    logi("<\(#fileID) \(#function)> transport.jogging = true")
   }
 
   /// Action invoked by the value changes of `jogWheel`.
@@ -199,6 +199,6 @@ public final class TransportViewController: UIViewController
   /// Sets `transport.jogging` to `false`.
   @IBAction private func endJog() {
     transport.jogging = false
-    logi("\(#fileID) \(#function) transport.jogging = false")
+    logi("<\(#fileID) \(#function)> transport.jogging = false")
   }
 }

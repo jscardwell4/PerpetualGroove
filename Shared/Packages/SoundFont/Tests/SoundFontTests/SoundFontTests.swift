@@ -22,15 +22,6 @@ class SoundFontTests: XCTestCase
   static var emax4Image: Image!
   static var emax5Image: Image!
   static var emax6Image: Image!
-  #if os(iOS)
-  static var spyroJSON: ArrayJSONValue!
-  static var emax1JSON: ArrayJSONValue!
-  static var emax2JSON: ArrayJSONValue!
-  static var emax3JSON: ArrayJSONValue!
-  static var emax4JSON: ArrayJSONValue!
-  static var emax5JSON: ArrayJSONValue!
-  static var emax6JSON: ArrayJSONValue!
-  #endif
 
   override static func setUp()
   {
@@ -50,75 +41,10 @@ class SoundFontTests: XCTestCase
     emax5Image = Image("percussion", bundle: SoundFont.bundle)
     emax6Image = Image("orchestral", bundle: SoundFont.bundle)
 
-    #if os(iOS)
-    guard let json0 =
-      ArrayJSONValue((try? JSONSerialization
-                        .parse(resource: "SPYRO's Pure Oscillators", in: SoundFont.bundle)) ?? nil)
-    else
-    {
-      fatalError("Failed to locate test file")
-    }
-    spyroJSON = json0
-    guard let json1 =
-      ArrayJSONValue((try? JSONSerialization
-                        .parse(resource: "Emax Volume 1", in: SoundFont.bundle)) ??
-        nil)
-    else
-    {
-      fatalError("Failed to locate test file")
-    }
-    emax1JSON = json1
-    guard let json2 =
-      ArrayJSONValue((try? JSONSerialization
-                        .parse(resource: "Emax Volume 2", in: SoundFont.bundle)) ??
-        nil)
-    else
-    {
-      fatalError("Failed to locate test file")
-    }
-    emax2JSON = json2
-    guard let json3 =
-      ArrayJSONValue((try? JSONSerialization
-                        .parse(resource: "Emax Volume 3", in: SoundFont.bundle)) ??
-        nil)
-    else
-    {
-      fatalError("Failed to locate test file")
-    }
-    emax3JSON = json3
-    guard let json4 =
-      ArrayJSONValue((try? JSONSerialization
-                        .parse(resource: "Emax Volume 4", in: SoundFont.bundle)) ??
-        nil)
-    else
-    {
-      fatalError("Failed to locate test file")
-    }
-    emax4JSON = json4
-    guard let json5 =
-      ArrayJSONValue((try? JSONSerialization
-                        .parse(resource: "Emax Volume 5", in: SoundFont.bundle)) ??
-        nil)
-    else
-    {
-      fatalError("Failed to locate test file")
-    }
-    emax5JSON = json5
-    guard let json6 =
-      ArrayJSONValue((try? JSONSerialization
-                        .parse(resource: "Emax Volume 6", in: SoundFont.bundle)) ??
-        nil)
-    else
-    {
-      fatalError("Failed to locate test file")
-    }
-    emax6JSON = json6
-    #endif
   }
 
   static var allTests = [
     ("testImages", testImages),
-    ("testPresets", testPresets),
     ("testURLs", testURLs),
     ("testSubscript", testSubscript),
     ("testEquality", testEquality)
@@ -133,26 +59,6 @@ class SoundFontTests: XCTestCase
     expect(EmaxSoundFont(.worldInstruments).image) == SoundFontTests.emax4Image
     expect(EmaxSoundFont(.drumsAndPercussion).image) == SoundFontTests.emax5Image
     expect(EmaxSoundFont(.orchestral).image) == SoundFontTests.emax6Image
-  }
-
-  func testPresets()
-  {
-    #if os(iOS)
-    let spyroPresets = SoundFontTests.spyroJSON.value.compactMap(PresetHeader.init)
-    expect(SoundFont.spyro.presetHeaders) == spyroPresets
-    let emax1Presets = SoundFontTests.emax1JSON.value.compactMap(PresetHeader.init)
-    expect(EmaxSoundFont(.brassAndWoodwinds).presetHeaders) == emax1Presets
-    let emax2Presets = SoundFontTests.emax2JSON.value.compactMap(PresetHeader.init)
-    expect(EmaxSoundFont(.keyboardsAndSynths).presetHeaders) == emax2Presets
-    let emax3Presets = SoundFontTests.emax3JSON.value.compactMap(PresetHeader.init)
-    expect(EmaxSoundFont(.guitarsAndBasses).presetHeaders) == emax3Presets
-    let emax4Presets = SoundFontTests.emax4JSON.value.compactMap(PresetHeader.init)
-    expect(EmaxSoundFont(.worldInstruments).presetHeaders) == emax4Presets
-    let emax5Presets = SoundFontTests.emax5JSON.value.compactMap(PresetHeader.init)
-    expect(EmaxSoundFont(.drumsAndPercussion).presetHeaders) == emax5Presets
-    let emax6Presets = SoundFontTests.emax6JSON.value.compactMap(PresetHeader.init)
-    expect(EmaxSoundFont(.orchestral).presetHeaders) == emax6Presets
-    #endif
   }
 
   func testURLs()

@@ -15,21 +15,11 @@ import SwiftUI
 @available(iOS 14.0, *)
 public struct PlayerView: View
 {
-  /// The currently active tool or `.none` if no tool is currently active.
-  @State private var currentTool = AnyTool.none
+  /// The controller for the player.
+  @EnvironmentObject private var controller: Controller
 
-  /// The currently active mode.
-  @State private var currentMode = sequencer.mode
-
-  /// Holds the view's subscriptions.
-  private var subscriptions: Set<AnyCancellable> = []
-
-  /// Initializer simply configures the view's subscriptions.
-  public init()
-  {
-    player.$currentTool.assign(to: \.currentTool, on: self).store(in: &subscriptions)
-    sequencer.$mode.assign(to: \.currentMode, on: self).store(in: &subscriptions)
-  }
+  /// The player.
+  @EnvironmentObject private var player: Player
 
   /// The player view encapsulates the host for an instance of `PlayerSKView`,
   /// a text field for displaying and modifying the name of the currently loaded
@@ -40,20 +30,20 @@ public struct PlayerView: View
     {
       PlayerHost()
 
-      HStack
+      HStack(spacing: 20)
       {
         Spacer()
-        ToolButton(tool: .newNodeGenerator)
-        ToolButton(tool: .addNode)
-        ToolButton(tool: .removeNode)
-        ToolButton(tool: .deleteNode)
-        ToolButton(tool: .nodeGenerator)
-        ToolButton(tool: .rotate)
+        ToolButton(tool: .newNodeGenerator, currentTool: $player.currentTool)
+        ToolButton(tool: .addNode, currentTool: $player.currentTool)
+        ToolButton(tool: .removeNode, currentTool: $player.currentTool)
+        ToolButton(tool: .deleteNode, currentTool: $player.currentTool)
+        ToolButton(tool: .nodeGenerator, currentTool: $player.currentTool)
+        ToolButton(tool: .rotate, currentTool: $player.currentTool)
         Spacer()
 
         Group
         {
-          if currentMode == .loop
+          if controller.mode == .loop
           {
             LoopButton(action: .beginRepeat)
             LoopButton(action: .endRepeat)
@@ -72,6 +62,8 @@ public struct PlayerView: View
     .frame(width: 447)
     .accentColor(.primaryColor1)
   }
+
+  public init(){}
 }
 
 // MARK: - PlayerView_Previews

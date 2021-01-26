@@ -41,7 +41,7 @@ public struct TransportView: View
       Spacer().frame(width: 44)
       JogWheel
       {
-        logi("\(#fileID) \(#function) revolutions (radians): \($0)")
+        logi("<\(#fileID) \(#function)> revolutions (radians): \($0)")
       }
       Spacer().frame(width: 88)
       VStack

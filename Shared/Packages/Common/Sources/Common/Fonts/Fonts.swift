@@ -28,7 +28,7 @@ public extension UIFont
     else
     {
       fatalError("""
-      \(#fileID) \(#function) \
+      <\(#fileID) \(#function)> \
       Failed to create font using postscript name '\(fontStyle.postscriptName)'
       """)
     }

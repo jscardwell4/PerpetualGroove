@@ -187,7 +187,7 @@ public final class MixerViewController: UICollectionViewController,
             .instantiateInitialViewController() as? InstrumentViewController
     else
     {
-      fatalError("\(#fileID) \(#function) Failed to instantiate view controller.")
+      fatalError("<\(#fileID) \(#function)> Failed to instantiate view controller.")
     }
     return viewController
   }

@@ -381,7 +381,7 @@ extension Sequence: Mock
   {
     let sequence = Sequence()
     for track in InstrumentTrack.mocks(3) { sequence.add(track: track) }
-    logv("\(#fileID) \(#function) \(sequence)")
+    logv("<\(#fileID) \(#function)> \(sequence)")
     return sequence
   }
 

@@ -16,7 +16,7 @@ import UIKit
 
 /// Coordinates `Node` and `PlayerNode` operations.
 @available(iOS 14.0, *)
-public final class Player
+public final class Player: ObservableObject
 {
   // MARK: Stored Properties
 
@@ -96,6 +96,8 @@ public final class Player
 
       // Update the player node's touch handler.
       playerNode?.receiver = currentTool.tool
+
+      logi("<\(#fileID) \(#function)> current tool is now \(currentTool)")
     }
   }
 

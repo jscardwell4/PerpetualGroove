@@ -71,7 +71,7 @@ public final class GrooveDocument: FileDocument, Identifiable, ObservableObject
     sequence = Sequence(file: file)
 
     logv("""
-    \(#fileID) \(#function)
+    <\(#fileID) \(#function)>
     loaded file with the following contents: \(String(data: data, encoding: .utf8)!)
     """)
   }
@@ -101,7 +101,7 @@ public final class GrooveDocument: FileDocument, Identifiable, ObservableObject
     // Initialize the document's sequence.
     sequence = Sequence(file: file)
 
-    logi("\(#fileID) \(#function) loaded file '\(name)'")
+    logi("<\(#fileID) \(#function)> loaded file '\(name)'")
   }
 
   /// This method generates a file wrapper around the document's raw data representation.
@@ -114,7 +114,7 @@ public final class GrooveDocument: FileDocument, Identifiable, ObservableObject
     let data = File(sequence: sequence).data
 
     logv("""
-    \(#fileID) \(#function)
+    <\(#fileID) \(#function)>
     saving file with the following contents: \(String(data: data, encoding: .utf8)!)
     """)
 

@@ -5,9 +5,9 @@
 //  Created by Jason Cardwell on 1/13/21.
 //  Copyright © 2021 Moondeer Studios. All rights reserved.
 //
-//import CoreText
 import Foundation
 import MoonDev
+import SwiftUI
 
 // MARK: - EvelethFont
 
@@ -47,9 +47,6 @@ public struct EvelethFont
     case bold = "Bold"
   }
 
-  /// The set of postscript names registered with the font manager.
-  private static var registered: Set<String> = []
-
   /// Declare a private initializer to prevent the creation of invalid
   /// family/weight combinations.
   /// - Parameters:
@@ -59,24 +56,6 @@ public struct EvelethFont
   {
     self.family = family
     self.weight = weight
-
-//    guard EvelethFont.registered ∌ postscriptName else { return }
-//
-//    guard let url = Bundle.module.url(forResource: postscriptName, withExtension: "otf")
-//    else
-//    {
-//      logw("\(#fileID) \(#function) Unable to locate font '\(postscriptName)'.")
-//      return
-//    }
-//
-//    guard CTFontManagerRegisterFontsForURL(url as CFURL, .process, nil)
-//    else
-//    {
-//      loge("\(#fileID) \(#function) Failed to register font '\(postscriptName)'.")
-//      return
-//    }
-//
-//    EvelethFont.registered.insert(postscriptName)
   }
 
   /// `EvelethFont` instance for "Yellow Design Studio - Eveleth Clean Regular.otf"
@@ -136,4 +115,30 @@ public struct EvelethFont
 extension EvelethFont: PostscriptFont
 {
   public var postscriptName: String { "Eveleth\(family.rawValue)\(weight.rawValue)" }
+}
+
+@available(iOS 14.0, *)
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
+public struct EvelethFontStyle: ViewModifier
+{
+  public var font: EvelethFont
+  public var size: CGFloat
+  public func body(content: Content) -> some View {
+    content
+      .font(Font.custom(font.postscriptName, size: size))
+  }
+}
+
+@available(iOS 14.0, *)
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
+extension View
+{
+  public func evelethFont(family: EvelethFont.Family,
+                          weigth: EvelethFont.Weight,
+                          size: CGFloat) -> some View
+  {
+    modifier(EvelethFontStyle(font: EvelethFont(family, weigth), size: size))
+  }
 }

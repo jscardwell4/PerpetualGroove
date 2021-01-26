@@ -10,13 +10,16 @@ import SwiftUI
 
 // MARK: - Marquee
 
+// TODO: Reimplement using `AnyView` to solve double label problem.
+/// A view for displaying a piece of text, scrolling once if the
+/// text is too long to fit in its entirety.
 @available(iOS 14.0, *)
 @available(macCatalyst 14.0, *)
 @available(OSX 10.15, *)
 struct Marquee: View
 {
-  /// The text being displayed by the marquee.
-  @Binding var text: String
+  /// The track whose name is being displayed by the marquee.
+  @EnvironmentObject var track: InstrumentTrack
 
   /// The width necessary to display `text` in its entirety.
   @State private var fullWidth: CGFloat = 0
@@ -39,31 +42,40 @@ struct Marquee: View
   /// Whether the entirety of `text` is visible without animation.
   private var isStatic: Bool { frameAlignment == .center }
 
-  /// The animation used for scrolling the marquee.
-  private var animation: Animation?
+  /// The text to display for the marquee.
+  private func text(width: CGFloat) -> AnyView
   {
-    isStatic
-      ? nil
-      : Animation.default.repeatForever(autoreverses: true).speed(0.125)
+    if width <= Marquee.safeWidth
+    {
+      return AnyView(Text(track.displayName))
+    }
+    else
+    {
+      return AnyView(HStack { Text(track.displayName); Text(track.displayName) })
+    }
   }
 
   /// The view's body is composed of a simple piece of text.
   var body: some View
   {
-    MarqueeText(text: text)
+    text(width: calculateWidth())
+      .busLabel()
       .fixedSize()
       .offset(x: textOffset, y: 0)
       .frame(width: Marquee.fixedWidth,
              height: Marquee.fixedHeight,
              alignment: .leading)
       .clipped(antialiased: true)
+      .onTapGesture {
+        logw("<\(#fileID) \(#function)> Renaming tracks is not yet implemented.")
+      }
       .onAppear
       {
         [self] in
         let fullWidth = calculateWidth()
         if fullWidth <= Marquee.safeWidth
         {
-          textOffset = (Marquee.fixedWidth - fullWidth) / 2
+          textOffset = Marquee.fixedWidth * 0.5 - fullWidth * 0.5
         }
         else
         {
@@ -82,7 +94,7 @@ struct Marquee: View
     let textStorage = NSTextStorage()
     let font = UIFont(name: "Triump-Rg-Rock-02", size: 14)!
     textStorage.addAttribute(.font, value: font, range: NSRange())
-    textStorage.mutableString.setString(text)
+    textStorage.mutableString.setString(track.displayName)
 
     // Create a container to define how the text will be laid out.
     let container = NSTextContainer()
@@ -99,55 +111,12 @@ struct Marquee: View
     textStorage.addLayoutManager(manager)
 
     // Get the glyph range and the bounding rect for laying out all the glyphs
-    let range = manager.glyphRange(forCharacterRange: NSRange(0 ..< text.count),
-                                   actualCharacterRange: nil)
+    let range = manager.glyphRange(
+      forCharacterRange: NSRange(0 ..< track.displayName.count),
+      actualCharacterRange: nil
+    )
     manager.ensureLayout(forGlyphRange: range)
 
     return manager.boundingRect(forGlyphRange: range, in: container).width
-  }
-
-  struct MarqueeText: View
-  {
-    let text: String
-
-    var body: some View
-    {
-      HStack
-      {
-        Text(text)
-        Text(text)
-      }
-      .busLabel()
-    }
-  }
-}
-
-// MARK: - Marquee_Previews
-
-@available(iOS 14.0, *)
-@available(macCatalyst 14.0, *)
-@available(OSX 10.15, *)
-struct Marquee_Previews: PreviewProvider
-{
-  static var previews: some View
-  {
-    Marquee(text: .constant("Bus 1"))
-      .previewDisplayName("Short Name")
-      .previewLayout(.sizeThatFits)
-      .preferredColorScheme(.dark)
-      .border(Color.white, width: 1)
-      .padding()
-    Marquee(text: .constant("73 Wide Rhodes"))
-      .previewDisplayName("Long Name")
-      .previewLayout(.sizeThatFits)
-      .preferredColorScheme(.dark)
-      .border(Color.white, width: 1)
-      .padding()
-    Marquee.MarqueeText(text: "73 Wide Rhodes")
-      .previewDisplayName("Double Text")
-      .previewLayout(.sizeThatFits)
-      .preferredColorScheme(.dark)
-      .border(Color.white, width: 1)
-      .padding()
   }
 }

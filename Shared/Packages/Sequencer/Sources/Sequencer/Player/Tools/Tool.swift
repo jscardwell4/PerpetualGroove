@@ -31,7 +31,7 @@ public protocol PresentingTool: Tool {}
 
 /// Enumeration of the possible tools.
 @available(iOS 14.0, *)
-public enum AnyTool: Int
+public enum AnyTool: Int, CustomStringConvertible
 {
   /// The empty tool.
   case none = -1
@@ -67,6 +67,20 @@ public enum AnyTool: Int
 //      case .nodeGenerator: return player.existingGeneratorTool
 //      case .rotate: return player.rotateTool
       default: return nil
+    }
+  }
+
+  /// A short description of the tool.
+  public var description: String {
+    switch self
+    {
+      case .none: return "none"
+      case .newNodeGenerator: return "newNodeGenerator"
+      case .addNode: return "addNode"
+      case .removeNode: return "removeNode"
+      case .deleteNode: return "deleteNode"
+      case .nodeGenerator: return "nodeGenerator"
+      case .rotate: return "rotate"
     }
   }
 

@@ -50,22 +50,22 @@ public final class PlayerScene: SKScene
 
   override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?)
   {
-    logi("\(#fileID) \(#function)")
+    logi("<\(#fileID) \(#function)>")
   }
 
   override public func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?)
   {
-    logi("\(#fileID) \(#function)")
+    logi("<\(#fileID) \(#function)>")
   }
 
   override public func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?)
   { 
-    logi("\(#fileID) \(#function)")
+    logi("<\(#fileID) \(#function)>")
   }
 
   override public func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?)
   {
-    logi("\(#fileID) \(#function)")
+    logi("<\(#fileID) \(#function)>")
   }
 
   #endif
@@ -74,17 +74,17 @@ public final class PlayerScene: SKScene
   // Mouse-based event handling
   override public func mouseDown(with event: NSEvent)
   {
-    logi("\(#fileID) \(#function)")
+    logi("<\(#fileID) \(#function)>")
   }
 
   override public func mouseDragged(with event: NSEvent)
   {
-    logi("\(#fileID) \(#function)")
+    logi("<\(#fileID) \(#function)>")
   }
 
   override public func mouseUp(with event: NSEvent)
   {
-    logi("\(#fileID) \(#function)ß")
+    logi("<\(#fileID) \(#function)>ß")
   }
   #endif
 }

@@ -47,8 +47,6 @@ public struct SoundFontPicker: View
           .foregroundColor(Color(#colorLiteral(red: 0.7289999723, green: 0.7020000219, blue: 0.6629999876, alpha: 1)))
           .padding(.trailing, 8)
         soundFont.image
-          .resizable()
-          .aspectRatio(contentMode: .fill)
           .frame(width: 24, alignment: .center)
           .foregroundColor(Color(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)))
           .padding(.trailing, 24)

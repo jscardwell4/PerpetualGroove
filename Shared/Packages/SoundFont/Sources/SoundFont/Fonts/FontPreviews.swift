@@ -26,8 +26,6 @@ struct FontPreview: View
       Spacer()
         .frame(width: 44)
       font.image
-        .resizable()
-        .aspectRatio(contentMode: .fit)
         .foregroundColor(Color(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)))
     }
     .padding()

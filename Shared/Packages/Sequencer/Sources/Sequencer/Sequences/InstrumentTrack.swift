@@ -714,7 +714,7 @@ extension InstrumentTrack: Mock
       ))
     }
     logv("""
-    \(#fileID) \(#function) [
+    <\(#fileID) \(#function)> [
       \(result.map(\.description).joined(separator: "\n  "))
     """)
     return result

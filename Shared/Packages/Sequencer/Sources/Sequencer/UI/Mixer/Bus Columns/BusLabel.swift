@@ -16,8 +16,8 @@ struct BusLabel: ViewModifier
   {
     content
       .allowsTightening(true)
-      .font(Font.custom("Triump-Rg-Rock-02", size: 14))
-      .foregroundColor(Color("mixerLabel", bundle: .module))
+      .triumpFont(family: .rock, volume: .two, size: 14)
+      .foregroundColor(.busLabel)
   }
 }
 
@@ -26,4 +26,9 @@ extension View
   /// Decorates the view to appear like one of the mixer's bus labels.
   /// - Returns: The modified content.
   func busLabel() -> some View { modifier(BusLabel()) }
+}
+
+extension Color
+{
+  static let busLabel = Color("mixerLabel", bundle: .module)
 }

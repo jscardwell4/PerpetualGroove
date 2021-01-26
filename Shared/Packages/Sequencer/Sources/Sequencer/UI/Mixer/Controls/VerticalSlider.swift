@@ -76,21 +76,13 @@ struct VerticalSlider: View
     .onEnded
     {
       v in
-      let finalOffset = v.translation.height
-      let 𝝙value = VerticalSlider.value(for: finalOffset)
-      self.value -= 𝝙value
-      logi("""
-        \(#fileID) \(#function) .onEnded \
-        finalOffset = \(finalOffset), \
-        𝝙value = \(𝝙value), \
-        value = \(self.value)
-        """)
+      self.value -= VerticalSlider.value(for: v.translation.height)
     }
 
   }
 
   /// The predetermined width of the slider's track.
-  private static let trackSize = CGSize(width: 8, height: 200)
+  private static let trackSize = CGSize(width: 8, height: 180)
 
   /// The predetermined size of the slider.
   private static let sliderSize = CGSize(width: pillSize.width + pillSize.height,
@@ -114,9 +106,9 @@ struct VerticalSlider: View
       track
         .frame(height: VerticalSlider.trackSize.height - VerticalSlider.pillSize.height)
       pill
-        .position(x: VerticalSlider.pillOffset, y: min((valueOffset + dragOffset),
-                                                       VerticalSlider.trackSize.height))
-        // - TODO: Add limit in the other direction.
+        .position(x: VerticalSlider.pillOffset,
+                  y: min((valueOffset + dragOffset), VerticalSlider.trackSize.height))
+        // TODO: Add limit in the other direction.
         .animation(.interactiveSpring())
     }
     .frame(width: VerticalSlider.sliderSize.width,

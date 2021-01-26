@@ -10,6 +10,7 @@ import MoonDev
 
 // MARK: - Knob
 
+// TODO: Convert to drag gesture to make it easier to turn the knob.
 struct Knob: View
 {
 
@@ -26,12 +27,7 @@ struct Knob: View
     }
   }
 
-  @State private var value: Float = 0
-
-  init(value: Float)
-  {
-    self.value = value
-  }
+  @Binding var value: Float
 
   var body: some View
   {
@@ -49,18 +45,5 @@ struct Knob: View
       .rotationEffect(angle + Angle(degrees: Double(value) * 90))
     }
     .gesture(rotation)
-  }
-}
-
-// MARK: - Knob_Previews
-
-struct Knob_Previews: PreviewProvider
-{
-  static var previews: some View
-  {
-    Knob(value: -0.5)
-      .padding()
-      .preferredColorScheme(.dark)
-      .previewLayout(.sizeThatFits)
   }
 }

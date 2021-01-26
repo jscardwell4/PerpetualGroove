@@ -55,541 +55,541 @@ final class NoteChordTests: XCTestCase {
 
   func testChordGenerator() {
     expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.major)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.minor)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.augmented)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.diminished)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.suspendedFourth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.f), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.f), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.flatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.suspendedSecond)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.sixth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.a), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.addTwo)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.majorSeventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.majorSeventhFlatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.majorSeventhSharpFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.seventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.seventhFlatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.seventhSharpFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.seventhSuspendedFourth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.f), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.f), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.minorAddTwo)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.minorSixth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.a), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.minorSeventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.minorMajorSeventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.minorSeventhFlatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.diminishedSeventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.a), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.diminishedMajorSeventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.fifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.sixthNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.a), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.majorSixthNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.a), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.majorSeventhSharpEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.majorNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.majorNinthFlatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.majorNinthSharpFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.majorNinthSharpEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.majorThirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.majorThirteenthFlatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.majorThirteenthSharpEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhFlatNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhSharpNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhSharpEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhFlatFifthFlatNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhFlatFifthSharpNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhSharpFifthFlatNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhSharpFifthSharpNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhFlatNinthSharpNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhAddThirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhFlatThirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.a, .flat), .six), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.a, .flat), .six), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhFlatNinthSharpEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhSharpNinthSharpEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhFlatNinthFlatThirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.a, .flat), .six), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.a, .flat), .six), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhSharpNinthFlatThirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.a, .flat), .six), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.a, .flat), .six), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhSharpEleventhFlatThirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.a, .flat), .six), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.a, .flat), .six), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhFlatNinthSharpNinthSharpEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.ninth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.ninthFlatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.ninthSharpFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.ninthSharpEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.ninthFlatThirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.a, .flat), .six), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.a, .flat), .six), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.ninthSharpEleventhFlatThirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.a, .flat), .six), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.a, .flat), .six), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.eleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.f), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.f), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.thirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.thirteenthFlatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.thirteenthFlatNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.thirteenthSharpNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.thirteenthSharpEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.thirteenthSuspendedFourth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.f), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.f), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.minorSharpFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.minorSixthNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.a), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.minorSeventhAddFourth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.f), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.f), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.minorSeventhAddEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.f), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.f), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.minorSeventhFlatFifthFlatNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.minorNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.minorNinthMajorSeventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.minorNinthFlatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.minorEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.f), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.f), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.minorThirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.f), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.f), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.diminishedSeventhAddNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.a), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.minorEleventhFlatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.f), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.f), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.minorEleventhMajorSeventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.f), .five), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.f), .five), duration: .eighth, velocity: .𝑚𝑓)
                 ]
     expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhAltered)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.a, .flat), .six), duration: .eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: MIDINote(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: MIDINote(.accidental(.a, .flat), .six), duration: .eighth, velocity: .𝑚𝑓)
                 ]
   }
 
