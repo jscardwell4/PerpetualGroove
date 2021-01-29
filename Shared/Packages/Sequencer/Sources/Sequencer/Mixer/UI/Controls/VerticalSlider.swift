@@ -123,37 +123,3 @@ struct VerticalSlider: View
     _value = value
   }
 }
-
-// MARK: - VerticalSlider_Previews
-
-struct VerticalSlider_Previews: PreviewProvider
-{
-  static var previews: some View
-  {
-    VerticalSlider(value: .constant(0.0))
-      .previewDisplayName("0.0")
-      .previewLayout(.sizeThatFits)
-      .preferredColorScheme(.dark)
-      .padding()
-    VerticalSlider(value: .constant(0.25))
-      .previewDisplayName("0.25")
-      .previewLayout(.sizeThatFits)
-      .preferredColorScheme(.dark)
-      .padding()
-    VerticalSlider(value:.constant( 0.5))
-      .previewDisplayName("0.5")
-      .previewLayout(.sizeThatFits)
-      .preferredColorScheme(.dark)
-      .padding()
-    VerticalSlider(value: .constant(0.75))
-      .previewDisplayName("0.75")
-      .previewLayout(.sizeThatFits)
-      .preferredColorScheme(.dark)
-      .padding()
-    VerticalSlider(value: .constant(1.0))
-      .previewDisplayName("1.0")
-      .previewLayout(.sizeThatFits)
-      .preferredColorScheme(.dark)
-      .padding()
-  }
-}

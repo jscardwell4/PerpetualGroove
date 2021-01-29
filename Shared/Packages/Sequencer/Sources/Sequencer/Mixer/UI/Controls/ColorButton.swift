@@ -11,27 +11,23 @@ import SwiftUI
 
 // MARK: - ColorButton
 
-/// A view for displaying the color associated with an instrument track and
-/// for selecting a track as the current track.
+/// A button for displaying a track's assigned color and for setting
+/// the player's current node dispatch source.
 @available(iOS 14.0, *)
 @available(macCatalyst 14.0, *)
 @available(OSX 10.15, *)
 struct ColorButton: View
 {
-  /// The track whose color is being displayed.
-  @EnvironmentObject var track: InstrumentTrack
+  /// The bus for which this button serves as a control.
+  @EnvironmentObject var bus: Bus
 
   var body: some View
   {
-    Button
-    {
-      track.isCurrentDispatch = true
-      logi("<\(#fileID) \(#function)> selected track '\(track.displayName)'")
-    }
+    Button { bus.isCurrentDispatch = true }
     label:
     {
-      Image("color_swatch\(track.isCurrentDispatch ? "-selected" : "")", bundle: .module)
+      Image("color_swatch\(bus.isCurrentDispatch ? "-selected" : "")", bundle: .module)
     }
-    .accentColor(track.color.color)
+    .accentColor(bus.color)
   }
 }

@@ -35,88 +35,10 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
   private var programEvent: ChannelEvent!
 
   /// The instrument used by the track.
-  public let instrument: Instrument
+  public var instrument: Instrument
 
   /// The color used for this track.
   @Published public var color: Color
-
-  // TODO: Figure out how to use `Combine` to fix this flag toggling issue.
-
-  /// Flag indicating whether the track has had its output suppressed. This can
-  /// happen when the user specifically mutes the track or when the user has at
-  /// least one other track set to solo. Toggling this value swaps the values
-  /// held by `volume` and `cachedVolume`.
-  @Published public var isMute = false
-  {
-    didSet(wasMute) { if isMute ^ wasMute { swap(&volume, &cachedVolume) } }
-  }
-
-  /// Flag indicating whether the track should be silenced because one or more of the other
-  /// tracks in the sequence are soloing.
-//  @Published var isForceMuted = false
-//  {
-//    didSet(wasForceMuted) {
-//      if isForceMuted ^ wasForceMuted
-//      {
-//        switch (isForceMuted, wasForceMuted) {
-//          case (true, false):
-//            isMute = isMuted
-//          default /* (false, true) */:
-//            isMute = isMuted
-//        }
-//      }
-//    }
-//  }
-
-  /// `true` if the user has toggle mute for this track and `false` otherwise.
-//  @Published public var isMuted = false
-//  {
-//    didSet(wasMuted) {
-//      if isMuted ^ wasMuted
-//      {
-//        switch (isMuted, wasMuted) {
-//          case (true, false):
-//            isMute = true
-//          default /* (false, true) */:
-//            isMute = isForceMuted
-//        }
-//      }
-//    }
-//  }
-
-  /// Flag indicating whether the track has been added to the group of tracks
-  /// exclusively selected to generate audio output.
-  ///
-  /// Whether the track generates output is determined by the following rules:
-  ///  1. A track with a `solo` value of `true` always generates output.
-  ///  2. As long as there is at least one track with a `solo` value of `true`, any track
-  ///     with a `solo` value of `false` does not generate output.
-  ///  3. When there are not any tracks with a `solo` value of `true`, whether or not a
-  ///     track generates output is determined by the value of their `mute` property.
-//  @Published public var isSoloed = false
-//  {
-//    didSet(wasSoloed) {
-//      if isSoloed ^ wasSoloed
-//      {
-//        switch (isSoloed, wasSoloed)
-//        {
-//          case (true, false):
-//            isMuted = false
-//            isForceMuted = false
-//            isMute = false
-//
-//          default /* (false, true) */:
-//            isForceMuted = !(sequencer.sequence?.soloTracks.isEmpty == false)
-//            isMute = isForceMuted
-//        }
-//      }
-//    }
-//  }
-
-  /// This property stores the value of `volume` before being set to `0` when setting
-  /// `isMuted` to `true` so that the volume level may be restored when setting `isMuted`
-  /// to `false`.
-  private var cachedVolume: Float = 0
 
   /// Indicates whether new events have been added to the track without posting a
   /// `didUpdate` notification.
@@ -142,12 +64,6 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
 
   /// Holds the track's subscriptions.
   private var subscriptions: Set<AnyCancellable> = []
-
-  /// Subject for publishing changes to the track's volume.
-  private let volumeSubject = PassthroughSubject<Float, Never>()
-
-  /// Subject for publishing changes to the track's pan.
-  private let panSubject = PassthroughSubject<Float, Never>()
 
   /// Subject for publishing changes to the instrument's sound font.
   private let soundFontSubject = PassthroughSubject<AnySoundFont, Never>()
@@ -186,30 +102,6 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
         case (true, true):
           break
       }
-    }
-  }
-
-  /// Derived property wrapping `instrument.volume`.
-  public var volume: Float
-  {
-    get { instrument.volume }
-    set
-    {
-      let newValue = (0 ... 1).clamp(newValue)
-      volumeSubject.send(newValue)
-      instrument.volume = newValue
-    }
-  }
-
-  /// Derived property wrapping `instrument.pan`.
-  public var pan: Float
-  {
-    get { instrument.pan }
-    set
-    {
-      let newValue = (-1 ... 1).clamp(newValue)
-      panSubject.send(newValue)
-      instrument.pan = newValue
     }
   }
 
@@ -628,8 +520,6 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
     {
       sequencer.transport.didResetPublisher
         .sink { if self.isModified { self.isModified = false } }
-      instrument.volumePublisher.sink { self.volumeSubject.send($0) }
-      instrument.panPublisher.sink { self.panSubject.send($0) }
       instrument.$preset.sink
       { [self] in
         let fontModified = instrument.preset.font != $0.font
@@ -676,22 +566,6 @@ extension InstrumentTrack
   public var didUpdatePublisher: AnyPublisher<Void, Never>
   {
     didUpdateSubject
-      .eraseToAnyPublisher()
-  }
-
-  /// Publisher for track volume changes.
-  public var volumePublisher: AnyPublisher<Float, Never>
-  {
-    volumeSubject
-      .removeDuplicates()
-      .eraseToAnyPublisher()
-  }
-
-  /// Publisher for track pan changes.
-  public var panPublisher: AnyPublisher<Float, Never>
-  {
-    panSubject
-      .removeDuplicates()
       .eraseToAnyPublisher()
   }
 

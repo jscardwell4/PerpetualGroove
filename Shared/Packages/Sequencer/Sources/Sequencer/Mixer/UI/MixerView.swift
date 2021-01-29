@@ -17,45 +17,21 @@ import SwiftUI
 @available(OSX 10.15, *)
 public struct MixerView: View
 {
+  @EnvironmentObject var controller: Controller
   @EnvironmentObject var sequence: Sequence
-  @EnvironmentObject var sequencer: Controller
 
-  @State private var soloIds: Set<UUID> = []
+  @StateObject private var mixer = MixerModel()
 
   public var body: some View
   {
     HStack(spacing: 20)
     {
-      MainBus().environmentObject(sequencer.audioEngine)
-      ForEach(sequence.instrumentTracks)
-      {
-        TrackBus(isSoloed: self.soloIds.contains($0.id),
-                 isForceMuted: !(self.soloIds.isEmpty
-                                  || self.soloIds.contains($0.id))).environmentObject($0)
-      }
+      MainBus().environmentObject(controller.audioEngine)
+      ForEach(mixer.buses) { TrackBus().environmentObject($0) }
       AddTrackButton()
     }
-    .onPreferenceChange(TrackBus.SoloPreferenceKey.self)
-    {
-      self.soloIds = $0
-      //      [self] uuids in
-      //      logi("<\(#fileID) \(#function)> uuids = \(uuids)")
-      //      switch (uuids.isEmpty, uuids.contains(track.id))
-      //      {
-      //        case (true, _):
-      //          isForceMuted = false
-      //          track.isMute = isMuted
-      //
-      //        case (false, true):
-      //          isForceMuted = false
-      //          track.isMute = false
-      //          isMuted = false
-      //
-      //        case (false, false):
-      //          isForceMuted = true
-      //          track.isMute = true
-      //      }
-    }
+    .onPreferenceChange(TrackBus.SoloPreferenceKey.self) { mixer.update(for: $0) }
+    .onAppear { mixer.sequence = sequence}
   }
 
   public init() {}

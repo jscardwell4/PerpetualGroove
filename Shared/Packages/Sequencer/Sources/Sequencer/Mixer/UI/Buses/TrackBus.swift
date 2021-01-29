@@ -18,40 +18,22 @@ import SwiftUI
 @available(OSX 10.15, *)
 struct TrackBus: View
 {
-  @EnvironmentObject var track: InstrumentTrack
-
-  /// Bound to the `SoloButton`.
-  @State private var isSoloed = false
-
-  /// Bound to the `MuteButton`.
-  @State private var isMuted = false
-
-  /// Flag indicating whether this bus has been force muted.
-  let isForceMuted: Bool
+  @EnvironmentObject var bus: Bus
 
   var body: some View
   {
     VStack(spacing: 20)
     {
       Text("VOL").controlLabel()
-      VerticalSlider(value: $track.volume)
+      VerticalSlider(value: bus.volume)
       Text("PAN").controlLabel()
-      Knob(value: $track.pan)
-      SoloButton(isSoloed: $isSoloed)
-      MuteButton(isDisabled: isSoloed || isForceMuted,
-                 isMute: track.isMute,
-                 isMuted: $isMuted)
+      Knob(value: bus.pan)
+      SoloButton()
+      MuteButton().disabled(bus.isMuteDisabled)
       SoundFontButton()
       Marquee()
       ColorButton()
     }
-  }
-
-  init(isSoloed: Bool = false, isForceMuted: Bool = false, isMuted: Bool = false)
-  {
-    self.isSoloed = isSoloed
-    self.isForceMuted = isForceMuted
-    self.isMuted = isMuted
   }
 
   struct SoloPreferenceKey: PreferenceKey

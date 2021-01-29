@@ -17,9 +17,14 @@ import SoundFont
 /// A class for generating audio output via a sampler loaded with a preset from a
 /// sound font file.
 @available(iOS 14.0, *)
-public final class Instrument
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
+public final class Instrument: ObservableObject, Identifiable
 {
   // MARK: Stored Properties
+
+  /// The instrument's unique identifier.
+  public let id = UUID()
 
   /// The instrument's MIDI client.
   private var client = MIDIClientRef()
@@ -62,12 +67,6 @@ public final class Instrument
   /// A subject for publishing channel changes.
   private let channelSubject = PassthroughSubject<UInt8, Never>()
 
-  /// A subject for publishing volume changes.
-  private let volumeSubject = PassthroughSubject<Float, Never>()
-
-  /// A subject for publishing pan changes.
-  private let panSubject = PassthroughSubject<Float, Never>()
-
   // MARK: Computed Properties
 
   /// The sound font utitlized by `preset`.
@@ -98,52 +97,39 @@ public final class Instrument
   /// The mixer input bus to which the instrument is connected.
   public var bus: AVAudioNodeBus
   {
-    sampler.destination(forMixer: sequencer.audioEngine.mixer, bus: 0)?.connectionPoint.bus ?? -1
+    sampler.destination(forMixer: sequencer.audioEngine.mixer, bus: 0)?.connectionPoint
+      .bus ?? -1
   }
 
   /// The output level for the mixer input bus to which the instrument is connected.
   /// The value of this property is ≥ `0` and ≤ `1`.
-  public var volume: Float
+  @Published public var volume: Float = 1
   {
-    get { sampler.volume }
-    set
-    {
-      let newValue = (0 ... 1).clamp(newValue)
-      volumeSubject.send(newValue)
-      sampler.volume = newValue
-    }
+    didSet { sampler.volume = (0 ... 1).clamp(volume) }
   }
 
   /// The position in the stereo field for the mixer input bus to which the
   /// instrument is connected. The value of this property is ≥ `-1` and ≤ `1`
   /// which corresponds to full left and full right.
-  public var pan: Float
+  @Published public var pan: Float = 0
   {
-    get { sampler.pan }
-    set
-    {
-      let newValue = (-1 ... 1).clamp(newValue)
-      panSubject.send(newValue)
-      sampler.pan = newValue
-    }
+    didSet { sampler.pan = (-1 ... 1).clamp(pan) }
   }
 
   /// The gain in decibels of all notes played by the audio unit used by the
   /// instrument to generate audio output. The value of this property is ≥ `-90`
   /// and ≤ `12`. The default value is 0.
-  public var masterGain: Float
+  @Published public var masterGain: Float = 0
   {
-    get { sampler.masterGain }
-    set { sampler.masterGain = (-90 ... 12).clamp(newValue) }
+    didSet { sampler.masterGain = (-90 ... 12).clamp(masterGain) }
   }
 
   /// The position in the stereo field for the audio unit used by the instrument
   /// to generate audio output. The value of this property is ≥ `-1` and ≤ `1`
   /// which corresponds to full left and full right.
-  public var stereoPan: Float
+  @Published public var stereoPan: Float = 0
   {
-    get { sampler.stereoPan }
-    set { sampler.stereoPan = (-1 ... 1).clamp(newValue) }
+    didSet { sampler.stereoPan = (-1 ... 1).clamp(stereoPan) }
   }
 
   /// Sends a 'note on' event through `outPort` to `endPoint` using `generator`.
@@ -156,11 +142,15 @@ public final class Instrument
     do
     {
       // Use the generator to send a 'note on' event.
-      try generator.sendNoteOn(outPort: outPort, endPoint: endPoint, ticks: sequencer.time.ticks)
+      try generator.sendNoteOn(
+        outPort: outPort,
+        endPoint: endPoint,
+        ticks: sequencer.time.ticks
+      )
 
       // Translate the generator's duration into nanoseconds.
       let nanoseconds = UInt64(generator.duration.seconds(withBPM: sequencer.tempo)
-                                * Double(NSEC_PER_SEC))
+        * Double(NSEC_PER_SEC))
 
       // Convert the nanosecond value into a dispatch time.
       let deadline = DispatchTime(uptimeNanoseconds: nanoseconds)
@@ -352,18 +342,6 @@ extension Instrument: CustomStringConvertible
 @available(iOS 14.0, *)
 extension Instrument
 {
-  /// `volumeSubject` type-erased.
-  public var volumePublisher: AnyPublisher<Float, Never>
-  {
-    volumeSubject.eraseToAnyPublisher()
-  }
-
-  /// `panSubject` type-erased.
-  public var panPublisher: AnyPublisher<Float, Never>
-  {
-    panSubject.eraseToAnyPublisher()
-  }
-
   /// `channelSubject` type-erased.
   public var channelPublisher: AnyPublisher<UInt8, Never>
   {

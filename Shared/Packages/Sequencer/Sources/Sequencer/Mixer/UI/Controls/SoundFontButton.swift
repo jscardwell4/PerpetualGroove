@@ -9,12 +9,14 @@ import func MoonDev.logw
 import SoundFont
 import SwiftUI
 
+/// A button for manipulating the sound font used by a track's instrument.
 @available(iOS 14.0, *)
 @available(macCatalyst 14.0, *)
 @available(OSX 10.15, *)
 struct SoundFontButton: View
 {
-  @EnvironmentObject var track: InstrumentTrack
+  /// The bus for which this button serves as a control.
+  @EnvironmentObject var bus: Bus
 
   var body: some View
   {
@@ -22,10 +24,7 @@ struct SoundFontButton: View
     {
       logw("<\(#fileID) \(#function)> button action not yet implemented.")
     }
-    label:
-    {
-      track.instrument.soundFont.image
-    }
-    .frame(minHeight: 44)
+    label: { bus.image }
+      .frame(minHeight: 44)
   }
 }

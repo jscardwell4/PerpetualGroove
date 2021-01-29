@@ -10,22 +10,23 @@ import SwiftUI
 
 // MARK: - SoloButton
 
+/// A button for toggling a track's participation in a 'Solo Group'.
 @available(iOS 14.0, *)
 @available(macCatalyst 14.0, *)
 @available(OSX 10.15, *)
 struct SoloButton: View
 {
-  @EnvironmentObject var track: InstrumentTrack
-  @Binding var isSoloed: Bool
+  /// The bus for which this button serves as a control.
+  @EnvironmentObject var bus: Bus
 
   var body: some View
   {
-    Button(action: { self.isSoloed.toggle() })
+    Button(action: { self.bus.isSoloed.toggle() })
     {
       Text("Solo").evelethFont(family: .normal, weigth: .light, size: 14)
     }
-    .preference(key: TrackBus.SoloPreferenceKey.self, value: isSoloed ? [track.id] : [])
+    .preference(key: TrackBus.SoloPreferenceKey.self, value: bus.isSoloed ? [bus.id] : [])
     .frame(width: 68, height: 14)
-    .accentColor(Color("\(isSoloed ? "" : "dis")engagedTintColor", bundle: .module))
+    .accentColor(Color("\(bus.isSoloed ? "" : "dis")engagedTintColor", bundle: .module))
   }
 }

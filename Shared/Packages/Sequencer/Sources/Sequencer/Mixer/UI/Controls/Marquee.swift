@@ -18,8 +18,8 @@ import SwiftUI
 @available(OSX 10.15, *)
 struct Marquee: View
 {
-  /// The track whose name is being displayed by the marquee.
-  @EnvironmentObject var track: InstrumentTrack
+  /// The bus for which this marquee serves as a control.
+  @EnvironmentObject var bus: Bus
 
   /// The width necessary to display `text` in its entirety.
   @State private var fullWidth: CGFloat = 0
@@ -51,11 +51,11 @@ struct Marquee: View
     {
       return AnyView(
         TextField("Track Name",
-                  text: $track.displayName,
+                  text: $bus.track.displayName,
                   onEditingChanged: { self.isEditing = $0 },
                   onCommit:
                   {
-                    logi("<\(#fileID) \(#function)> renamed track to \(track.name)")
+                    logi("<\(#fileID) \(#function)> renamed track to \(bus.track.name)")
                   })
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
@@ -65,11 +65,11 @@ struct Marquee: View
     {
       if width <= Marquee.safeWidth
       {
-        return AnyView(Text(track.displayName))
+        return AnyView(Text(bus.track.displayName))
       }
       else
       {
-        return AnyView(HStack { Text(track.displayName); Text(track.displayName) })
+        return AnyView(HStack { Text(bus.track.displayName); Text(bus.track.displayName) })
       }
     }
   }
@@ -111,7 +111,7 @@ struct Marquee: View
     let textStorage = NSTextStorage()
     let font = UIFont(name: "Triump-Rg-Rock-02", size: 14)!
     textStorage.addAttribute(.font, value: font, range: NSRange())
-    textStorage.mutableString.setString(track.displayName)
+    textStorage.mutableString.setString(bus.track.displayName)
 
     // Create a container to define how the text will be laid out.
     let container = NSTextContainer()
@@ -129,7 +129,7 @@ struct Marquee: View
 
     // Get the glyph range and the bounding rect for laying out all the glyphs
     let range = manager.glyphRange(
-      forCharacterRange: NSRange(0 ..< track.displayName.count),
+      forCharacterRange: NSRange(0 ..< bus.track.displayName.count),
       actualCharacterRange: nil
     )
     manager.ensureLayout(forGlyphRange: range)
