@@ -14,6 +14,10 @@ import Sequencer
 import SoundFont
 import SwiftUI
 
+#if canImport(UIKit)
+import UIKit
+#endif
+
 // MARK: - ContentView
 
 /// The main content.
@@ -22,9 +26,12 @@ import SwiftUI
 @available(OSX 10.15, *)
 struct ContentView: View
 {
-  @EnvironmentObject var document: GrooveDocument
+  @EnvironmentObject var sequence: Sequence
+  @EnvironmentObject var sequencer: Controller
 
-  @Environment(\.scenePhase) private var scenePhase: ScenePhase
+  @State private var isEditing = false
+
+  private var subscriptions: Set<AnyCancellable> = []
 
   var body: some View
   {
@@ -36,54 +43,46 @@ struct ContentView: View
         Spacer()
         VStack(alignment: .trailing)
         {
-          DocumentNameField(documentName: $document.name)
+          SequenceNameField(isEditing: $isEditing)
+          {
+            logi("<\(#fileID) \(#function)> renamed document to \(sequence.name)")
+          }
           PlayerView()
-            .environmentObject(sequencer)
-            .environmentObject(player)
         }
         .padding()
       }
+
       HStack
       {
         VStack
         {
           Spacer()
-          Button
-          {
-            logw("<\(#fileID) \(#function)> Back button not yet implemented.")
-          }
-          label:
+          Button(action: goBack)
           {
             Image(systemName: "chevron.left")
           }
           .accentColor(.primaryColor1)
         }
         Spacer()
-        TransportView()
-          .environmentObject(sequencer.transport)
+        TransportView().environmentObject(sequencer.transport)
       }
       .padding()
     }
     .padding()
     .background(Color.backgroundColor1)
+    .navigationTitle("")
     .navigationBarHidden(true)
+    .navigationBarBackButtonHidden(true)
     .statusBar(hidden: true)
     .edgesIgnoringSafeArea(.bottom)
-    .onChange(of: scenePhase)
-    {
-      phase in
-      switch phase
-      {
-        case .active:
-          logi("<\(#fileID) \(#function)> scenePhase = .active")
-        case .inactive:
-          logi("<\(#fileID) \(#function)> scenePhase = .inactive")
-        case .background:
-          logi("<\(#fileID) \(#function)> scenePhase = .background")
-        default:
-          logi("<\(#fileID) \(#function)> scenePhase = ???")
-      }
-    }
+    .keyboardAdaptive()
+  }
+
+  private func goBack()
+  {
+    #if canImport(UIKit)
+    UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true) {}
+    #endif
   }
 }
 
@@ -94,27 +93,12 @@ struct ContentView: View
 @available(OSX 10.15, *)
 struct ContentView_Previews: PreviewProvider
 {
-  @State static var document: GrooveDocument = {
-    let sequence = Sequence()
-    for index in 0 ..< 3
-    {
-      let font = SoundFont.bundledFonts.randomElement()!
-      let header = font.presetHeaders.randomElement()!
-      let preset = Instrument.Preset(font: font, header: header, channel: 0)
-      let instrument = try! Instrument(preset: preset, audioEngine: audioEngine)
-      sequence.add(track: try! InstrumentTrack(
-        index: index + 1,
-        color: Track.Color[index],
-        instrument: instrument
-      ))
-    }
-    return GrooveDocument(sequence: sequence)
-  }()
+  @State static var document = GrooveDocument(sequence: Sequence.mock)
 
   static var previews: some View
   {
     ContentView()
-      .environmentObject(document)
+      .environmentObject(sequencer)
       .environmentObject(document.sequence)
       .previewLayout(.fixed(width: 2_732 / 2, height: 2_048 / 2))
       .preferredColorScheme(.dark)

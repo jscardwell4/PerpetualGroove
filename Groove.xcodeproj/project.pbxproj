@@ -105,6 +105,8 @@
 		C252078925B8AF0600B1E0C5 /* Eveleth-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252073625B8AF0600B1E0C5 /* Eveleth-Regular.otf */; };
 		C252078A25B8AF0600B1E0C5 /* Eveleth-Clean-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252073725B8AF0600B1E0C5 /* Eveleth-Clean-Thin.otf */; };
 		C252078B25B8AF0600B1E0C5 /* Eveleth-Clean-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252073725B8AF0600B1E0C5 /* Eveleth-Clean-Thin.otf */; };
+		C26F4B1C25C3445E00519879 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26F4B1B25C3445E00519879 /* AppDelegate.swift */; };
+		C26F4B1D25C3445E00519879 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26F4B1B25C3445E00519879 /* AppDelegate.swift */; };
 		C2BAFFC525B915F000312A57 /* Emax Volume 3.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2BAFFBE25B915F000312A57 /* Emax Volume 3.sf2 */; };
 		C2BAFFC625B915F000312A57 /* Emax Volume 3.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2BAFFBE25B915F000312A57 /* Emax Volume 3.sf2 */; };
 		C2BAFFC725B915F000312A57 /* Emax Volume 1.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2BAFFBF25B915F000312A57 /* Emax Volume 1.sf2 */; };
@@ -951,6 +953,12 @@
 		C252073725B8AF0600B1E0C5 /* Eveleth-Clean-Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Eveleth-Clean-Thin.otf"; sourceTree = "<group>"; };
 		C252C842259D23DE000A0BA2 /* Nimble.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Nimble.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C263FD00259D4250002B3377 /* Nimble.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Nimble.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C26F4B1425C2378300519879 /* NSMetadataItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSMetadataItem.swift; sourceTree = "<group>"; };
+		C26F4B1525C2378300519879 /* DocumentItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentItem.swift; sourceTree = "<group>"; };
+		C26F4B1625C2378400519879 /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
+		C26F4B1725C2378400519879 /* LocalDocumentItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalDocumentItem.swift; sourceTree = "<group>"; };
+		C26F4B1825C237A800519879 /* DocumentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentManager.swift; sourceTree = "<group>"; };
+		C26F4B1B25C3445E00519879 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C286EDFC25B758010008B514 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C286EDFF25B758010008B514 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C286EE0125B758010008B514 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1795,6 +1803,7 @@
 			children = (
 				C286EE1925B75CBE0008B514 /* Packages */,
 				C24841B325B7BD1900C42DAE /* GrooveApp.swift */,
+				C26F4B1B25C3445E00519879 /* AppDelegate.swift */,
 				C24841B525B7BD1900C42DAE /* ContentView.swift */,
 			);
 			path = Shared;
@@ -2846,6 +2855,11 @@
 		C286EDF725B757FF0008B514 /* Groove_ Old */ = {
 			isa = PBXGroup;
 			children = (
+				C26F4B1625C2378400519879 /* Document.swift */,
+				C26F4B1825C237A800519879 /* DocumentManager.swift */,
+				C26F4B1525C2378300519879 /* DocumentItem.swift */,
+				C26F4B1725C2378400519879 /* LocalDocumentItem.swift */,
+				C26F4B1425C2378300519879 /* NSMetadataItem.swift */,
 				C286F2CC25B75CCE0008B514 /* Supporting Files */,
 				C286EDFE25B758010008B514 /* Preview Content */,
 				C286EF9825B75CBF0008B514 /* Resources */,
@@ -4137,6 +4151,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C26F4B1C25C3445E00519879 /* AppDelegate.swift in Sources */,
 				C24841DC25B7BD1C00C42DAE /* GrooveApp.swift in Sources */,
 				C24841E025B7BD1C00C42DAE /* ContentView.swift in Sources */,
 			);
@@ -4146,6 +4161,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C26F4B1D25C3445E00519879 /* AppDelegate.swift in Sources */,
 				C24841DD25B7BD1C00C42DAE /* GrooveApp.swift in Sources */,
 				C24841E125B7BD1C00C42DAE /* ContentView.swift in Sources */,
 			);

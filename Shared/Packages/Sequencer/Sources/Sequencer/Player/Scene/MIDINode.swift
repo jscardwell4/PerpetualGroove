@@ -109,7 +109,7 @@ public final class MIDINode: SKSpriteNode
     {
       try generator.receiveNoteOn(endPoint: endPoint,
                                   identifier: senderID,
-                                  ticks: time.ticks)
+                                  ticks: sequencer.time.ticks)
       playing = true
     }
     catch
@@ -125,7 +125,7 @@ public final class MIDINode: SKSpriteNode
     {
       try generator.receiveNoteOff(endPoint: endPoint,
                                    identifier: senderID,
-                                   ticks: time.ticks)
+                                   ticks: sequencer.time.ticks)
       playing = false
     }
     catch
@@ -233,7 +233,7 @@ public final class MIDINode: SKSpriteNode
     guard !stationary else { return }
 
     // Update the current segment and resume movement of the node.
-    guard let nextSegment = path.segmentIndex(for: time.barBeatTime)
+    guard let nextSegment = path.segmentIndex(for: sequencer.time.barBeatTime)
     else
     {
       fatalError("Failed to get the index for the next segment")
@@ -312,7 +312,7 @@ public final class MIDINode: SKSpriteNode
               generator: AnyGenerator,
               identifier: UUID = UUID()) throws
   {
-    initTime = time.barBeatTime
+    initTime = sequencer.time.barBeatTime
     initialTrajectory = trajectory
     jogging = sequencer.transport.isJogging
 
@@ -321,7 +321,7 @@ public final class MIDINode: SKSpriteNode
     self.identifier = identifier
 
     // Get the size of the player which is needed for calculating trajectories
-    guard let playerSize = player.playerNode?.size
+    guard let playerSize = sequencer.player.playerNode?.size
     else
     {
       fatalError("creating node with nil value for `player.playerNode`")

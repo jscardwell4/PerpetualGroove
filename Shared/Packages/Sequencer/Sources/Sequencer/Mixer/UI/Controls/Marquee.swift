@@ -27,6 +27,8 @@ struct Marquee: View
   /// The horizontal offset for `text`.
   @State private var textOffset: CGFloat = 0
 
+  @State private var isEditing = false
+
   /// The alignment used when framing `text`.
   @State private var frameAlignment: Alignment = .center
 
@@ -45,13 +47,30 @@ struct Marquee: View
   /// The text to display for the marquee.
   private func text(width: CGFloat) -> AnyView
   {
-    if width <= Marquee.safeWidth
+    if isEditing
     {
-      return AnyView(Text(track.displayName))
+      return AnyView(
+        TextField("Track Name",
+                  text: $track.displayName,
+                  onEditingChanged: { self.isEditing = $0 },
+                  onCommit:
+                  {
+                    logi("<\(#fileID) \(#function)> renamed track to \(track.name)")
+                  })
+                    .autocapitalization(.none)
+                    .disableAutocorrection(true)
+      )
     }
     else
     {
-      return AnyView(HStack { Text(track.displayName); Text(track.displayName) })
+      if width <= Marquee.safeWidth
+      {
+        return AnyView(Text(track.displayName))
+      }
+      else
+      {
+        return AnyView(HStack { Text(track.displayName); Text(track.displayName) })
+      }
     }
   }
 
@@ -66,9 +85,7 @@ struct Marquee: View
              height: Marquee.fixedHeight,
              alignment: .leading)
       .clipped(antialiased: true)
-      .onTapGesture {
-        logw("<\(#fileID) \(#function)> Renaming tracks is not yet implemented.")
-      }
+      .onTapGesture { self.isEditing = true }
       .onAppear
       {
         [self] in

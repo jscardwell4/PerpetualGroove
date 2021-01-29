@@ -39,7 +39,11 @@ public final class GrooveDocument: FileDocument, Identifiable, ObservableObject
   public let id = UUID()
 
   /// The document's display name.
-  public var name = "Awesomesauce"
+  public var name: String
+  {
+    get { sequence.name }
+    set { sequence.name = newValue }
+  }
 
   /// Initializing with a sequence
   ///
@@ -70,10 +74,7 @@ public final class GrooveDocument: FileDocument, Identifiable, ObservableObject
     // Initialize the document's sequence.
     sequence = Sequence(file: file)
 
-    logv("""
-    <\(#fileID) \(#function)>
-    loaded file with the following contents: \(String(data: data, encoding: .utf8)!)
-    """)
+    logi("<\(#fileID) \(#function)> loaded file \(file.name)")
   }
 
   /// Initializing via a file read operation.
@@ -95,9 +96,6 @@ public final class GrooveDocument: FileDocument, Identifiable, ObservableObject
       throw CocoaError(.fileReadCorruptFile)
     }
 
-    // Grab the file name for display purposes.
-    name = fileURL.deletingPathExtension().lastPathComponent
-
     // Initialize the document's sequence.
     sequence = Sequence(file: file)
 
@@ -111,12 +109,10 @@ public final class GrooveDocument: FileDocument, Identifiable, ObservableObject
   /// - Returns: A file wrapper holding the document's raw data.
   public func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper
   {
-    let data = File(sequence: sequence).data
+    let file = File(sequence: sequence)
+    let data = file.data
 
-    logv("""
-    <\(#fileID) \(#function)>
-    saving file with the following contents: \(String(data: data, encoding: .utf8)!)
-    """)
+    logi("<\(#fileID) \(#function)> saving file \(file.name)")
 
     return .init(regularFileWithContents: data)
   }

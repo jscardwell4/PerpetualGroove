@@ -61,9 +61,9 @@ public enum AnyTool: Int, CustomStringConvertible
     switch self
     {
 //      case .newNodeGenerator: return player.newGeneratorTool
-      case .addNode: return player.addTool
-      case .removeNode: return player.removeTool
-      case .deleteNode: return player.deleteTool
+      case .addNode: return sequencer.player.addTool
+      case .removeNode: return sequencer.player.removeTool
+      case .deleteNode: return sequencer.player.deleteTool
 //      case .nodeGenerator: return player.existingGeneratorTool
 //      case .rotate: return player.rotateTool
       default: return nil
@@ -85,7 +85,7 @@ public enum AnyTool: Int, CustomStringConvertible
   }
 
   /// Whether the tool is player's current tool.
-  public var isCurrentTool: Bool { player.currentTool == self }
+  public var isCurrentTool: Bool { sequencer.player.currentTool == self }
 
   /// Non-optional initalizer from `rawValue`. Invalid values return `none`.
   public init(_ int: Int) { self = AnyTool(rawValue: int) ?? .none }
@@ -97,7 +97,7 @@ public enum AnyTool: Int, CustomStringConvertible
   {
     self = .none
     guard let tool = tool,
-          player.playerNode != nil
+          sequencer.player.playerNode != nil
     else
     {
       self = .none
@@ -107,9 +107,9 @@ public enum AnyTool: Int, CustomStringConvertible
     switch ObjectIdentifier(tool)
     {
 //      case ObjectIdentifier(player.newGeneratorTool!): self = .newNodeGenerator
-      case ObjectIdentifier(player.addTool!): self = .addNode
-      case ObjectIdentifier(player.removeTool!): self = .removeNode
-      case ObjectIdentifier(player.deleteTool!): self = .deleteNode
+      case ObjectIdentifier(sequencer.player.addTool!): self = .addNode
+      case ObjectIdentifier(sequencer.player.removeTool!): self = .removeNode
+      case ObjectIdentifier(sequencer.player.deleteTool!): self = .deleteNode
 //      case ObjectIdentifier(player.existingGeneratorTool!): self = .nodeGenerator
       default: self = .none
     }

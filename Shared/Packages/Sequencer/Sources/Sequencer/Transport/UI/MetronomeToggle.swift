@@ -16,7 +16,7 @@ import SwiftUI
 struct MetronomeToggle: View
 {
   /// The metronome being controlled by the button.
-  @StateObject private var metronome: Metronome = sequencer.metronome
+  @EnvironmentObject var metronome: Metronome
 
   /// The view's body is composed of a single button that toggles the value of
   /// `metronome.isOn` and adjusts its color accordingly.

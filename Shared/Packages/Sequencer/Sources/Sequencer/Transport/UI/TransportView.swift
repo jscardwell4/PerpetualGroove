@@ -17,7 +17,7 @@ import SwiftUI
 @available(iOS 14.0, *)
 public struct TransportView: View
 {
-  @EnvironmentObject private var transport: Transport
+  @EnvironmentObject var transport: Transport
 
   /// The view's body.
   public var body: some View
@@ -46,16 +46,15 @@ public struct TransportView: View
       Spacer().frame(width: 88)
       VStack
       {
-        Clock().fixedSize()
+        Clock().environmentObject(transport.time).fixedSize()
         HStack
         {
-          MetronomeToggle()
+          MetronomeToggle().environmentObject(sequencer.metronome)
           TempoSlider()
         }
         .offset(x: 0, y: -20)
       }
     }
-    .environmentObject(transport.time)
   }
 
   public init() {}

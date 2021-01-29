@@ -49,7 +49,7 @@ public final class AddTool: Tool
         case let touch?:
 
           // Check that there is a dispatch object from which to grab a track color.
-          guard let dispatchColor = player.currentDispatch?.color else { return }
+          guard let dispatchColor = sequencer.player.currentDispatch?.color else { return }
 
           // Update the timestamp and location.
           timestamp = touch.timestamp
@@ -141,7 +141,7 @@ public final class AddTool: Tool
     guard !velocities.isEmpty, !location.isNull else { return }
 
     // Check that there is a valid dispatch target.
-    guard let dispatch = player.currentDispatch else { return }
+    guard let dispatch = sequencer.player.currentDispatch else { return }
 
     // Calculate the velocity as the average of the elements in `velocities`.
     let velocity = CGVector.mean(velocities)
@@ -150,7 +150,7 @@ public final class AddTool: Tool
     let trajectory = MIDINode.Trajectory(velocity: velocity, position: location)
 
     // Add a new node to the player.
-    player.placeNew(trajectory, target: dispatch, generator: generator)
+    sequencer.player.placeNew(trajectory, target: dispatch, generator: generator)
 
     // Update `touch`.
     touch = nil

@@ -157,7 +157,7 @@ public final class RemoveTool: Tool
   /// Adds foreground or background light to each node for the current dispatch.
   private func refreshLighting()
   {
-    guard let dispatch = player.currentDispatch else { return }
+    guard let dispatch = sequencer.player.currentDispatch else { return }
 
     let dispatchNodes = dispatch.nodeManager.nodes.compactMap { $0.reference }
 
@@ -178,7 +178,7 @@ public final class RemoveTool: Tool
   private func willChangeDispatch(_: Foundation.Notification)
   {
     guard active else { return }
-    player.currentDispatch?.nodes.forEach(addBackgroundLight)
+    sequencer.player.currentDispatch?.nodes.forEach(addBackgroundLight)
   }
 
   /// Handler for notifications that the player's current dispatch did change.
@@ -186,7 +186,7 @@ public final class RemoveTool: Tool
   {
     touch = nil
     guard active else { return }
-    player.currentDispatch?.nodes.forEach(addForegroundLight)
+    sequencer.player.currentDispatch?.nodes.forEach(addForegroundLight)
   }
 
   /// Initialize with the player node and whether removal generates events or deletes.
@@ -197,17 +197,17 @@ public final class RemoveTool: Tool
     self.playerNode = playerNode
 
     // Subscribe to dispatch notifications from the player.
-    dispatchSubscription = player.$currentDispatch.sink(receiveValue: {
+    dispatchSubscription = sequencer.player.$currentDispatch.sink(receiveValue: {
       [self] (newValue: NodeDispatch?) in
       touch = nil
       guard active else { return }
-      player.currentDispatch?.nodes.forEach(addBackgroundLight(to:))
+      sequencer.player.currentDispatch?.nodes.forEach(addBackgroundLight(to:))
       newValue?.nodes.forEach(addForegroundLight(to:))
     })
 
     // Subscribe to node addition notifications from the player.
     addNodeSubscription = NotificationCenter.default
-      .publisher(for: .playerDidAddNode, object: player)
+      .publisher(for: .playerDidAddNode, object: sequencer.player)
       .sink(receiveValue: {
         [self] notification in
 
@@ -220,7 +220,7 @@ public final class RemoveTool: Tool
         }
 
         // Add a foreground or background light depending on the node's dispatch.
-        if player.currentDispatch === dispatch
+        if sequencer.player.currentDispatch === dispatch
         {
           addForegroundLight(to: node)
         }
@@ -239,7 +239,7 @@ public final class RemoveTool: Tool
     do
     {
       // Check that the current dispatch's node manager can be accessed.
-      guard let manager = player.currentDispatch?.nodeManager else { return }
+      guard let manager = sequencer.player.currentDispatch?.nodeManager else { return }
 
       // The removal action is determined by the value of `deleteFromTrack`.
       let remove = deleteFromTrack ? NodeManager.delete : NodeManager.remove
@@ -262,7 +262,7 @@ public final class RemoveTool: Tool
   private func dispatchNodes(at point: CGPoint) -> [MIDINode]
   {
     // Retrieve all the nodes for the current dispatch.
-    guard let dispatchNodes = player.currentDispatch?.nodes else { return [] }
+    guard let dispatchNodes = sequencer.player.currentDispatch?.nodes else { return [] }
 
     // Get the identifiers for all the midi nodes located at `point`.
     let identifiers = Set(playerNode.nodes(at: point)

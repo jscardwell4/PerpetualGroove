@@ -15,25 +15,24 @@ import SwiftUI
 @available(OSX 10.15, *)
 struct MuteButton: View
 {
-  @EnvironmentObject var track: InstrumentTrack
 
-  private var isDisabled: Bool { track.isForceMuted || track.isSoloed }
+  let isDisabled: Bool
 
-  private var isEngaged: Bool { track.isMute }
+  let isMute: Bool
+
+  @Binding var isMuted: Bool
 
   private var tintColor: Color
   {
     let prefix: String
 
-    switch (isEngaged, isDisabled)
+    switch (isDisabled, isMute, isMuted)
     {
-      case (true, true):
+      case (true, true, _):
         prefix = "disabledEngaged"
-      case (false, true):
-        prefix = track.isSoloed ? "disengaged" : "engaged"
-      case (true, false):
+      case (false, true, _):
         prefix = "engaged"
-      case (false, false):
+      default:
         prefix = "disengaged"
     }
 
@@ -42,7 +41,11 @@ struct MuteButton: View
 
   var body: some View
   {
-    Button(action: { track.isMuted.toggle() })
+    Button
+    {
+      self.isMuted.toggle()
+    }
+    label:
     {
       Text("Mute").evelethFont(family: .normal, weigth: .light, size: 14)
     }

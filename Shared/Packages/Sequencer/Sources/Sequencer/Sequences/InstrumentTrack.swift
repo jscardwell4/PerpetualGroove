@@ -40,21 +40,49 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
   /// The color used for this track.
   @Published public var color: Color
 
+  // TODO: Figure out how to use `Combine` to fix this flag toggling issue.
+
   /// Flag indicating whether the track has had its output suppressed. This can
   /// happen when the user specifically mutes the track or when the user has at
   /// least one other track set to solo. Toggling this value swaps the values
   /// held by `volume` and `cachedVolume`.
-  @Published public private(set) var isMute = false
+  @Published public var isMute = false
   {
-    didSet { if isMute ^ oldValue { swap(&volume, &cachedVolume) } }
+    didSet(wasMute) { if isMute ^ wasMute { swap(&volume, &cachedVolume) } }
   }
 
   /// Flag indicating whether the track should be silenced because one or more of the other
   /// tracks in the sequence are soloing.
-  @Published var isForceMuted = false { didSet { reconcileMuteSolo() } }
+//  @Published var isForceMuted = false
+//  {
+//    didSet(wasForceMuted) {
+//      if isForceMuted ^ wasForceMuted
+//      {
+//        switch (isForceMuted, wasForceMuted) {
+//          case (true, false):
+//            isMute = isMuted
+//          default /* (false, true) */:
+//            isMute = isMuted
+//        }
+//      }
+//    }
+//  }
 
   /// `true` if the user has toggle mute for this track and `false` otherwise.
-  @Published public var isMuted = false { didSet { reconcileMuteSolo() } }
+//  @Published public var isMuted = false
+//  {
+//    didSet(wasMuted) {
+//      if isMuted ^ wasMuted
+//      {
+//        switch (isMuted, wasMuted) {
+//          case (true, false):
+//            isMute = true
+//          default /* (false, true) */:
+//            isMute = isForceMuted
+//        }
+//      }
+//    }
+//  }
 
   /// Flag indicating whether the track has been added to the group of tracks
   /// exclusively selected to generate audio output.
@@ -65,7 +93,25 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
   ///     with a `solo` value of `false` does not generate output.
   ///  3. When there are not any tracks with a `solo` value of `true`, whether or not a
   ///     track generates output is determined by the value of their `mute` property.
-  @Published public var isSoloed = false { didSet { reconcileMuteSolo() } }
+//  @Published public var isSoloed = false
+//  {
+//    didSet(wasSoloed) {
+//      if isSoloed ^ wasSoloed
+//      {
+//        switch (isSoloed, wasSoloed)
+//        {
+//          case (true, false):
+//            isMuted = false
+//            isForceMuted = false
+//            isMute = false
+//
+//          default /* (false, true) */:
+//            isForceMuted = !(sequencer.sequence?.soloTracks.isEmpty == false)
+//            isMute = isForceMuted
+//        }
+//      }
+//    }
+//  }
 
   /// This property stores the value of `volume` before being set to `0` when setting
   /// `isMuted` to `true` so that the volume level may be restored when setting `isMuted`
@@ -126,7 +172,21 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
   /// Derived property indicating whether `player.currentDispatch === self`.
   public var isCurrentDispatch: Bool
   {
-    (player.currentDispatch as? InstrumentTrack) === self
+    get { (sequencer.player.currentDispatch as? InstrumentTrack) === self }
+    set
+    {
+      switch (isCurrentDispatch, newValue)
+      {
+        case (false, false):
+          break
+        case (false, true):
+          sequencer.player.currentDispatch = self
+        case (true, false):
+          sequencer.player.currentDispatch = nil
+        case (true, true):
+          break
+      }
+    }
   }
 
   /// Derived property wrapping `instrument.volume`.
@@ -187,12 +247,6 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
     """
     //    \(super.description)
   }
-
-  // MARK: Muting
-
-  /// Updates the value of `isMute` according the current values of `isMuted`,
-  /// `isForceMuted`, and `isSoloed`.
-  private func reconcileMuteSolo() { isMute = !isSoloed && (isMuted || isForceMuted) }
 
   // MARK: MIDIFile support
 
@@ -502,7 +556,7 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
               name: String,
               events: [Event]) throws
   {
-    instrument = try Instrument(preset: preset, audioEngine: audioEngine)
+    instrument = try Instrument(preset: preset, audioEngine: sequencer.audioEngine)
     self.color = color
     super.init(index: index)
     self.name = name
@@ -544,8 +598,8 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
     }
     else
     {
-      instrument = try Instrument(preset: auditionInstrument.preset,
-                                  audioEngine: audioEngine)
+      instrument = try Instrument(preset: sequencer.auditionInstrument.preset,
+                                  audioEngine: sequencer.audioEngine)
     }
 
     // Use `index` to assign the track's color.
@@ -572,7 +626,8 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
     // Subscribe to notifications from `transport` and `instrument`.
     subscriptions.store
     {
-      sequencer.transport.didResetPublisher.sink { if self.isModified { self.isModified = false } }
+      sequencer.transport.didResetPublisher
+        .sink { if self.isModified { self.isModified = false } }
       instrument.volumePublisher.sink { self.volumeSubject.send($0) }
       instrument.panPublisher.sink { self.panSubject.send($0) }
       instrument.$preset.sink
@@ -583,11 +638,11 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
         if name.isEmpty { displayNameSubject.send(displayName) }
         isModified = fontModified || programModified
       }
-      player.$currentDispatch.sink
+      sequencer.player.$currentDispatch.sink
       {
         self.isCurrentDispatchSubject.send(($0 as? InstrumentTrack) === self)
       }
-      player.$currentDispatch.combineLatest(sequencer.$mode).sink
+      sequencer.player.$currentDispatch.combineLatest(sequencer.$mode).sink
       {
         [self] newDispatch, mode in
 

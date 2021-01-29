@@ -15,7 +15,7 @@ import SwiftUI
 @available(OSX 10.15, *)
 struct MainBus: View
 {
-  @StateObject private var master = audioEngine
+  @EnvironmentObject var master: AudioEngine
 
   var body: some View
   {

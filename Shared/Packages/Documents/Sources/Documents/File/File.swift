@@ -18,8 +18,8 @@ import Sequencer
 @available(iOS 14.0, *)
 public struct File: DataConvertible, Codable
 {
-  /// The file's location or `nil` when the file exists in-memory.
-  public var source: URL?
+  /// The file's name.
+  public var name: String
 
   /// The collection of tracks composing the file's sequence.
   public var tracks: [Track] = []
@@ -31,10 +31,9 @@ public struct File: DataConvertible, Codable
   public var endOfFile = BarBeatTime.zero
 
   /// Intializing from an existing sequence and, possibly, its origin.
-  public init(sequence: Sequencer.Sequence, source: URL? = nil)
+  public init(sequence: Sequencer.Sequence)
   {
-    // Store the source of the sequence.
-    self.source = source
+    name = sequence.name
 
     // Initialize `tracks` by converting the instrument tracks of the sequence
     // into `Track` instances.
@@ -84,13 +83,13 @@ public struct File: DataConvertible, Codable
 
   private enum CodingKeys: String, CodingKey
   {
-    case source, tracks, tempoChanges, endOfFile
+    case name, tracks, tempoChanges, endOfFile
   }
 
   public func encode(to encoder: Encoder) throws
   {
     var container = encoder.container(keyedBy: CodingKeys.self)
-    try container.encode(source, forKey: .source)
+    try container.encode(name, forKey: .name)
     try container.encode(tracks, forKey: .tracks)
     try container.encode(tempoChanges, forKey: .tempoChanges)
     try container.encode(endOfFile, forKey: .endOfFile)
@@ -99,7 +98,7 @@ public struct File: DataConvertible, Codable
   public init(from decoder: Decoder) throws
   {
     let container = try decoder.container(keyedBy: CodingKeys.self)
-    source = try container.decode(URL?.self, forKey: .source)
+    name = try container.decode(String.self, forKey: .name)
     tracks = try container.decode([Track].self, forKey: .tracks)
     tempoChanges = try container.decode([BarBeatTime: Double].self, forKey: .tempoChanges)
     endOfFile = try container.decode(BarBeatTime.self, forKey: .endOfFile)
@@ -133,6 +132,8 @@ extension Sequencer.Sequence
   {
     // Invoke the default initializer with the specified document.
     self.init()
+
+    name = file.name
 
     // Create an array for accumulating tempo events.
     var tempoEvents: [Event] = []

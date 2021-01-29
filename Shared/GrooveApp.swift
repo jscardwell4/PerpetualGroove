@@ -14,54 +14,7 @@ import SwiftUI
 @main
 final class GrooveApp: App
 {
-  @AppStorage("lastLoadedFile") var lastLoadedFile = Data()
-
-  var openDocument: FileDocumentConfiguration<GrooveDocument>?
-  {
-    didSet
-    {
-      switch (openDocument, oldValue)
-      {
-        case let (currentDocument?, oldDocument) where oldDocument == nil,
-             let (currentDocument?, oldDocument) where oldDocument != nil
-               && currentDocument.document.sequence !== oldDocument!.document.sequence:
-          // A document has been opened and possibly another has been closed.
-
-          let currentFileURL = currentDocument.fileURL!
-          let name = currentFileURL.deletingPathExtension().lastPathComponent
-          do
-          {
-            lastLoadedFile = try currentFileURL
-              .bookmarkData(options: .suitableForBookmarkFile)
-          }
-          catch
-          {
-            logw("<\(#fileID) \(#function)> Failed to generate bookmark for \(name).")
-          }
-
-          let oldName = oldDocument?.fileURL?.deletingPathExtension().lastPathComponent
-
-          currentDocument.document.name = name
-          sequencer.sequence = currentDocument.document.sequence
-
-          logi("""
-          <\(#fileID) \(#function)> \
-          \(oldName == nil ? "" : "closed '\(oldName!)' and ")opened '\(name)'
-          """)
-
-        case let (nil, old?):
-          // A document has been closed.
-
-          logi("""
-          <\(#fileID) \(#function)> \
-          closed '\(old.fileURL!.lastPathComponent)'
-          """)
-
-        default:
-          break
-      }
-    }
-  }
+  @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
   private func newDocument() -> GrooveDocument
   {
@@ -72,9 +25,13 @@ final class GrooveApp: App
 
   private func contentView(_ file: FileDocumentConfiguration<GrooveDocument>) -> some View
   {
-    openDocument = file
+    if let name = file.fileURL?.deletingPathExtension().lastPathComponent,
+       file.document.sequence.name.isEmpty
+    {
+      file.document.sequence.name = name
+    }
     return ContentView()
-      .environmentObject(file.document)
+      .environmentObject(sequencer)
       .environmentObject(file.document.sequence)
   }
 

@@ -52,7 +52,7 @@ public final class NodeManager
     // Generate and append the node event on the owner's event queue.
     owner.eventQueue.async
     {
-      [time = time.barBeatTime, unowned node, weak self] in
+      [time = sequencer.time.barBeatTime, unowned node, weak self] in
 
       let identifier = NodeEvent.Identifier(nodeIdentifier: node.identifier)
       let data = NodeEvent.Data.add(identifier: identifier,
@@ -97,7 +97,7 @@ public final class NodeManager
         pendingNodes.insert(identifier)
 
         // Place a node
-        player.placeNew(trajectory,
+        sequencer.player.placeNew(trajectory,
                         target: owner,
                         generator: generator,
                         identifier: identifier)
@@ -126,7 +126,7 @@ public final class NodeManager
           loge("\(error as NSObject)")
         }
 
-        player.remove(node: node)
+        sequencer.player.remove(node: node)
     }
   }
 
@@ -184,7 +184,7 @@ public final class NodeManager
 
         owner.eventQueue.async
         {
-          [time = time.barBeatTime, identifier = node.identifier, weak self] in
+          [time = sequencer.time.barBeatTime, identifier = node.identifier, weak self] in
 
           let eventIdentifier = NodeEvent.Identifier(nodeIdentifier: identifier)
           self?.owner.add(event:

@@ -16,14 +16,16 @@ import SwiftUI
 struct SoloButton: View
 {
   @EnvironmentObject var track: InstrumentTrack
+  @Binding var isSoloed: Bool
 
   var body: some View
   {
-    Button(action: { track.isSoloed.toggle() })
+    Button(action: { self.isSoloed.toggle() })
     {
       Text("Solo").evelethFont(family: .normal, weigth: .light, size: 14)
     }
+    .preference(key: TrackBus.SoloPreferenceKey.self, value: isSoloed ? [track.id] : [])
     .frame(width: 68, height: 14)
-    .accentColor(Color("\(track.isSoloed ? "" : "dis")engagedTintColor", bundle: .module))
+    .accentColor(Color("\(isSoloed ? "" : "dis")engagedTintColor", bundle: .module))
   }
 }

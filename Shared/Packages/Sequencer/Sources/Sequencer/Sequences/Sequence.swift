@@ -24,6 +24,8 @@ public final class Sequence: ObservableObject
 {
   // MARK: Stored Properties
 
+  @Published public var name: String = ""
+
   /// The collection of the sequence's tracks excluding the tempo track.
   public private(set) var instrumentTracks: [InstrumentTrack] = []
 
@@ -178,9 +180,6 @@ public final class Sequence: ObservableObject
   /// `tempoTrack` inserted as the first element in the collection.
   public var tracks: [Track] { [tempoTrack] + instrumentTracks }
 
-  /// An array of all the instrument tracks currently set to solo.
-  public var soloTracks: [InstrumentTrack] { instrumentTracks.filter(\.isSoloed) }
-
   // MARK: Receiving Notifications
 
   /// Indicates whether the sequence has been updated. This flag is to coalesce sequence
@@ -274,33 +273,6 @@ public final class Sequence: ObservableObject
     subscriptions.store
     {
       track.didUpdatePublisher.sink { self.trackDidUpdate() }
-      track.$isSoloed.sink
-      {
-        [self] isSoloed in
-        // Ensure there was a value change.
-        let modified = track.isSoloed != isSoloed
-
-        // Get the latest solo group.
-        let soloTracks = self.soloTracks
-
-        if modified, isSoloed, soloTracks.isEmpty
-        {
-          // This is the first track to join the solo group.
-          for trackʹ in instrumentTracks where trackʹ !== track
-          {
-            trackʹ.isForceMuted = true
-          }
-        }
-
-        else if modified, !isSoloed, soloTracks.count == 1
-        {
-          // This is the last track being removed from the solo group.
-          for trackʹ in instrumentTracks where trackʹ !== track
-          {
-            trackʹ.isForceMuted = false
-          }
-        }
-      }
     }
 
     trackSubscriptions[track] = subscriptions

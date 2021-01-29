@@ -8,9 +8,7 @@
 import Foundation
 import MoonDev
 
-// MARK: - Shorthand
-
-/// Shorthand access to the shared instance of `Settings`.
+/// Access to the shared instance of `Settings`.
 @inlinable public var settings: Settings { Settings.shared }
 
 // MARK: - Settings

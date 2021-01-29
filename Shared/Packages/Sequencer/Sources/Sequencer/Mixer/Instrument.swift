@@ -98,7 +98,7 @@ public final class Instrument
   /// The mixer input bus to which the instrument is connected.
   public var bus: AVAudioNodeBus
   {
-    sampler.destination(forMixer: audioEngine.mixer, bus: 0)?.connectionPoint.bus ?? -1
+    sampler.destination(forMixer: sequencer.audioEngine.mixer, bus: 0)?.connectionPoint.bus ?? -1
   }
 
   /// The output level for the mixer input bus to which the instrument is connected.
@@ -156,7 +156,7 @@ public final class Instrument
     do
     {
       // Use the generator to send a 'note on' event.
-      try generator.sendNoteOn(outPort: outPort, endPoint: endPoint, ticks: time.ticks)
+      try generator.sendNoteOn(outPort: outPort, endPoint: endPoint, ticks: sequencer.time.ticks)
 
       // Translate the generator's duration into nanoseconds.
       let nanoseconds = UInt64(generator.duration.seconds(withBPM: sequencer.tempo)
@@ -175,7 +175,7 @@ public final class Instrument
           try generator.sendNoteOff(
             outPort: outPort,
             endPoint: endPoint,
-            ticks: time.ticks
+            ticks: sequencer.time.ticks
           )
         }
         catch
@@ -323,7 +323,7 @@ public final class Instrument
     // Create a preset using the derived values.
     let preset = Preset(font: soundFont, header: header, channel: channel)
 
-    try self.init(preset: preset, audioEngine: audioEngine)
+    try self.init(preset: preset, audioEngine: sequencer.audioEngine)
   }
 }
 
@@ -504,7 +504,7 @@ extension Instrument: Mock
     let font = AnySoundFont.mock
     let header = font.presetHeaders.randomElement()!
     let preset = Preset(font: font, header: header, channel: 0)
-    return try! Instrument(preset: preset, audioEngine: audioEngine)
+    return try! Instrument(preset: preset, audioEngine: sequencer.audioEngine)
   }
 
   public static func mocks(_ count: Int) -> [Instrument]
@@ -514,7 +514,7 @@ extension Instrument: Mock
     {
       let header = font.presetHeaders.randomElement()!
       let preset = Preset(font: font, header: header, channel: 0)
-      result.append(try! Instrument(preset: preset, audioEngine: audioEngine))
+      result.append(try! Instrument(preset: preset, audioEngine: sequencer.audioEngine))
     }
     logv("""
     <\(#fileID) \(#function)> [

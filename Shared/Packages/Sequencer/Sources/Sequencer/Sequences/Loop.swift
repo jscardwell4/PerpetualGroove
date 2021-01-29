@@ -62,7 +62,7 @@ public final class Loop: NodeDispatch
 
   public var isRecording: Bool
   {
-    sequencer.mode == .loop && player.currentDispatch === self
+    sequencer.mode == .loop && sequencer.player.currentDispatch === self
   }
 
   public var nextNodeName: String { "\(name) \(nodes.count + 1)" }

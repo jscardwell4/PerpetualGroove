@@ -16,10 +16,7 @@ import SwiftUI
 public struct PlayerView: View
 {
   /// The controller for the player.
-  @EnvironmentObject private var controller: Controller
-
-  /// The player.
-  @EnvironmentObject private var player: Player
+  @EnvironmentObject var controller: Controller
 
   /// The player view encapsulates the host for an instance of `PlayerSKView`,
   /// a text field for displaying and modifying the name of the currently loaded
@@ -33,12 +30,12 @@ public struct PlayerView: View
       HStack(spacing: 20)
       {
         Spacer()
-        ToolButton(tool: .newNodeGenerator, currentTool: $player.currentTool)
-        ToolButton(tool: .addNode, currentTool: $player.currentTool)
-        ToolButton(tool: .removeNode, currentTool: $player.currentTool)
-        ToolButton(tool: .deleteNode, currentTool: $player.currentTool)
-        ToolButton(tool: .nodeGenerator, currentTool: $player.currentTool)
-        ToolButton(tool: .rotate, currentTool: $player.currentTool)
+        ToolButton(tool: .newNodeGenerator, currentTool: $controller.player.currentTool)
+        ToolButton(tool: .addNode, currentTool: $controller.player.currentTool)
+        ToolButton(tool: .removeNode, currentTool: $controller.player.currentTool)
+        ToolButton(tool: .deleteNode, currentTool: $controller.player.currentTool)
+        ToolButton(tool: .nodeGenerator, currentTool: $controller.player.currentTool)
+        ToolButton(tool: .rotate, currentTool: $controller.player.currentTool)
         Spacer()
 
         Group

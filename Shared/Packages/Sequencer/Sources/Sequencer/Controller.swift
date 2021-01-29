@@ -13,23 +13,21 @@ import MoonDev
 import os
 import SoundFont
 
-// MARK: - Shorthand
-
-/// The singleton instance of `Controller`.
+/// Access to the shared instance of `Controller`.
 @available(iOS 14.0, *)
 public let sequencer = Controller()
 
 /// Shorthand for `sequencer.player.`.
 @available(iOS 14.0, *)
-@inlinable public var player: Player { sequencer.player }
+//@inlinable public var player: Player { sequencer.player }
 
 /// Shorthand for `sequencer.time`.
 @available(iOS 14.0, *)
-@inlinable public var time: Time { sequencer.time }
+//@inlinable public var time: Time { sequencer.time }
 
 /// Shorthand for `sequencer.sequence`.
 @available(iOS 14.0, *)
-@inlinable public var sequence: Sequence? { sequencer.sequence }
+//@inlinable public var sequence: Sequence? { sequencer.sequence }
 
 /// Shorthand for `sequencer.transport`.
 @available(iOS 14.0, *)
@@ -37,7 +35,7 @@ public let sequencer = Controller()
 
 /// Shorthand for `sequencer.audioEngine`.
 @available(iOS 14.0, *)
-@inlinable public var audioEngine: AudioEngine { sequencer.audioEngine }
+//@inlinable public var audioEngine: AudioEngine { sequencer.audioEngine }
 
 /// Shorthand for `sequencer.metronome`.
 @available(iOS 14.0, *)
@@ -45,7 +43,7 @@ public let sequencer = Controller()
 
 /// Shorthand for `sequencer.audiotionInstrument`.
 @available(iOS 14.0, *)
-@inlinable public var auditionInstrument: Instrument { sequencer.auditionInstrument }
+//@inlinable public var auditionInstrument: Instrument { sequencer.auditionInstrument }
 
 // MARK: - Logging
 
@@ -63,7 +61,7 @@ public final class Controller: ObservableObject
   // MARK: Stored Properties
 
   /// The sequencer's node player.
-  @usableFromInline internal let player: Player
+  @usableFromInline internal var player: Player
 
   /// An instrument made availabe by the sequencer intended for use as a means of
   /// providing auditory feedback while configuring a separate `Instrument` instance.
@@ -303,7 +301,7 @@ public final class Controller: ObservableObject
     switch mode
     {
       case .linear:
-        player.currentDispatch = sequence?.currentTrack
+        player.currentDispatch = sequence?.instrumentTracks.first
       case .loop:
         guard let track = sequence?.currentTrack else { break }
         if let loop = loops[ObjectIdentifier(track)]

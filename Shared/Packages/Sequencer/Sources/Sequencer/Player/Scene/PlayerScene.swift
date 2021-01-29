@@ -41,7 +41,7 @@ public final class PlayerScene: SKScene
     backgroundColor = .backgroundColor2
     playerNode = PlayerNode(bezierPath: UIBezierPath(rect: frame))
     addChild(playerNode!)
-    player.playerNode = playerNode
+    sequencer.player.playerNode = playerNode
     isContentCreated = true
   }
 

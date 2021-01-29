@@ -24,13 +24,6 @@ let package = Package(
     .target(
       name: "Documents",
       dependencies: ["MoonDev", "Common", "MIDI", "SoundFont", "Sequencer"],
-      exclude: [
-        "Document/Document.swift",
-        "Document/DocumentItem.swift",
-        "Document/LocalDocumentItem.swift",
-        "Document/NSMetadataItem.swift",
-        "DocumentManager.swift"
-      ],
       resources: [
         .process("Resources/Media.xcassets")
       ]

@@ -11,7 +11,7 @@ import SwiftUI
 @available(iOS 14.0, *)
 struct RecordToggle: View
 {
-  @EnvironmentObject private var transport: Transport
+  @EnvironmentObject var transport: Transport
 
   /// The view's body is composed of a single button that toggle's the value
   /// of `transport.recording` and styles the button accordingly.
