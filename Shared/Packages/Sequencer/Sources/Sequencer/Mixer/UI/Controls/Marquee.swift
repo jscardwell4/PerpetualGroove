@@ -96,7 +96,7 @@ struct Marquee: View
         }
         else
         {
-          withAnimation(Animation.default.speed(0.125))
+          withAnimation(Animation.default.speed(0.125).repeatForever())
           {
             textOffset = -(fullWidth + 20)
           }

@@ -86,6 +86,13 @@ final class Bus: ObservableObject, Identifiable
   /// The sound font image for the bus.
   var image: AnyView { track.instrument.soundFont.image }
 
+  /// The display name for the bus.
+  var displayName: Binding<String>
+  {
+    Binding { self.track.displayName }
+      set: { self.track.displayName = $0 }
+  }
+
   /// The color for the bus.
   var color: Color { track.color.color }
 
