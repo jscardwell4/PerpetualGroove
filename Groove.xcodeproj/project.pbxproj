@@ -121,6 +121,8 @@
 		C2BAFFD025B915F000312A57 /* Emax Volume 6.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2BAFFC325B915F000312A57 /* Emax Volume 6.sf2 */; };
 		C2BAFFD125B915F000312A57 /* Emax Volume 5.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2BAFFC425B915F000312A57 /* Emax Volume 5.sf2 */; };
 		C2BAFFD225B915F000312A57 /* Emax Volume 5.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2BAFFC425B915F000312A57 /* Emax Volume 5.sf2 */; };
+		C2D5D55425C730A2001BE0F8 /* SoftwareKeyboardAdaptive.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D5D55325C730A2001BE0F8 /* SoftwareKeyboardAdaptive.swift */; };
+		C2D5D55525C730A2001BE0F8 /* SoftwareKeyboardAdaptive.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D5D55325C730A2001BE0F8 /* SoftwareKeyboardAdaptive.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -1723,6 +1725,7 @@
 		C2BAFFC225B915F000312A57 /* Emax Volume 2.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Emax Volume 2.sf2"; path = "Shared/Packages/SoundFont/Sources/SoundFont/Resources/sf2/Emax Volume 2.sf2"; sourceTree = SOURCE_ROOT; };
 		C2BAFFC325B915F000312A57 /* Emax Volume 6.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Emax Volume 6.sf2"; path = "Shared/Packages/SoundFont/Sources/SoundFont/Resources/sf2/Emax Volume 6.sf2"; sourceTree = SOURCE_ROOT; };
 		C2BAFFC425B915F000312A57 /* Emax Volume 5.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Emax Volume 5.sf2"; path = "Shared/Packages/SoundFont/Sources/SoundFont/Resources/sf2/Emax Volume 5.sf2"; sourceTree = SOURCE_ROOT; };
+		C2D5D55325C730A2001BE0F8 /* SoftwareKeyboardAdaptive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareKeyboardAdaptive.swift; sourceTree = "<group>"; };
 		C2DDD58725B7532100E55A1D /* DocumentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentsViewController.swift; sourceTree = "<group>"; };
 		C2DDD58A25B7536200E55A1D /* Documents.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Documents.storyboard; sourceTree = "<group>"; };
 		C2DDD59025B7539200E55A1D /* Picker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Picker.swift; sourceTree = "<group>"; };
@@ -1805,6 +1808,7 @@
 				C24841B325B7BD1900C42DAE /* GrooveApp.swift */,
 				C26F4B1B25C3445E00519879 /* AppDelegate.swift */,
 				C24841B525B7BD1900C42DAE /* ContentView.swift */,
+				C2D5D55325C730A2001BE0F8 /* SoftwareKeyboardAdaptive.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -4154,6 +4158,7 @@
 				C26F4B1C25C3445E00519879 /* AppDelegate.swift in Sources */,
 				C24841DC25B7BD1C00C42DAE /* GrooveApp.swift in Sources */,
 				C24841E025B7BD1C00C42DAE /* ContentView.swift in Sources */,
+				C2D5D55425C730A2001BE0F8 /* SoftwareKeyboardAdaptive.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4164,6 +4169,7 @@
 				C26F4B1D25C3445E00519879 /* AppDelegate.swift in Sources */,
 				C24841DD25B7BD1C00C42DAE /* GrooveApp.swift in Sources */,
 				C24841E125B7BD1C00C42DAE /* ContentView.swift in Sources */,
+				C2D5D55525C730A2001BE0F8 /* SoftwareKeyboardAdaptive.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

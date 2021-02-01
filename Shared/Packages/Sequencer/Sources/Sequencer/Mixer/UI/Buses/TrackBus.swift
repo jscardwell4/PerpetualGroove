@@ -31,7 +31,7 @@ struct TrackBus: View
       SoloButton()
       MuteButton().disabled(bus.isMuteDisabled)
       SoundFontButton()
-      Marqueeʹ()
+      Marquee()
       ColorButton()
     }
   }

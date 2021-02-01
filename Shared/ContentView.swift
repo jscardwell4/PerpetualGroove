@@ -75,7 +75,7 @@ struct ContentView: View
     .navigationBarBackButtonHidden(true)
     .statusBar(hidden: true)
     .edgesIgnoringSafeArea(.bottom)
-    .keyboardAdaptive()
+    .softwareKeyboardAdaptive()
   }
 
   private func goBack()
