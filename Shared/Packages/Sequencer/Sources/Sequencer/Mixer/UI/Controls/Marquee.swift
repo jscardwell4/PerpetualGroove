@@ -25,9 +25,7 @@ struct Marquee: View, Identifiable
   let id = UUID()
 
   /// Flag used to trigger marquee scroll animation.
-  @State private var phase: Phase = .initial
-
-  fileprivate enum Phase: CGFloat { case initial = 0, final = 1 }
+  @State private var phase: CGFloat = .initial
 
   /// Flag indicating whether the marquee text is actively being edited.
   @State private var isEditing = false
@@ -46,13 +44,23 @@ struct Marquee: View, Identifiable
   /// The backing store used with the `KeyboardPreferenceKey`.
   @State private var keyboardRequest: KeyboardRequest? = nil
 
-  @State private var suppressAnimation = false
+  //  @State private var suppressAnimation = false
 
   /// Derived property encapsulating animation logic.
   private var animation: Animation
   {
-    Animation.linear.speed(0.125).repeatCount(scrollSetting.repeatCount,
-                                              autoreverses: false)
+    let animation = Animation
+      .linear
+      .speed(0.125)
+      .repeatCount(scrollSetting.repeatCount, autoreverses: false)
+
+    defer
+    {
+      DispatchQueue.main.async {
+        withAnimation(animation.delay(2)) { self.phase = .final }
+      }
+    }
+    return animation
   }
 
   /// The view's body is composed of a simple piece of text.
@@ -75,7 +83,10 @@ struct Marquee: View, Identifiable
           self.isEditing = isEditing
         }
       }
-      onCommit: { keyboardRequest = nil }
+      onCommit:
+      {
+        keyboardRequest = nil
+      }
       .multilineTextAlignment(.center)
       .autocapitalization(.none)
       .disableAutocorrection(true)
@@ -83,27 +94,15 @@ struct Marquee: View, Identifiable
                   value: [keyboardRequest].compactMap { $0 })
       .marquee(text: bus.displayName.wrappedValue,
                size: proxy.size,
-               phase: scrollSetting == .never
-                || (scrollSetting == .once && didScroll)
-                ? .final
-                : phase,
+               phase: phase,
                didScroll: $didScroll)
-      .animation(animation)
-      .onAppear
-      {
-        if scrollSetting != .never,
-           !(scrollSetting == .once && didScroll)
-        {
-          phase = .final
-        }
-      }
+      .animation(didScroll || keyboardIsActive ? nil : animation)
       .busLabel(isEditing: isEditing)
       .fixedSize(horizontal: true, vertical: false)
       .frame(width: proxy.size.width)
     }
     .frame(width: 80, height: 20, alignment: .center)
     .clipped(antialiased: true)
-    .onChange(of: keyboardIsActive) { suppressAnimation = $0 }
   }
 }
 
@@ -153,14 +152,6 @@ extension View
 {
   fileprivate func marquee(text: String,
                            size: CGSize,
-                           phase: Marquee.Phase,
-                           didScroll: Binding<Bool>) -> some View
-  {
-    marquee(text: text, size: size, phase: phase.rawValue, didScroll: didScroll)
-  }
-
-  fileprivate func marquee(text: String,
-                           size: CGSize,
                            phase: CGFloat,
                            didScroll: Binding<Bool>) -> some View
   {
@@ -169,6 +160,12 @@ extension View
                            phase: phase,
                            didScroll: didScroll))
   }
+}
+
+extension CGFloat
+{
+  fileprivate static let initial: CGFloat = 0
+  fileprivate static let final: CGFloat = 1
 }
 
 // MARK: - MarqueeEffect
@@ -197,11 +194,6 @@ private struct MarqueeEffect: GeometryEffect
 
   @Binding var didScroll: Bool
 
-  /// Initializing with text, size, and alignment.
-  /// - Parameters:
-  ///   - text: The current value being displayed by the marquee.
-  ///   - size: The size of the marquee's bounding frame.
-  ///   - phase: The scroll alignment expressed as a value in the range of `0 ... 1`.
   init(text: String, size: CGSize, phase: CGFloat, didScroll: Binding<Bool>)
   {
     required = text.requiredWidth // Capture the required width for the displayed text.
@@ -220,7 +212,8 @@ private struct MarqueeEffect: GeometryEffect
     get { phase }
     set
     {
-      if newValue == 1, !didScroll { DispatchQueue.main.async {[self] in didScroll = true } }
+      if newValue == 1,
+         !didScroll { DispatchQueue.main.async { [self] in didScroll = true } }
       phase = newValue
     }
   }
