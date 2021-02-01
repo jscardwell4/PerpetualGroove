@@ -10,8 +10,8 @@ import SwiftUI
 
 // MARK: - Marquee
 
-/// A view for displaying a piece of text, scrolling once if the
-/// text is too long to fit in its entirety.
+/// A view for displaying a piece of text, optionally scrolling if the
+/// text is too long to fit without truncating.
 @available(iOS 14.0, *)
 @available(macCatalyst 14.0, *)
 @available(OSX 10.15, *)
@@ -20,89 +20,94 @@ struct Marquee: View, Identifiable
   /// The bus for which this marquee serves as a control.
   @EnvironmentObject var bus: Bus
 
+  /// Indicates whether the software keyboard is active.
   @Environment(\.keyboardIsActive) var keyboardIsActive: Bool
 
+  /// Unique identifier for keyboard requests.
   let id = UUID()
 
-  /// Flag used to trigger marquee scroll animation.
+  /// Triggers marquee scroll animations. The value of `phase` is always
+  /// within the range of `0 ... 1` with `0` representing the initial
+  /// scroll position and `1` representing the `final` scroll position.
   @State private var phase: CGFloat = .initial
 
-  /// Flag indicating whether the marquee text is actively being edited.
-  @State private var isEditing = false
+  /// Indicates that the marquee text scroll animation should refresh.
+  @State private var refreshScroll = false
 
-  /// Flag for controlling how the marquee text is scrolled.
+  /// Controls how the marquee text is scrolled.
+  /// Options are continuous, once, or never.
   @State private var scrollSetting: ScrollSetting = .once
 
+  /// Binding passed to an instance of `MarqueeEffect` for animation feedback.
   @State private var didScroll = false
 
+  /// Enumeration of possible scroll settings.
   fileprivate enum ScrollSetting
   {
-    case continuous, once, never
+    /// Scroll continuously when the text warrants.
+    case continuous
+
+    /// Scroll once when the text warrants.
+    case once
+
+    /// Never animate truncated text.
+    case never
+
+    /// The repeat count for the scroll settting's animation.
     var repeatCount: Int { self == .continuous ? .max : 0 }
   }
+
+  /// Indicates whether the marquee text is actively being edited.
+  @State private var isEditing = false
 
   /// The backing store used with the `KeyboardPreferenceKey`.
   @State private var keyboardRequest: KeyboardRequest? = nil
 
-  //  @State private var suppressAnimation = false
-
   /// Derived property encapsulating animation logic.
-  private var animation: Animation
+  private var animation: Animation?
   {
-    let animation = Animation
-      .linear
-      .speed(0.125)
-      .repeatCount(scrollSetting.repeatCount, autoreverses: false)
+    // Ensure we are meant to be animating.
+    guard !keyboardIsActive, !isEditing,
+          !didScroll || scrollSetting == .continuous
+    else { return nil }
 
-    defer
+    DispatchQueue.main.async
     {
-      DispatchQueue.main.async {
-        withAnimation(animation.delay(2)) { self.phase = .final }
-      }
+      withAnimation(.delayedScroll(setting: scrollSetting)) { self.phase = .final }
     }
-    return animation
+
+    return .scroll(setting: scrollSetting)
   }
 
   /// The view's body is composed of a simple piece of text.
   var body: some View
   {
-    GeometryReader
-    {
-      proxy in
-
-      TextField("Track Name", text: bus.displayName)
+      GeometryReader
       {
-        [wasEditing = isEditing] isEditing in
+        proxy in
 
-        if isEditing ^ wasEditing
+        TextField("Track Name", text: bus.$displayName)
         {
-          keyboardRequest = isEditing
-            ? KeyboardRequest(id: id, frame: proxy.frame(in: .global))
-            : nil
+          [wasEditing = isEditing] isEditing in
 
-          self.isEditing = isEditing
+          if isEditing ^ wasEditing
+          {
+            keyboardRequest = isEditing ? KeyboardRequest(id: id, proxy: proxy) : nil
+            self.isEditing = isEditing
+          }
         }
+        .marquee(text: bus.displayName, proxy: proxy, phase: phase, didScroll: $didScroll)
+        .animation(animation)
+        .busLabel(isEditing: isEditing)
+        .fixedSize(horizontal: true, vertical: false)
+        .frame(width: proxy.size.width)
+        .multilineTextAlignment(.center)
+        .autocapitalization(.none)
+        .disableAutocorrection(true)
+        .preference(key: KeyboardPreferenceKey.self, value: keyboardRequest.asArray)
       }
-      onCommit:
-      {
-        keyboardRequest = nil
-      }
-      .multilineTextAlignment(.center)
-      .autocapitalization(.none)
-      .disableAutocorrection(true)
-      .preference(key: KeyboardPreferenceKey.self,
-                  value: [keyboardRequest].compactMap { $0 })
-      .marquee(text: bus.displayName.wrappedValue,
-               size: proxy.size,
-               phase: phase,
-               didScroll: $didScroll)
-      .animation(didScroll || keyboardIsActive ? nil : animation)
-      .busLabel(isEditing: isEditing)
-      .fixedSize(horizontal: true, vertical: false)
-      .frame(width: proxy.size.width)
-    }
-    .frame(width: 80, height: 20, alignment: .center)
-    .clipped(antialiased: true)
+      .frame(width: 80, height: 20, alignment: .center)
+      .clipped()
   }
 }
 
@@ -151,14 +156,33 @@ extension String
 extension View
 {
   fileprivate func marquee(text: String,
-                           size: CGSize,
+                           proxy: GeometryProxy,
                            phase: CGFloat,
                            didScroll: Binding<Bool>) -> some View
   {
     modifier(MarqueeEffect(text: text,
-                           size: size,
+                           proxy: proxy,
                            phase: phase,
-                           didScroll: didScroll))
+                           didScroll: didScroll).ignoredByLayout())
+  }
+}
+
+@available(iOS 14.0, *)
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
+extension Animation
+{
+  fileprivate static func scroll(setting: Marquee.ScrollSetting) -> Animation?
+  {
+    setting == .never ? nil : Animation
+      .linear
+      .speed(0.125)
+      .repeatCount(setting.repeatCount, autoreverses: false)
+  }
+
+  fileprivate static func delayedScroll(setting: Marquee.ScrollSetting) -> Animation?
+  {
+    scroll(setting: setting)?.delay(2)
   }
 }
 
@@ -194,10 +218,10 @@ private struct MarqueeEffect: GeometryEffect
 
   @Binding var didScroll: Bool
 
-  init(text: String, size: CGSize, phase: CGFloat, didScroll: Binding<Bool>)
+  init(text: String, proxy: GeometryProxy, phase: CGFloat, didScroll: Binding<Bool>)
   {
     required = text.requiredWidth // Capture the required width for the displayed text.
-    useable = size.width - marginOfError // Calculate a safe cutoff width.
+    useable = proxy.size.width - marginOfError // Calculate a safe cutoff width.
     𝝙 = useable < required // Initialize 𝝙 dependent on whether `text` fits in `size`.
       ? (required - useable) + marginOfError // Requires scrolling.
       : 0 // All the text fits. No scrolling.

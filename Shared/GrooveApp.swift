@@ -16,21 +16,17 @@ final class GrooveApp: App
 {
   @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
-  private func newDocument() -> GrooveDocument
+  private func newDocument() -> Document
   {
     .init(sequence: ProcessInfo.processInfo.environment["ENABLE_MOCK_DATA"] == "true"
       ? Sequence.mock
       : Sequence())
   }
 
-  private func contentView(_ file: FileDocumentConfiguration<GrooveDocument>) -> some View
+  private func contentView(_ file: FileDocumentConfiguration<Document>) -> some View
   {
-    if let name = file.fileURL?.deletingPathExtension().lastPathComponent,
-       file.document.sequence.name.isEmpty
-    {
-      file.document.sequence.name = name
-    }
-    return ContentView()
+    ContentView()
+      .environment(\.openDocument, file)
       .environmentObject(sequencer)
       .environmentObject(file.document.sequence)
   }

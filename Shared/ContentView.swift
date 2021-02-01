@@ -29,7 +29,7 @@ struct ContentView: View
   @EnvironmentObject var sequence: Sequence
   @EnvironmentObject var sequencer: Controller
 
-  @State private var isEditing = false
+  @Environment(\.openDocument) var openDocument: FileDocumentConfiguration<Document>?
 
   private var subscriptions: Set<AnyCancellable> = []
 
@@ -43,10 +43,7 @@ struct ContentView: View
         Spacer()
         VStack(alignment: .trailing)
         {
-          SequenceNameField(isEditing: $isEditing)
-          {
-            logi("<\(#fileID) \(#function)> renamed document to \(sequence.name)")
-          }
+          DocumentNameField()
           PlayerView()
         }
         .padding()
@@ -76,6 +73,19 @@ struct ContentView: View
     .statusBar(hidden: true)
     .edgesIgnoringSafeArea(.bottom)
     .softwareKeyboardAdaptive()
+    .onAppear
+    {
+      guard let file = openDocument,
+            let name = file.fileURL?.deletingPathExtension().lastPathComponent,
+            file.document.sequence.name.isEmpty
+      else
+      {
+        return
+      }
+      file.document.sequence.name = name
+      file.document = file.document.modified
+      logi("<\(#fileID) \(#function)> empty name has been set to '\(name)'")
+    }
   }
 
   private func goBack()
@@ -93,7 +103,7 @@ struct ContentView: View
 @available(OSX 10.15, *)
 struct ContentView_Previews: PreviewProvider
 {
-  @State static var document = GrooveDocument(sequence: Sequence.mock)
+  @State static var document = Document(sequence: Sequence.mock)
 
   static var previews: some View
   {

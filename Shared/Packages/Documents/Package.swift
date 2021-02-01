@@ -23,10 +23,7 @@ let package = Package(
   targets: [
     .target(
       name: "Documents",
-      dependencies: ["MoonDev", "Common", "MIDI", "SoundFont", "Sequencer"],
-      resources: [
-        .process("Resources/Media.xcassets")
-      ]
+      dependencies: ["MoonDev", "Common", "MIDI", "SoundFont", "Sequencer"]
     ),
     .testTarget(
       name: "DocumentsTests",

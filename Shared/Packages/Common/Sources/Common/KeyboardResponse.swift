@@ -42,6 +42,13 @@ public struct KeyboardRequest: Hashable, Comparable, CustomStringConvertible
     self.timestamp = timestamp
   }
 
+  public init(id: UUID, proxy: GeometryProxy, timestamp: Date = .now)
+  {
+    self.id = id
+    frame = proxy.frame(in: .global)
+    self.timestamp = timestamp
+  }
+
   public func hash(into hasher: inout Hasher)
   {
     id.hash(into: &hasher)

@@ -56,7 +56,6 @@ final class MixerModel: ObservableObject
   /// - Parameter soloPreference: The set of identifiers of all soloing tracks.
   func update(for soloPreference: Set<UUID>)
   {
-    logi("<\(#fileID) \(#function)> soloPreference : \(soloPreference)")
     if soloPreference.isEmpty
     {
       for bus in buses { bus.isForceMuted = false }

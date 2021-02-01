@@ -12,6 +12,9 @@ import SwiftUI
 
 // MARK: - SoftwareKeyboardAdaptive
 
+// TODO: Iron out freshly introduced bugs. Most recent problem seems to stem
+//       from manipulating whether or not marquee `TextField` get's clipped.
+
 /// View modifier for handling software keyboard appearances.
 @available(iOS 14.0, *)
 @available(macCatalyst 14.0, *)
@@ -28,7 +31,7 @@ struct SoftwareKeyboardAdaptive: ViewModifier
   )
   .subscribe(on: RunLoop.main)
 
-  private let activeRequest = CurrentValueSubject<KeyboardRequest?, Never>(nil)
+  @State private var lastNotification: Notification? = nil
 
   func body(content: Content) -> some View
   {
@@ -38,16 +41,25 @@ struct SoftwareKeyboardAdaptive: ViewModifier
       .environment(\.keyboardIsActive, keyboardIsActive)
       .onPreferenceChange(KeyboardPreferenceKey.self)
       {
-        activeRequest.send($0.nextKeyboardRequest)
+        if let request = $0.first, let notification = lastNotification
+        {
+          let data = KeyboardData(notification: notification)
+          let keyboardRange = data.endFrame.minY ... data.endFrame.maxY
+          let viewRange = request.frame.minY ... request.frame.maxY
+          if viewRange.overlaps(keyboardRange) { yOffset = 0 }
+          else { yOffset = (data.endFrame.height - 20) / 2 }
+        }
+        else { yOffset = 0 }
       }
       .onAppear
       {
-        _ = activeRequest
-          .combineLatest(notifications)
+        _ = notifications
           .subscribe(on: RunLoop.main)
           .sink
           {
-            request, notification in
+            notification in
+
+            lastNotification = notification
 
             if keyboardIsActive && notification.name == .willHideKeyboard
             {
@@ -56,25 +68,6 @@ struct SoftwareKeyboardAdaptive: ViewModifier
             else if !keyboardIsActive && notification.name == .willShowKeyboard
             {
               keyboardIsActive = true
-            }
-
-            if let request = request
-            {
-              let data = KeyboardData(notification: notification)
-              let keyboardRange = data.endFrame.minY ... data.endFrame.maxY
-              let viewRange = request.frame.minY ... request.frame.maxY
-              if viewRange.overlaps(keyboardRange)
-              {
-                yOffset = 0
-              }
-              else
-              {
-                yOffset = (data.endFrame.height - 20) / 2
-              }
-            }
-            else
-            {
-              yOffset = 0
             }
           }
       }

@@ -87,15 +87,16 @@ final class Bus: ObservableObject, Identifiable
   var image: AnyView { track.instrument.soundFont.image }
 
   /// The display name for the bus.
-  var displayName: Binding<String>
-  {
-    Binding { self.track.displayName }
-      set: { self.track.displayName = $0 }
-  }
+  @Binding var displayName: String
 
   /// The color for the bus.
   var color: Color { track.color.color }
 
   /// Initializing with the assigned track.
-  init(track: InstrumentTrack) { self.track = track }
+  init(track: InstrumentTrack)
+  {
+    _displayName = Binding(get: { track.displayName },
+                           set: { track.displayName = $0 })
+    self.track = track
+  }
 }
