@@ -21,13 +21,31 @@ struct ColorButton: View
   /// The bus for which this button serves as a control.
   @EnvironmentObject var bus: Bus
 
+  /// The mixer's controller.
+  @EnvironmentObject var controller: Controller
+
+  @State private var isSelected = false
+
   var body: some View
   {
-    Button { bus.isCurrentDispatch = true }
+    Button
+    {
+      isSelected.toggle()
+      bus.isCurrentDispatch = isSelected
+      controller.player.currentDispatch = isSelected ? bus.track : nil
+    }
     label:
     {
-      Image("color_swatch\(bus.isCurrentDispatch ? "-selected" : "")", bundle: .module)
+      Image("color_swatch\(isSelected ? "-selected" : "")", bundle: .module)
     }
     .accentColor(bus.color)
+    .onReceive(controller.player.$currentDispatch)
+    {
+      newDispatch in
+      if isSelected, newDispatch as? InstrumentTrack != bus.track
+      {
+        isSelected = false
+      }
+    }
   }
 }

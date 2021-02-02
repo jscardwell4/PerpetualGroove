@@ -8,6 +8,7 @@
 import Foundation
 import MoonDev
 import SwiftUI
+import Combine
 
 /// A model for encapsulating the bus assignment of an `InstrumentTrack`
 /// from the mixer's perspective.
@@ -63,25 +64,17 @@ final class Bus: ObservableObject, Identifiable
   /// This is `true` if `isSoloed || isForceMuted` and `false` otherwise.
   var isMuteDisabled: Bool { isSoloed || isForceMuted }
 
-  /// Flag indicating whether `player.cutrack`
-  @Published var isCurrentDispatch = false
+  /// Flag indicating whether `track` is the player's current node dispatch.
+  @Published var isCurrentDispatch: Bool = false
 
   /// Derived property creating a binding to the volume level of the track's instrument.
-  var volume: Binding<Float>
-  {
-    Binding { self.track.instrument.volume }
-      set: { self.track.instrument.volume = (0 ... 1).clamp($0) }
-  }
+  @Binding var volume: Float
 
   /// This property is used when muting to quickly switch between volume levels.
   private var cachedVolume: Float = 0
 
   /// Derived property creating a binding to the pan setting of the track's instrument.
-  var pan: Binding<Float>
-  {
-    Binding { self.track.instrument.pan }
-      set: { self.track.instrument.pan = (-1 ... 1).clamp($0) }
-  }
+  @Binding var pan: Float
 
   /// The sound font image for the bus.
   var image: AnyView { track.instrument.soundFont.image }
@@ -95,6 +88,10 @@ final class Bus: ObservableObject, Identifiable
   /// Initializing with the assigned track.
   init(track: InstrumentTrack)
   {
+    _volume = Binding(get: { track.instrument.volume },
+                      set: { track.instrument.volume = (0 ... 1).clamp($0) })
+    _pan = Binding(get: { track.instrument.pan },
+                   set: { track.instrument.pan = (-1 ... 1).clamp($0) })
     _displayName = Binding(get: { track.displayName },
                            set: { track.displayName = $0 })
     self.track = track

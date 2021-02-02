@@ -25,9 +25,9 @@ struct TrackBus: View
     VStack(spacing: 20)
     {
       Text("VOL").controlLabel()
-      VerticalSlider(value: bus.volume)
+      VerticalSlider(value: bus.$volume)
       Text("PAN").controlLabel()
-      Knob(value: bus.pan)
+      Knob(value: bus.$pan)
       SoloButton()
       MuteButton().disabled(bus.isMuteDisabled)
       SoundFontButton()

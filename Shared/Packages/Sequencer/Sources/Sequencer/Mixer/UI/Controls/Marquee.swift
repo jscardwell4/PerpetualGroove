@@ -98,12 +98,8 @@ struct Marquee: View, Identifiable
         }
         .marquee(text: bus.displayName, proxy: proxy, phase: phase, didScroll: $didScroll)
         .animation(animation)
-        .busLabel(isEditing: isEditing)
-        .fixedSize(horizontal: true, vertical: false)
         .frame(width: proxy.size.width)
-        .multilineTextAlignment(.center)
-        .autocapitalization(.none)
-        .disableAutocorrection(true)
+        .textFieldStyle(BusLabelTextFieldStyle(isEditing: isEditing))
         .preference(key: KeyboardPreferenceKey.self, value: keyboardRequest.asArray)
       }
       .frame(width: 80, height: 20, alignment: .center)

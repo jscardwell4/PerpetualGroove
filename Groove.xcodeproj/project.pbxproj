@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C22754D025C8BC93005B0D9E /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = C22754CF25C8BC93005B0D9E /* Lottie */; };
 		C24841DC25B7BD1C00C42DAE /* GrooveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24841B325B7BD1900C42DAE /* GrooveApp.swift */; };
 		C24841DD25B7BD1C00C42DAE /* GrooveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24841B325B7BD1900C42DAE /* GrooveApp.swift */; };
 		C24841E025B7BD1C00C42DAE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24841B525B7BD1900C42DAE /* ContentView.swift */; };
@@ -1748,6 +1749,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C248420D25B7C00F00C42DAE /* Common in Frameworks */,
+				C22754D025C8BC93005B0D9E /* Lottie in Frameworks */,
 				C248420F25B7C00F00C42DAE /* Documents in Frameworks */,
 				C248421125B7C00F00C42DAE /* MIDI in Frameworks */,
 				C248421525B7C00F00C42DAE /* Sequencer in Frameworks */,
@@ -3969,6 +3971,7 @@
 				C248421225B7C00F00C42DAE /* MoonDev */,
 				C248421425B7C00F00C42DAE /* Sequencer */,
 				C248421625B7C00F00C42DAE /* SoundFont */,
+				C22754CF25C8BC93005B0D9E /* Lottie */,
 			);
 			productName = "Groove (iOS)";
 			productReference = C24841BB25B7BD1B00C42DAE /* Groove.app */;
@@ -4020,6 +4023,7 @@
 			);
 			mainGroup = C2E043281B72F4DC005F0675;
 			packageReferences = (
+				C22754CE25C8BC93005B0D9E /* XCRemoteSwiftPackageReference "lottie-ios" */,
 			);
 			productRefGroup = C2E043321B72F4DC005F0675 /* Products */;
 			projectDirPath = "";
@@ -4188,6 +4192,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = JT6STF4SHA;
 				ENABLE_PREVIEWS = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -4220,6 +4225,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = JT6STF4SHA;
 				ENABLE_PREVIEWS = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -4252,6 +4258,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = JT6STF4SHA;
 				ENABLE_PREVIEWS = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -4283,6 +4290,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = JT6STF4SHA;
 				ENABLE_PREVIEWS = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -4695,7 +4703,23 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		C22754CE25C8BC93005B0D9E /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.2.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
+		C22754CF25C8BC93005B0D9E /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C22754CE25C8BC93005B0D9E /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
+		};
 		C248420C25B7C00F00C42DAE /* Common */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Common;

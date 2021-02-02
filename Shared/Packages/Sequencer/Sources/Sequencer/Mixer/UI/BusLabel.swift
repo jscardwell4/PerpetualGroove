@@ -33,6 +33,23 @@ extension View
   }
 }
 
+struct BusLabelTextFieldStyle: TextFieldStyle
+{
+  let isEditing: Bool
+
+  func _body(configuration: TextField<Self._Label>) -> some View
+  {
+    configuration
+      .multilineTextAlignment(.center)
+      .autocapitalization(.none)
+      .disableAutocorrection(true)
+      .allowsTightening(true)
+      .triumpFont(family: .rock, volume: .two, size: 14)
+      .foregroundColor(isEditing ? .busLabelActive : .busLabel)
+      .fixedSize(horizontal: true, vertical: false)
+  }
+}
+
 extension Color
 {
   static let busLabel = Color("mixerLabel", bundle: .module)
