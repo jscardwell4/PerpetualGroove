@@ -8,31 +8,43 @@
 import Common
 import Documents
 import MoonDev
-import Sequencer
+import Sequencing
 import SwiftUI
+
+// MARK: - GrooveApp
 
 @main
 final class GrooveApp: App
 {
   @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
-  private func newDocument() -> Document
-  {
-    .init(sequence: ProcessInfo.processInfo.environment["ENABLE_MOCK_DATA"] == "true"
-      ? Sequence.mock
-      : Sequence())
-  }
-
-  private func contentView(_ file: FileDocumentConfiguration<Document>) -> some View
-  {
-    ContentView()
-      .environment(\.openDocument, file)
-      .environmentObject(sequencer)
-      .environmentObject(file.document.sequence)
-  }
+  @Environment(\.enableMockData) var enableMockData: Bool
 
   var body: some Scene
   {
-    DocumentGroup(newDocument: self.newDocument(), editor: contentView)
+    DocumentGroup(newDocument: Document(sequence: self.enableMockData ? .mock : .init()))
+    {
+      ContentView()
+        .environment(\.openDocument, $0) // Add `file` to the environment
+        .environmentObject(Sequencer(sequence: $0.document.sequence)) // Add the sequencer.
+        .preferredColorScheme(.dark) // Not sure this does any good.
+    }
+  }
+}
+
+// MARK: - MockDataEnvironmentKey
+
+private struct MockDataEnvironmentKey: EnvironmentKey
+{
+  static let defaultValue: Bool = ProcessInfo.processInfo
+    .environment["ENABLE_MOCK_DATA"] == "true"
+}
+
+extension EnvironmentValues
+{
+  public var enableMockData: Bool
+  {
+    get { self[MockDataEnvironmentKey.self] }
+    set { self[MockDataEnvironmentKey.self] = newValue }
   }
 }

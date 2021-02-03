@@ -148,7 +148,7 @@ public final class TransportViewController: UIViewController
   {
     super.viewDidLoad()
 
-    transport = sequencer.transport
+    transport = Controller.shared.transport
   }
 
   /// The action assigned to the record button. Toggles `transport.isRecording`.

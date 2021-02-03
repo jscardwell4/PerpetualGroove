@@ -126,10 +126,10 @@ final class BarBeatTimeLabel: UIView
   {
 
     // Register to receive notifications from the sequencer when it changes transports.
-    transportSubscription = sequencer.$transport.sink { self.transport = $0 }
+    transportSubscription = Controller.shared.$transport.sink { self.transport = $0 }
 
     // Set `transport` to the sequencer's current transport.
-    transport = sequencer.transport
+    transport = Controller.shared.transport
 
   }
 

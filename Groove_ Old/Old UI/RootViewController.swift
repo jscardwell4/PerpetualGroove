@@ -9,7 +9,7 @@ import Common
 import Documents
 import Foundation
 import MoonDev
-import Sequencer
+import Sequencing
 import UIKit
 import SwiftUI
 

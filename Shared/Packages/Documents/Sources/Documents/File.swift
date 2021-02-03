@@ -9,7 +9,7 @@ import Common
 import Foundation
 import MIDI
 import MoonDev
-import Sequencer
+import Sequencing
 
 // MARK: - File
 
@@ -31,7 +31,7 @@ public struct File: DataConvertible, Codable
   public var endOfFile = BarBeatTime.zero
 
   /// Intializing from an existing sequence and, possibly, its origin.
-  public init(sequence: Sequencer.Sequence)
+  public init(sequence: Sequence)
   {
     name = sequence.name
 
@@ -123,7 +123,7 @@ extension File: CustomStringConvertible
 
 @available(macCatalyst 14.0, *)
 @available(iOS 14.0, *)
-extension Sequencer.Sequence
+extension Sequence
 {
   /// Initializing with JSON fiie data belonging to a document. After the default
   /// initializer has been invoked passing `document`, the sequence's tempo and
@@ -168,7 +168,7 @@ extension Sequencer.Sequence
 
 @available(macCatalyst 14.0, *)
 @available(iOS 14.0, *)
-extension Sequencer.Loop
+extension Loop
 {
   /// Iniitializing with a loop from a Groove file and a track. The loop is assigned to the
   /// specified track. The values for `identifier`, `repetitions`, `repeatDelay`, and
@@ -249,7 +249,7 @@ extension InstrumentTrack
     // Iterate the loop data provided by `grooveTrack`.
     for loopData in grooveTrack.loops.values
     {
-      let loop = Sequencer.Loop(grooveLoop: loopData, track: self)
+      let loop = Loop(grooveLoop: loopData, track: self)
 
       // Create a loop using `loopData`.
       add(loop: loop)

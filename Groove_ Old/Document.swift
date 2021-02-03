@@ -9,7 +9,7 @@ import Combine
 import Foundation
 import MIDI
 import MoonDev
-import Sequencer
+import Sequencing
 import SwiftUI
 import UIKit
 import UniformTypeIdentifiers

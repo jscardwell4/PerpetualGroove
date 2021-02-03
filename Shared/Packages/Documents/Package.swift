@@ -17,13 +17,13 @@ let package = Package(
     .package(path: "../Common"),
     .package(path: "../MIDI"),
     .package(path: "../SoundFont"),
-    .package(path: "../Sequencer"),
+    .package(path: "../Sequencing"),
     .package(url: "https://github.com/Quick/Nimble.git", .upToNextMajor(from: "9.0.0"))
   ],
   targets: [
     .target(
       name: "Documents",
-      dependencies: ["MoonDev", "Common", "MIDI", "SoundFont", "Sequencer"]
+      dependencies: ["MoonDev", "Common", "MIDI", "SoundFont", "Sequencing"]
     ),
     .testTarget(
       name: "DocumentsTests",

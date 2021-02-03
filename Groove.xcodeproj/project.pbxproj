@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		C22754D025C8BC93005B0D9E /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = C22754CF25C8BC93005B0D9E /* Lottie */; };
+		C230510D25C9FFD90011DDE5 /* Sequencing in Frameworks */ = {isa = PBXBuildFile; productRef = C230510C25C9FFD90011DDE5 /* Sequencing */; };
 		C24841DC25B7BD1C00C42DAE /* GrooveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24841B325B7BD1900C42DAE /* GrooveApp.swift */; };
 		C24841DD25B7BD1C00C42DAE /* GrooveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24841B325B7BD1900C42DAE /* GrooveApp.swift */; };
 		C24841E025B7BD1C00C42DAE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24841B525B7BD1900C42DAE /* ContentView.swift */; };
@@ -18,7 +19,6 @@
 		C248420F25B7C00F00C42DAE /* Documents in Frameworks */ = {isa = PBXBuildFile; productRef = C248420E25B7C00F00C42DAE /* Documents */; };
 		C248421125B7C00F00C42DAE /* MIDI in Frameworks */ = {isa = PBXBuildFile; productRef = C248421025B7C00F00C42DAE /* MIDI */; };
 		C248421325B7C00F00C42DAE /* MoonDev in Frameworks */ = {isa = PBXBuildFile; productRef = C248421225B7C00F00C42DAE /* MoonDev */; };
-		C248421525B7C00F00C42DAE /* Sequencer in Frameworks */ = {isa = PBXBuildFile; productRef = C248421425B7C00F00C42DAE /* Sequencer */; };
 		C248421725B7C00F00C42DAE /* SoundFont in Frameworks */ = {isa = PBXBuildFile; productRef = C248421625B7C00F00C42DAE /* SoundFont */; };
 		C25206A625B8A8BB00B1E0C5 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C249766425B3AA1800A54608 /* Settings.bundle */; };
 		C25206A925B8A8BC00B1E0C5 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C249766425B3AA1800A54608 /* Settings.bundle */; };
@@ -108,6 +108,8 @@
 		C252078B25B8AF0600B1E0C5 /* Eveleth-Clean-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = C252073725B8AF0600B1E0C5 /* Eveleth-Clean-Thin.otf */; };
 		C26F4B1C25C3445E00519879 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26F4B1B25C3445E00519879 /* AppDelegate.swift */; };
 		C26F4B1D25C3445E00519879 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26F4B1B25C3445E00519879 /* AppDelegate.swift */; };
+		C2A1A3F725C9F473009B40CB /* ContentView_Previews.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A1A3F625C9F473009B40CB /* ContentView_Previews.swift */; };
+		C2A1A3F825C9F473009B40CB /* ContentView_Previews.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A1A3F625C9F473009B40CB /* ContentView_Previews.swift */; };
 		C2BAFFC525B915F000312A57 /* Emax Volume 3.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2BAFFBE25B915F000312A57 /* Emax Volume 3.sf2 */; };
 		C2BAFFC625B915F000312A57 /* Emax Volume 3.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2BAFFBE25B915F000312A57 /* Emax Volume 3.sf2 */; };
 		C2BAFFC725B915F000312A57 /* Emax Volume 1.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2BAFFBF25B915F000312A57 /* Emax Volume 1.sf2 */; };
@@ -1716,8 +1718,9 @@
 		C286F30225B75E470008B514 /* Documents */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Documents; sourceTree = "<group>"; };
 		C286F30325B75E4A0008B514 /* SoundFont */ = {isa = PBXFileReference; lastKnownFileType = folder; path = SoundFont; sourceTree = "<group>"; };
 		C286F30525B75E4D0008B514 /* Common */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Common; sourceTree = "<group>"; };
-		C286F30625B75E510008B514 /* Sequencer */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Sequencer; sourceTree = "<group>"; };
+		C286F30625B75E510008B514 /* Sequencing */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Sequencing; sourceTree = "<group>"; };
 		C297E59625B761B00023B701 /* sf2Info.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = sf2Info.txt; sourceTree = "<group>"; };
+		C2A1A3F625C9F473009B40CB /* ContentView_Previews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView_Previews.swift; sourceTree = "<group>"; };
 		C2AF20A5259B9FE200EC084A /* MoonKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MoonKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2BAFFBE25B915F000312A57 /* Emax Volume 3.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Emax Volume 3.sf2"; path = "Shared/Packages/SoundFont/Sources/SoundFont/Resources/sf2/Emax Volume 3.sf2"; sourceTree = SOURCE_ROOT; };
 		C2BAFFBF25B915F000312A57 /* Emax Volume 1.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Emax Volume 1.sf2"; path = "Shared/Packages/SoundFont/Sources/SoundFont/Resources/sf2/Emax Volume 1.sf2"; sourceTree = SOURCE_ROOT; };
@@ -1752,9 +1755,9 @@
 				C22754D025C8BC93005B0D9E /* Lottie in Frameworks */,
 				C248420F25B7C00F00C42DAE /* Documents in Frameworks */,
 				C248421125B7C00F00C42DAE /* MIDI in Frameworks */,
-				C248421525B7C00F00C42DAE /* Sequencer in Frameworks */,
 				C248421325B7C00F00C42DAE /* MoonDev in Frameworks */,
 				C248421725B7C00F00C42DAE /* SoundFont in Frameworks */,
+				C230510D25C9FFD90011DDE5 /* Sequencing in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1810,6 +1813,7 @@
 				C24841B325B7BD1900C42DAE /* GrooveApp.swift */,
 				C26F4B1B25C3445E00519879 /* AppDelegate.swift */,
 				C24841B525B7BD1900C42DAE /* ContentView.swift */,
+				C2A1A3F625C9F473009B40CB /* ContentView_Previews.swift */,
 				C2D5D55325C730A2001BE0F8 /* SoftwareKeyboardAdaptive.swift */,
 			);
 			path = Shared;
@@ -2888,7 +2892,7 @@
 				C286F30525B75E4D0008B514 /* Common */,
 				C286F30025B75E3E0008B514 /* MIDI */,
 				C286F30325B75E4A0008B514 /* SoundFont */,
-				C286F30625B75E510008B514 /* Sequencer */,
+				C286F30625B75E510008B514 /* Sequencing */,
 				C286F30225B75E470008B514 /* Documents */,
 			);
 			path = Packages;
@@ -3969,9 +3973,9 @@
 				C248420E25B7C00F00C42DAE /* Documents */,
 				C248421025B7C00F00C42DAE /* MIDI */,
 				C248421225B7C00F00C42DAE /* MoonDev */,
-				C248421425B7C00F00C42DAE /* Sequencer */,
 				C248421625B7C00F00C42DAE /* SoundFont */,
 				C22754CF25C8BC93005B0D9E /* Lottie */,
+				C230510C25C9FFD90011DDE5 /* Sequencing */,
 			);
 			productName = "Groove (iOS)";
 			productReference = C24841BB25B7BD1B00C42DAE /* Groove.app */;
@@ -4163,6 +4167,7 @@
 				C24841DC25B7BD1C00C42DAE /* GrooveApp.swift in Sources */,
 				C24841E025B7BD1C00C42DAE /* ContentView.swift in Sources */,
 				C2D5D55425C730A2001BE0F8 /* SoftwareKeyboardAdaptive.swift in Sources */,
+				C2A1A3F725C9F473009B40CB /* ContentView_Previews.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4174,6 +4179,7 @@
 				C24841DD25B7BD1C00C42DAE /* GrooveApp.swift in Sources */,
 				C24841E125B7BD1C00C42DAE /* ContentView.swift in Sources */,
 				C2D5D55525C730A2001BE0F8 /* SoftwareKeyboardAdaptive.swift in Sources */,
+				C2A1A3F825C9F473009B40CB /* ContentView_Previews.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4720,6 +4726,10 @@
 			package = C22754CE25C8BC93005B0D9E /* XCRemoteSwiftPackageReference "lottie-ios" */;
 			productName = Lottie;
 		};
+		C230510C25C9FFD90011DDE5 /* Sequencing */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Sequencing;
+		};
 		C248420C25B7C00F00C42DAE /* Common */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Common;
@@ -4735,10 +4745,6 @@
 		C248421225B7C00F00C42DAE /* MoonDev */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = MoonDev;
-		};
-		C248421425B7C00F00C42DAE /* Sequencer */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Sequencer;
 		};
 		C248421625B7C00F00C42DAE /* SoundFont */ = {
 			isa = XCSwiftPackageProductDependency;

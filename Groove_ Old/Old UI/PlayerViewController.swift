@@ -29,19 +29,19 @@ public final class PlayerViewController: UIViewController, UITextFieldDelegate
   private let buttonPadding: CGFloat = 10
 
   /// Sets the start of the loop to the current time.
-  @IBAction private func startLoopAction() { sequencer.markLoopStart() }
+  @IBAction private func startLoopAction() { Controller.shared.markLoopStart() }
 
   /// Sets the end of the loop to the current time.
-  @IBAction private func stopLoopAction() { sequencer.markLoopEnd() }
+  @IBAction private func stopLoopAction() { Controller.shared.markLoopEnd() }
 
   /// Sets the mode of the sequencer to `loop`.
-  @IBAction private func toggleLoopAction() { sequencer.enterLoopMode() }
+  @IBAction private func toggleLoopAction() { Controller.shared.enterLoopMode() }
 
   /// Sets the mode of the sequencer to `default`.
-  @IBAction private func cancelLoopAction() { sequencer.exitLoopMode() }
+  @IBAction private func cancelLoopAction() { Controller.shared.exitLoopMode() }
 
   /// Sets the mode of the sequencer to `default`.
-  @IBAction private func confirmLoopAction() { sequencer.exitLoopMode() }
+  @IBAction private func confirmLoopAction() { Controller.shared.exitLoopMode() }
 
   /// Control containing the primary tool buttons.
   @IBOutlet private(set) var primaryTools: ImageSegmentedControl?
@@ -135,7 +135,7 @@ public final class PlayerViewController: UIViewController, UITextFieldDelegate
     {
       self.primaryTools?.selectedSegmentIndex = $0.rawValue
     }
-    currentModeSubscription = sequencer.$mode.sink
+    currentModeSubscription = Controller.shared.$mode.sink
     {
       newMode in UIView.animate(withDuration: 0.25) { self.configure(for: newMode) }
     }

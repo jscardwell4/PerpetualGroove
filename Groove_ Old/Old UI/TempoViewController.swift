@@ -22,7 +22,7 @@ public final class TempoViewController: UIViewController
   /// with the new slider value.
   @IBAction private func tempoSliderValueDidChange()
   {
-    sequencer.tempo = Double(tempoSlider.value)
+    Controller.shared.tempo = Double(tempoSlider.value)
   }
   
   /// Handles presses of the `metronomeButton` by toggling `AudioManager.metronome.isOn`.
@@ -35,7 +35,7 @@ public final class TempoViewController: UIViewController
     super.viewDidLoad()
     
     // Set the slider's value to the current tempo.
-    tempoSlider.value = Float(sequencer.tempo)
+    tempoSlider.value = Float(Controller.shared.tempo)
     
     // Set the selected state of the button to match whether the metronome is on.
     metronomeButton.isSelected = metronome.isOn

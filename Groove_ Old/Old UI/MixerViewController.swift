@@ -426,7 +426,7 @@ public final class MixerViewController: UICollectionViewController,
   override public func awakeFromNib()
   {
     super.awakeFromNib()
-    sequenceSubscription = sequencer.$sequence.sink { self.monitoredSequence = $0 }
+    sequenceSubscription = Controller.shared.$sequence.sink { self.monitoredSequence = $0 }
   }
 
   /// Overridden to keep `sequence` current as well as the volume and pan

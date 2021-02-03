@@ -10,7 +10,7 @@ import Common
 import Foundation
 import MIDI
 import MoonDev
-import class Sequencer.Sequence
+import Sequencing
 import SwiftUI
 import UniformTypeIdentifiers
 

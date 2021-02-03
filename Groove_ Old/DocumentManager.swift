@@ -10,7 +10,7 @@ import Common
 import Foundation
 import MoonDev
 import os
-import Sequencer
+import Sequencing
 
 // MARK: - Shorthand
 

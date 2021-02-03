@@ -7,7 +7,7 @@
 import Combine
 import Common
 import MoonDev
-import Sequencer
+import Sequencing
 import SwiftUI
 
 // MARK: - DocumentNameField
@@ -19,10 +19,11 @@ import SwiftUI
 @available(OSX 10.15, *)
 public struct DocumentNameField: View, Identifiable
 {
-  /// The sequence whose name is being displayed.
-  @EnvironmentObject var sequence: Sequence
+  /// The sequencer whose sequence is having its name displayed.
+  @EnvironmentObject var sequencer: Sequencer
 
-  @Environment(\.openDocument) var openDocument
+  /// The file configuration added to the environment by `GrooveApp`.
+  @Environment(\.openDocument) var openDocument: FileDocumentConfiguration<Document>?
 
   /// The backing store used with the `KeyboardPreferenceKey`.
   @State private var keyboardRequest: KeyboardRequest? = nil
@@ -39,7 +40,7 @@ public struct DocumentNameField: View, Identifiable
     GeometryReader
     {
       proxy in
-      TextField("Document Name", text: $sequence.name)
+      TextField("Document Name", text: $sequencer.sequence.name)
       {
         [wasEditing = isEditing] isEditing in
 
@@ -51,12 +52,10 @@ public struct DocumentNameField: View, Identifiable
       }
       onCommit:
       {
-        openDocument?.document = Document(sequence: sequence)
+        openDocument?.document = openDocument!.document.modified
       }
-      .autocapitalization(.none)
-      .disableAutocorrection(true)
-      .foregroundColor(isEditing ? .highlightColor : .primaryColor1)
       .frame(width: proxy.size.width, height: proxy.size.height, alignment: .trailing)
+      .commonTextField(isEditing: $isEditing)
       .preference(key: KeyboardPreferenceKey.self, value: keyboardRequest.asArray)
       .triumpFont(family: .rock, volume: .two, size: 24)
       .multilineTextAlignment(.trailing)

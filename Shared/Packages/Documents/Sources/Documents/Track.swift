@@ -8,7 +8,7 @@
 import Common
 import Foundation
 import MoonDev
-import Sequencer
+import Sequencing
 
 @available(macCatalyst 14.0, *)
 @available(iOS 14.0, *)
@@ -17,7 +17,7 @@ extension File
   /// The `Documents.File` representation of `InstrumentTrack`.
   public struct Track: CustomStringConvertible, Codable
   {
-    public typealias Color = Sequencer.Track.Color
+    public typealias Color = Sequencing.Track.Color
     public typealias Preset = Instrument.Preset
     public typealias Identifier = Node.Identifier
 
