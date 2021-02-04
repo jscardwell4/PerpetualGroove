@@ -46,8 +46,17 @@ struct SoftwareKeyboardAdaptive: ViewModifier
           let data = KeyboardData(notification: notification)
           let keyboardRange = data.endFrame.minY ... data.endFrame.maxY
           let viewRange = request.frame.minY ... request.frame.maxY
-          if viewRange.overlaps(keyboardRange) { yOffset = 0 }
-          else { yOffset = (data.endFrame.height - 20) / 2 }
+          if viewRange.overlaps(keyboardRange)
+          {
+            let currentBaseLine = request.frame.maxY
+            let keyboardPlungeLine = data.endFrame.minY
+
+            yOffset = keyboardPlungeLine - currentBaseLine - 10
+          }
+          else
+          {
+            yOffset = (data.endFrame.height - 20) / 2
+          }
         }
         else { yOffset = 0 }
       }

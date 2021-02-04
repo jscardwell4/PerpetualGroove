@@ -17,59 +17,52 @@ import SwiftUI
 @available(iOS 14.0, *)
 public struct TransportView: View
 {
+  @EnvironmentObject var sequencer: Sequencer
   @EnvironmentObject var transport: Transport
 
   /// The view's body.
   public var body: some View
   {
-    HStack
+    GeometryReader
     {
-      Group
+      proxy in
+
+      let 𝘸 = proxy.size.width
+      let 𝘩 = proxy.size.height
+
+      let 𝘸_wheel: CGFloat = 150
+      let pad_min: CGFloat = 44
+      let available = 𝘸 - 𝘸_wheel - pad_min * 2
+      let half_available = available / 2
+
+      HStack
       {
-        RecordToggle()
-        PlayButton
+        VStack
         {
-               if transport.isPaused  { transport.isPaused = false }
-          else if transport.isPlaying { transport.isPaused = true  }
-          else                        { transport.isPlaying = true }
+          HStack
+          {
+            Spacer()
+            MetronomeToggle().environmentObject(sequencer.metronome)
+              .frame(width: 44)
+            HorizontalSlider(value: $transport.tempo)
+              .frame(minWidth: 150, idealWidth: 250, maxWidth: 350, alignment: .leading)
+            Spacer()
+          }
+          .frame(height: 44)
+          Clock().environmentObject(transport.time)
         }
-        StopButton
-        {
-          transport.reset()
-        }
+        .frame(width: half_available, height: 𝘩)
+
+        Spacer()
+        Wheel { logi("<\(#fileID) \(#function)> revolutions (radians): \($0)") }
+        Spacer()
+
+        HStack(spacing: 20) { RecordToggle(); PlayButton(); StopButton() }
+          .frame(width: half_available, height: min(64, max(𝘩 * 0.5, 44)))
       }
-      Spacer().frame(width: 44)
-      JogWheel
-      {
-        logi("<\(#fileID) \(#function)> revolutions (radians): \($0)")
-      }
-      Spacer().frame(width: 88)
-      VStack
-      {
-        Clock().environmentObject(transport.time).fixedSize()
-        HStack
-        {
-          MetronomeToggle().environmentObject(Sequencer.shared.metronome)
-          TempoSlider()
-        }
-        .offset(x: 0, y: -20)
-      }
+      .frame(width: 𝘸, height: 𝘩)
     }
   }
 
   public init() {}
-}
-
-// MARK: - TransportView_Previews
-
-@available(iOS 14.0, *)
-struct TransportView_Previews: PreviewProvider
-{
-  static var previews: some View
-  {
-    TransportView()
-      .previewLayout(.sizeThatFits)
-      .preferredColorScheme(.dark)
-      .padding()
-  }
 }

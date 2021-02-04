@@ -22,14 +22,19 @@ final class GrooveApp: App
 
   var body: some Scene
   {
+
     DocumentGroup(newDocument: Document(sequence: self.enableMockData ? .mock : .init()))
     {
+      let sequencer = Sequencer(sequence: $0.document.sequence)
+      
       ContentView()
         .environment(\.openDocument, $0) // Add `file` to the environment
-        .environmentObject(Sequencer(sequence: $0.document.sequence)) // Add the sequencer.
+        .environmentObject(sequencer) // Add the sequencer.
+        .statusBar(hidden: true)
         .preferredColorScheme(.dark) // Not sure this does any good.
     }
   }
+
 }
 
 // MARK: - MockDataEnvironmentKey

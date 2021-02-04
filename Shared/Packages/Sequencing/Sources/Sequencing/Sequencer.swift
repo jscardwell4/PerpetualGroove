@@ -43,13 +43,13 @@ public final class Sequencer: ObservableObject
 
   /// An instrument made availabe by the sequencer intended for use as a means of
   /// providing auditory feedback while configuring a separate `Instrument` instance.
-  @usableFromInline internal private(set) var auditionInstrument: Instrument
+  public private(set) var auditionInstrument: Instrument
 
   /// A metronome made available by the Controller.shared.
-  @usableFromInline internal private(set) var metronome: Metronome
+  public private(set) var metronome: Metronome
 
   /// The sequencer's audio engine.
-  @usableFromInline internal let audioEngine: AudioEngine
+  public let audioEngine: AudioEngine
 
   /// The primary transport used by the Controller.shared.
   public let primaryTransport = Transport(name: "primary")

@@ -19,14 +19,21 @@ struct MainBus: View
 
   var body: some View
   {
-    VStack(spacing: 20)
+    VStack
     {
-      Text("VOL").controlLabel()
-      VerticalSlider(value: $master.masterVolume)
-      Text("PAN").controlLabel()
-      Knob(value: $master.masterPan)
+      VStack(spacing: 20)
+      {
+        Text("VOL")
+          .controlLabel()
+        VerticalSlider(value: $master.masterVolume)
+        Text("PAN")
+          .controlLabel()
+        Knob(value: $master.masterPan)
+      }
       Spacer()
-      Text("Main").busLabel().offset(y: -37)
+      Text("Main")
+        .busLabel()
+        .padding(.bottom, 37)
     }
   }
 }

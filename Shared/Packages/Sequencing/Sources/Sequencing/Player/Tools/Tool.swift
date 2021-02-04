@@ -121,3 +121,29 @@ public enum AnyTool: String, CustomStringConvertible
     }
   }
 }
+
+@available(iOS 14.0, *)
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
+extension AnyTool: CaseIterable
+{
+  public static let allCases: [AnyTool] = [.newNodeGenerator,
+                                           .addNode,
+                                           .removeNode,
+                                           .deleteNode,
+                                           .nodeGenerator,
+                                           .rotate]
+}
+
+@available(iOS 14.0, *)
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
+extension AnyTool: Identifiable
+{
+  public var id: String { rawValue }
+}
+
+@available(iOS 14.0, *)
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
+extension AnyTool: Hashable, Equatable {}

@@ -18,19 +18,22 @@ struct StopButton: View
   /// The transport controlled by the button.
   @EnvironmentObject private var transport: Transport
 
-  /// The button's action.
-  let action: () -> Void
-  
+  /// Flag indicating whether the button is disabled.
+  @State private var isDisabled = true
+
   /// The view's body is composed of a single button that reset's the transport.
   /// This button is only enabled when `transport.playing == true`.
   var body: some View
   {
-    Button(action: action)
-    {
-      Image("stop", bundle: Bundle.module)
-    }
-    .disabled(!(transport.isPlaying || transport.isPaused))
-    .accentColor(transport.isPlaying ? .primaryColor1 : .disabledColor)
+    Button { transport.reset() }
+      label: {
+        Image("stop", bundle: Bundle.module)
+          .resizable()
+          .aspectRatio(contentMode: .fit)
+      }
+      .disabled(isDisabled)
+      .accentColor(isDisabled ? .disabledColor : .primaryColor2)
+      .onReceive(transport.$isPlaying.receive(on: RunLoop.main)) { isDisabled = !$0 }
   }
 
 }

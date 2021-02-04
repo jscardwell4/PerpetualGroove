@@ -27,14 +27,11 @@ public struct MixerView: View
   {
     HStack(spacing: 20)
     {
-      MainBus()
-        .environmentObject(sequencer.audioEngine) // Add the audio engine.
-      ForEach(mixer.buses)
-      {
-        TrackBus().environmentObject($0) // Add the bus.
-      }
+      MainBus().environmentObject(sequencer.audioEngine) // Add the audio engine.
+      ForEach(mixer.buses) { TrackBus().environmentObject($0) /* Add the bus. */ }
       AddTrackButton()
     }
+    .fixedSize(horizontal: false, vertical: true)
     .onPreferenceChange(TrackBus.SoloPreferenceKey.self) { mixer.update(for: $0) }
   }
 

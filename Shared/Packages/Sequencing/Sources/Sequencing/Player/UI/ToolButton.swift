@@ -32,28 +32,37 @@ struct ToolButton: View, Equatable, Identifiable
   @EnvironmentObject var player: Player
 
   /// Flag indicating whether `tool` is the currently selected tool.
-  private let isSelected: Bool
+  @State private var isSelected: Bool = false
 
-  @State private var preferenceValue: Set<AnyTool>
+  /// The width of the image, and the button.
+  private let imageWidth: CGFloat
+
+  @State private var preferenceValue: Set<AnyTool> = []
 
   /// The body of the view is either a single button or an empty view if `tool == .none`.
   var body: some View
   {
     Button
     {
-//      logi("<\(#fileID) \(#function)> button action for tool '\(tool)'")
+      isSelected.toggle()
       preferenceValue = isSelected ? [] : [tool]
     }
-    label: { tool.image.resizable().frame(width: 44, height: 44) }
-    .accentColor(isSelected || !preferenceValue.isEmpty ? .highlightColor : .primaryColor1)
+    label:
+    {
+      tool.image
+        .resizable()
+        .aspectRatio(contentMode: .fit)
+        .frame(width: imageWidth)
+
+    }
+    .accentColor(isSelected ? .highlightColor : .primaryColor1)
     .preference(key: CurrentTool.self, value: preferenceValue)
   }
 
-  init(model: AnyTool, isSelected: Bool)
+  init(width: CGFloat, model: AnyTool)
   {
+    imageWidth = width
     tool = model
-    self.isSelected = isSelected
-    _preferenceValue = State(initialValue: isSelected ? [model] : [])
   }
 }
 

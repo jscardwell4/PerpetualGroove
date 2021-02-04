@@ -19,23 +19,27 @@ struct PlayButton: View
   /// The transport for which the button control's playback.
   @EnvironmentObject private var transport: Transport
 
-  /// The button action.
-  let action: () -> Void
-
   /// The name of the image appropriate for the current `transport` state.
-  private var imageName: String
-  {
-    transport.isPlaying && !transport.isPaused ? "pause" : "play"
-  }
+  @State private var image = Image("play", bundle: .module)
 
   /// The view's body is composed of a single state sensitive button
   /// that displays either a play or a pause symbol.
   var body: some View
   {
-    Button(action: action)
+    Button
     {
-      Image(imageName, bundle: .module)
-        .accentColor(.primaryColor1)
+      if transport.isPlaying { transport.isPaused.toggle() }
+      else { transport.isPlaying.toggle() }
     }
+    label: {
+      image
+        .resizable()
+        .aspectRatio(contentMode: .fit)
+        .accentColor(!transport.isPlaying ? .primaryColor1 : .primaryColor2)
+    }
+      .onReceive(transport.$isPlaying.receive(on: RunLoop.main))
+      {
+        image = Image($0 ? "pause" : "play", bundle: .module)
+      }
   }
 }

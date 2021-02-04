@@ -26,58 +26,29 @@ public struct PlayerView: View
   /// document, and a horizontal toolbar containing buttons for the player's tools.
   public var body: some View
   {
-      VStack
-      {
-        GeometryReader
-        {
-          let side = min($0.size.width, $0.size.height)
-          PlayerHost(side: side)
-            .frame(width: side, height: side, alignment: .center)
-        }
-        HStack(spacing: 20)
-        {
-          Spacer()
-          Group
-          {
-          ToolButton(model: .newNodeGenerator,
-                     isSelected: player.currentTool == .newNodeGenerator)
-          ToolButton(model: .addNode,
-                     isSelected: player.currentTool == .addNode)
-          ToolButton(model: .removeNode,
-                     isSelected: player.currentTool == .removeNode)
-          ToolButton(model: .deleteNode,
-                     isSelected: player.currentTool == .deleteNode)
-          ToolButton(model: .nodeGenerator,
-                     isSelected: player.currentTool == .nodeGenerator)
-          ToolButton(model: .rotate,
-                     isSelected: player.currentTool == .rotate)
-          }
-          .onPreferenceChange(CurrentTool.self)
-          {
-//            logi("<\(#fileID) \(#function)> $0 = \($0)")
-            player.currentTool = $0.first ?? .none
-          }
+    GeometryReader
+    {
+      proxy in
 
-          Spacer()
-          Group
-          {
-            if sequencer.mode == .loop
-            {
-              LoopButton(action: .beginRepeat)
-              LoopButton(action: .endRepeat)
-              LoopButton(action: .cancelLoop)
-              LoopButton(action: .confirmLoop)
-            }
-            else
-            {
-              LoopButton(action: .toggleLoop)
-            }
-          }
-          Spacer()
-        }
-        .frame(height: 44)
+      let pad_vertical: CGFloat = 10 // Constant for spacing from top and bottom.
+      let 𝘩_toolbar: CGFloat = 44 // Constant height for the toolbar.
+
+      let 𝘸 = proxy.size.width // Total available width.
+      let 𝘩 = proxy.size.height // Total available height.
+      let 𝘩_player = min(𝘸, 𝘩) - 𝘩_toolbar - pad_vertical // The player height.
+
+      VStack(spacing: 0)
+      {
+        PlayerHost(side: 𝘩_player)
+          .frame(width: 𝘩_player, height: 𝘩_player, alignment: .center)
+          .padding(.top, pad_vertical)
+
+        Toolbar()
+          .environmentObject(sequencer.sequence)
+          .frame(width: 𝘸, height: 𝘩_toolbar, alignment: .center)
       }
-      .accentColor(.primaryColor1)
+    }
+
   }
 
   public init() {}

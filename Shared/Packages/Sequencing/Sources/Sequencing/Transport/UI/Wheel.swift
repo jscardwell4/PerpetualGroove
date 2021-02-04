@@ -41,30 +41,50 @@ struct Wheel: View
   /// The view's body is composed of a single scroll wheel.
   var body: some View
   {
-    ZStack
+    GeometryReader
     {
-      Image("wheel", bundle: .module)
-        .resizable()
-        .aspectRatio(contentMode: .fit)
-        .frame(width: 150)
-        .foregroundColor(Color(#colorLiteral(red: 0.499273628, green: 0.4559301734, blue: 0.3952253163, alpha: 1)))
-      Group
+      proxy in
+
+      let 𝘸 = proxy.size.width
+      let 𝘩 = proxy.size.height
+
+      let diameter_wheel = min(𝘸, 𝘩)
+      let diameter_dimple = diameter_wheel / 3
+
+      ZStack
       {
-        Image("wheel_dimple_fill", bundle: .module)
+        Image("wheel", bundle: .module)
           .resizable()
           .aspectRatio(contentMode: .fit)
-          .frame(width: 50)
-          .foregroundColor(Color(#colorLiteral(red: 0.6629999876, green: 0.6269999743, blue: 0.5799999833, alpha: 1)))
-        Image("wheel_dimple", bundle: .module)
-          .resizable()
-          .aspectRatio(contentMode: .fit)
-          .frame(width: 50)
-          .foregroundColor(.black)
+          .frame(width: diameter_wheel)
+          .foregroundColor(Color(#colorLiteral(red: 0.499273628, green: 0.4559301734, blue: 0.3952253163, alpha: 1)))
+        Group
+        {
+          Image("wheel_dimple_fill", bundle: .module)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(width: diameter_dimple)
+            .foregroundColor(Color(#colorLiteral(red: 0.6629999876, green: 0.6269999743, blue: 0.5799999833, alpha: 1)))
+          Image("wheel_dimple", bundle: .module)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(width: diameter_dimple)
+            .foregroundColor(.black)
+        }
+        .offset(x: 0, y: -40)
+        .rotationEffect(state.angle)
       }
-      .offset(x: 0, y: -40)
-      .rotationEffect(state.angle)
+      .gesture(drag)
+      .frame(width: diameter_wheel, height: diameter_wheel, alignment: .center)
     }
-    .gesture(drag)
+    .frame(minWidth: 50,
+           idealWidth: 150,
+           maxWidth: 200,
+           minHeight: 50,
+           idealHeight: 150,
+           maxHeight: 200,
+           alignment: .center)
+    .fixedSize()
   }
 
 }

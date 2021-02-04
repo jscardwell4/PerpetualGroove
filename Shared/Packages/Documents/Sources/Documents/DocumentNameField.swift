@@ -61,7 +61,6 @@ public struct DocumentNameField: View, Identifiable
       .multilineTextAlignment(.trailing)
     }
     .frame(minHeight: 24)
-    .padding(.top)
   }
 }
 
