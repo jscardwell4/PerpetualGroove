@@ -36,6 +36,13 @@ public final class Transport: ObservableObject
   /// * Start the clock if the transport is not currently paused.
   @Published public var isPlaying = false
   {
+    willSet
+    {
+      logi("""
+        <\(#fileID) \(#function)> \
+        isPlaying = \(newValue)
+        """)
+    }
     didSet
     {
       // Check that the transport has started playing.
@@ -69,6 +76,13 @@ public final class Transport: ObservableObject
   /// notification.
   @Published public var isPaused = false
   {
+    willSet
+    {
+      logi("""
+        <\(#fileID) \(#function)> \
+        isPaused = \(newValue)
+        """)
+    }
     didSet
     {
       // Check that the transport is playing and that `isPaused` has toggled from
@@ -97,6 +111,14 @@ public final class Transport: ObservableObject
   ///   notification when this property has been set to `false`.
   @Published public var isJogging = false
   {
+    willSet
+    {
+      logi("""
+        <\(#fileID) \(#function)> \
+        isJogging = \(newValue)
+        """)
+    }
+
     didSet
     {
       switch (isJogging, oldValue)
@@ -151,6 +173,15 @@ public final class Transport: ObservableObject
   /// they generate. Changing this property causes the transport to post a
   /// `didToggleRecording` notification.
   @Published public var isRecording = false
+  {
+    willSet
+    {
+      logi("""
+        <\(#fileID) \(#function)> \
+        isRecording = \(newValue)
+        """)
+    }
+  }
 
   private let didResetSubject = PassthroughSubject<Void, Never>()
   private let didJogSubject = PassthroughSubject<(time: BarBeatTime,
@@ -178,6 +209,14 @@ public final class Transport: ObservableObject
   /// `clock.beatsPerMinute`.
   @Published public var tempo: UInt16 = 120
   {
+    willSet
+    {
+      logi("""
+        <\(#fileID) \(#function)> \
+        tempo = \(newValue)
+        """)
+    }
+
     didSet { clock.beatsPerMinute = tempo }
   }
 

@@ -6,6 +6,7 @@
 //  Copyright © 2021 Moondeer Studios. All rights reserved.
 //
 import SwiftUI
+import MoonDev
 
 // MARK: - MetronomeToggle
 
@@ -18,27 +19,24 @@ struct MetronomeToggle: View
   /// The metronome being controlled by the button.
   @EnvironmentObject var metronome: Metronome
 
-  /// Flag indicating whether the button is active.
-  @State private var isActive = false
+  /// Backing store for whether the toggle is on or off.
+  @State private var isOn = false
 
-  /// The view's body is composed of a single button that toggles the value of
-  /// `metronome.isOn` and adjusts its color accordingly.
+  /// The toggle style to use.
+  private let toggleStyle = ImageToggleStyle(name: "metronome",
+                                             bundle: .module,
+                                             primaryColor: .primaryColor1,
+                                             insets: EdgeInsets(top: 4,
+                                                                leading: 0,
+                                                                bottom: 4,
+                                                                trailing: 0))
+
   var body: some View
   {
-    GeometryReader
-    {
-      let 𝘴 = min($0.size.width, $0.size.height) * 0.75
-
-      Button { metronome.isOn.toggle() }
-      label: {
-        Image("metronome", bundle: .module)
-          .resizable()
-          .aspectRatio(contentMode: .fit)
-          .frame(height: 𝘴)
-      }
-        .position(x: $0.size.width/2, y: $0.size.height/2)
-    }
-    .accentColor(isActive ? .highlightColor : .primaryColor1)
-    .onReceive(metronome.$isOn.receive(on: RunLoop.main)) { isActive = $0 }
+    Toggle(isOn: $isOn, label: { Text("Metronome") })
+      .toggleStyle(toggleStyle)
+      .accentColor(.highlightColor)
+      .onChange(of: isOn) { metronome.isOn = $0 }
+      .onReceive(metronome.$isOn.receive(on: RunLoop.main)) { isOn = $0 }
   }
 }

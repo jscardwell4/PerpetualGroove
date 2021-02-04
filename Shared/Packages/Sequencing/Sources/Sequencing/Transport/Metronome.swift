@@ -26,6 +26,10 @@ public final class Metronome: ObservableObject
   /// `true` or `false`.
   @Published public var isOn = false
   {
+    willSet
+    {
+      logi("<\(#fileID) \(#function)> isOn = \(newValue)")
+    }
     didSet
     {
       guard oldValue != isOn else { return }

@@ -26,7 +26,14 @@ final class AppDelegate: NSObject, Delegate
       nil
   ) -> Bool
   {
-    UIView.appearance().tintColor = #colorLiteral(red: 0.7609999776, green: 0.2549999952, blue: 0, alpha: 1)
+    let appearance = UINavigationBarAppearance()
+    appearance.configureWithTransparentBackground()
+
+    UINavigationBar.appearance().standardAppearance = appearance
+    UINavigationBar.appearance().scrollEdgeAppearance = appearance
+//    UIView.appearance(whenContainedInInstancesOf: [UINavigationBar.self]).tintColor = .primaryColor1
+
+    UIView.appearance().tintColor = .highlightColor
     return true
   }
 
