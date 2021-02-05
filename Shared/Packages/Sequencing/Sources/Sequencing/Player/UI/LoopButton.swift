@@ -6,12 +6,14 @@
 //  Copyright © 2021 Moondeer Studios. All rights reserved.
 //
 import SwiftUI
-import func MoonDev.logi
+import MoonDev
 
 // MARK: - LoopButton
 
 /// A view to serve as a button for one the player's tools.
 @available(iOS 14.0, *)
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
 struct LoopButton: View
 {
   /// The sequencer loaded into the enviroment by `GrooveApp`.
@@ -20,36 +22,20 @@ struct LoopButton: View
   /// The action to attach to this button.
   private let action: Action
 
-  /// The width of the image, and the button.
-  private let imageWidth: CGFloat
-
   /// The body of the view is either a single button or an empty view if `tool == .none`.
   var body: some View
   {
-    Button(action: action.action(sequencer: sequencer))
-    {
-      action.image
-        .resizable()
-        .aspectRatio(contentMode: .fit)
-        .frame(width: imageWidth)
-    }
+    Button("Loop Button (\(action.rawValue))"){}
+      .buttonStyle(ActionStyle(action: action))
   }
 
   /// Default initializer.
   ///
   /// - Parameters:
-  ///   - width: The button's width.
   ///   - action: The action that the button shall perform.
-  public init(width: CGFloat, action: Action)
-  {
-    imageWidth = width
-    self.action = action
-  }
+  init(action: Action) { self.action = action }
 
   /// An enumeration of the action's performable by an instance of `LoopButton`.
-  @available(iOS 14.0, *)
-  @available(macCatalyst 14.0, *)
-  @available(OSX 10.15, *)
   enum Action: String, Hashable, Equatable, Identifiable
   {
     /// Marks the starting position of a loop.
@@ -74,7 +60,7 @@ struct LoopButton: View
     var image: Image { Image(rawValue, bundle: .module) }
 
     /// The action performed by the button.
-    func action(sequencer: Sequencer) -> () -> Void
+    func trigger(sequencer: Sequencer) -> () -> Void
     {
       switch self
       {
@@ -96,4 +82,29 @@ struct LoopButton: View
         : [.beginRepeat, .endRepeat, .cancelLoop, .confirmLoop]
     }
   }
+
+  struct ActionStyle: PrimitiveButtonStyle
+  {
+    @State private var isPressed = false
+
+    @EnvironmentObject var sequencer: Sequencer
+
+    let action: Action
+
+    func makeBody(configuration: Configuration) -> some View
+    {
+      action.image
+        .resizable()
+        .aspectRatio(contentMode: .fit)
+        .foregroundColor(isPressed ? .highlightColor : .primaryColor1)
+        .gesture(DragGesture(minimumDistance: 0)
+          .onChanged { _ in isPressed = true }
+          .onEnded
+          { _ in
+            isPressed = false
+            action.trigger(sequencer: sequencer)()
+          })
+    }
+  }
+
 }

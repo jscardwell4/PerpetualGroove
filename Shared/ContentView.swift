@@ -27,7 +27,7 @@ import UIKit
 struct ContentView: View
 {
   // MARK: Environment
-  
+
   /// The shared sequencer instance loaded into the environment by `GrooveApp`.
   @EnvironmentObject var sequencer: Sequencer
 
@@ -43,7 +43,7 @@ struct ContentView: View
     Button
     {
       UIApplication.shared.windows.first?.rootViewController?
-        .dismiss(animated: true){}
+        .dismiss(animated: true) {}
     }
     label:
     {
@@ -54,7 +54,7 @@ struct ContentView: View
     }
     .accentColor(.primaryColor1)
     .contentShape(Rectangle())
-    .layout(currentLayout.backButton)
+    .layout(currentLayout[.backButton])
   }
 
   /// The sequence name.
@@ -63,10 +63,33 @@ struct ContentView: View
     HStack
     {
       Spacer()
-      SequenceNameField()
-        .environmentObject(sequencer.sequence) // Provide the sequence.
+      SequenceNameField().environmentObject(sequencer.sequence) // Provide the sequence.
+      Spacer()
     }
-    .layout(currentLayout.nameField)
+    .layout(currentLayout[.nameField])
+  }
+
+  /// The leading navigation bar item.
+  private func leadingItem(_ currentLayout: LayoutPreference) -> some View
+  {
+    HStack { backButton(currentLayout); nameField(currentLayout) }
+      .layout(currentLayout[.leadingItem])
+  }
+
+  /// The player's toolbar.
+  private func toolbar(_ currentLayout: LayoutPreference) -> some View
+  {
+    Toolbar()
+      .environmentObject(sequencer.sequence)
+      .environmentObject(sequencer.player)
+      .layout(currentLayout[.toolbar])
+  }
+
+  /// The trailing navigation bar item.
+  private func trailingItem(_ currentLayout: LayoutPreference) -> some View
+  {
+    HStack { toolbar(currentLayout) }
+      .layout(currentLayout[.trailingItem])
   }
 
   /// The mixer.
@@ -74,7 +97,7 @@ struct ContentView: View
   {
     MixerView()
       .environmentObject(Mixer(sequence: sequencer.sequence)) // Provide the mixer model.
-      .layout(currentLayout.mixer) // Apply `currentLayout` to the mixer.
+      .layout(currentLayout[.mixer])
       .softwareKeyboardAdaptive() // Adapt to software keyboard.
   }
 
@@ -83,7 +106,14 @@ struct ContentView: View
   {
     PlayerView()
       .environmentObject(sequencer.player) // Provider the player.
-      .layout(currentLayout.player) // Apply `currentLayout` to the player.
+      .layout(currentLayout[.player])
+  }
+
+  /// The mixer and player in a horizontal stack.
+  private func topStack(_ currentLayout: LayoutPreference) -> some View
+  {
+    HStack { mixer(currentLayout); Spacer(); player(currentLayout) }
+      .layout(currentLayout[.topStack])
   }
 
   /// The transport.
@@ -91,82 +121,124 @@ struct ContentView: View
   {
     TransportView()
       .environmentObject(sequencer.transport) // Provide the transport.
-      .layout(currentLayout.transport) // Apply `currentLayout` to the transport.
+      .layout(currentLayout[.transport])
   }
 
-  /// The mixer and player in a horizontal stack.
-  private func mixerPlayerStack(_ currentLayout: LayoutPreference) -> some View
+  /// The transport in a horizontal stack.
+  private func bottomStack(_ currentLayout: LayoutPreference) -> some View
   {
-    HStack
-    {
-      mixer(currentLayout)
-      Spacer()
-      player(currentLayout)
-    }
-    .layout(currentLayout.mixerPlayer) // Apply `currentLayout` to the stack.
+    HStack { transport(currentLayout) }
+      .layout(currentLayout[.bottomStack])
   }
 
   /// All of the view's components combined.
-  private func content(_ proxy: GeometryProxy) -> some View
+  private func content(_ currentLayout: LayoutPreference) -> some View
   {
-    let layout = LayoutPreference(proxy: proxy)
-
-    return VStack { mixerPlayerStack(layout); transport(layout) }
-      .navigationBarItems(leading: backButton(layout), trailing: nameField(layout))
+    VStack { topStack(currentLayout); bottomStack(currentLayout) }
       .background(Color.backgroundColor1.edgesIgnoringSafeArea(.all))
+      .layout(currentLayout[.rootStack])
+      .navigationBarItems(leading: leadingItem(currentLayout),
+                          trailing: trailingItem(currentLayout))
       .navigationBarBackButtonHidden(true)
       .navigationTitle("")
   }
 
-  var body: some View { GeometryReader { content($0) } }
-
+  var body: some View { GeometryReader { content(LayoutPreference(proxy: $0)) } }
 }
 
 // MARK: - LayoutPreference
 
 private struct LayoutPreference
 {
-  let mixer: FramePreference
-  let player: FramePreference
-  let mixerPlayer: FramePreference
-  let transport: FramePreference
-  let nameField: FramePreference
-  let backButton: FramePreference
+  private var preferences: [LayoutKey: FramePreference] = [:]
+
+  subscript(key: LayoutKey) -> FramePreference { preferences[key] ?? FramePreference() }
 
   init(proxy: GeometryProxy)
   {
-    let 𝘸 = proxy.size.width
-    let 𝘩 = proxy.size.height
-    switch (𝘸, 𝘩)
+    switch (proxy.size.width, proxy.size.height)
     {
       case (1_194, _): // iPad Pro (11-inch)
-
-        let 𝘩_top: CGFloat = 566
-        let 𝘩_bottom: CGFloat = 200
-
-        mixer = FramePreference(height: .required(value: 𝘩_top))
-        player = FramePreference(height: .required(value: 𝘩_top))
-        mixerPlayer = FramePreference(height: .required(value: 𝘩_top - 10))
-        transport = FramePreference(
-          width: .required(value: 𝘸),
-          height: .overUnder(value: 𝘩_bottom, amount: 50)
-        )
-        nameField = FramePreference(
-          width: .explicit(min: 𝘸 / 2 - 44, ideal: 𝘸 - 44, max: 𝘸),
-          height: .overUnder(value: 34, amount: 10),
-          alignment: .trailing,
-          padding: EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 88)
-        )
-        backButton = FramePreference(height: .overUnder(value: 34, amount: 10))
+        SupportedConfiguration.iPad11ʺLandscape.load(into: &preferences)
 
       default:
-        mixer = FramePreference()
-        player = FramePreference()
-        mixerPlayer = FramePreference()
-        transport = FramePreference()
-        nameField = FramePreference()
-        backButton = FramePreference()
+        break
     }
+  }
+
+  enum SupportedConfiguration: String
+  {
+    case iPad11ʺLandscape
+    case unspecified
+
+    func load(into registry: inout [LayoutKey: FramePreference])
+    {
+      switch self
+      {
+        case .iPad11ʺLandscape:
+          let 𝘸: CGFloat = 1_194
+          let 𝘩_topStack: CGFloat = 566
+          let 𝘩_bottomStack: CGFloat = 200
+
+          let 𝘸_leadingItem = 𝘸 / 2
+          let 𝘩_leadingItem: CGFloat = 44
+
+          let 𝘸_trailingItem = 𝘸_leadingItem
+          let 𝘩_trailingItem = 𝘩_leadingItem
+
+          let 𝘩_backButton = 𝘩_leadingItem
+          let 𝘸_backButton = 𝘩_backButton
+          let pad_backButton = EdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 0)
+
+          let 𝘩_nameField = 𝘩_leadingItem
+          let 𝘸_nameField = 𝘸_leadingItem - 𝘸_backButton
+          let pad_nameField = EdgeInsets()
+
+          let pad_player = EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+
+          registry[.backButton] = .init(width: .required(𝘸_backButton),
+                                        height: .required(𝘩_backButton),
+                                        padding: pad_backButton)
+
+          registry[.nameField] = .init(width: .required(𝘸_nameField),
+                                       height: .required(𝘩_nameField),
+                                       padding: pad_nameField)
+
+          registry[.leadingItem] = .init(width: .required(𝘸_leadingItem),
+                                         height: .required(𝘩_leadingItem))
+
+          registry[.toolbar] = .init()
+
+          registry[.trailingItem] = .init(width: .required(𝘸_trailingItem),
+                                          height: .required(𝘩_trailingItem))
+
+          registry[.player] = .init(padding: pad_player)
+
+          registry[.topStack] = .init(minHeight: 𝘩_topStack)
+
+          registry[.transport] = .init(width: .required(𝘸))
+
+          registry[.bottomStack] = .init(height: .overUnder(𝘩_bottomStack, 50))
+
+        case .unspecified:
+          break
+      }
+    }
+  }
+
+  enum LayoutKey: String, CaseIterable
+  {
+    case backButton
+    case nameField
+    case leadingItem
+    case toolbar
+    case trailingItem
+    case mixer
+    case player
+    case topStack
+    case transport
+    case bottomStack
+    case rootStack
   }
 }
 
@@ -207,8 +279,8 @@ private struct FramePreference
        alignment: Alignment = .center,
        padding: EdgeInsets = .init())
   {
-    self.init(width: width == nil ? .unspecified : .required(value: width!),
-              height: height == nil ? .unspecified : .required(value: height!),
+    self.init(width: width == nil ? .unspecified : .required(width!),
+              height: height == nil ? .unspecified : .required(height!),
               alignment: alignment,
               padding: padding)
   }
@@ -231,13 +303,13 @@ private struct FramePreference
     self.init(width: width == nil
       ? .unspecified
       : (overUnderWidth == nil
-        ? .required(value: width!)
-        : .overUnder(value: width!, amount: overUnderWidth!)),
+        ? .required(width!)
+        : .overUnder(width!, overUnderWidth!)),
       height: height == nil
         ? .unspecified
         : (overUnderHeight == nil
-          ? .required(value: height!)
-          : .overUnder(value: height!, amount: overUnderHeight!)),
+          ? .required(height!)
+          : .overUnder(height!, overUnderHeight!)),
       alignment: alignment,
       padding: padding)
   }
@@ -252,12 +324,12 @@ private struct FramePreference
   ///   - maxHeight: The max height or `nil` to rely on `minHeight` and/or `idealHeight`.
   ///   - alignment: The frame alignment.
   ///   - padding: The padding insets.
-  init(minWidth: CGFloat?,
-       idealWidth: CGFloat?,
-       maxWidth: CGFloat?,
-       minHeight: CGFloat?,
-       idealHeight: CGFloat?,
-       maxHeight: CGFloat?,
+  init(minWidth: CGFloat? = nil,
+       idealWidth: CGFloat? = nil,
+       maxWidth: CGFloat? = nil,
+       minHeight: CGFloat? = nil,
+       idealHeight: CGFloat? = nil,
+       maxHeight: CGFloat? = nil,
        alignment: Alignment = .center,
        padding: EdgeInsets = .init())
   {
@@ -266,19 +338,19 @@ private struct FramePreference
     switch (minWidth, idealWidth, maxWidth)
     {
       case let (𝘸_min?, 𝘸_ideal?, 𝘸_max?):
-        width = .explicit(min: 𝘸_min, ideal: 𝘸_ideal, max: 𝘸_max)
+        width = .explicit(𝘸_min, 𝘸_ideal, 𝘸_max)
       case let (𝘸_min?, 𝘸_ideal?, nil):
-        width = .explicit(min: 𝘸_min, ideal: 𝘸_ideal, max: 𝘸_ideal)
+        width = .explicit(𝘸_min, 𝘸_ideal, 𝘸_ideal)
       case let (𝘸_min?, nil, 𝘸_max?):
-        width = .explicit(min: 𝘸_min, ideal: (𝘸_min + 𝘸_max) / 2, max: 𝘸_max)
+        width = .explicit(𝘸_min, (𝘸_min + 𝘸_max) / 2, 𝘸_max)
       case let (nil, 𝘸_ideal?, 𝘸_max?):
-        width = .explicit(min: 𝘸_ideal, ideal: 𝘸_ideal, max: 𝘸_max)
+        width = .explicit(𝘸_ideal, 𝘸_ideal, 𝘸_max)
       case let (𝘸_min?, nil, nil):
-        width = .required(value: 𝘸_min)
+        width = .required(𝘸_min)
       case let (nil, nil, 𝘸_max?):
-        width = .required(value: 𝘸_max)
+        width = .required(𝘸_max)
       case let (nil, 𝘸_ideal?, nil):
-        width = .required(value: 𝘸_ideal)
+        width = .required(𝘸_ideal)
       case (nil, nil, nil):
         width = .unspecified
     }
@@ -288,26 +360,25 @@ private struct FramePreference
     switch (minHeight, idealHeight, maxHeight)
     {
       case let (𝘩_min?, 𝘩_ideal?, 𝘩_max?):
-        height = .explicit(min: 𝘩_min, ideal: 𝘩_ideal, max: 𝘩_max)
+        height = .explicit(𝘩_min, 𝘩_ideal, 𝘩_max)
       case let (𝘩_min?, 𝘩_ideal?, nil):
-        height = .explicit(min: 𝘩_min, ideal: 𝘩_ideal, max: 𝘩_ideal)
+        height = .explicit(𝘩_min, 𝘩_ideal, 𝘩_ideal)
       case let (𝘩_min?, nil, 𝘩_max?):
-        height = .explicit(min: 𝘩_min, ideal: (𝘩_min + 𝘩_max) / 2, max: 𝘩_max)
+        height = .explicit(𝘩_min, (𝘩_min + 𝘩_max) / 2, 𝘩_max)
       case let (nil, 𝘩_ideal?, 𝘩_max?):
-        height = .explicit(min: 𝘩_ideal, ideal: 𝘩_ideal, max: 𝘩_max)
+        height = .explicit(𝘩_ideal, 𝘩_ideal, 𝘩_max)
       case let (𝘩_min?, nil, nil):
-        height = .required(value: 𝘩_min)
+        height = .required(𝘩_min)
       case let (nil, nil, 𝘩_max?):
-        height = .required(value: 𝘩_max)
+        height = .required(𝘩_max)
       case let (nil, 𝘩_ideal?, nil):
-        height = .required(value: 𝘩_ideal)
+        height = .required(𝘩_ideal)
       case (nil, nil, nil):
         height = .unspecified
     }
 
     self.init(width: width, height: height, alignment: alignment, padding: padding)
   }
-
 }
 
 // MARK: - SizePreference
@@ -315,22 +386,22 @@ private struct FramePreference
 private enum SizePreference
 {
   case unspecified
-  case required(value: CGFloat)
-  case overUnder(value: CGFloat, amount: CGFloat)
-  case explicit(min: CGFloat, ideal: CGFloat, max: CGFloat)
+  case required(_ value: CGFloat)
+  case overUnder(_ value: CGFloat, _ amount: CGFloat)
+  case explicit(_ min: CGFloat, _ ideal: CGFloat, _ max: CGFloat)
 
   init() { self = .unspecified }
 
-  init(_ value: CGFloat) { self = .required(value: value) }
+  init(_ value: CGFloat) { self = .required(value) }
 
   init(_ value: CGFloat, _ amount: CGFloat)
   {
-    self = .overUnder(value: value, amount: amount)
+    self = .overUnder(value, amount)
   }
 
   init(_ min: CGFloat, _ ideal: CGFloat, _ max: CGFloat)
   {
-    self = .explicit(min: min, ideal: ideal, max: max)
+    self = .explicit(min, ideal, max)
   }
 }
 
@@ -342,7 +413,6 @@ private struct ApplyFramePreference: ViewModifier
 
   func body(content: Content) -> some View
   {
-
     var minWidth: CGFloat?, idealWidth: CGFloat?, maxWidth: CGFloat?
     var minHeight: CGFloat?, idealHeight: CGFloat?, maxHeight: CGFloat?
 
@@ -350,22 +420,22 @@ private struct ApplyFramePreference: ViewModifier
     {
       case .unspecified:
         minWidth = nil; idealWidth = nil; maxWidth = nil
-      case let .required(value: 𝘸):
+      case let .required(𝘸):
         minWidth = 𝘸; idealWidth = 𝘸; maxWidth = 𝘸
-      case let .overUnder(value: 𝘸, amount: a):
+      case let .overUnder(𝘸, a):
         minWidth = 𝘸 - a; idealWidth = 𝘸; maxWidth = 𝘸 + a
-      case let .explicit(min: 𝘸_min, ideal: 𝘸_ideal, max: 𝘸_max):
+      case let .explicit(𝘸_min, 𝘸_ideal, 𝘸_max):
         minWidth = 𝘸_min; idealWidth = 𝘸_ideal; maxWidth = 𝘸_max
     }
     switch preference.height
     {
       case .unspecified:
         minHeight = nil; idealHeight = nil; maxHeight = nil
-      case let .required(value: 𝘩):
+      case let .required(𝘩):
         minHeight = 𝘩; idealHeight = 𝘩; maxHeight = 𝘩
-      case let .overUnder(value: 𝘩, amount: a):
+      case let .overUnder(𝘩, a):
         minHeight = 𝘩 - a; idealHeight = 𝘩; maxHeight = 𝘩 + a
-      case let .explicit(min: 𝘩_min, ideal: 𝘩_ideal, max: 𝘩_max):
+      case let .explicit(𝘩_min, 𝘩_ideal, 𝘩_max):
         minHeight = 𝘩_min; idealHeight = 𝘩_ideal; maxHeight = 𝘩_max
     }
 
@@ -374,7 +444,6 @@ private struct ApplyFramePreference: ViewModifier
              minHeight: minHeight, idealHeight: idealHeight, maxHeight: maxHeight,
              alignment: preference.alignment)
       .padding(preference.padding)
-
   }
 }
 

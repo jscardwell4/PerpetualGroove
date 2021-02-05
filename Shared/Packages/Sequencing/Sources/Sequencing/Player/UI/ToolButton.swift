@@ -5,8 +5,8 @@
 //  Created by Jason Cardwell on 1/12/21.
 //  Copyright © 2021 Moondeer Studios. All rights reserved.
 //
-import SwiftUI
 import MoonDev
+import SwiftUI
 
 // MARK: - ToolButton
 
@@ -14,55 +14,64 @@ import MoonDev
 @available(iOS 14.0, *)
 @available(macCatalyst 14.0, *)
 @available(OSX 10.15, *)
-struct ToolButton: View, Equatable, Identifiable
+struct ToolButton: View, Identifiable
 {
   /// The tool represented by this button.
   let tool: AnyTool
 
   /// The button's unique identifier.
-  let id = UUID()
+  var id: AnyTool { tool }
 
-  /// Equatable conformance.
-  static func ==(lhs: ToolButton, rhs: ToolButton) -> Bool
-  {
-    lhs.tool == rhs.tool && lhs.isSelected == rhs.isSelected
-  }
+  /// Insets to apply to the button's image.
+  let insets: EdgeInsets
 
   /// The sequencer's player loaded into the environment by `ContentView`.
   @EnvironmentObject var player: Player
 
-  /// Flag indicating whether `tool` is the currently selected tool.
-  @State private var isSelected: Bool = false
-
-  /// The width of the image, and the button.
-  private let imageWidth: CGFloat
-
-  @State private var preferenceValue: Set<AnyTool> = []
+  init(tool: AnyTool, insets: EdgeInsets = EdgeInsets())
+  {
+    self.tool = tool
+    self.insets = insets
+  }
 
   /// The body of the view is either a single button or an empty view if `tool == .none`.
   var body: some View
   {
-    Button
-    {
-      isSelected.toggle()
-      preferenceValue = isSelected ? [] : [tool]
-    }
-    label:
+    Button("Tool Button (\(tool.rawValue))"){}
+    .buttonStyle(ToolStyle(tool: tool, insets: insets))
+  }
+
+  struct ToolStyle: PrimitiveButtonStyle
+  {
+    @State private var isSelected = false
+    @State private var isHighlighted = false
+
+    let tool: AnyTool
+
+    let insets: EdgeInsets
+
+    @EnvironmentObject var player: Player
+
+    func makeBody(configuration: Configuration) -> some View
     {
       tool.image
         .resizable()
         .aspectRatio(contentMode: .fit)
-        .frame(width: imageWidth)
-
+        .padding(insets)
+        .foregroundColor(isSelected || isHighlighted ? .highlightColor : .primaryColor1)
+        .brightness(isHighlighted ? 0.25 : 0)
+        .onReceive(player.$currentTool.receive(on: RunLoop.main))
+        {
+          isSelected = $0 == tool
+        }
+        .gesture(DragGesture(minimumDistance: 0)
+          .onChanged { _ in isHighlighted = true }
+          .onEnded
+          { _ in
+            isHighlighted = false
+            player.currentTool = isSelected ? .none : tool
+            configuration.trigger()
+          })
     }
-    .accentColor(isSelected ? .highlightColor : .primaryColor1)
-    .preference(key: CurrentTool.self, value: preferenceValue)
-  }
-
-  init(width: CGFloat, model: AnyTool)
-  {
-    imageWidth = width
-    tool = model
   }
 }
-

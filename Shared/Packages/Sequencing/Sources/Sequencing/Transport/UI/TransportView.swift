@@ -57,7 +57,7 @@ public struct TransportView: View
         Wheel { logi("<\(#fileID) \(#function)> revolutions (radians): \($0)") }
         Spacer()
 
-        HStack(spacing: 20) { RecordToggle(); PlayButton(); StopButton() }
+        TransportButtons()
           .frame(width: half_available, height: min(64, max(𝘩 * 0.5, 44)))
       }
       .frame(width: 𝘸, height: 𝘩)

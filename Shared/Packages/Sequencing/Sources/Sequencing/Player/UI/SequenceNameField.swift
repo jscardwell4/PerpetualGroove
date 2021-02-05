@@ -45,7 +45,7 @@ public struct SequenceNameField: View, Identifiable
       .disabled(true)
 //      .preference(key: KeyboardPreferenceKey.self, value: keyboardRequest.asArray)
       .triumpFont(family: .rock, volume: .two, size: 24)
-      .multilineTextAlignment(.trailing)
+      .multilineTextAlignment(.center)
     }
   }
 
