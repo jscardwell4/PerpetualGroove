@@ -249,7 +249,7 @@ public final class RemoveTool: Tool
       for node in nodesToRemove.compactMap({ $0.reference })
       {
         try remove(manager)(node)
-        node.fadeOut(remove: true)
+        node.coordinator.fadeOut(remove: true)
       }
     }
     catch
@@ -266,10 +266,10 @@ public final class RemoveTool: Tool
 
     // Get the identifiers for all the midi nodes located at `point`.
     let identifiers = Set(playerNode.nodes(at: point)
-                            .compactMap { ($0 as? MIDINode)?.identifier })
+                            .compactMap { ($0 as? MIDINode)?.coordinator.identifier })
 
     // Return all the midi nodes whose identifier is an element of `identifiers`.
-    return dispatchNodes.filter { $0.identifier ∈ identifiers }
+    return dispatchNodes.filter { $0.coordinator.identifier ∈ identifiers }
   }
 
   /// Updates `touch` when `active && touch == nil` adding any nodes beneath the touch

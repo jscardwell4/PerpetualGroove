@@ -9,6 +9,7 @@ import MIDI
 import MoonDev
 import SpriteKit
 import UIKit
+import struct Common.Trajectory
 
 /// A tool for generating new `Node` instances.
 @available(iOS 14.0, *)
@@ -147,7 +148,7 @@ public final class AddTool: Tool
     let velocity = CGVector.mean(velocities)
 
     // Create the initial trajectory.
-    let trajectory = MIDINode.Trajectory(velocity: velocity, position: location)
+    let trajectory = Trajectory(velocity: velocity, position: location)
 
     // Add a new node to the player.
     Sequencer.shared.player.placeNew(trajectory, target: dispatch, generator: generator)

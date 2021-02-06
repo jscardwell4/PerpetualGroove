@@ -79,19 +79,3 @@ extension Set where Element == KeyboardRequest
 {
   public var nextKeyboardRequest: KeyboardRequest? { self.max() }
 }
-
-// MARK: - KeyboardActiveEnvironmentKey
-
-private struct KeyboardActiveEnvironmentKey: EnvironmentKey
-{
-  static let defaultValue: Bool = false
-}
-
-extension EnvironmentValues
-{
-  public var keyboardIsActive: Bool
-  {
-    get { self[KeyboardActiveEnvironmentKey.self] }
-    set { self[KeyboardActiveEnvironmentKey.self] = newValue }
-  }
-}

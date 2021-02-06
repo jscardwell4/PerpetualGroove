@@ -6,11 +6,13 @@
 //  Copyright © 2015 Moondeer Studios. All rights reserved.
 //
 import Combine
+import struct Common.Trajectory
 import Foundation
 import MIDI
 import MoonDev
 import SpriteKit
 import UIKit
+import SwiftUI
 
 // MARK: - Player
 
@@ -18,7 +20,11 @@ import UIKit
 @available(iOS 14.0, *)
 public final class Player: ObservableObject
 {
+  @EnvironmentObject var sequencer: Sequencer
+
   // MARK: Stored Properties
+
+  var mode: Mode { sequencer.mode }
 
   /// The manager for undoing `Node` operations.
   public let undoManager = UndoManager()
@@ -119,7 +125,7 @@ public final class Player: ObservableObject
 
   /// Creates a new `Node` object using the specified parameters and adds it
   /// to `playerNode`.
-  public func placeNew(_ trajectory: MIDINode.Trajectory,
+  public func placeNew(_ trajectory: Trajectory,
                        target: NodeDispatch,
                        generator: AnyGenerator,
                        identifier: UUID = UUID())
@@ -138,14 +144,15 @@ public final class Player: ObservableObject
       {
         // Generate a name for the node composed of the current sequencer mode
         // and the name provided by target.
-        let name = "<\(Sequencer.shared.mode.rawValue)> \(target.nextNodeName)"
+        let name = "<\(mode.rawValue)> \(target.nextNodeName)"
 
         // Create and add the node to the player node.
         let node = try MIDINode(trajectory: trajectory,
-                            name: name,
-                            dispatch: target,
-                            generator: generator,
-                            identifier: identifier)
+                                name: name,
+                                dispatch: target,
+                                generator: generator,
+                                identifier: identifier,
+                                playerSize: playerNode.size)
         playerNode.addChild(node)
 
         // Hand off the newly created node to the target's manager to handle
@@ -181,7 +188,7 @@ public final class Player: ObservableObject
       guard node.parent === playerNode else { return }
 
       // Fade out and remove `node`.
-      node.fadeOut(remove: true)
+      node.coordinator.fadeOut(remove: true)
 
       // Post notification that a node has been removed.
       postNotification(name: .playerDidRemoveNode, object: self)
@@ -199,18 +206,18 @@ extension Player: NotificationDispatching
 }
 
 @available(iOS 14.0, *)
-public extension Notification.Name
+extension Notification.Name
 {
-  static let playerDidAddNode = Player.didAddNodeNotification
-  static let playerDidRemoveNode = Player.didRemoveNodeNotification
+  public static let playerDidAddNode = Player.didAddNodeNotification
+  public static let playerDidRemoveNode = Player.didRemoveNodeNotification
 }
 
 @available(iOS 14.0, *)
-public extension Notification
+extension Notification
 {
-  var addedNode: MIDINode? { userInfo?["addedNode"] as? MIDINode }
+  public var addedNode: MIDINode? { userInfo?["addedNode"] as? MIDINode }
 
-  var addedNodeDispatch: NodeDispatch?
+  public var addedNodeDispatch: NodeDispatch?
   {
     userInfo?["addedNodeDispatch"] as? NodeDispatch
   }

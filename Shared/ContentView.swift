@@ -31,10 +31,6 @@ struct ContentView: View
   /// The shared sequencer instance loaded into the environment by `GrooveApp`.
   @EnvironmentObject var sequencer: Sequencer
 
-  /// The file configuration for the open document loaded into the
-  /// environment by `GrooveApp`.
-  @Environment(\.openDocument) var openDocument: FileDocumentConfiguration<Document>?
-
   // MARK: Components
 
   /// The `􀆉` button.
@@ -143,19 +139,22 @@ struct ContentView: View
       .navigationTitle("")
   }
 
-  var body: some View { GeometryReader { content(LayoutPreference(proxy: $0)) } }
+  var body: some View { GeometryReader { content(LayoutPreference(geometry: $0)) } }
 }
 
 // MARK: - LayoutPreference
 
 private struct LayoutPreference
 {
+  let geometry: GeometryProxy
   private var preferences: [LayoutKey: FramePreference] = [:]
 
   subscript(key: LayoutKey) -> FramePreference { preferences[key] ?? FramePreference() }
 
-  init(proxy: GeometryProxy)
+  init(geometry proxy: GeometryProxy)
   {
+    geometry = proxy
+
     switch (proxy.size.width, proxy.size.height)
     {
       case (1_194, _): // iPad Pro (11-inch)

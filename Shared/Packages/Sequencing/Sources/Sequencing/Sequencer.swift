@@ -12,6 +12,7 @@ import MIDI
 import MoonDev
 import os
 import SoundFont
+import SwiftUI
 
 /// A class for overseeing the creation and playback of a sequence in the MIDI node player.
 @available(iOS 14.0, *)
@@ -211,7 +212,7 @@ public final class Sequencer: ObservableObject
     precondition(mode == .linear)
 
     // Fade out any linear nodes.
-    player.playerNode?.linearNodes.forEach { $0.fadeOut() }
+    player.playerNode?.linearNodes.forEach { $0.coordinator.fadeOut() }
 
     // Ensure a blank slate.
     loops.removeAll()
@@ -227,7 +228,7 @@ public final class Sequencer: ObservableObject
     precondition(mode == .loop)
 
     // Fade out any loop nodes.
-    player.playerNode?.loopNodes.forEach { $0.fadeOut(remove: true) }
+    player.playerNode?.loopNodes.forEach { $0.coordinator.fadeOut(remove: true) }
 
     // Insert the loops into their respective tracks.
     insertLoops()

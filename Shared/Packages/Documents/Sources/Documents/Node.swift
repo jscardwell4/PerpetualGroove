@@ -9,6 +9,7 @@ import Foundation
 import MIDI
 import MoonDev
 import Sequencing
+import struct Common.Trajectory
 
 @available(macCatalyst 14.0, *)
 @available(iOS 14.0, *)
@@ -20,9 +21,6 @@ extension File
     /// Use the identifier type utilized by midi node events.
     public typealias Identifier = NodeEvent.Identifier
 
-    /// The type for encapsulating initial angle and velocity data.
-    public typealias Trajectory = MIDINode.Trajectory
-
     /// Typealias for the midi event kind utilized by `Node`.
     public typealias Event = NodeEvent
 
@@ -30,7 +28,7 @@ extension File
     public let identifier: Identifier
 
     /// The node's initial trajectory.
-    public var trajectory: Node.Trajectory
+    public var trajectory: Trajectory
 
     /// The node's generator
     public var generator: AnyGenerator

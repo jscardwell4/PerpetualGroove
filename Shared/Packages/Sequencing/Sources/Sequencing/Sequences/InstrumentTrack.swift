@@ -348,18 +348,18 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
   public func connect(node: MIDINode) throws
   {
     // Check that the node's `endPoint` has not already been connected by the track.
-    guard connectedEndPoints ∌ node.endPoint
+    guard connectedEndPoints ∌ node.coordinator.endPoint
     else
     {
       throw NodeDispatchError.nodeAlreadyConnected
     }
 
     // Connect the node's `endPoint` to the track's `inputPort`.
-    try require(MIDIPortConnectSource(inputPort, node.endPoint, nil),
+    try require(MIDIPortConnectSource(inputPort, node.coordinator.endPoint, nil),
                 "Failed to connect to node \(node.name!)")
 
     // Insert the node's `endPoint` into the collection of endpoints connected to the track.
-    connectedEndPoints.insert(node.endPoint)
+    connectedEndPoints.insert(node.coordinator.endPoint)
   }
 
   /// Disconnects the node's `endPoint` from the track's MIDI input.
@@ -373,18 +373,18 @@ public final class InstrumentTrack: Track, NodeDispatch, ObservableObject, Ident
   public func disconnect(node: MIDINode) throws
   {
     // Check that the node's endpoint was previously connected by the track.
-    guard connectedEndPoints ∋ node.endPoint
+    guard connectedEndPoints ∋ node.coordinator.endPoint
     else
     {
       throw NodeDispatchError.nodeNotFound
     }
 
     // Disconnect the node's endpoint from the track's input.
-    try require(MIDIPortDisconnectSource(inputPort, node.endPoint),
+    try require(MIDIPortDisconnectSource(inputPort, node.coordinator.endPoint),
                 "Failed to disconnect to node \(node.name!)")
 
     // Remove the node's endpoint from the set of connected endpoints.
-    connectedEndPoints.remove(node.endPoint)
+    connectedEndPoints.remove(node.coordinator.endPoint)
   }
 
   // MARK: Loop Management

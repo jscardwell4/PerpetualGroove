@@ -28,7 +28,6 @@ final class GrooveApp: App
       let sequencer = Sequencer(sequence: $0.document.sequence)
       
       ContentView()
-        .environment(\.openDocument, $0) // Add `file` to the environment
         .environmentObject(sequencer) // Add the sequencer.
         .statusBar(hidden: true)
         .preferredColorScheme(.dark) // Not sure this does any good.
@@ -37,19 +36,3 @@ final class GrooveApp: App
 
 }
 
-// MARK: - MockDataEnvironmentKey
-
-private struct MockDataEnvironmentKey: EnvironmentKey
-{
-  static let defaultValue: Bool = ProcessInfo.processInfo
-    .environment["ENABLE_MOCK_DATA"] == "true"
-}
-
-extension EnvironmentValues
-{
-  public var enableMockData: Bool
-  {
-    get { self[MockDataEnvironmentKey.self] }
-    set { self[MockDataEnvironmentKey.self] = newValue }
-  }
-}

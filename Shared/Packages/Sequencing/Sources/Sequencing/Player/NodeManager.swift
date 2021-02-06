@@ -1,6 +1,6 @@
 //
 //  NodeManager.swift
-//  PerpetualGroove
+//  Sequencing
 //
 //  Created by Jason Cardwell on 2/4/16.
 //  Copyright © 2016 Moondeer Studios. All rights reserved.
@@ -11,6 +11,8 @@ import MoonDev
 
 /// Class for managing a collection of `Node` instances.
 @available(iOS 14.0, *)
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
 public final class NodeManager
 {
   /// The node dispatching object owning the nodes being managed.
@@ -28,7 +30,7 @@ public final class NodeManager
   /// Fades out all the elements in `nodes`, optionally removing them from the player.
   public func stopNodes(remove: Bool = false)
   {
-    for nodeRef in nodes { nodeRef.reference?.fadeOut(remove: remove) }
+    for nodeRef in nodes { nodeRef.reference?.coordinator.fadeOut(remove: remove) }
 
     logi("nodes stopped\(remove ? " and removed" : "")")
   }
@@ -36,7 +38,7 @@ public final class NodeManager
   /// Fades in all the elements in `nodes`.
   public func startNodes()
   {
-    for nodeRef in nodes { nodeRef.reference?.fadeIn() }
+    for nodeRef in nodes { nodeRef.reference?.coordinator.fadeIn() }
 
     logi("nodes started")
   }
@@ -54,10 +56,13 @@ public final class NodeManager
     {
       [time = Sequencer.shared.time.barBeatTime, unowned node, weak self] in
 
-      let identifier = NodeEvent.Identifier(nodeIdentifier: node.identifier)
-      let data = NodeEvent.Data.add(identifier: identifier,
-                                    trajectory: node.path.initialTrajectory,
-                                    generator: node.generator)
+      let identifier = NodeEvent.Identifier(nodeIdentifier: node.coordinator.identifier)
+      let data = NodeEvent.Data.add(
+        identifier: identifier,
+        trajectory: node.coordinator.flightPath.initialTrajectory,
+        generator: node.coordinator.generator
+      )
+
       self?.owner.add(event: .node(NodeEvent(data: data, time: time)))
     }
 
@@ -65,9 +70,9 @@ public final class NodeManager
     nodes.append(NodeRef(node))
 
     // Remove the identifier from `pendingNodes`.
-    pendingNodes.remove(node.identifier)
+    pendingNodes.remove(node.coordinator.identifier)
 
-    logi("adding node \(node.name!) (\(node.identifier))")
+    logi("adding node \(node.name!) (\(node.coordinator.identifier))")
   }
 
   /// Places or removes a `Node` according to `event`.
@@ -87,8 +92,9 @@ public final class NodeManager
         """)
 
         // Make sure a node hasn't already been place for this identifier
-        guard nodes.first(where: { $0.reference?.identifier == identifier }) == nil,
-              pendingNodes ∌ identifier
+        guard nodes
+          .first(where: { $0.reference?.coordinator.identifier == identifier }) == nil,
+          pendingNodes ∌ identifier
         else
         {
           fatalError("The identifier is pending or already placed.")
@@ -98,9 +104,9 @@ public final class NodeManager
 
         // Place a node
         Sequencer.shared.player.placeNew(trajectory,
-                        target: owner,
-                        generator: generator,
-                        identifier: identifier)
+                                         target: owner,
+                                         generator: generator,
+                                         identifier: identifier)
 
       case let .remove(eventIdentifier):
         // Remove the node matching `eventIdentifier`.
@@ -110,8 +116,8 @@ public final class NodeManager
         logi("removing node with identifier \(identifier)")
 
         guard let idx = nodes
-                .firstIndex(where: { $0.reference?.identifier == identifier }),
-              let node = nodes[idx].reference
+          .firstIndex(where: { $0.reference?.coordinator.identifier == identifier }),
+          let node = nodes[idx].reference
         else
         {
           fatalError("failed to find node with mapped identifier \(identifier)")
@@ -148,7 +154,7 @@ public final class NodeManager
       throw NodeDispatchError.nodeNotFound
     }
 
-    logi("removing node \(node.name!) \(node.identifier)")
+    logi("removing node \(node.name!) \(node.coordinator.identifier)")
 
     // TODO: make sure disabling the line below doesn't lead to hanging notes.
     //    node.sendNoteOff()
@@ -164,7 +170,7 @@ public final class NodeManager
 
         owner.eventQueue.async
         {
-          [identifier = node.identifier, weak self] in
+          [identifier = node.coordinator.identifier, weak self] in
 
           self?.owner.eventContainer.removeEvents
           {
@@ -184,12 +190,13 @@ public final class NodeManager
 
         owner.eventQueue.async
         {
-          [time = Sequencer.shared.time.barBeatTime, identifier = node.identifier, weak self] in
+          [time = Sequencer.shared.time.barBeatTime,
+           identifier = node.coordinator.identifier, weak self] in
 
           let eventIdentifier = NodeEvent.Identifier(nodeIdentifier: identifier)
           self?.owner.add(event:
-                            .node(NodeEvent(data: .remove(identifier: eventIdentifier),
-                                            time: time)))
+            .node(NodeEvent(data: .remove(identifier: eventIdentifier),
+                            time: time)))
         }
     }
   }
