@@ -16,7 +16,9 @@ import MoonDev
 /// beginning playback of the sequence and the total number of times the sequence should
 /// be played.
 @available(iOS 14.0, *)
-public final class Loop: NodeDispatch
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
+public final class Loop: EventManaging, Named, ColorCurated, NodeManaging
 {
   // MARK: Stored Properties
 
@@ -28,9 +30,6 @@ public final class Loop: NodeDispatch
   /// and the event dispatch that begins the next repetition.
   public var repeatDelay: UInt64 = 0
 
-  /// The collection containing the loop's events.
-  public var eventContainer: EventContainer
-
   /// The dispatch time for the first event in the loop.
   public var start: BarBeatTime = .zero
 
@@ -41,10 +40,13 @@ public final class Loop: NodeDispatch
   public let identifier: UUID
 
   /// Manages MIDI nodes dispatched by the loop.
-  public private(set) lazy var nodeManager = NodeManager(owner: self)
+  private(set) lazy var nodeManager = try! NodeManager(owner: self,
+                                                       instrument: track.instrument)
+
+  public var eventManager: EventManager { track.eventManager }
 
   /// The set of dispatched nodes.
-  public var nodes: OrderedSet<HashableTuple<BarBeatTime, NodeRef>> = []
+  var nodes: OrderedSet<HashableTuple<BarBeatTime, NodeRef>> = []
 
   /// The instrument track that owns the loop.
   public unowned let track: InstrumentTrack
@@ -55,17 +57,12 @@ public final class Loop: NodeDispatch
   public var time: BarBeatTime { Swift.min(end - start, BarBeatTime.zero) }
 
   /// The queue used for dispatching the loop's MIDI events.
-  public var eventQueue: DispatchQueue { track.eventQueue }
+  public var eventQueue: DispatchQueue { track.eventManager.eventQueue }
 
   /// The color associated with the loop. This property returns the track's color.
-  public var color: Track.Color { track.color }
+  public var color: CuratedColor { track.color }
 
-  public var isRecording: Bool
-  {
-    Sequencer.shared.mode == .loop && Sequencer.shared.player.currentDispatch === self
-  }
-
-  public var nextNodeName: String { "\(name) \(nodes.count + 1)" }
+  public var isRecording: Bool { nodeManager.isRecording }
 
   /// The name of the loop, composed of the track's display name and the identifier.
   public var name: String { "\(track.displayName) (\(identifier.uuidString))" }
@@ -92,47 +89,20 @@ public final class Loop: NodeDispatch
     return .meta(MetaEvent(data: .marker(name: text)))
   }
 
-  // MARK: Event Dispatch
+  // MARK: Event Manager
 
-  public func add<S>(events: S) where S: Swift.Sequence, S.Element == Event
+  private func registrationFilter(events: inout [Event])
   {
-    eventContainer.append(contentsOf: events)
-    Sequencer.shared.time.register(callback: weakCapture(of: self,
-                                                  block: type(of: self).dispatchEvents),
-                            forTimes: registrationTimes(forAdding: events),
-                            identifier: UUID())
+    events = events.filter { if case .node = $0 { return true } else { return false } }
   }
 
-  /// Returns the bar beat times to register with the transport's time for dispatching
-  /// `events`.
-  public func registrationTimes<Source>(forAdding events: Source) -> [BarBeatTime]
-  where Source: Swift.Sequence, Source.Iterator.Element == Event
+  private func configureEventManager()
   {
-    // Return the times for the MIDI node events found in `events`.
-    return events.filter
-    {
-      if case .node = $0 { return true }
-      else { return false }
-    }.map { $0.time }
-  }
-
-  /// Dispatches `event` via the loop's node manager.
-  public func dispatch(event: Event)
-  {
-    // Get the node event wrapped by `event`.
-    guard case let .node(nodeEvent) = event else { return }
-
-    // Delegate to the node manager to perform actual event handling.
-    nodeManager.handle(event: nodeEvent)
+    eventManager.nodeManager = nodeManager
+    eventManager.registrationFilter = registrationFilter(events:)
   }
 
   // MARK: Node Dispatch
-
-  /// Uses `track` to connect `node`.
-  public func connect(node: MIDINode) throws { try track.connect(node: node) }
-
-  /// Uses `track` to disconnect `node`.
-  public func disconnect(node: MIDINode) throws { try track.disconnect(node: node) }
 
   /// Initializing with a track. The loop is assigned to the specified track. The
   /// loop is provided a new identifier and an empty event container.
@@ -144,8 +114,7 @@ public final class Loop: NodeDispatch
     // Initialize `identifier` with a new UUID.
     identifier = UUID()
 
-    // Initialize `eventContainer` with an empty container.
-    eventContainer = EventContainer()
+    configureEventManager()
   }
 
   // MARK: Initializing
@@ -171,13 +140,15 @@ public final class Loop: NodeDispatch
     self.repetitions = repetitions
     self.repeatDelay = repeatDelay
     self.start = start
-    eventContainer = EventContainer(events: events)
+    configureEventManager()
   }
 }
 
 // MARK: Swift.Sequence
 
 @available(iOS 14.0, *)
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
 extension Loop: Swift.Sequence
 {
   /// Returns an iterator over the loop's MIDI events.
@@ -189,7 +160,7 @@ extension Loop: Swift.Sequence
     var iteration = 0
     var offset: UInt64 = 0
 
-    var currentGenerator = eventContainer.makeIterator()
+    var currentGenerator = eventManager.container.makeIterator()
 
     return AnyIterator
     {
@@ -218,10 +189,10 @@ extension Loop: Swift.Sequence
       }
 
       else if repeatCount >= { let i = iteration; iteration += 1; return i }()
-                || repeatCount < 0
+        || repeatCount < 0
       {
         offset += delay + totalTicks
-        currentGenerator = self.eventContainer.makeIterator()
+        currentGenerator = self.eventManager.container.makeIterator()
 
         if var event = currentGenerator.next()
         {
@@ -277,7 +248,7 @@ extension Loop: CustomStringConvertible
     isRecording: \(isRecording)
     name: \(name)
     nodes: \(nodes)
-    events: \(eventContainer)
+    events: \(eventManager.container)
     """
   }
 }

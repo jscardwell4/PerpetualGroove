@@ -9,11 +9,14 @@ import class AVFoundation.AVAudioUnitSampler
 import Foundation
 import MIDI
 import MoonDev
+import SwiftUI
 
 /// A class that plays a note at the start of each beat.
 @available(iOS 14.0, *)
 public final class Metronome: ObservableObject
 {
+  @Environment(\.currentTransport) var currentTransport: Transport
+
   /// The instrument used to produce the metronome's sound.
   let sampler: AVAudioUnitSampler
   
@@ -37,13 +40,13 @@ public final class Metronome: ObservableObject
       switch isOn
       {
         case true:
-          Sequencer.shared.time.register(
+          currentTransport.time.register(
             callback: weakCapture(of: self, block: Metronome.click),
             predicate: Metronome.isAudibleTick,
             identifier: callbackIdentifier
           )
         case false:
-          Sequencer.shared.time.removePredicatedCallback(with: callbackIdentifier)
+          currentTransport.time.removePredicatedCallback(with: callbackIdentifier)
       }
     }
   }
@@ -76,7 +79,7 @@ public final class Metronome: ObservableObject
   private func click(_ time: BarBeatTime)
   {
     // Check that the transport is playing.
-    guard Sequencer.shared.transport.isPlaying else { return }
+    guard currentTransport.isPlaying else { return }
     
     // Play a C4 or G3 over `channel` according to whether this is the first beat
     // of the bar.

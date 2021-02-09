@@ -32,10 +32,10 @@ final class NodeActionCoordinator: ObservableObject
   let endPoint = MIDIEndpointRef()
 
   /// The bar beat time at which the node begins playing.
-  private var initTime: BarBeatTime
+  var initTime: BarBeatTime
 
   /// The speed and direction the node begins with at `initTime`.
-  private var initialTrajectory: Trajectory
+  var initialTrajectory: Trajectory
 
   /// Location pending for the node.
   private var pendingPosition: CGPoint?
@@ -51,7 +51,7 @@ final class NodeActionCoordinator: ObservableObject
 
   /// The generator used to produce the midi data played each time the node
   /// touches a boundary.
-  private(set) var generator: AnyGenerator
+  var generator: AnyGenerator
   {
     didSet
     {
@@ -88,7 +88,7 @@ final class NodeActionCoordinator: ObservableObject
     {
       try generator.receiveNoteOn(endPoint: endPoint,
                                   identifier: senderID,
-                                  ticks: Sequencer.shared.time.ticks)
+                                  ticks: transport.time.ticks)
       isPlaying = true
     }
     catch
@@ -104,7 +104,7 @@ final class NodeActionCoordinator: ObservableObject
     {
       try generator.receiveNoteOff(endPoint: endPoint,
                                    identifier: senderID,
-                                   ticks: Sequencer.shared.time.ticks)
+                                   ticks: transport.time.ticks)
       isPlaying = false
     }
     catch
@@ -222,7 +222,7 @@ final class NodeActionCoordinator: ObservableObject
     guard !isStationary else { return }
 
     // Update the current segment and resume movement of the node.
-    guard let nextSegment = flightPath.segmentIndex(for: Sequencer.shared.time.barBeatTime)
+    guard let nextSegment = flightPath.segmentIndex(for: transport.time.barBeatTime)
     else
     {
       fatalError("Failed to get the index for the next segment")

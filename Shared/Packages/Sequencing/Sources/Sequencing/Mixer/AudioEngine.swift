@@ -41,15 +41,20 @@ public final class AudioEngine: ObservableObject
   }
 
   /// The default initializer simply configures the application's audio session.
-  ///
-  /// - Throws: Any error thrown configuring the audio session.
-  init() throws
+  public init()
   {
+    do
+    {
     let audioSession = AVAudioSession.sharedInstance()
     try audioSession.setCategory(AVAudioSession.Category.playback)
     try audioSession.setActive(true)
     masterVolume = engine.mainMixerNode.volume
     masterPan = engine.mainMixerNode.pan
+    }
+    catch
+    {
+      fatalError("\(#fileID) \(#function) error: \(error)")
+    }
   }
 
   /// Starts the audio engine.

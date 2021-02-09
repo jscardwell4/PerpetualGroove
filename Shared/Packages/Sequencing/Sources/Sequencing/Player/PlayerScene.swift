@@ -19,7 +19,7 @@ import SpriteKit
 public final class PlayerScene: SKScene
 {
 
-  @EnvironmentObject var player: Player
+  @Environment(\.player) var player: Player
 
   /// The player node for the scene.
   internal private(set) var playerNode: PlayerNode?
@@ -47,7 +47,7 @@ public final class PlayerScene: SKScene
 @available(OSX 10.15, *)
 final class BouncingPlayerScene: SKScene
 {
-  let colors = Track.Color.allCases.map(\.uiColor)
+  let colors = CuratedColor.allCases.map(UIColor.init(_:))
 
   var moving = true
 

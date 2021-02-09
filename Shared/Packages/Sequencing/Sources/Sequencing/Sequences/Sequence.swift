@@ -11,7 +11,7 @@ import Foundation
 import MIDI
 import MoonDev
 import SoundFont
-
+import SwiftUI
 
 // MARK: - Sequence
 
@@ -22,6 +22,8 @@ import SoundFont
 @available(OSX 10.15, *)
 public final class Sequence: ObservableObject
 {
+  @Environment(\.audioEngine) var audioEngine: AudioEngine
+
   // MARK: Stored Properties
 
   @Published public var name: String = ""
@@ -31,7 +33,7 @@ public final class Sequence: ObservableObject
 
   /// The tempo track for the sequence. When reading/writing to/from a type 1 MIDI file,
   /// the tempo track always precedes the list of instrument tracks.
-  public private(set) lazy var tempoTrack = TempoTrack(index: 0)
+  public private(set) lazy var tempoTrack = TempoTrack()
 
   /// A stack structure holding weak references to instrument tracks. The top of this
   /// stack provides the `currentTrack` property value for the sequence. When a track is
@@ -75,7 +77,7 @@ public final class Sequence: ObservableObject
        trackChunk.events.first(where: { !TempoTrack.isTempoTrackEvent($0) }) == nil
     {
       // Initialize the tempo track using the first track chunk.
-      tempoTrack = TempoTrack(index: 0, trackChunk: trackChunk)
+      tempoTrack = TempoTrack(trackChunk: trackChunk)
 
       // Remove the first track chunk from the array of unprocessed track chunks.
       trackChunks = trackChunks.dropFirst()
@@ -99,7 +101,7 @@ public final class Sequence: ObservableObject
   // MARK: Computed Properties
 
   /// The time of the last event in the sequence.
-  public var sequenceEnd: BarBeatTime { tracks.map(\.endOfTrack).max() ?? .zero }
+  public var sequenceEnd: BarBeatTime { tracks.map(\.eventManager.endOfTrack).max() ?? .zero }
 
   /// The position of the currently selected track within `instrumentTracks`.
   public var currentTrackIndex: Int?
@@ -192,25 +194,25 @@ public final class Sequence: ObservableObject
   private func trackDidUpdate()
   {
     // If the transport is currently playing.
-    if Sequencer.shared.transport.isPlaying
-    {
-      // Set the `hashChanges` flag to `true` to postpone posting a notification.
-      hasChanges = true
-    }
-
-    // Otherwise, post notification that the sequence has been updated.
-    else
-    {
-      // Clear the `hasChanges` flag since a notification is being posted.
-      hasChanges = false
-    }
+//    if Sequencer.shared.transport.isPlaying
+//    {
+//      // Set the `hashChanges` flag to `true` to postpone posting a notification.
+//      hasChanges = true
+//    }
+//
+//    // Otherwise, post notification that the sequence has been updated.
+//    else
+//    {
+//      // Clear the `hasChanges` flag since a notification is being posted.
+//      hasChanges = false
+//    }
   }
 
   /// Handler for `didToggleRecording` notifications received from the current transport.
   private func toggleRecording(notification: Notification)
   {
     // Update the tempo track's recording flag.
-    tempoTrack.isRecording = Sequencer.shared.transport.isRecording
+//    tempoTrack.isRecording = Sequencer.shared.transport.isRecording
   }
 
   /// Handler for `didReset` notifications received from the current transport. This method
@@ -249,7 +251,7 @@ public final class Sequence: ObservableObject
   {
     // Create a new track for the sequence that uses the specified instrument.
     let track = try InstrumentTrack(index: instrumentTracks.count + 1,
-                                    color: Track.Color[instrumentTracks.count],
+                                    color: CuratedColor[instrumentTracks.count],
                                     instrument: instrument)
 
     // Add the track to the sequence.
@@ -272,7 +274,7 @@ public final class Sequence: ObservableObject
 
     subscriptions.store
     {
-      track.didUpdatePublisher.sink { self.trackDidUpdate() }
+      track.publisher(for: .didUpdate).sink { self.trackDidUpdate() }
     }
 
     trackSubscriptions[track] = subscriptions

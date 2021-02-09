@@ -12,6 +12,7 @@ import MIDI
 import MoonDev
 import SpriteKit
 import UIKit
+import SwiftUI
 
 // MARK: - MIDINode
 
@@ -21,6 +22,7 @@ import UIKit
 @available(OSX 10.15, *)
 public final class MIDINode: SKSpriteNode
 {
+
   /// Default initializer for creating an instance of `Node`.
   ///
   /// - Parameters:
@@ -29,26 +31,27 @@ public final class MIDINode: SKSpriteNode
   ///   - dispatch: The object responsible for the node.
   ///   - identifier: A `UUID` used to uniquely identify this node across invocations.
   ///   - playerSize: The size of the player to which the node is being added.
-  public init(trajectory: Trajectory,
-              name: String,
-              dispatch: NodeDispatch,
-              generator: AnyGenerator,
-              identifier: UUID = UUID(),
-              playerSize: CGSize) throws
+  init(transport: Transport,
+       trajectory: Trajectory,
+       name: String,
+       dispatch: NodeDispatch,
+       generator: AnyGenerator,
+       identifier: UUID = UUID(),
+       playerSize: CGSize) throws
   {
     self.dispatch = dispatch
     coordinator = try NodeActionCoordinator(name: name,
                                             trajectory: trajectory,
                                             generator: generator,
                                             identifier: identifier,
-                                            initTime: Sequencer.shared.time.barBeatTime,
-                                            transport: Sequencer.shared.transport,
+                                            initTime: transport.time.barBeatTime,
+                                            transport: transport,
                                             playerSize: playerSize)
 
 
     // Invoke `super` now that properties have been initialized.
     super.init(texture: MIDINode.texture,
-               color: dispatch.color.uiColor,
+               color: UIColor(dispatch.color),
                size: MIDINode.texture.size() * 0.75)
 
     // Finish configuring the node.
@@ -80,7 +83,7 @@ public final class MIDINode: SKSpriteNode
   /// The object responsible for handling the node's midi connections and management.
   /// Setting this property to `nil` will remove it from it's parent node when such
   /// a node exists.
-  private weak var dispatch: NodeDispatch?
+  weak var dispatch: NodeDispatch?
   {
     didSet { if dispatch == nil, parent != nil { removeFromParent() } }
   }

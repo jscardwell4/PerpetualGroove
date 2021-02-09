@@ -40,7 +40,7 @@ public struct File: DataConvertible, Codable
     tracks = sequence.instrumentTracks.map(Track.init)
 
     // Iterate the sequence's tempo events.
-    for event in sequence.tempoTrack.tempoEvents
+    for event in sequence.tempoTrack.eventManager.tempoEvents
     {
       // Handle by kind of data attached to the event.
       switch event.data
@@ -150,14 +150,13 @@ extension Sequence
 
     // Append the tempo events extracted from `file` to the tempo track created in
     // the default initializer.
-    tempoTrack.add(events: tempoEvents)
+    tempoTrack.eventManager.add(events: tempoEvents)
 
     // Iterate through the file's instrument track data.
     for (index, trackData) in file.tracks.enumerated()
     {
       // Initialize a new track using `trackData`.
-      guard let track = try? InstrumentTrack(index: index + 1,
-                                             grooveTrack: trackData)
+      guard let track = try? InstrumentTrack(index: index + 1, grooveTrack: trackData)
       else { continue }
 
       // Add the track to the sequence.

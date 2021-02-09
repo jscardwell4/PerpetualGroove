@@ -17,7 +17,6 @@ extension File
   /// The `Documents.File` representation of `InstrumentTrack`.
   public struct Track: CustomStringConvertible, Codable
   {
-    public typealias Color = Sequencing.Track.Color
     public typealias Preset = Instrument.Preset
     public typealias Identifier = Node.Identifier
 
@@ -28,7 +27,7 @@ extension File
     public var name: String
 
     /// The track's color.
-    public var color: Color
+    public var color: CuratedColor
 
     /// An index of nodes belonging to the track.
     public var nodes: [Identifier: Node] = [:]
@@ -46,7 +45,7 @@ extension File
       color = track.color
 
       // Iterate through all the events in `track`.
-      for event in track.eventContainer
+      for event in track.eventManager.events
       {
         // Handle the event according to its type.
         switch event
@@ -167,7 +166,7 @@ extension File
     {
       let container = try decoder.container(keyedBy: CodingKeys.self)
       name = try container.decode(String.self, forKey: .name)
-      color = try container.decode(Color.self, forKey: .color)
+      color = try container.decode(CuratedColor.self, forKey: .color)
       preset = try container.decode(Preset.self, forKey: .preset)
       nodes = try container.decode([Identifier: Node].self, forKey: .nodes)
       loops = try container.decode([UUID: Loop].self, forKey: .loops)

@@ -12,18 +12,22 @@ import Common
 
 /// Typealias for a weak `Node` instance.
 @available(iOS 14.0, *)
-public typealias NodeRef = Weak<MIDINode>
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
+typealias NodeRef = Weak<MIDINode>
 
 /// Protocol for the common properties and methods of types that generate
 /// or manipulate `Node` instances.
 @available(iOS 14.0, *)
-public protocol NodeDispatch: EventDispatch, Named {
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
+protocol NodeDispatch: class {
 
   /// Name to assign to the next node dispatched.
   var nextNodeName: String { get }
 
   /// The color associated with the dispatching instance.
-  var color: Track.Color { get }
+  var color: CuratedColor { get }
 
   /// The node manager for the dispatching instance.
   var nodeManager: NodeManager { get }
@@ -43,16 +47,18 @@ public protocol NodeDispatch: EventDispatch, Named {
 }
 
 @available(iOS 14.0, *)
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
 extension NodeDispatch {
 
-  public var nodes: [MIDINode] { nodeManager.nodes.compactMap(\.reference) }
+  var nodes: [MIDINode] { nodeManager.nodes.compactMap(\.reference) }
 
 }
 
 /// Enumeration of errors thrown by `NodeDispatch` methods.
-public enum NodeDispatchError: String, Swift.Error, CustomStringConvertible {
+enum NodeDispatchError: String, Swift.Error, CustomStringConvertible {
   case nodeNotFound = "The specified node was not found."
   case nodeAlreadyConnected = "The specified node has already been connected."
 
-  public var description: String { rawValue }
+  var description: String { rawValue }
 }

@@ -20,10 +20,9 @@ struct ContentView_Previews: PreviewProvider
   static var previews: some View
   {
     ContentView()
+      .environment(\.currentDocument, document)
       .previewLayout(.device)
       .previewDevice("iPad Pro (11-inch) (2nd generation)")
-      .environmentObject(Sequencer.shared)
-      .environmentObject(document.sequence)
       .preferredColorScheme(.dark)
   }
 }

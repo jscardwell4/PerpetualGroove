@@ -14,6 +14,8 @@ import MoonDev
 
 /// A class for managing playback state for the Controller.shared.
 @available(iOS 14.0, *)
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
 public final class Transport: ObservableObject
 {
   // MARK: Stored Properties
@@ -28,6 +30,8 @@ public final class Transport: ObservableObject
   public let time: Time
 
   // MARK: Transport State
+
+  @Published public var timeSignature: TimeSignature
 
   /// Whether the transport's clock is currently running. Changing the value of this
   /// property from `false` to `true` results in the transport posting a `didStart`
@@ -191,10 +195,14 @@ public final class Transport: ObservableObject
 
   /// Initializing with a name.
   /// - Parameter name: The name to use for this transport and its `clock` property.
-  public init(name: String, beatsPerMinute: UInt16 = 120)
+  public init(name: String,
+              timeSignature: TimeSignature = .fourFour,
+              beatsPerMinute: UInt16 = 120)
   {
     // Initialize the transport's name.
     self.name = name
+
+    self.timeSignature = timeSignature
 
     // Initialize the transport's clock with a new MIDI clock.
     clock = MIDIClock(name: name, beatsPerMinute: beatsPerMinute)
@@ -204,6 +212,9 @@ public final class Transport: ObservableObject
   }
 
   // MARK: Computed Properties
+
+  /// The number of beats per bar.
+  public var beatsPerBar: UInt { UInt(timeSignature.beatsPerBar) }
 
   /// The number of beats per minute. This property is simply a wrapper for
   /// `clock.beatsPerMinute`.
@@ -240,7 +251,7 @@ public final class Transport: ObservableObject
 
     // Convert the change in revolutions to a change in bar beat time.
     let 𝝙time =
-      BarBeatTime(totalBeats: Double(Sequencer.shared.beatsPerBar) * revolutions)
+      BarBeatTime(totalBeats: Double(beatsPerBar) * revolutions)
 
     // Calculate the new jog time with a lower bound of zero.
     let newJogTime = max(previousJogTime + 𝝙time, BarBeatTime.zero)
@@ -336,6 +347,8 @@ public final class Transport: ObservableObject
 // MARK: - Publishers
 
 @available(iOS 14.0, *)
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
 public extension Transport
 {
   /// 
@@ -351,6 +364,8 @@ public extension Transport
 }
 
 @available(iOS 14.0, *)
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
 public extension Transport
 {
   /// An enumeration of possible errors thrown by an instance of `Transport`.

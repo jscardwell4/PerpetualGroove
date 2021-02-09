@@ -7,41 +7,43 @@
 //
 import MoonDev
 import SpriteKit
-import UIKit
+//import UIKit
 
 // MARK: - PlayerNode
 
 /// `SKShapeNode` subclass that presents a bounding box for containing `Node` sprites.
 @available(iOS 14.0, *)
-public final class PlayerNode: SKShapeNode
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
+final class PlayerNode: SKShapeNode
 {
   /// Initialize with the shape defined by `bezierPath`.
-  public init(bezierPath: UIBezierPath)
+  init(rect: CGRect)
   {
-    size = bezierPath.bounds.size
+    size = rect.size
     super.init()
     name = "player"
-    path = bezierPath.cgPath
+    path = CGPath(rect: rect, transform: nil)
     strokeColor = .primaryColor1
     isUserInteractionEnabled = true
   }
 
   /// Overridden to disable initializing from a coder.
   @available(*, unavailable)
-  public required init?(coder aDecoder: NSCoder)
+  required init?(coder aDecoder: NSCoder)
   {
     fatalError("\(#function) is unavailable.")
   }
 
   /// Overridden to append a `node` reference to `midiNodes` when  `node is Node`
-  override public func addChild(_ node: SKNode)
+  override func addChild(_ node: SKNode)
   {
     super.addChild(node)
     if let midiNode = node as? MIDINode { midiNodes.append(midiNode) }
   }
 
   /// Collection containing references to any `Node` instances added as children.
-  public private(set) var midiNodes: WeakArray<MIDINode> = []
+  private(set) var midiNodes: WeakArray<MIDINode> = []
 
   /// The collection of midi nodes for default mode.
   var linearNodes: [MIDINode] { midiNodes(forMode: .linear) }
@@ -50,10 +52,10 @@ public final class PlayerNode: SKShapeNode
   var loopNodes: [MIDINode] { midiNodes(forMode: .loop) }
 
   /// The object currently handling touches received by the player node.
-  public weak var receiver: TouchReceiver?
+  weak var receiver: TouchReceiver?
 
   /// The size of the player node's bounding box.
-  public let size: CGSize
+  var size: CGSize { didSet { path = CGPath(rect: CGRect(size: size), transform: nil) } }
 
   /// Returns the collection of midi nodes for `mode` via a search on the names of
   /// the player node's children.
@@ -63,25 +65,25 @@ public final class PlayerNode: SKShapeNode
   }
 
   /// Overridden to bounce invocation to `touchReceiver`.
-  override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?)
+  override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?)
   {
     receiver?.touchesBegan(touches)
   }
 
   /// Overridden to bounce invocation to `touchReceiver`.
-  override public func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?)
+  override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?)
   {
     receiver?.touchesCancelled(touches)
   }
 
   /// Overridden to bounce invocation to `touchReceiver`.
-  override public func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?)
+  override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?)
   {
     receiver?.touchesEnded(touches)
   }
 
   /// Overridden to bounce invocation to `touchReceiver`.
-  override public func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?)
+  override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?)
   {
     receiver?.touchesMoved(touches)
   }
@@ -91,7 +93,7 @@ public final class PlayerNode: SKShapeNode
 
 /// Protocol for objects that can be set to handle touches received by a
 /// `PlayerNode` instance.
-@objc public protocol TouchReceiver
+@objc protocol TouchReceiver
 {
   func touchesBegan(_ touches: Set<UITouch>)
   func touchesCancelled(_ touches: Set<UITouch>)

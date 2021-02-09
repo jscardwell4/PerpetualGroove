@@ -11,6 +11,7 @@ import Foundation
 import MIDI
 import MoonDev
 import SoundFont
+import SwiftUI
 
 // MARK: - Instrument
 
@@ -21,6 +22,9 @@ import SoundFont
 @available(OSX 10.15, *)
 public final class Instrument: ObservableObject, Identifiable
 {
+
+  @Environment(\.audioEngine) var audioEngine: AudioEngine
+
   // MARK: Stored Properties
 
   /// The instrument's unique identifier.
@@ -97,7 +101,7 @@ public final class Instrument: ObservableObject, Identifiable
   /// The mixer input bus to which the instrument is connected.
   public var bus: AVAudioNodeBus
   {
-    sampler.destination(forMixer: Sequencer.shared.audioEngine.mixer, bus: 0)?.connectionPoint
+    sampler.destination(forMixer: audioEngine.mixer, bus: 0)?.connectionPoint
       .bus ?? -1
   }
 
@@ -137,53 +141,53 @@ public final class Instrument: ObservableObject, Identifiable
   /// event through `outPort` to `endPoint`.
   ///
   /// - Parameter generator: Responsible for creating and sending the MIDI packets.
-  public func playNote(_ generator: AnyGenerator)
-  {
-    do
-    {
-      // Use the generator to send a 'note on' event.
-      try generator.sendNoteOn(
-        outPort: outPort,
-        endPoint: endPoint,
-        ticks: Sequencer.shared.time.ticks
-      )
-
-      // Translate the generator's duration into nanoseconds.
-      let nanoseconds = UInt64(generator.duration.seconds(withBPM: Sequencer.shared.tempo)
-        * Double(NSEC_PER_SEC))
-
-      // Convert the nanosecond value into a dispatch time.
-      let deadline = DispatchTime(uptimeNanoseconds: nanoseconds)
-
-      // Create a closure that sends the 'note off' event.
-      let sendNoteOff = {
-        [outPort = outPort, endPoint = endPoint] in
-
-        do
-        {
-          // Use the generator to send a 'note off' event.
-          try generator.sendNoteOff(
-            outPort: outPort,
-            endPoint: endPoint,
-            ticks: Sequencer.shared.time.ticks
-          )
-        }
-        catch
-        {
-          // Just log the error.
-          loge("\(error)")
-        }
-      }
-
-      // Dispatch the closure for delayed execution.
-      DispatchQueue.main.asyncAfter(deadline: deadline, execute: sendNoteOff)
-    }
-    catch
-    {
-      // Just log the error.
-      loge("\(error as NSObject)")
-    }
-  }
+//  public func playNote(_ generator: AnyGenerator)
+//  {
+//    do
+//    {
+//      // Use the generator to send a 'note on' event.
+//      try generator.sendNoteOn(
+//        outPort: outPort,
+//        endPoint: endPoint,
+//        ticks: Sequencer.shared.time.ticks
+//      )
+//
+//      // Translate the generator's duration into nanoseconds.
+//      let nanoseconds = UInt64(generator.duration.seconds(withBPM: Sequencer.shared.tempo)
+//        * Double(NSEC_PER_SEC))
+//
+//      // Convert the nanosecond value into a dispatch time.
+//      let deadline = DispatchTime(uptimeNanoseconds: nanoseconds)
+//
+//      // Create a closure that sends the 'note off' event.
+//      let sendNoteOff = {
+//        [outPort = outPort, endPoint = endPoint] in
+//
+//        do
+//        {
+//          // Use the generator to send a 'note off' event.
+//          try generator.sendNoteOff(
+//            outPort: outPort,
+//            endPoint: endPoint,
+//            ticks: Sequencer.shared.time.ticks
+//          )
+//        }
+//        catch
+//        {
+//          // Just log the error.
+//          loge("\(error)")
+//        }
+//      }
+//
+//      // Dispatch the closure for delayed execution.
+//      DispatchQueue.main.asyncAfter(deadline: deadline, execute: sendNoteOff)
+//    }
+//    catch
+//    {
+//      // Just log the error.
+//      loge("\(error as NSObject)")
+//    }
+//  }
 
   /// Handler for MIDI packets received through `endPoint`. This method simply
   /// iterates through `packetList` forwarding the packets to `sampler`.
@@ -236,7 +240,7 @@ public final class Instrument: ObservableObject, Identifiable
   ///   * Any error encountered creating the instrument's MIDI client.
   ///   * Any error encountered creating the out port for the instrument's MIDI client.
   ///   * Any error encountered creating the destination for the instrument's MIDI client.
-  public init(preset: Preset, audioEngine: AudioEngine) throws
+  public init(preset: Preset) throws
   {
     // Initialize the property values using the parameter values.
     self.preset = preset
@@ -313,7 +317,7 @@ public final class Instrument: ObservableObject, Identifiable
     // Create a preset using the derived values.
     let preset = Preset(font: soundFont, header: header, channel: channel)
 
-    try self.init(preset: preset, audioEngine: Sequencer.shared.audioEngine)
+    try self.init(preset: preset)
   }
 }
 
@@ -482,7 +486,7 @@ extension Instrument: Mock
     let font = AnySoundFont.mock
     let header = font.presetHeaders.randomElement()!
     let preset = Preset(font: font, header: header, channel: 0)
-    return try! Instrument(preset: preset, audioEngine: Sequencer.shared.audioEngine)
+    return try! Instrument(preset: preset)
   }
 
   public static func mocks(_ count: Int) -> [Instrument]
@@ -492,7 +496,7 @@ extension Instrument: Mock
     {
       let header = font.presetHeaders.randomElement()!
       let preset = Preset(font: font, header: header, channel: 0)
-      result.append(try! Instrument(preset: preset, audioEngine: Sequencer.shared.audioEngine))
+      result.append(try! Instrument(preset: preset))
     }
     logv("""
     <\(#fileID) \(#function)> [

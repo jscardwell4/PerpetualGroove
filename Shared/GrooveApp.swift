@@ -25,14 +25,26 @@ final class GrooveApp: App
 
     DocumentGroup(newDocument: Document(sequence: self.enableMockData ? .mock : .init()))
     {
-      let sequencer = Sequencer(sequence: $0.document.sequence)
-      
       ContentView()
-        .environmentObject(sequencer) // Add the sequencer.
+        .environment(\.currentDocument, $0.document)
         .statusBar(hidden: true)
         .preferredColorScheme(.dark) // Not sure this does any good.
     }
   }
 
+}
+
+private struct CurrentDocumentEnvironmentKey: EnvironmentKey
+{
+  static let defaultValue: Document? = nil
+}
+
+extension EnvironmentValues
+{
+  public var currentDocument: Document?
+  {
+    get { self[CurrentDocumentEnvironmentKey.self] }
+    set { self[CurrentDocumentEnvironmentKey.self] = newValue }
+  }
 }
 

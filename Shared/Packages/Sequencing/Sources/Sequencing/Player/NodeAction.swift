@@ -5,12 +5,15 @@
 //  Created by Jason Cardwell on 2/5/21.
 //
 import SpriteKit
+import SwiftUI
 
 @available(iOS 14.0, *)
 @available(macCatalyst 14.0, *)
 @available(OSX 10.15, *)
 struct NodeAction
 {
+  @EnvironmentObject var transport: Transport
+
   /// Specifies what kind of action is run.
   let key: Key
 
@@ -55,7 +58,7 @@ struct NodeAction
 
         // Calculate half of the action's duration.
         let halfDuration = coordinator.generator.duration
-          .seconds(withBPM: Sequencer.shared.tempo) * 0.5
+          .seconds(withBPM: Double(transport.tempo)) * 0.5
 
         // Scale up to playing size for half the action.
         let scaleUp = SKAction.resize(toWidth: MIDINode.playingSize.width,

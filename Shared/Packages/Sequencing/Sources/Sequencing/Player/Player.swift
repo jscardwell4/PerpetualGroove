@@ -18,91 +18,49 @@ import SwiftUI
 
 /// Coordinates `Node` and `PlayerNode` operations.
 @available(iOS 14.0, *)
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
 public final class Player: ObservableObject
 {
-  @EnvironmentObject var sequencer: Sequencer
+  // MARK: Environment
 
-  // MARK: Stored Properties
+  @Environment(\.enableMockData) static var enableMockData: Bool
 
-  var mode: Mode { sequencer.mode }
+  @Environment(\.currentTransport) var currentTransport: Transport
+  @Environment(\.linearTransport) var linearTransport: Transport
+  @Environment(\.loopTransport) var loopTransport: Transport
+  @Environment(\.currentMode) var currentMode: Mode
+
+  // MARK: Properties
+
+  /// The scene's size.
+  public var sceneSize: CGSize {
+    didSet
+    {
+      scene.size = sceneSize
+      playerNode.size = sceneSize
+    }
+    
+  }
+
+  /// The scene generated for the player.
+  let scene: SKScene
+
+  /// The player node held by `scene`.
+  let playerNode: PlayerNode
 
   /// The manager for undoing `Node` operations.
-  public let undoManager = UndoManager()
+  let undoManager = UndoManager()
 
   /// The object through which new node events are dispatched.
-  @Published public var currentDispatch: NodeDispatch?
+  @Published var currentDispatch: NodeDispatch?
 
-  /// Reference to the player node in the player scene. Setting this property to
-  /// a non-nil value triggers the creation of the player's tools.
-  public internal(set) weak var playerNode: PlayerNode?
-  {
-    didSet
-    {
-      guard let node = playerNode else { return }
-      addTool = AddTool(playerNode: node)
-      removeTool = RemoveTool(playerNode: node, delete: false)
-      deleteTool = RemoveTool(playerNode: node, delete: true)
-//      existingGeneratorTool = GeneratorTool(playerNode: node, mode: .existing)
-//      newGeneratorTool = GeneratorTool(playerNode: node, mode: .new)
-//      rotateTool = RotateTool(playerNode: node)
-      currentTool = .none
-    }
-  }
+  private var lastAdded: CurrentValueSubject<MIDINode?, Never> = CurrentValueSubject(nil)
 
-  /// Tool for adding a new node to the player.
-  public private(set) var addTool: AddTool?
 
-  /// Tool for removing an existing node from the player
-  public private(set) var removeTool: RemoveTool?
+  private var lastRemoved: CurrentValueSubject<MIDINode?, Never> = CurrentValueSubject(nil)
 
-  /// Tool for deleting any trace of a node from the player.
-  public private(set) var deleteTool: RemoveTool?
-
-  /// Tool for changing the generator attached to an existing node in the player.
-//  public private(set) var existingGeneratorTool: GeneratorTool?
-
-  /// Tool for configuring the generator to attach to the new nodes added by `addTool`.
-//  public private(set) var newGeneratorTool: GeneratorTool?
-
-  /// Tool for changing the initial trajectory of an existing node in the player.
-//  public private(set) var rotateTool: RotateTool?
-
-  /// Tool currently handling user touches.
-  @Published public var currentTool: AnyTool = .none
-  {
-    willSet
-    {
-      // Check that the current tool has not simply been reassigned.
-      guard currentTool != newValue else { return }
-
-      // Close undo grouping if open.
-      if undoManager.groupingLevel > 0 { undoManager.endUndoGrouping() }
-
-      // Check that the current tool is showing its content.
-//      guard (currentTool.tool as? PresentingTool)?.isShowingContent == true else { return }
-
-      // Dismiss the current tool's content.
-//      playerContainer?.dismiss(completion: { _ in })
-    }
-
-    didSet
-    {
-      // Check that the previous tool was not simply reassigned.
-      guard currentTool != oldValue else { return }
-
-      // Open a fresh undo grouping if a new tool has been assigned.
-      if currentTool != .none { undoManager.beginUndoGrouping() }
-
-      // Toggle activation of the previous and current tools.
-      oldValue.tool?.active = false
-      currentTool.tool?.active = true
-
-      // Update the player node's touch handler.
-      playerNode?.receiver = currentTool.tool
-
-      logi("<\(#fileID) \(#function)> current tool is now \(currentTool)")
-    }
-  }
+  public func resize(_ newSize: CGSize) { scene.size = newSize }
 
   // MARK: Undo Support
 
@@ -117,37 +75,35 @@ public final class Player: ObservableObject
     return true
   }
 
-  /// Initializes the player by registering for various notifications.
-  public init()
+  // MARK: Initializing
+
+  public init(size: CGSize)
   {
+    sceneSize = size
+    (scene, playerNode) = Player.buildScene(size)
     undoManager.groupsByEvent = false
   }
 
+  // MARK: Placing and Removing Nodes
+
   /// Creates a new `Node` object using the specified parameters and adds it
   /// to `playerNode`.
-  public func placeNew(_ trajectory: Trajectory,
-                       target: NodeDispatch,
-                       generator: AnyGenerator,
-                       identifier: UUID = UUID())
+  func placeNew(trajectory: Trajectory,
+                target: NodeDispatch,
+                generator: AnyGenerator,
+                identifier: UUID = UUID())
   {
     dispatchToMain
     { [self] in
-      // Check that there is a player node to which a node may be added.
-      guard let playerNode = playerNode
-      else
-      {
-        logw("cannot place a node without a player node")
-        return
-      }
-
       do
       {
         // Generate a name for the node composed of the current sequencer mode
         // and the name provided by target.
-        let name = "<\(mode.rawValue)> \(target.nextNodeName)"
+        let name = "<\(currentMode.rawValue)> \(target.nextNodeName)"
 
         // Create and add the node to the player node.
-        let node = try MIDINode(trajectory: trajectory,
+        let node = try MIDINode(transport: currentTransport,
+                                trajectory: trajectory,
                                 name: name,
                                 dispatch: target,
                                 generator: generator,
@@ -160,17 +116,8 @@ public final class Player: ObservableObject
         try target.nodeManager.add(node: node)
 
         // Initiate playback if the transport is not currently playing.
-        if !Sequencer.shared.transport.isPlaying
-        {
-          Sequencer.shared.transport.isPlaying = true
-        }
-
-        // Post notification that the node has been added.
-        postNotification(name: .playerDidAddNode,
-                         object: self,
-                         userInfo: ["addedNode": node, "addedNodeDispatch": target])
-
-        logi("added node \(name)")
+        if !currentTransport.isPlaying { currentTransport.isPlaying = true }
+        lastAdded.send(node)
       }
       catch
       {
@@ -183,42 +130,49 @@ public final class Player: ObservableObject
   public func remove(node: MIDINode)
   {
     dispatchToMain
-    { [self] in
+    {
+      [self] in
       // Check that `node` is a child of `playerNode`.
       guard node.parent === playerNode else { return }
 
       // Fade out and remove `node`.
       node.coordinator.fadeOut(remove: true)
-
-      // Post notification that a node has been removed.
-      postNotification(name: .playerDidRemoveNode, object: self)
+      lastRemoved.send(node)
     }
   }
-}
 
-// MARK: NotificationDispatching
-
-@available(iOS 14.0, *)
-extension Player: NotificationDispatching
-{
-  static let didAddNodeNotification = Notification.Name(rawValue: "didAddNode")
-  static let didRemoveNodeNotification = Notification.Name(rawValue: "didRemoveNode")
-}
-
-@available(iOS 14.0, *)
-extension Notification.Name
-{
-  public static let playerDidAddNode = Player.didAddNodeNotification
-  public static let playerDidRemoveNode = Player.didRemoveNodeNotification
-}
-
-@available(iOS 14.0, *)
-extension Notification
-{
-  public var addedNode: MIDINode? { userInfo?["addedNode"] as? MIDINode }
-
-  public var addedNodeDispatch: NodeDispatch?
+  // MARK: Scene building
+  private static func buildScene(_ size: CGSize) -> (SKScene, PlayerNode)
   {
-    userInfo?["addedNodeDispatch"] as? NodeDispatch
+    let scene = BouncingPlayerScene()
+    scene.scaleMode = .fill
+    scene.size = size
+    scene.physicsWorld.gravity = .zero
+    scene.backgroundColor = .backgroundColor2
+
+    let playerNode = PlayerNode(rect: CGRect(size: size))
+    scene.addChild(playerNode)
+
+    if enableMockData { scene.populate() }
+
+    return (scene, playerNode)
+  }
+
+}
+
+@available(iOS 14.0, *)
+@available(macCatalyst 14.0, *)
+@available(OSX 10.15, *)
+extension Player
+{
+  public enum PublishedSubject { case lastAdded, lastRemoved }
+
+  public func publisher(for subject: PublishedSubject) -> AnyPublisher<MIDINode?, Never>
+  {
+    switch subject
+    {
+      case .lastAdded: return lastAdded.eraseToAnyPublisher()
+      case .lastRemoved: return lastRemoved.eraseToAnyPublisher()
+    }
   }
 }
