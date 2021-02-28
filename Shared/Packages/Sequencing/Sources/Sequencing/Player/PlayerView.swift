@@ -6,8 +6,8 @@
 //  Copyright © 2021 Moondeer Studios. All rights reserved.
 //
 import MoonDev
-import SwiftUI
 import SpriteKit
+import SwiftUI
 
 // MARK: - PlayerView
 
@@ -28,10 +28,22 @@ public struct PlayerView: View
                transition: nil,
                isPaused: false,
                preferredFramesPerSecond: 60,
-               options: [.shouldCullNonVisibleNodes, .ignoresSiblingOrder],
-               shouldRender: {_ in true})
+               options: [.shouldCullNonVisibleNodes, .ignoresSiblingOrder])
+    {
+      timeInterval in
+      player.playerNode.midiNodes.forEach
+      {
+        $0?.coordinator.updatePosition(timeInterval)
+      }
+      return true
+    }
+    .gesture(DragGesture().onChanged(update(for:)))
   }
 
   public init() {}
-}
 
+  private func update(for value: DragGesture.Value)
+  {
+    logi("<\(#fileID) \(#function)> value: \(value)")
+  }
+}

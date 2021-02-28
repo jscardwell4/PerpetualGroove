@@ -94,7 +94,8 @@ public final class Player: ObservableObject
                 identifier: UUID = UUID())
   {
     dispatchToMain
-    { [self] in
+    {
+      [self] in
       do
       {
         // Generate a name for the node composed of the current sequencer mode
@@ -144,7 +145,7 @@ public final class Player: ObservableObject
   // MARK: Scene building
   private static func buildScene(_ size: CGSize) -> (SKScene, PlayerNode)
   {
-    let scene = BouncingPlayerScene()
+    let scene = SKScene()
     scene.scaleMode = .fill
     scene.size = size
     scene.physicsWorld.gravity = .zero
@@ -153,9 +154,14 @@ public final class Player: ObservableObject
     let playerNode = PlayerNode(rect: CGRect(size: size))
     scene.addChild(playerNode)
 
-    if enableMockData { scene.populate() }
+    if enableMockData { populate(scene: scene) }
 
     return (scene, playerNode)
+  }
+
+  private static func populate(scene: SKScene)
+  {
+
   }
 
 }
